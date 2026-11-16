@@ -1,0 +1,118 @@
+{
+  "date": "2026-11-12T13:57:51.543Z",
+  "mode": "transfert",
+  "transferts": [
+    {
+      "source": "Plateforme E2E 1793983329440",
+      "sourceId": 1,
+      "destination": "Wissous",
+      "destinationId": 11,
+      "modifications": {
+        "perimetresAjoutes": 2,
+        "tr_atelier": 1,
+        "reception": 1,
+        "affiche": 2,
+        "tf_prepa_affiche": 9
+      }
+    },
+    {
+      "source": "Plateforme E2E VA 1793983329503",
+      "sourceId": 2,
+      "destination": "Nîmes",
+      "destinationId": 12,
+      "modifications": {
+        "perimetresAjoutes": 1,
+        "reception": 2,
+        "affiche": 5,
+        "tf_prepa_affiche": 4
+      }
+    },
+    {
+      "source": "Plateforme E2E EDR 1793983329531",
+      "sourceId": 3,
+      "destination": "Nanterre",
+      "destinationId": 13,
+      "modifications": {
+        "perimetresAjoutes": 1,
+        "tf_prepa_affiche": 4,
+        "tf_prepa_Broadcast": 4
+      }
+    },
+    {
+      "source": "Plateforme E2E THM 1793983329567",
+      "sourceId": 4,
+      "destination": "Wissous",
+      "destinationId": 11,
+      "modifications": {
+        "affiche": 2,
+        "tf_prepa_affiche": 9
+      }
+    },
+    {
+      "source": "Plateforme E2E DEB 1793983329596",
+      "sourceId": 5,
+      "destination": "Nîmes",
+      "destinationId": 12,
+      "modifications": {
+        "tr_atelier": 1,
+        "tf_prepa_Broadcast": 2
+      }
+    },
+    {
+      "source": "Plateforme E2E TRN 1793983329610",
+      "sourceId": 6,
+      "destination": "Nanterre",
+      "destinationId": 13,
+      "modifications": {
+        "tr_atelier": 1,
+        "affiche": 1,
+        "tf_prepa_affiche": 1
+      }
+    },
+    {
+      "source": "Plateforme E2E EXP 1793983329627",
+      "sourceId": 7,
+      "destination": "Wissous",
+      "destinationId": 11,
+      "modifications": {
+        "tr_atelier": 1,
+        "affiche": 1,
+        "tf_prepa_affiche": 1
+      }
+    },
+    {
+      "source": "Plateforme E2E ROU 1793983329648",
+      "sourceId": 8,
+      "destination": "Nîmes",
+      "destinationId": 12,
+      "modifications": {
+        "perimetresAjoutes": 1,
+        "tr_atelier": 1,
+        "affiche": 4,
+        "tf_prepa_affiche": 4
+      }
+    },
+    {
+      "source": "Plateforme E2E UNI 1793983329675",
+      "sourceId": 9,
+      "destination": "Nanterre",
+      "destinationId": 13,
+      "modifications": {
+        "tr_atelier": 2
+      }
+    },
+    {
+      "source": "Plateforme E2E EXP 1793983329717",
+      "sourceId": 10,
+      "destination": "Wissous",
+      "destinationId": 11,
+      "modifications": {
+        "perimetresAjoutes": 1,
+        "tr_atelier": 1,
+        "affiche": 1
+      }
+    }
+  ],
+  "sauvegarde": "/Users/hrifech/Documents/ChatGPT/CIRCE-CLAUDE-GV1/circe-v1/apps/api/prisma/dev-avant-transfert-jdd-2026-11-12T13-57-51-543Z.db",
+  "verifications": "Quantités et historiques conservés, mêmes nombres de lignes, références et périmètres cohérents."
+}

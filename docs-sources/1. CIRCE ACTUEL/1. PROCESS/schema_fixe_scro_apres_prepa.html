@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Circé aujourd'hui : après l'envoi de la prépa, fixe et scro</title>
+<style>
+  :root {
+    --navy: #1b2a44; --ink: #1f2937; --ink-2: #475467; --ink-3: #667085; --line: #d9dee5; --page: #f5f7fa;
+    --bc: #a14d07; --bc-bg: #fff6ec; --bc-line: #f0c48f;
+    --ci: #0a6f93; --ci-bg: #edf6fa; --ci-line: #a9d3e5;
+    --der: #6b2fc9; --der-bg: #f2eafe; --der-line: #cdb6f5;
+    --fix: #0b7a55; --fix-bg: #e6f6ef; --fix-line: #a6dcc4;
+    --all: #3f4a5a; --all-bg: #eceff3;
+    --ok: #0b7a55; --ok-bg: #e6f6ef;
+    --run: #0a6f93; --run-bg: #e3f1f8;
+    --todo: #5b6472; --todo-bg: #eceff3;
+    --warn: #b42318; --warn-bg: #fdeceb;
+    --hl: #8a5a00; --hl-bg: #fff4cc;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; color: var(--ink); background: var(--page); }
+  header { background: var(--navy); color: #fff; padding: 18px 28px 16px; }
+  header h1 { margin: 0; font-size: 21px; font-weight: 650; }
+  header p { margin: 6px 0 0; color: #c8d2e1; font-size: 13px; max-width: 1150px; }
+  main { padding: 20px 28px 36px; }
+  h2 { font-size: 16px; margin: 28px 0 10px; color: var(--navy); }
+  a { color: var(--ci); }
+
+  .top { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+  .box { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .box h2 { margin: 0 0 8px; }
+  .box ol { margin: 0; padding-left: 20px; }
+  .box li { margin: 5px 0; }
+  .legend { display: grid; grid-template-columns: max-content 1fr; gap: 7px 12px; align-items: center; font-size: 13px; }
+
+  /* Schéma : tronc commun sur toute la largeur, puis deux colonnes */
+  .scroll { overflow-x: auto; padding-bottom: 4px; }
+  .flow { display: grid; grid-template-columns: 40px minmax(380px, 1fr) minmax(380px, 1fr); gap: 10px; min-width: 860px; }
+  .c-num { grid-column: 1; } .c-fix { grid-column: 2; } .c-der { grid-column: 3; } .c-both { grid-column: 2 / 4; }
+  .lane-h { border-radius: 8px; padding: 8px 12px; font-weight: 650; color: #fff; }
+  .lane-h small { display: block; font-weight: 400; font-size: 12px; opacity: .92; }
+  .lane-h.fix { background: var(--fix); } .lane-h.der { background: var(--der); } .lane-h.all { background: var(--navy); }
+  .num { display: flex; justify-content: center; padding-top: 10px; }
+  .num span { width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; font-weight: 650; font-size: 13px; }
+  .card { background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--ci); border-radius: 8px; padding: 9px 12px; }
+  .card.bc { border-color: var(--bc-line); border-left-color: var(--bc); background: var(--bc-bg); }
+  .card.fix { border-left-color: var(--fix); }
+  .card.der { border-left-color: var(--der); }
+  .card.auto { border-style: dashed; border-left-style: solid; }
+  .card.none { background: transparent; border: 1px dashed var(--line); color: var(--ink-3); font-size: 13px; display: flex; align-items: center; }
+  .card.hl { box-shadow: 0 0 0 2px var(--hl-bg), 0 0 0 3px #e9c46a; }
+  .card h3 { margin: 0 0 4px; font-size: 14px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .card p { margin: 4px 0; font-size: 13px; color: var(--ink-2); }
+  .card ul { margin: 4px 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); }
+  .card li { margin: 2px 0; }
+  .card .meta { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; }
+  .card .src { font-size: 11.5px; color: var(--ink-3); margin-top: 6px; }
+  .kind { font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; }
+  .kind.a { background: #e4e7ec; color: #344054; }
+  .kind.m { background: var(--navy); color: #fff; }
+  .sys { font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: 4px; color: #fff; }
+  .sys.bc { background: var(--bc); } .sys.ci { background: var(--ci); }
+  .cat { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 999px; }
+  .cat.all { background: var(--all-bg); color: var(--all); }
+  .cat.der { background: var(--der-bg); color: var(--der); }
+  .cat.fix { background: var(--fix-bg); color: var(--fix); }
+  .st { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 1px 9px; border-radius: 999px; white-space: nowrap; }
+  .st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .st.todo { background: var(--todo-bg); color: var(--todo); }
+  .st.run { background: var(--run-bg); color: var(--run); }
+  .st.ok { background: var(--ok-bg); color: var(--ok); }
+  .st.warn { background: var(--warn-bg); color: var(--warn); }
+  .to { color: var(--ink-3); font-size: 13px; }
+  .stline { display: flex; flex-wrap: wrap; gap: 4px 5px; align-items: center; margin-top: 6px; font-size: 12.5px; color: var(--ink-2); }
+  .flag { font-size: 10.5px; font-weight: 700; color: var(--hl); background: var(--hl-bg); border-radius: 4px; padding: 1px 6px; }
+  .ded { font-size: 10px; font-weight: 700; color: #7a5b00; background: #fff4cc; border-radius: 4px; padding: 0 5px; text-transform: uppercase; letter-spacing: .04em; }
+  .sep { display: flex; align-items: center; gap: 10px; color: var(--ink-3); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+  .sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  table { border-collapse: separate; border-spacing: 0; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 11px; border-bottom: 1px solid var(--line); }
+  th { background: #f0f3f7; font-weight: 650; color: var(--navy); }
+  tbody th { width: 170px; }
+  tr:last-child td, tr:last-child th { border-bottom: 0; }
+  code { font: 12px Consolas, "Courier New", monospace; background: #f0f3f7; padding: 0 4px; border-radius: 4px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .vig li { margin: 6px 0; }
+  footer { font-size: 12px; color: var(--ink-3); margin-top: 26px; border-top: 1px solid var(--line); padding-top: 10px; }
+
+  @media print {
+    @page { size: A3 portrait; margin: 10mm; }
+    body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .scroll { overflow: visible; }
+    .card, .box, table { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Circé aujourd'hui : après l'envoi de la prépa, le fixe et le scro ne suivent pas le même chemin</h1>
+  <p>Envoi de la prépa, Instruction OK, validation admin, « Colisage », trains : qui fait quoi, dans quel ordre, avec quel statut. C'est l'existant, pas la cible. Sources : deck du kick-off (S…), decks du 14/10 (A…, R…), référentiel des besoins.</p>
+  <p><i>Mise à jour du 02/11 : la <b>cible</b> de la validation admin devient l'option A (proposée par Circé à la réception, confirmée en lot par la Coordination, sans attendre la prépa ni l'Instruction OK ; <code>00_synthese_powerpoint.md</code> §19.37). L'existant décrit ici est inchangé et confirmé par le code et par un retour terrain (point 6 de « À retenir »).</i></p>
+</header>
+
+<main>
+
+<div class="top">
+  <section class="box">
+    <h2>À retenir</h2>
+    <ol>
+      <li>Jusqu'à <b>l'envoi de la prépa</b>, c'est le même chemin pour tous les formats (Broadcast).</li>
+      <li><b>2 m² fixe et pliage</b> : pas d'Instruction OK. La <b>validation admin</b> se fait au fil de l'eau, puis la Pré-Prod clique sur le <b>bouton « Colisage »</b> : les dossiers descendent dans l'écran de l'atelier (S15, S37).</li>
+      <li><b>Scro (déroulant)</b> : d'abord <b>Instruction OK</b> (contrôle du dossier), puis la <b>validation admin</b>, puis la <b>liste des trains</b> (l'export compose les trains), puis le <b>Go par mail</b> aux plateformes (S15, S47 à S49).</li>
+      <li><b>Deux « colisages » à ne pas confondre</b> : le <b>bouton « Colisage »</b> de la Pré-Prod (fixe : il fige les dossiers et les envoie à l'atelier) et le <b>colisage d'expédition</b> (scan des rouleaux ou des trains dans un colis, pour tous les formats).</li>
+      <li><b>Instruction OK</b> contrôle le <b>dossier</b> (scro seulement). La <b>validation admin</b> confirme le <b>lien affiche ↔ dossier</b> (tous les formats).</li>
+      <li><b>Constat du code et retour terrain (02/11)</b> : au fixe, la ligne naît à l'intégration de la prépa (statut 0) et arrive directement dans « 2m² fixe › A traiter » (<code>p_integ_preparation.sql:123</code>, <code>p_s_listeprepa2m2.sql:71-74</code>) ; la validation admin est possible dès la prépa envoyée. Au scro, elle est impossible avant l'Instruction OK : elle passe par la liaison des lignes de prépa du dossier (<code>ReceptionListeAfficheController.cs:218-254</code>), qui n'existent qu'une fois le thème posé sur les faces, à l'Instruction OK (<code>p_Alimentation_tf_prepa_affiche.sql:139-147</code>). La case ne bloque pas les UM (<code>p_s_listeUM_2m2.sql:136-141</code>).</li>
+    </ol>
+  </section>
+  <section class="box">
+    <h2>Légende</h2>
+    <div class="legend">
+      <span class="sys bc">BC</span><span>Broadcast : l'outil commercial, en amont de Circé</span>
+      <span class="sys ci">Circé</span><span>Circé : l'outil des plateformes</span>
+      <span class="kind m">Action</span><span>quelqu'un agit (carte à bord plein)</span>
+      <span class="kind a">Auto</span><span>automatique (carte en pointillés)</span>
+      <span class="st run">En cours</span><span>un statut, toujours avec son libellé</span>
+      <span><span class="cat fix">2 m² fixe · Pliage</span></span><span>colonne de gauche ; <span class="cat der">Scro</span> colonne de droite ; <span class="cat all">Tous formats</span> sur toute la largeur</span>
+      <span class="flag">À ne pas confondre</span><span>les deux « colisages »</span>
+      <span class="ded">déduit</span><span>pas écrit tel quel dans le deck</span>
+    </div>
+    <p style="margin:10px 0 0;font-size:13px;color:var(--ink-2)">Lire de haut en bas. Voir aussi le schéma <a href="schema_dossier_affiche_statuts.html">dossier, affiche et statuts</a> pour ce qui précède l'envoi de la prépa.</p>
+  </section>
+</div>
+
+<h2>Le schéma</h2>
+<div class="scroll">
+<div class="flow">
+
+  <!-- Tronc commun -->
+  <div class="c-both lane-h all" style="grid-row:1">Tous les formats : jusqu'à l'envoi de la prépa<small>même chemin pour le fixe, le pliage et le scro</small></div>
+
+  <div class="c-num num" style="grid-row:2"><span>1</span></div>
+  <div class="c-both card bc" style="grid-row:2">
+    <h3><span class="sys bc">BC</span><span class="kind m">Action</span> Avant : DA activée, puis IP saisies dans Broadcast</h3>
+    <p>Le dossier entre dans l'état des réservations, une réception attendue est créée ; les thèmes apparaissent quand les IP sont saisies.</p>
+    <div class="stline">Statut du dossier : <span class="st todo">À traiter</span></div>
+    <div class="meta">Qui : Pré-Prod Direct / Intermédié (gestionnaires des pôles)</div>
+    <div class="src">S15, S17, S32</div>
+  </div>
+
+  <div class="c-num num" style="grid-row:3"><span>2</span></div>
+  <div class="c-both card bc" style="grid-row:3">
+    <h3><span class="sys bc">BC</span><span class="kind m">Action</span> Envoyer la préparation</h3>
+    <p>Bouton « Envoyer préparation » dans Broadcast, au plus tard le jeudi de S-2. Automatiquement : l'état des réservations passe « Statut préparation = Envoyé », et le suivi de production commence.</p>
+    <div class="stline">Statut du dossier : <span class="st todo">À traiter</span><span class="to">→</span><span class="st run">En cours</span></div>
+    <div class="meta">Qui : Pré-Prod Direct / Intermédié</div>
+    <div class="src">S15, S32, S35, Q11</div>
+  </div>
+
+  <div class="c-num num" style="grid-row:4"><span>3</span></div>
+  <div class="c-both card" style="grid-row:4">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Raccrochage : relier l'affiche reçue au dossier</h3>
+    <p>Quand l'affiche est reçue, n'importe quand : dans la fiche de l'affiche, onglet Préparations, on la relie aux dossiers et aux thèmes qu'elle sert (lien n° de dossier – thème – n° d'affiche).</p>
+    <div class="meta">Qui : Pré-Prod · Où : Réception › Liste des affiches, fiche de l'affiche</div>
+    <div class="src">S15, S24 à S28 · ordre variable selon les slides (INC-04)</div>
+  </div>
+
+  <!-- Les deux branches -->
+  <div class="c-fix lane-h fix" style="grid-row:5">2 m² fixe · Pliage<small>le pliage suit le même processus, sans machine ni fichier (REU-07)</small></div>
+  <div class="c-der lane-h der" style="grid-row:5">Scro (déroulant)<small>2 m² scro, MUI, Venusial, 8 m² : des trains</small></div>
+
+  <div class="c-num num" style="grid-row:6"><span>4</span></div>
+  <div class="c-fix card none" style="grid-row:6">Pas d'Instruction OK pour le fixe et le pliage : on passe directement à la validation admin (S15).</div>
+  <div class="c-der card der" style="grid-row:6">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Instruction OK : contrôler le dossier</h3>
+    <ul>
+      <li>Filtre « En cours » (= prépa envoyée par Broadcast).</li>
+      <li>Quantité Broadcast = « nb d'exceptions » de Circé ? Sinon : purge et main rendue (Admin › Déblocage préparation), seulement si la production n'est pas lancée.</li>
+      <li>Ressaisie du % par thème, mise à jour de l'entretien et de la position de l'affiche dans le train.</li>
+      <li>Saisie d'« Instruction OK » : positions et entretien sont verrouillés.</li>
+    </ul>
+    <div class="stline">Statut du dossier : <span class="st run">En cours</span><span class="to">→</span><span class="st ok">Instruction OK</span></div>
+    <div class="meta">Qui : Pré-Prod Coordination · Où : Trains › Liste des instructions</div>
+    <div class="src">S47, S48 · code <code>Enums.cs:50-75</code></div>
+  </div>
+
+  <div class="c-num num" style="grid-row:7"><span>5</span></div>
+  <div class="c-fix card fix" style="grid-row:7">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Validation admin, au fil de l'eau</h3>
+    <p>Case cochée dans la fiche de l'affiche : « 1 prépa = nb d'affiches par personne et par thème = 1 bague ». Le lien apparaît dans le suivi de production de l'atelier ; l'état des réservations passe « Affiche reçue = Oui ».</p>
+    <p>R33 (14/10) note : « si réception faite, validation admin automatiquement faite » (question Q17).</p>
+    <div class="meta">Qui : Pré-Prod · Où : fiche de l'affiche</div>
+    <div class="src">S15, S28, S32, R33</div>
+  </div>
+  <div class="c-der card der" style="grid-row:7">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Validation admin, après Instruction OK</h3>
+    <p>Liste des affiches › Préparations : recherche du dossier, association du n° d'affiche à la préparation thème par thème, puis validation admin.</p>
+    <p>Automatiquement : « Réception = Oui » dans l'état des réservations, et Trains › Préparation est alimenté.</p>
+    <div class="meta">Qui : Pré-Prod · Où : fiche de l'affiche</div>
+    <div class="src">S15, S49</div>
+  </div>
+
+  <div class="c-num num" style="grid-row:8"><span>6</span></div>
+  <div class="c-fix card fix hl" style="grid-row:8">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Fiche de synthèse, puis bouton « Colisage » <span class="flag">À ne pas confondre</span></h3>
+    <ul>
+      <li>Jeudi S-2, écran « 2m² fixe à traiter » : filtre « À traiter », plateforme, semaine S.</li>
+      <li>Fiche Préparation Synthèse : Excel à télécharger, mettre en page, imprimer.</li>
+      <li>Clic sur <b>Colisage</b> : « déclenche la redescente des dossiers dans l'écran de l'atelier ». Les données sont figées, la Pré-Prod ne peut plus y toucher, la main passe aux plateformes (A18).</li>
+    </ul>
+    <div class="stline">Ligne de préparation : <span class="st todo">À traiter</span><span class="to">→</span><span class="st run">En cours</span> (dossiers « colisés »)</div>
+    <div class="meta">Qui : Pré-Prod · Où : 2m² fixe › À traiter</div>
+    <div class="src">S15, S37 à S40, A18 · ce n'est pas le colisage d'expédition (étape 9)</div>
+  </div>
+  <div class="c-der card der" style="grid-row:8">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Liste des trains, suivi des thèmes, préparation des trains</h3>
+    <ul>
+      <li>Liste des trains : vérifier que tous les dossiers sont en Instruction OK, puis <b>Export</b>, qui lance la <b>composition des trains</b> (le MUI d'abord, le jeudi après-midi).</li>
+      <li>Suivi par thème : vérifier que chaque thème a le même intitulé, supprimer ceux qui n'ont pas lieu d'être.</li>
+      <li>Préparation des trains : positions, affiches à intercaler, séparations entre annonceurs, plan de roulement MUI et 8 m².</li>
+    </ul>
+    <div class="meta">Qui : Pré-Prod Coordination (les deux sites depuis R7) · Où : Trains</div>
+    <div class="src">S15, S49, R7</div>
+  </div>
+
+  <div class="c-num num" style="grid-row:9"><span>7</span></div>
+  <div class="c-fix card none" style="grid-row:9"><span>Pas de mail de Go dans la branche fixe (S15) : le « Colisage » fait office de feu vert pour l'atelier <span class="ded">déduit</span>. Un dossier qui arrive ensuite ne déclenche ni mail ni alerte : il faut rafraîchir l'écran (S15, besoin REU-04).</span></div>
+  <div class="c-der card der" style="grid-row:9">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Go par mail aux plateformes</h3>
+    <p>Mail de confirmation, au plus tard le jeudi de S-2 : les plateformes n'ont pas d'autre moyen de savoir que le contrôle est terminé.</p>
+    <div class="stline">Statut du train : <span class="st todo">À imprimer</span> (Go plateforme, « point de non-retour »)</div>
+    <div class="meta">Qui : Pré-Prod Coordination</div>
+    <div class="src">S15, S49, S50, S54</div>
+  </div>
+
+  <div class="c-num num" style="grid-row:10"><span>8</span></div>
+  <div class="c-fix card fix" style="grid-row:10">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Atelier : fichiers multi-rouleuse, puis rouleaux</h3>
+    <ul>
+      <li>Préparation 2m² Fixe : un <b>Export Préparation par thème</b>, CSV renommé « semaine / client / thème », copié dans le « dossier jaune » de la machine.</li>
+      <li>Multi-rouleuse : production des rouleaux, stockage par destinataire.</li>
+      <li>Pliage : comptage, sans machine ni fichier.</li>
+    </ul>
+    <div class="stline">Ligne : <span class="st run">En cours</span><span class="to">→</span><span class="st run">Préparé</span></div>
+    <div class="meta">Qui : chef d'équipe, atelier · Où : 2m² fixe › Préparation</div>
+    <div class="src">S15, S41 à S43, REU-07</div>
+  </div>
+  <div class="c-der card der" style="grid-row:10">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Atelier : pré-assemblage, fichier Vendôme ou bagues, roulage</h3>
+    <ul>
+      <li>Trains › Suivi par thème : besoin en affiches, pointage, « Pré-assemblé = Fait ».</li>
+      <li>Trains › Préparation, statut « À imprimer » : Export préparation (20 tiroirs au plus).</li>
+      <li>Vendôme : Générer fichier V2, conversion en .ini, chargement dans Vendôme One. Autres machines (CCM V2) : bagues imprimées.</li>
+      <li>Passage « Au roulage », puis assemblage et roulage.</li>
+    </ul>
+    <div class="stline">Train : <span class="st todo">À imprimer</span><span class="to">→</span><span class="st run">Au roulage</span></div>
+    <div class="meta">Qui : chef d'équipe, dispatcheur, rouleurs · Où : Trains</div>
+    <div class="src">S15, S50 à S53</div>
+  </div>
+
+  <!-- Retour au tronc commun -->
+  <div class="c-num num" style="grid-row:11"><span>9</span></div>
+  <div class="c-both card hl" style="grid-row:11">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Expédition : scan et colisage <span class="flag">À ne pas confondre</span></h3>
+    <p>Pour tous les formats : scan du destinataire puis de chaque rouleau ou train. Milk run : code colis et rack ; messagerie : carton et étiquette. La fin de journée saisie chez Geodis termine la ligne ou le train.</p>
+    <div class="stline">Fixe : <span class="st run">Préparé</span><span class="to">→</span><span class="st run">À expédier</span><span class="to">→</span><span class="st ok">Terminé</span> · Scro : <span class="st run">Au roulage</span><span class="to">→</span><span class="st run">À expédier</span><span class="to">→</span><span class="st ok">Terminé</span></div>
+    <div class="meta">Qui : atelier, agent d'expédition · Où : écrans de préparation et Liste des colis</div>
+    <div class="src">S37, S41, S44, S54 · c'est le colisage physique, pas le bouton « Colisage » de l'étape 6</div>
+  </div>
+
+  <!-- Corrections -->
+  <div class="c-both sep" style="grid-row:12">Et s'il faut corriger après l'envoi de la prépa ?</div>
+  <div class="c-num num" style="grid-row:13"><span>↺</span></div>
+  <div class="c-fix card fix" style="grid-row:13">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Rendre la main : possible même après l'envoi</h3>
+    <p>« Contrairement au déroulant, il est possible de changer les informations même quand la préparation a été envoyée » : Préparation 2m² Fixe › Retirer, puis Administration › Déblocage préparations.</p>
+    <div class="src">S45</div>
+  </div>
+  <div class="c-der card der" style="grid-row:13">
+    <h3><span class="sys ci">Circé</span><span class="kind m">Action</span> Rendre la main : seulement si la production n'est pas lancée</h3>
+    <p>Purge de l'écran et main rendue à la Pré-Prod pour régénérer la préparation (Administration › Déblocage préparation), « uniquement si prod pas lancée ».</p>
+    <div class="src">S47</div>
+  </div>
+
+</div>
+</div>
+
+<h2>Les statuts, fixe et scro côte à côte</h2>
+<table>
+  <thead><tr><th>Objet</th><th><span class="cat fix">2 m² fixe · Pliage</span></th><th><span class="cat der">Scro</span></th><th>Sources</th></tr></thead>
+  <tbody>
+    <tr><th>Dossier (« instruction »)</th><td><span class="st todo">À traiter</span> <span class="to">→</span> <span class="st run">En cours</span> (prépa envoyée)</td><td><span class="st todo">À traiter</span> <span class="to">→</span> <span class="st run">En cours</span> <span class="to">→</span> <span class="st ok">Instruction OK</span> ; <span class="st warn">Annulé</span></td><td>S15, S47, S54</td></tr>
+    <tr><th>Affiche</th><td colspan="2">Case « Validation admin » cochée dans la fiche de l'affiche, pour tous les formats</td><td>S28, S29</td></tr>
+    <tr><th>État des réservations</th><td colspan="2">« Statut préparation = Envoyé » à l'envoi de la prépa ; « Affiche reçue = Oui » à la validation admin (anomalie ANO-05)</td><td>S32, S49</td></tr>
+    <tr><th>Unité de production</th><td>Ligne : <span class="st todo">À traiter</span> <span class="to">→</span> <span class="st run">En cours</span> (après le bouton Colisage) <span class="to">→</span> <span class="st run">Préparé</span> <span class="to">→</span> <span class="st run">À expédier</span> <span class="to">→</span> <span class="st ok">Terminé</span></td><td>Train : <span class="st todo">À imprimer</span> <span class="to">→</span> <span class="st run">Au roulage</span> <span class="to">→</span> <span class="st run">À expédier</span> <span class="to">→</span> <span class="st ok">Terminé</span></td><td>S37, S41, S50 à S54, A18</td></tr>
+  </tbody>
+</table>
+
+<div class="two">
+  <section>
+    <h2>Pourquoi on s'y perd (constaté dans les decks)</h2>
+    <ul class="vig">
+      <li><b>Deux « colisages »</b> : le bouton « Colisage » de la Pré-Prod au fixe (S37, A18) et le colisage d'expédition (S44). Même mot, deux étapes.</li>
+      <li><b>INC-04</b> : l'ordre raccrochage, Instruction OK, validation admin change selon les slides (S15, S24, S25, S47, S49).</li>
+      <li><b>INC-05</b> : ce qui fait apparaître un dossier fixe dans l'atelier n'est pas le même selon les slides : le raccrochage (S24), la validation admin (S28) ou le bouton Colisage (S37).</li>
+      <li><b>Validation admin au fixe</b> : cochée à la main (S28), mais R33 note qu'elle serait faite automatiquement à la réception (Q17). <i>(02/11 : option A, proposée à la réception et confirmée en lot.)</i></li>
+      <li><b>PP-01</b> : le deck propose de supprimer la validation admin (S69, S75), qui met aussi « affiche reçue » à la place de la réception (ANO-05).</li>
+      <li><b>Thème changé dans Broadcast après Instruction OK et validation admin</b> : Circé ne suit pas. Constaté dans le code : le thème de l'affiche est copié à la réception (<code>LivraisonAfficheService.cs:451</code>), et rien ne le compare ensuite à Broadcast (PP-09, ANO-07).</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Ce que propose la maquette (pas encore validé)</h2>
+    <ul class="vig">
+      <li><s>Une seule validation Pré-Prod par dossier remplace Instruction OK et la validation admin (onglet Dossiers, « Préparations à valider »).</s> Décision du 27/10 : les deux verrous restent, indépendants ; la validation admin est <s>faite par Circé quand tout concorde, sinon par la Coordination</s> <i>(remplacé le 02/11 par l'option A : proposée par Circé à la réception, confirmée en lot par la Coordination, sans attendre la prépa ni l'Instruction OK ; synthèse §19.37)</i> (onglet Pré-production, « Préparations à valider ») ; process par jalons : <code>2. PRE-PRODUCTION/process_preprod_avant_apres.html</code>.</li>
+      <li>Scro : cette validation vaut Go pour les plateformes, sans mail (PP-06).</li>
+      <li>Fixe : la maquette appelle le bouton « Libération de la semaine » ; le deck du 14/10 garde le nom « Colisage » (A18). <span class="ded">à aligner</span></li>
+      <li>Le « suivi par thème : même intitulé » fait à l'œil (S49) devient la vérification des thèmes, dès la préparation reçue (PP-08).</li>
+      <li>Un thème changé dans Broadcast après la validation est comparé dossier par dossier : alerte, critique si la production est lancée, puis reprise de la version Broadcast (PP-09).</li>
+    </ul>
+  </section>
+</div>
+
+<footer>
+  Sources : S = deck du kick-off du 12/10/2026 ; A = deck « Atelier 2m² Fixe et Colle » mis à jour le 14/10 ; R = deck « Atelier Réception – Expédition » du 14/10 ; Q11, Q17 = questions du référentiel ; ANO, INC, PP, REU = référentiel des besoins (<code>00_synthese_powerpoint.md</code>). Code : dépôt GIT_circe, branche develop, lu en lecture seule. Schéma de l'existant établi le 15/10/2026. Voir aussi <a href="schema_dossier_affiche_statuts.html">dossier, affiche et statuts</a>.
+</footer>
+
+</main>
+</body>
+</html>

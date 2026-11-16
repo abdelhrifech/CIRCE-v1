@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pré-production : Instruction OK et validation admin, le process par jalons</title>
+<style>
+  /* Même palette que « 1. RECEPTION/process_reception_statuts_actions.html » et que la maquette. Page à lire de haut en bas,
+     imprimable en A4 paysage (une section par page quand c'est possible). */
+  :root {
+    --navy: #1b2a44; --ink: #1f2937; --ink-2: #475467; --ink-3: #667085; --line: #d9dee5; --page: #e9edf2;
+    --rec: #0a6f93; --rec-bg: #e3f1f8;       /* Réception */
+    --pp: #6b2fc9; --pp-bg: #f2eafe;         /* Coordination (verrous) */
+    --bc: #8a5a00; --bc-bg: #fff3cd;         /* Broadcast, Pré-Prod */
+    --auto: #475467; --auto-bg: #eef1f5;     /* Circé, automatique */
+    --cheq: #0b7a55; --cheq-bg: #e6f6ef;     /* Chef d'équipe, plateformes */
+    --good: #0b7a55; --good-bg: #e6f6ef;
+    --warn: #8a5a00; --warn-bg: #fff3cd;
+    --ser: #b42318; --ser-bg: #fde8e6;
+    --new: #c4320a; --new-bg: #fff1e8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font: 15px/1.45 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; color: var(--ink); background: var(--page); padding: 24px 12px 48px; }
+  .doc { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+  section { background: #fff; border-radius: 10px; box-shadow: 0 4px 18px rgba(16, 24, 40, .10); padding: 22px 28px 24px; }
+  header.top { background: #fff; border-radius: 10px; box-shadow: 0 4px 18px rgba(16, 24, 40, .10); padding: 22px 28px; border-top: 6px solid var(--navy); }
+  .kick { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
+  h1 { margin: 4px 0 6px; font-size: 28px; font-weight: 650; color: var(--navy); letter-spacing: -.01em; }
+  h2 { margin: 0 0 4px; font-size: 21px; font-weight: 650; color: var(--navy); display: flex; align-items: center; gap: 10px; }
+  h2 .num { width: 30px; height: 30px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  h3 { margin: 0; font-size: 16px; font-weight: 650; color: var(--navy); line-height: 1.25; }
+  h4.tt { margin: 18px 0 0; font-size: 16px; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  h4.tt svg { width: 20px; height: 20px; color: var(--pp); }
+  .lead { margin: 0; color: var(--ink-2); }
+  .sub { margin: 2px 0 16px; color: var(--ink-3); font-size: 14px; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  b, strong { font-weight: 650; }
+  .muted { color: var(--ink-3); }
+  .small { font-size: 13px; }
+
+  /* Pastilles : qui fait l'action */
+  .who { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .who::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .who.rec { color: var(--rec); background: var(--rec-bg); }
+  .who.pp { color: var(--pp); background: var(--pp-bg); }
+  .who.bc { color: var(--bc); background: var(--bc-bg); }
+  .who.auto { color: var(--auto); background: var(--auto-bg); }
+  .who.cheq { color: var(--cheq); background: var(--cheq-bg); }
+  .legend { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; font-size: 13px; color: var(--ink-2); }
+
+  /* Verdicts et risques */
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 650; padding: 2px 9px; border-radius: 6px; white-space: nowrap; }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .chip.good { color: var(--good); background: var(--good-bg); }
+  .chip.warn { color: var(--warn); background: var(--warn-bg); }
+  .chip.ser { color: var(--ser); background: var(--ser-bg); }
+  .chip.neu { color: var(--ink-2); background: var(--auto-bg); }
+  .chip.new { color: var(--new); background: var(--new-bg); }
+  .chip.info { color: var(--rec); background: var(--rec-bg); }
+
+  /* Cartes (décisions) */
+  .advice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .adv { border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .adv h3 { display: flex; align-items: center; gap: 8px; }
+  .adv > .chip { align-self: flex-start; margin-top: auto; }
+  .adv .k { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+  .adv.go { background: var(--good-bg); border-left: 6px solid var(--good); }
+  .adv.go .k { color: var(--good); }
+  .adv.later { background: var(--warn-bg); border-left: 6px solid var(--warn); }
+  .adv.later .k { color: var(--warn); }
+  .adv.info { background: var(--rec-bg); border-left: 6px solid var(--rec); }
+  .adv.info .k { color: var(--rec); }
+  .adv dl { margin: 0; display: grid; grid-template-columns: 1fr; gap: 2px; font-size: 14px; }
+  .adv dt { font-size: 12px; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; margin-top: 6px; }
+  .adv dd { margin: 0; }
+  .adv dd ul { margin: 0; padding-left: 18px; }
+  .rule { margin-top: 16px; background: var(--navy); color: #fff; border-radius: 10px; padding: 14px 18px; font-size: 16px; display: flex; gap: 14px; align-items: center; }
+  .rule svg { width: 34px; height: 34px; flex: none; }
+  .rule b { color: #ffd8a8; }
+
+  /* Les deux verrous */
+  .locks { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  .lock { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; border-top: 5px solid var(--pp); }
+  .lock .head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .lock .head svg { width: 26px; height: 26px; color: var(--pp); flex: none; }
+  .lock dl { margin: 0; display: grid; grid-template-columns: 150px 1fr; gap: 6px 12px; font-size: 14px; }
+  .lock dt { color: var(--ink-3); font-weight: 600; }
+  .lock dd { margin: 0; }
+  .lock dd ul, .lock dd ol { margin: 0; padding-left: 18px; }
+  .unlock { display: flex; flex-wrap: wrap; gap: 6px; }
+  .unlock span { background: var(--cheq-bg); color: var(--cheq); font-size: 13px; font-weight: 650; padding: 2px 9px; border-radius: 6px; }
+
+  /* Schémas : couloirs horizontaux, une case par étape */
+  .flow { margin-top: 14px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .lane { display: grid; grid-template-columns: 150px 1fr; border-top: 1px solid var(--line); }
+  .lane:first-child { border-top: 0; }
+  .lane .lab { padding: 12px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px; background: #f6f8fa; border-right: 1px solid var(--line); }
+  .lane .lab b { font-size: 14.5px; color: var(--navy); }
+  .lane .lab span { font-size: 12.5px; color: var(--ink-3); }
+  .lane .row { display: flex; align-items: stretch; gap: 0; padding: 14px 12px 12px; flex-wrap: nowrap; }
+  .lane.alt .row { background: #fbfcfd; }
+  .st { position: relative; flex: 1 1 0; min-width: 0; border: 1px solid var(--line); border-radius: 9px; padding: 9px 11px; background: #fff; display: flex; flex-direction: column; gap: 5px; border-top: 5px solid var(--auto); }
+  .st.rec { border-top-color: var(--rec); }
+  .st.pp { border-top-color: var(--pp); }
+  .st.bc { border-top-color: var(--bc); }
+  .st.cheq { border-top-color: var(--cheq); }
+  .st.auto { border-top-color: var(--auto); background: #fafbfc; }
+  .st.changed { box-shadow: 0 0 0 2px var(--new); }
+  .st .t { display: flex; align-items: flex-start; gap: 7px; }
+  .st .n { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; flex: none; margin-top: 1px; }
+  .st h4 { margin: 0; font-size: 14.5px; font-weight: 650; color: var(--navy); line-height: 1.25; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .st h4 svg { width: 16px; height: 16px; color: var(--pp); flex: none; }
+  .st p { margin: 0; font-size: 13px; color: var(--ink-2); }
+  .st .flag { position: absolute; top: -11px; right: 8px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: var(--new); color: #fff; border-radius: 5px; padding: 1px 7px; }
+  .st .flag.same { background: var(--ink-3); }
+  .st .flag.e1 { background: var(--good); }
+  .st .flag.e2 { background: var(--warn); }
+  .ar { flex: 0 0 26px; display: flex; align-items: center; justify-content: center; color: var(--ink-3); }
+  .ar svg { width: 22px; height: 16px; }
+  .flow .note { padding: 9px 14px; font-size: 13.5px; border-top: 1px solid var(--line); display: flex; gap: 8px; align-items: flex-start; }
+  .flow .note.bad { background: var(--ser-bg); color: #7a1a12; }
+  .flow .note.ok { background: var(--good-bg); color: #0a5a40; }
+  .flow .note svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+  .bridge { display: grid; grid-template-columns: 150px 1fr; border-top: 1px dashed var(--new); background: var(--new-bg); }
+  .bridge .lab { padding: 8px 12px; font-size: 12.5px; font-weight: 700; color: var(--new); display: flex; align-items: center; border-right: 1px solid var(--line); }
+  .bridge .txt { padding: 8px 14px; font-size: 13.5px; color: #6b2a07; display: flex; align-items: center; gap: 8px; }
+  .bridge .txt svg { width: 18px; height: 18px; flex: none; }
+
+  /* Tableaux */
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); font-weight: 700; padding: 8px 10px; border-bottom: 2px solid var(--line); background: #f6f8fa; }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.before { background: #fcf5f4; }
+  td.after { background: #f3faf6; }
+  td.after2 { background: #fffaeb; }
+  td.k { font-weight: 650; color: var(--navy); white-space: nowrap; }
+  td.num { text-align: center; font-weight: 700; color: var(--navy); }
+
+  /* Encadrés */
+  .callout { border-radius: 10px; padding: 12px 16px; margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; }
+  .callout svg { width: 20px; height: 20px; flex: none; margin-top: 2px; }
+  .callout.info { background: var(--rec-bg); color: #0b4a63; }
+  .callout.warn { background: var(--warn-bg); color: #5c3c00; }
+  .callout.good { background: var(--good-bg); color: #0a5a40; }
+  .callout.new { background: var(--new-bg); color: #6b2a07; }
+  .callout b { color: inherit; }
+  .q { border: 1.5px solid #e3b341; background: #fff8e1; border-radius: 10px; padding: 11px 15px; margin-top: 10px; }
+  .q h3 { display: flex; align-items: center; gap: 8px; }
+  .q h3::before { content: ""; width: 12px; height: 12px; background: #e3b341; transform: rotate(45deg); border-radius: 2px; flex: none; }
+  .q p { font-size: 14px; color: var(--ink-2); }
+  .q.done { border-color: var(--good); background: var(--good-bg); }
+  .q.done h3::before { background: var(--good); }
+  .q.key { border-width: 2px; border-color: var(--new); background: var(--new-bg); }
+  .q.key h3::before { background: var(--new); }
+  .q.off { border-color: var(--line); background: #f6f8fa; }
+  .q.off h3::before { background: var(--ink-3); }
+  .src { font-size: 13px; }
+  .src td { padding: 6px 10px; }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; background: #f2f4f7; padding: 1px 5px; border-radius: 4px; }
+  .tag-c { font-size: 11px; font-weight: 700; color: var(--good); background: var(--good-bg); border-radius: 4px; padding: 1px 6px; }
+  .tag-d { font-size: 11px; font-weight: 700; color: var(--warn); background: var(--warn-bg); border-radius: 4px; padding: 1px 6px; }
+  footer { text-align: center; font-size: 12.5px; color: var(--ink-3); }
+  #print { position: fixed; top: 10px; right: 12px; z-index: 2; background: var(--navy); color: #fff; border: 0; border-radius: 6px; padding: 6px 12px; font: inherit; font-size: 12.5px; cursor: pointer; opacity: .85; }
+
+  @media (max-width: 980px) { .advice, .locks { grid-template-columns: 1fr; } .lane .row { flex-wrap: wrap; row-gap: 14px; } }
+  @media print {
+    @page { size: A4 landscape; margin: 10mm; }
+    body { background: #fff; padding: 0; font-size: 12.5px; }
+    #print { display: none; }
+    section, header.top { box-shadow: none; border: 1px solid var(--line); break-inside: avoid; page-break-inside: avoid; }
+    .doc { gap: 10px; max-width: none; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<button id="print" onclick="window.print()">Imprimer</button>
+
+<!-- Icônes réutilisées -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8h20M15 2l6 6-6 6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  </defs>
+</svg>
+
+<div class="doc">
+
+<header class="top">
+  <div class="kick">Refonte Circé · Pré-production · 27/10/2026 · process cible retenu (remplace le plan du 26/10) · mis à jour le 02/11 : option A pour la validation admin</div>
+  <h1>Instruction OK et validation admin : le process par jalons</h1>
+  <p class="lead">La Pré-Prod saisit les IP et envoie la préparation depuis Broadcast : la prépa reste le feu vert de Broadcast. Dans Circé, tout ce qui peut se déduire se fait seul : l'Instruction OK suit la règle de Nariman, <s>la validation admin se fait d'elle-même quand l'affiche reçue est sans doute la bonne. La Coordination ne traite que les cas à doute.</s> <i>(02/11 : Circé propose la validation admin, la Coordination la confirme en lot ; voir l'encadré ci-dessous.)</i> Aucun développement Broadcast.</p>
+  <div class="legend">
+    Qui agit : <span class="who bc">Broadcast · Pré-Prod</span> <span class="who rec">Réception</span> <span class="who auto">Circé (automatique)</span> <span class="who pp">Coordination</span> <span class="who cheq">Chef d'équipe · plateformes</span>
+    <span class="muted">·</span> <svg width="16" height="16" style="color:var(--pp)"><use href="#i-lock"/></svg> = verrou
+  </div>
+</header>
+
+<!-- ============ Mise à jour du 02/11 : option A ============ -->
+<section>
+  <h2>Mise à jour du 02/11 : option A pour la validation admin</h2>
+  <p class="sub">Décision de la cheffe de projet : la prépa ne déclenche plus la validation admin. Les passages <s>barrés</s> de ce document (règle « au dernier des deux jalons », validation faite seule par Circé) sont <b>remplacés</b> par ce qui suit ; le reste est inchangé.</p>
+  <ul>
+    <li><b>Déclencheur : la réception physique.</b> La validation admin ne dépend ni de l'envoi de la prépa ni de l'Instruction OK, au fixe comme au scro.</li>
+    <li><b>Circé propose, une personne confirme.</b> À la réception, Circé propose le rattachement de l'affiche à la ligne attendue de l'état des réservations, aidé du BL (n° de dossier ou de DA, format, plateforme, semaine, visuel) : <b>hypothèse retenue le 02/11 (accord de la cheffe de projet)</b>. Les conditions de la section 5 décident si la proposition est un cas sûr (pré-cochée) ou un doute.</li>
+    <li><b>La Coordination confirme en lot</b> : cas sûrs pré-cochés (un clic), doutes un par un. Rien n'est jamais validé sans une personne ; son nom et la date sont tracés. Le bouton « Annuler la validation » reste.</li>
+    <li><b>La prépa</b> n'est plus le feu vert : la ligne « Broadcast » bascule en ligne de prépa en gardant son lien ; Circé signale seulement un écart (thème ou quantité).</li>
+    <li><b>L'Instruction OK</b> automatique (règle de Nariman) reste indépendante.</li>
+    <li><b>N° d'affiche</b> visible dans l'état des réservations dès la réception (• à confirmer, ✓ validée).</li>
+  </ul>
+  <div class="callout info"><svg><use href="#i-info"/></svg><div><b>Ce que fait Circé aujourd'hui (constaté le 02/11, avec un retour terrain d'une plateforme).</b> Au <b>fixe</b>, la validation admin est possible dès que la prépa est envoyée ; au <b>scro</b>, elle est impossible tant que l'Instruction OK n'est pas faite. Le code ne teste pas l'Instruction OK ; mais la validation passe par la liaison des lignes de prépa du dossier (<code>ReceptionListeAfficheController.cs:218-254</code>), et au scro ces lignes n'existent qu'une fois le thème posé sur les faces, à l'Instruction OK (<code>p_Alimentation_tf_prepa_affiche.sql:139-147</code>). La section 3 (« indépendants ») est nuancée en ce sens.</div></div>
+  <div class="callout warn"><svg><use href="#i-alert"/></svg><div><b>Correction.</b> « La validation admin autorise les UM du fixe et du pliage » (section 3 et sources) n'est pas démontré : la liste des UM ne filtre pas sur la case, elle affiche seulement le n° d'affiche et « oui / non » (<code>p_s_listeUM_2m2.sql:136-141</code>, <code>PreparationController.cs:743</code>). La case verrouille le picking (<code>p_EditionPicking.sql:51</code>) et le n° d'affiche du suivi de prod (<code>p_s_adminSuiviRead.sql:60-67</code>). Le fixe arrive dans « 2m² fixe › A traiter » dès l'envoi de la prépa, sans validation admin ni Colisage.</div></div>
+  <p style="font-size:13px;color:#667085">Détail : <code>00_synthese_powerpoint.md</code> §19.37 ; <code>20261102 - Process de bout en bout, pages et tables (diagrammes).html</code>, section 11.</p>
+</section>
+
+<!-- ============ 1. Ce qui est décidé ============ -->
+<section>
+  <h2><span class="num">1</span>Ce qui est décidé (26 et 27/10)</h2>
+  <p class="sub">Les décisions de la cheffe de projet, qui reprennent les attentes de Fabrice et le travail de Nariman. Elles remplacent le plan en trois étapes du 26/10.</p>
+
+  <div class="advice">
+    <div class="adv go">
+      <span class="k">Instruction OK · déroulant</span>
+      <h3>La règle de Nariman, sans y toucher</h3>
+      <dl>
+        <dt>Automatique</dt><dd>Pas de commentaire de prépa, <b>et</b> nombre d'exceptions égal à la quantité : le dossier passe seul en « Instructions ok ».</dd>
+        <dt>Sinon</dt><dd>Il reste « En cours » ; la Coordination le traite (le commentaire porte par exemple « début » ou « fin de train ») puis le passe en Instruction OK.</dd>
+        <dt>Quand</dt><dd>Après l'envoi de la prépa : c'est elle qui apporte les instructions. Le jeudi 14 h, la Coordination exporte les trains.</dd>
+      </dl>
+      <span class="chip good">Décidé</span>
+    </div>
+    <div class="adv go">
+      <span class="k">Validation admin · tous ateliers</span>
+      <h3><s>Gardée, et faite seule quand tout concorde</s> <i>02/11 : proposée par Circé, confirmée en lot</i></h3>
+      <dl>
+        <dt>Qui</dt><dd><s>Circé quand l'affiche reçue est sans doute la bonne ; sinon la Coordination, avec le bouton, qu'on garde.</s> <i>02/11 : Circé propose ; la Coordination confirme en lot (cas sûrs pré-cochés), les doutes un par un.</i></dd>
+        <dt>Quand</dt><dd><s>Au <b>dernier des deux jalons</b> : la réception de l'affiche, ou l'arrivée de la prépa.</s> <i>Remplacé le 02/11 : dès la réception ; ni la prépa ni l'Instruction OK n'interviennent.</i></dd>
+        <dt>Avant la prépa</dt><dd>L'affiche est « reçue » et son <b>n° d'affiche</b> est visible dans l'état des réservations (attente de Fabrice), mais pas encore validée. <i>(02/11 : « • à confirmer » jusqu'à la confirmation de la Coordination.)</i></dd>
+      </dl>
+      <span class="chip good">Décidé</span>
+    </div>
+    <div class="adv info">
+      <span class="k">La prépa</span>
+      <h3>Toujours le feu vert de Broadcast</h3>
+      <dl>
+        <dt>Ce qu'elle reste</dt><dd>L'envoi de la Pré-Prod qui dit « tout ce qui sort de Broadcast est bon » ; la Coordination et les plateformes prennent le relais.</dd>
+        <dt>Ce qui change</dt><dd>Elle ne bloque plus le contrôle des affiches.</dd>
+        <dt>Abandonné</dt><dd>L'Instruction OK avant la prépa (étape 2 du 26/10) : elle demandait de changer Broadcast.</dd>
+      </dl>
+      <span class="chip good">Décidé</span>
+    </div>
+  </div>
+
+  <div class="rule">
+    <svg style="color:#ffd8a8"><use href="#i-link"/></svg>
+    <div>Le fil conducteur : <b>chaque passage à la main correspond à une information qui n'arrive pas à Circé.</b> On automatise en faisant arriver l'information, pas en supprimant l'étape.</div>
+  </div>
+
+  <h4 class="tt">Qui fait quoi</h4>
+  <table>
+    <thead><tr><th style="width:20%">Qui</th><th>Ce qu'il fait</th></tr></thead>
+    <tbody>
+      <tr><td><span class="who bc">Pré-Prod</span></td><td>Saisit les IP (avec la case commentaire de la page prépa : début ou fin de train…) et appuie sur « Envoyer en préparation », <b>dans Broadcast</b>. Ne travaille pas dans Circé.</td></tr>
+      <tr><td><span class="who rec">Réception</span></td><td>Enregistre l'affiche physique dans Circé (BL, n° de dossier ou de DA) ; Circé lui donne son <b>n° d'affiche</b>.</td></tr>
+      <tr><td><span class="who auto">Circé</span></td><td>Crée les lignes attendues, rattache, fait l'Instruction OK et la validation admin quand il n'y a pas de doute.</td></tr>
+      <tr><td><span class="who pp">Coordination</span></td><td>Dans Circé : les instructions « En cours », les validations admin à doute (c'est elle qui rattache l'affiche au dossier), les réceptions inconnues. Le jeudi 14 h : Instructions OK restantes, vérification de la préparation des trains, « Exporter les trains ».</td></tr>
+      <tr><td><span class="who cheq">Chefs d'équipe, plateformes</span></td><td>Produisent. Commencent souvent avant le jeudi, à leurs risques ; le jeudi 14 h est leur go, avec une semaine et demie pour tout produire.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout new"><svg><use href="#i-alert"/></svg><div><b>Correction du 27/10 :</b> les versions précédentes de ce document et la maquette attribuaient la validation admin à la Pré-Prod. C'est la Coordination qui rattache l'affiche au dossier, par la validation admin ; la Pré-Prod ne travaille que dans Broadcast. Le tableau des acteurs du kick-off le montre déjà (S17) : il sépare les gestionnaires (« Pré-Prod Direct / Intermédié », dans Broadcast) de « Pré-Prod Coordination » et « Pré-Prod Nîmes », qui font l'Instruction OK, la validation admin et les trains ; à Wissous, l'équipe Coord. de Boulogne identifie les réceptions (S24, S68). La « Pré-Prod Nîmes » tient donc à Nîmes le rôle de la Coordination : déduit, à confirmer (Q61).</div></div>
+</section>
+
+<!-- ============ 2. Les jalons ============ -->
+<section>
+  <h2><span class="num">2</span>Les jalons</h2>
+  <p class="sub">Chaque jalon relance ce que Circé peut faire seul. Il ne reste aux personnes que les cas à doute.</p>
+  <table>
+    <thead><tr><th style="width:4%"></th><th style="width:16%">Jalon</th><th style="width:15%">Déclenché par</th><th style="width:36%">Ce que Circé fait seul</th><th>Ce qui reste à la Coordination</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td><b>DA activée</b></td><td><span class="who bc">Broadcast</span></td><td>Crée les lignes attendues du dossier (une par plateforme et format), au visuel « provisoire » ; le dossier apparaît dans l'état des réservations.</td><td>—</td></tr>
+      <tr><td class="num">2</td><td><b>IP saisies</b></td><td><span class="who bc">Pré-Prod</span></td><td>Passe les lignes par thème ; déplace seul un rattachement quand un seul thème est possible.</td><td>Choisir le thème quand il y en a plusieurs.</td></tr>
+      <tr><td class="num">3</td><td><b>Réception physique</b></td><td><span class="who rec">Réception</span></td><td>Crée l'affiche et son n° d'affiche ; la rattache grâce au n° de dossier ou de DA lu sur le BL ; « reçue » + n° dans l'état des réservations. <s><b>Si la prépa est déjà arrivée : validation admin.</b></s> <i>02/11 : proposition de rattachement, confirmée en lot.</i></td><td>Réceptions inconnues (alerte) ; rattachements à doute.</td></tr>
+      <tr><td class="num">4</td><td><b>Envoi de la prépa</b></td><td><span class="who bc">Pré-Prod</span>, le lundi</td><td>Confirme les lignes attendues ; <b>Instruction OK</b> (règle de Nariman) ; <s><b>validation admin</b> des affiches déjà reçues</s> <i>(02/11 : la prépa ne déclenche plus la validation)</i>.</td><td>Instructions « En cours » ; validations à doute, avec le bouton.</td></tr>
+      <tr><td class="num">5</td><td><b>Renvoi de Broadcast</b> avant le jeudi 14 h</td><td><span class="who bc">Pré-Prod</span></td><td><b>À prévoir avec Nariman</b> : rouvrir et recalculer. Aujourd'hui, Circé ignore tout renvoi après l'Instruction OK.</td><td>Ce qui a changé.</td></tr>
+      <tr><td class="num">6</td><td><b>Jeudi 14 h</b></td><td><span class="who pp">Coordination</span></td><td>« Exporter les trains » : seules les faces en Instruction OK partent, en « A imprimer » ; c'est le go des plateformes.</td><td>Instructions OK restantes, vérification de la préparation des trains, export.</td></tr>
+      <tr><td class="num">7</td><td><b>Après l'export</b></td><td>—</td><td><s>Une affiche qui arrive encore est validée à sa réception si tout concorde.</s> <i>02/11 : elle est proposée à sa réception, puis confirmée.</i></td><td>Urgences du vendredi, à la main, ou renvoi.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout good"><svg><use href="#i-check"/></svg><div><b><s>La seule règle à retenir : la validation admin automatique se fait au dernier des deux jalons, réception ou prépa.</s></b> <i>Remplacé le 02/11 par l'option A (voir l'encadré en tête).</i> <s>Avant la prépa, l'affiche est « reçue » avec son n° visible, mais pas « validée ». La valider plus tôt n'apporterait rien, puisque ses lignes de production n'existent qu'avec la prépa (<code>p_s_adminSuiviRead.sql:67</code>), et obligerait à revalider si la prépa diffère.</s> <i>Le picking, lui, ne demande que la case validée (<code>p_EditionPicking.sql:51</code>) : il fonctionnerait avant la prépa.</i></div></div>
+
+  <div class="flow">
+    <div class="lane">
+      <div class="lab"><b>Broadcast</b><span>la Pré-Prod</span></div>
+      <div class="row">
+        <div class="st bc"><div class="t"><span class="n">1</span><h4>DA activée</h4></div><p><span class="who bc">Broadcast</span></p><p>Le dossier apparaît dans l'état des réservations : lignes attendues au visuel provisoire.</p><span class="flag same">existe</span></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st bc"><div class="t"><span class="n">2</span><h4>IP saisies</h4></div><p><span class="who bc">Pré-Prod</span></p><p>Les thèmes arrivent dans la copie de l'état des réservations ; le commentaire (début, fin de train) part avec la prépa.</p><span class="flag same">existe</span></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st bc"><div class="t"><span class="n">4</span><h4>Envoi de la prépa</h4></div><p><span class="who bc">Pré-Prod</span> le lundi</p><p>Le feu vert de Broadcast : instructions et exceptions (déroulant), répartition (fixe, pliage).</p><span class="flag same">inchangé</span></div>
+      </div>
+    </div>
+    <div class="bridge">
+      <div class="lab">Lien Circé</div>
+      <div class="txt"><svg><use href="#i-link"/></svg><div><b>À l'arrivée de la prépa, Circé confirme les lignes attendues ; les affiches déjà rattachées gardent leur lien.</b> C'est la seule condition technique : faire ce lien par les identifiants de Broadcast, sans recréer de lignes (section 7).</div></div>
+    </div>
+    <div class="lane alt">
+      <div class="lab"><b>L'affiche</b><span>la réception physique</span></div>
+      <div class="row">
+        <div class="st rec"><div class="t"><span class="n">3</span><h4>Réception</h4></div><p><span class="who rec">Réception</span></p><p>N° d'affiche ; rattachée par le n° du BL ; « reçue » et n° visibles dans l'état des réservations.</p><span class="flag">n° visible</span></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st pp changed"><div class="t"><span class="n">4</span><h4><svg><use href="#i-lock"/></svg>Validation admin</h4></div><p><span class="who auto">Circé</span> ou <span class="who pp">Coordination</span></p><p><s>Au dernier des deux jalons. Automatique sans doute ; sinon le bouton.</s> <i>02/11 : proposée à la réception, confirmée en lot.</i></p><span class="flag">02/11 : option A</span></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st cheq"><div class="t"><span class="n">6</span><h4>Production</h4></div><p><span class="who cheq">Chef d'équipe</span></p><p>N° d'affiche dans le suivi de prod ; picking ; <s>UM du fixe et du pliage</s> <i>(non démontré, corrigé le 02/11)</i> ; étiquette rack.</p><span class="flag same">effets inchangés</span></div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lab"><b>Les trains</b><span>déroulant</span></div>
+      <div class="row">
+        <div class="st pp changed"><div class="t"><span class="n">4</span><h4><svg><use href="#i-lock"/></svg>Instruction OK</h4></div><p><span class="who auto">Circé</span> ou <span class="who pp">Coordination</span></p><p>Règle de Nariman ; « En cours » si commentaire ou écart.</p><span class="flag">automatique</span></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st pp"><div class="t"><span class="n">6</span><h4>Jeudi 14 h</h4></div><p><span class="who pp">Coordination</span></p><p>Vérification de la préparation des trains, « Exporter les trains » : « A imprimer ».</p><span class="flag same">inchangé</span></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st cheq"><div class="t"><span class="n">7</span><h4>Préparation des trains</h4></div><p><span class="who cheq">Chef d'équipe</span></p><p>Rouleur, bagues, production.</p><span class="flag same">inchangé</span></div>
+      </div>
+    </div>
+    <div class="note ok"><svg><use href="#i-check"/></svg><div><b>Ce que l'équipe y gagne :</b> la Coordination ne valide plus affiche par affiche ni ne clique l'Instruction OK de chaque dossier ; elle ne voit que les doutes. Dès l'arrivée de la prépa, les affiches déjà reçues sont validées : n° d'affiche, picking et UM sont disponibles tout de suite pour les plateformes qui démarrent tôt.</div></div>
+  </div>
+</section>
+
+<!-- ============ 3. Les deux verrous ============ -->
+<section>
+  <h2><span class="num">3</span>À quoi servent les deux verrous</h2>
+  <p class="sub">Deux contrôles différents, sans test de l'un par l'autre dans le code (mais voir la nuance du 02/11 pour le scro, ci-dessous) : l'un porte sur la composition des trains, l'autre sur l'affiche physique.</p>
+  <div class="locks">
+    <div class="lock">
+      <div class="head"><svg><use href="#i-lock"/></svg><h3>Instruction OK</h3><span class="who auto">Circé</span><span class="who pp">Coordination</span></div>
+      <dl>
+        <dt>Question posée</dt><dd><b>Les trains sont-ils bien composés ?</b></dd>
+        <dt>Ateliers</dt><dd>Déroulant seulement, par atelier × plateforme.</dd>
+        <dt>Se base sur</dt><dd>Les instructions envoyées avec la prépa : faces, exceptions, part de chaque visuel, commentaire.</dd>
+        <dt>Ce qu'elle déclenche</dt><dd>Circé <b>calcule les trains</b> : visuel de chaque face selon les pourcentages, n° de train, ordre, affiches d'entretien ; puis il les <b>fige</b> (réglages verrouillés, renvois de Broadcast ignorés).</dd>
+        <dt>Ce que Broadcast n'envoie pas</dt><dd>La position forcée dans le train (début, fin, milieu : dans le commentaire) ; le taux d'entretien (8 % par défaut).</dd>
+        <dt>Statuts de Circé</dt><dd>À traiter (faces reçues, instructions pas encore) → En cours (instructions arrivées, posé par Circé) → Instructions ok → A imprimer (après l'export).</dd>
+        <dt>Ce qu'elle autorise</dt><dd><div class="unlock"><span>Export des trains du jeudi 14 h</span></div></dd>
+      </dl>
+    </div>
+    <div class="lock">
+      <div class="head"><svg><use href="#i-lock"/></svg><h3>Validation admin</h3><span class="who auto">Circé</span><span class="who pp">Coordination</span></div>
+      <dl>
+        <dt>Question posée</dt><dd><b>L'affiche reçue est-elle la bonne pour ce dossier ?</b></dd>
+        <dt>Ateliers</dt><dd>Tous : déroulant, fixe (colle), pliage.</dd>
+        <dt>Se base sur</dt><dd>L'affiche reçue et la ligne attendue à laquelle elle est rattachée. C'est une case sur l'affiche : elle ne contrôle rien elle-même (seul un message non bloquant si la quantité reçue est inférieure).</dd>
+        <dt>Ce qu'elle déclenche</dt><dd><div class="unlock"><span>N° d'affiche dans le suivi de prod</span><span>Picking</span><span><s>UM du fixe et du pliage</s> (non démontré, corrigé le 02/11)</span><span>« Reçue et associée » envoyé à Broadcast</span><span>Étiquette rack imprimée à la plateforme</span><span>Sortie de la liste « à traiter »</span></div></dd>
+        <dt>Où</dt><dd>Circé : Réception › Liste des affiches › fiche de l'affiche. Maquette : aussi Pré-production › Préparations à valider.</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="callout good"><svg><use href="#i-check"/></svg><div><b>Aucun test de l'un par l'autre dans le code, mais une dépendance indirecte existe au scro (02/11).</b> Rien n'empêche de cocher la case sans Instruction OK ; mais la validation passe par la liaison des lignes de prépa du dossier, qui n'existent au scro qu'après l'Instruction OK (retour terrain du 02/11 ; <code>ReceptionListeAfficheController.cs:218-254</code>, <code>p_Alimentation_tf_prepa_affiche.sql:139-147</code>). Au fixe, la prépa envoyée suffit. <s>L'ordre « Instruction OK puis validation admin » était une habitude, parce que tout arrivait avec la prépa.</s> Au scro, c'est une contrainte. Dans la cible (option A), plus aucune dépendance.</div></div>
+</section>
+
+<!-- ============ 4. Instruction OK ============ -->
+<section>
+  <h2><span class="num">4</span>L'Instruction OK : la règle de Nariman, et ce qu'il faut vérifier avec lui</h2>
+  <p class="sub">Déroulant seulement, pour chaque ligne atelier × plateforme du dossier. Sans développement Broadcast, on ne peut pas aller beaucoup plus loin : le seul canal pour « début » ou « fin de train » est le commentaire.</p>
+  <table>
+    <thead><tr><th style="width:32%">Cas</th><th style="width:20%">Statut</th><th>Ce qui se passe</th></tr></thead>
+    <tbody>
+      <tr><td>Prépa pas encore envoyée</td><td><span class="chip neu">À traiter</span></td><td>Rien à faire : on attend les instructions.</td></tr>
+      <tr><td>Pas de commentaire de prépa, <b>et</b> nombre d'exceptions = quantité</td><td><span class="chip good">Instructions ok, automatique</span></td><td>Personne n'intervient. Circé répartit les thèmes sur les trains et crée l'entretien.</td></tr>
+      <tr><td>Un commentaire de prépa</td><td><span class="chip warn">En cours</span></td><td>La Coordination lit la consigne, contrôle quantités, exceptions, entretien et positions, puis « Instruction OK ».</td></tr>
+      <tr><td>Nombre d'exceptions ≠ quantité, dû à un <b>« reste en place »</b></td><td><span class="chip warn">En cours</span></td><td>L'écart est normal : la Coordination le constate, puis « Instruction OK ». Voir la piste ci-dessous.</td></tr>
+      <tr><td>Nombre d'exceptions ≠ quantité, dû à une <b>erreur</b></td><td><span class="chip warn">En cours</span></td><td>« Appliquer la version Broadcast », ou demander une correction à la Pré-Prod.</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="tt"><svg><use href="#i-info"/></svg>Cinq points à voir avec Nariman</h4>
+  <table>
+    <thead><tr><th style="width:17%">Point</th><th style="width:43%">Pourquoi</th><th>Proposition</th></tr></thead>
+    <tbody>
+      <tr><td><b>Les dernières minutes</b></td><td>Aujourd'hui, la Coordination fait l'Instruction OK le jeudi, juste avant l'export : c'est ce qui laisse passer les changements de Broadcast jusque-là (tant qu'un dossier est « En cours », Circé accepte les renvois). Après l'Instruction OK, Circé les ignore sans rien dire. Si la règle passe en Instruction OK dès le lundi, les trains sont figés le lundi au lieu du jeudi 14 h.</td><td><b>(a)</b> appliquer la règle le jeudi à 14 h, par un bouton « Instruction OK des dossiers conformes », puis l'export : <b>recommandé pour commencer</b>. <b>(b)</b> l'appliquer dès l'arrivée de la prépa, et rouvrir le dossier quand Broadcast renvoie quelque chose avant l'export : deuxième temps. (Q60)</td></tr>
+      <tr><td><b>Répartition à 100 %</b></td><td>L'écran refuse d'enregistrer sinon.</td><td>Si l'automatisme ne passe pas par l'écran, il fait ce contrôle lui-même.</td></tr>
+      <tr><td><b>Entretien</b></td><td>8 % par défaut quand rien n'est réglé.</td><td>Savoir où arrive un autre taux (commentaire ?) ; sinon, « En cours ».</td></tr>
+      <tr><td><b>Reste en place</b></td><td>Il n'est pas dans la prépa, mais Broadcast l'envoie dans l'état des réservations, que Circé affiche déjà (Suivi › État des réservations) sans le garder dans sa copie.</td><td>Si l'écart = quantité en reste en place (même dossier, plateforme, semaine), Instruction OK automatique. À vérifier d'abord sur 2 ou 3 dossiers « En cours » (Q63).</td></tr>
+      <tr><td><b>Commentaire</b></td><td>Texte libre : Circé ne peut pas l'interpréter sans risque.</td><td>L'afficher directement dans la liste « En cours » ; au plus, proposer la position quand il contient « début » ou « fin », la Coordination confirme.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 5. Validation admin automatique ============ -->
+<section>
+  <h2><span class="num">5</span>La validation admin automatique : les conditions</h2>
+  <p class="sub"><s>Circé coche seul la validation admin d'une affiche quand toutes ces conditions sont vraies.</s> <i>02/11 : quand toutes ces conditions sont vraies, la proposition est un cas sûr, pré-cochée ; la Coordination confirme en lot.</i> Sinon, l'affiche va dans la liste de la Coordination, avec le motif.</p>
+  <table>
+    <thead><tr><th style="width:34%">Condition</th><th style="width:30%">Pourquoi</th><th>Sinon (motif pour la Coordination)</th></tr></thead>
+    <tbody>
+      <tr><td>L'affiche est rattachée à une ligne attendue</td><td>Sans ligne, il n'y a rien à valider.</td><td>Réception inconnue : alerte à la Coordination, qui rattache.</td></tr>
+      <tr><td>Le n° de dossier ou de DA lu sur le BL est celui de la ligne</td><td>Deux sources indépendantes qui concordent : le BL et la ligne cochée.</td><td>« Rattachée sans le n° du BL » (par le visuel ou à la main).</td></tr>
+      <tr><td>Même format</td><td>Le format est physique.</td><td>« Format différent ».</td></tr>
+      <tr><td>Un seul thème possible, ou le visuel lu sur le BL le désigne</td><td>Sinon on ne sait pas quel visuel c'est.</td><td>« Plusieurs thèmes possibles ».</td></tr>
+      <tr><td>Un seul dossier</td><td>Un même visuel pour plusieurs dossiers demande une répartition.</td><td>« Répartition à confirmer ».</td></tr>
+      <tr><td><s>La prépa est arrivée</s></td><td><s>Les lignes de production n'existent qu'avec elle.</s></td><td><i>Supprimée le 02/11 : la prépa ne conditionne plus la validation.</i></td></tr>
+    </tbody>
+  </table>
+  <div class="callout info"><svg><use href="#i-info"/></svg><div><b>La quantité n'est pas une condition.</b> Une réception partielle est validée pour ce qu'elle contient ; le manque reste un état de la ligne (« reste à recevoir »), avec son alerte. Correction du 27/10 d'une proposition de la veille ; elle règle aussi la question des livraisons partielles.</div></div>
+  <ul>
+    <li><b>Le bouton reste.</b> Il sert aux cas à doute, et à corriger : une validation se décoche toujours.</li>
+    <li><b>Qui et quand</b> : <s>l'historique dit « validée par Circé » ou le nom de la personne</s> <i>(02/11 : toujours le nom de la personne qui a confirmé)</i> ; le journal existe déjà (<code>HistorisationBll.cs:29-32</code>).</li>
+    <li><b>Les effets ne changent pas</b> (section 3). À trancher : l'impression des étiquettes rack, qui partirait en rafale <s>à l'arrivée de la prépa</s> <i>(02/11 : au clic de la confirmation en lot)</i> (Q62).</li>
+    <li><b>Ce qui existe déjà</b> : la case, l'historique, et sur chaque livraison le n° de BL, de dossier et de DA, saisis à la main et aujourd'hui seulement affichés (<code>livraison.sql</code>, <code>LivraisonAfficheService.cs:406-413</code>). Il faut fiabiliser la saisie du n° : la photo du BL le pré-remplit.</li>
+  </ul>
+</section>
+
+<!-- ============ 6. Cas particuliers ============ -->
+<section>
+  <h2><span class="num">6</span>Les cas particuliers</h2>
+  <table>
+    <thead><tr><th style="width:28%">Cas</th><th>Ce qui se passe</th></tr></thead>
+    <tbody>
+      <tr><td><b>Même thème</b> (« Livre rouge ») <b>sur plusieurs dossiers</b></td><td>Une ligne par dossier. La pile reçue est liée au dossier écrit sur le BL, pour sa quantité ; le surplus reste en stock. Circé propose de couvrir l'autre dossier avec ce surplus ; la Coordination confirme (un même nom ne prouve pas que c'est la même impression). Le même n° d'affiche apparaît sur les deux dossiers ; le reçu est compté une fois. Question à Broadcast : un thème partagé a-t-il le même n° de thème (Q64) ?</td></tr>
+      <tr><td><b>Affiches en plus, pour un autre dossier</b></td><td>Rattachement à la main : il existe déjà dans Circé (fiche de l'affiche, recherche par dossier, même plateforme), même après la validation ou le début de la production, avec historique. Limites aujourd'hui : pas de quantité par dossier, et une ligne déjà couverte par une autre affiche est ignorée sans message (V2, section 7). Les affiches déjà utilisées restent au premier dossier ; seul le surplus se rattache ailleurs. Autre plateforme : transfert, puis réception là-bas.</td></tr>
+      <tr><td><b>Plusieurs thèmes et plusieurs formats</b></td><td>Le format trie les candidats (une affiche 4×3 ne couvre pas une ligne 2 m²). Le doute ne porte que sur le thème, dans un même format ; le visuel lu sur le BL le tranche.</td></tr>
+      <tr><td><b>Trois thèmes à 3/3/3, réception partielle</b> (A 3, B 2, C 0)</td><td>A et B validées ; rien à valider pour C. État des réservations : A reçu, B partiel (reste 1), C non reçu. Trains et Instruction OK inchangés (3/3/3). La plateforme peut produire A et une partie de B. Le complément de B est <s>validé</s> proposé puis confirmé <i>(02/11)</i> à sa réception (deux affiches sur une ligne : V2).</td></tr>
+      <tr><td><b>Réception avant les IP</b></td><td>Rattachée au dossier, sur la ligne au visuel provisoire. À la saisie des IP, Circé la déplace seul s'il n'y a qu'un thème ; sinon la Coordination choisit.</td></tr>
+      <tr><td><b>Dossier sur deux plateformes</b> (Wissous et Nîmes)</td><td>Une ligne attendue par plateforme ; avec deux thèmes, quatre lignes (plateformes × visuels). Les destinataires et les faces ne multiplient pas les lignes de réception : le reçu ne se répartit pas par destinataire.</td></tr>
+      <tr><td><b>DA annulée après la réception</b></td><td>La ligne est annulée ; alerte à la Coordination pour l'affiche reçue.</td></tr>
+      <tr><td><b>Prépa différente de l'état des réservations</b></td><td>Alerte. Proposition : thème changé, validation à refaire ; quantité changée, alerte seule (Q55).</td></tr>
+      <tr><td><b>Réception inconnue</b></td><td>Alerte « Réception inconnue à identifier » ; si personne ne retrouve le dossier, « Signaler » met l'alerte « Dossier introuvable ». Destinataire : la Coordination (Q61 pour Nîmes). Rattachée par la Coordination, l'affiche est validée.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 7. La base ============ -->
+<section>
+  <h2><span class="num">7</span>Ce qu'il faut dans la base (V2) : la seule condition technique</h2>
+  <p class="sub">Le rattachement fait à la réception doit suivre l'affiche jusqu'à la ligne de prépa. Aujourd'hui, Circé fait ce lien en comparant des textes : quand il rate, il crée une deuxième ligne et l'affiche validée devient orpheline.</p>
+  <p>Le lien entre une affiche et ses lignes attendues est un lien <b>plusieurs-à-plusieurs</b> : une affiche sert plusieurs dossiers ou semaines, une ligne peut être couverte par plusieurs livraisons. Aujourd'hui c'est une seule colonne sur la ligne attendue (<code>tf_prepa_affiche.affiche_livraison_Id</code>) : une affiche au plus, sans quantité. Le modèle cible du 21/10 a déjà ce qu'il faut :</p>
+  <ul>
+    <li><b>une table de lien avec une quantité</b> (<code>asso_affiche_visuel</code>) : « l'affiche 123 couvre 360 exemplaires de telle ligne » ; on retire un lien et on en crée un autre, avec qui et quand ;</li>
+    <li><b>un visuel « provisoire » avant les IP</b> (<code>tr_visuel.provisoire</code>) : toute ligne attendue a toujours un visuel ;</li>
+    <li><b>on ferme une ligne, on ne la supprime pas</b>, et on déplace ses liens (<code>tf_edr_rapprochement</code> : proposé, puis confirmé).</li>
+  </ul>
+  <table>
+    <thead><tr><th style="width:8%">Règle</th><th>Énoncé</th></tr></thead>
+    <tbody>
+      <tr><td><b>R1</b></td><td>Clé stable : dossier × DA × plateforme × support × semaine × visuel, par les identifiants de Broadcast. Index unique : jamais deux lignes actives sur la même clé.</td></tr>
+      <tr><td><b>R2</b></td><td>Une ligne n'est jamais supprimée : elle est fermée (remplacée ou annulée), avec sa date.</td></tr>
+      <tr><td><b>R3</b></td><td>Aux IP, pour chaque affiche liée à une ligne provisoire, les candidats sont les lignes de même clé au visuel près : un candidat, déplacement automatique ; plusieurs, le visuel lu sur le BL tranche s'il n'en désigne qu'un ; sinon la Coordination choisit ; aucun, alerte.</td></tr>
+      <tr><td><b>R4</b></td><td>À la prépa, même clé : la ligne est confirmée, les liens ne bougent pas ; seul l'écart de quantité lève une alerte.</td></tr>
+      <tr><td><b>R5</b></td><td>IP modifiées après coup (thème remplacé) : R3, de l'ancien visuel vers le nouveau.</td></tr>
+    </tbody>
+  </table>
+  <h4 class="tt">Exemple : un format, Wissous et Nîmes, puis deux thèmes</h4>
+  <table>
+    <thead><tr><th style="width:18%">Moment</th><th style="width:40%">Lignes attendues</th><th>Affiche 123 (reçue à Wissous, visuel « Burger » sur le BL)</th></tr></thead>
+    <tbody>
+      <tr><td>DA activée</td><td>Wissous · provisoire · 600 ; Nîmes · provisoire · 400</td><td>—</td></tr>
+      <tr><td>Réception, avant les IP</td><td>inchangées</td><td>Liée à « Wissous · provisoire », 500 ex. : visible dans l'état des réservations avec son n°.</td></tr>
+      <tr><td>IP saisies, 2 thèmes à 60/40</td><td>Les 2 provisoires sont fermées ; 4 nouvelles : Wissous · Burger · 360 ; Wissous · Frites · 240 ; Nîmes · Burger · 240 ; Nîmes · Frites · 160</td><td>Deux candidats à Wissous ; le visuel du BL n'en désigne qu'un : déplacée seule vers « Wissous · Burger », 360 ex. Les 140 de trop restent en stock.</td></tr>
+      <tr><td>Prépa envoyée</td><td>Les 4 lignes sont confirmées, pas recréées</td><td>Le lien ne bouge pas. <s>Validation admin automatique.</s> <i>02/11 : la validation ne dépend plus de la prépa ; Circé contrôle seulement l'écart.</i></td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn"><svg><use href="#i-alert"/></svg><div><b>La limite :</b> avant la prépa, l'état des réservations ne contient pas le n° de thème, seulement le nom et le n° de bandeau (Q56). Jusqu'à la prépa, le visuel se reconnaît à son nom, mis en majuscules et sans espaces superflus : un thème renommé est rattrapé par R5 ; deux thèmes du même nom dans un dossier vont à la Coordination. Ajouter le n° de thème à l'état des réservations est une seule colonne côté Broadcast : à demander, sans en faire une condition.</div></div>
+  <p><b>Dans l'ordre :</b> (1) mesurer, avec les requêtes déjà prêtes pour la DSI (<code>requetes_doublons_receptions_attendues.sql</code>) ; (2) corriger vite la procédure qui fabrique les lignes attendues : plateforme et format par identifiants, index unique, ne jamais recréer une ligne qui porte une affiche ; (3) la V2 : table de lien avec quantité, visuel provisoire, rapprochement, règles R1 à R5. Détail des causes des doublons : <code>receptions_attendues_doublons_tables_regles.html</code> ; modèle : <code>2. CIRCE CIBLE/4. BASE DE DONNEES/dictionnaire/20261021 - MCD et MLD EDR vivant.html</code>.</p>
+</section>
+
+<!-- ============ 8. Point par point ============ -->
+<section>
+  <h2><span class="num">8</span>Aujourd'hui / cible, point par point</h2>
+  <table>
+    <thead><tr><th style="width:20%">Sujet</th><th style="width:36%">Aujourd'hui</th><th>Cible (27/10 ; validation admin : option A du 02/11)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Instruction OK</b></td><td class="before">À la main pour tous les dossiers, le plus souvent le jeudi avant l'export.</td><td class="after">Automatique (règle de Nariman) ; « En cours » seulement pour un commentaire ou un écart. Moment à fixer avec lui (Q60).</td></tr>
+      <tr><td><b>Validation admin : qui</b></td><td class="before">La Coordination, affiche par affiche.</td><td class="after"><s>Circé quand tout concorde ; la Coordination pour les doutes, avec le bouton.</s> <i>02/11 : Circé propose ; la Coordination confirme en lot (cas sûrs pré-cochés), les doutes un par un.</i></td></tr>
+      <tr><td><b>Validation admin : quand</b></td><td class="before">Après la prépa, en général avec l'Instruction OK. <i>Constat du 02/11 : fixe, dès la prépa envoyée ; scro, après l'Instruction OK.</i></td><td class="after"><s>Au dernier des deux jalons : réception ou prépa.</s> <i>02/11 : dès la réception, proposée par Circé et confirmée en lot.</i></td></tr>
+      <tr><td><b>N° d'affiche</b></td><td class="before">Visible dans le suivi de prod après la prépa et la validation.</td><td class="after">Visible dans l'état des réservations dès la réception ; dans le suivi de prod dès la prépa.</td></tr>
+      <tr><td><b>Rattachement de la réception</b></td><td class="before">Lignes cochées à la main ; n° du BL saisi mais pas utilisé.</td><td class="after">Le n° de dossier ou de DA du BL désigne la ligne ; la photo du BL le pré-remplit.</td></tr>
+      <tr><td><b>Lien avec la prépa</b></td><td class="before">Par comparaison de textes : doublons, orphelines.</td><td class="after">Par les identifiants de Broadcast, sans recréer de ligne (V2).</td></tr>
+      <tr><td><b>Réception partielle</b></td><td class="before">Validation possible, message non bloquant.</td><td class="after">Validation de ce qui est reçu ; le reste à recevoir garde son alerte.</td></tr>
+      <tr><td><b>Réception inconnue</b></td><td class="before">Filtre « orpheline » dans la Liste des affiches ; pas d'alerte.</td><td class="after">Alertes à la Coordination ; son rattachement vaut validation.</td></tr>
+      <tr><td><b>Export du jeudi 14 h</b></td><td class="before">Coordination : faces en Instruction OK, « A imprimer ».</td><td class="after">Inchangé.</td></tr>
+      <tr><td><b>Ordre entre les deux verrous</b></td><td class="before">Instruction OK puis validation, par habitude <i>(02/11 : au scro c'est une contrainte, la ligne de prépa naît à l'Instruction OK ; au fixe, la validation suit la prépa)</i>.</td><td class="after">Indépendants <i>(02/11 : option A, plus aucune dépendance, au scro comme au fixe)</i>.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 9. Risques ============ -->
+<section>
+  <h2><span class="num">9</span>Risques et précautions pour le développement</h2>
+  <table>
+    <thead><tr><th style="width:34%">Point</th><th style="width:11%">Risque</th><th>Ce qu'il faut faire</th></tr></thead>
+    <tbody>
+      <tr><td>Lien réception → ligne de prépa par les textes (doublons, orphelines)</td><td><span class="chip ser">Élevé</span></td><td>Prérequis de tout le reste : clé stable, index unique, rapprochement par identifiants (section 7). Mesurer d'abord avec les requêtes de la DSI.</td></tr>
+      <tr><td>Instructions renvoyées après l'Instruction OK automatique : ignorées sans rien dire</td><td><span class="chip ser">Élevé</span></td><td>Q60 : appliquer la règle le jeudi 14 h, ou rouvrir les dossiers quand Broadcast renvoie avant l'export.</td></tr>
+      <tr><td>Erreur de rattachement à la réception <s>validée automatiquement</s> <i>(02/11 : plus de validation automatique ; la Coordination confirme)</i></td><td><span class="chip warn">Moyen</span></td><td>Exiger que le n° du BL concorde avec la ligne ; historique ; le bouton permet de décocher.</td></tr>
+      <tr><td>Étiquettes rack imprimées en rafale <s>à l'arrivée de la prépa</s> <i>(02/11 : au clic de la confirmation en lot)</i></td><td><span class="chip warn">Moyen</span></td><td>Grouper par plateforme, ou garder un bouton « imprimer » (Q62).</td></tr>
+      <tr><td>Thème ou quantité changés dans Broadcast après la validation</td><td><span class="chip warn">Moyen</span></td><td>Alerte (existe pour les thèmes, PP-09) ; validation à refaire si le thème change (Q55).</td></tr>
+      <tr><td>Procédure de fin d'année des lignes attendues : branche invalide dans le dépôt</td><td><span class="chip ser">Urgent</span></td><td>La DSI vérifie la version installée en production <b>avant la mi-novembre</b>.</td></tr>
+      <tr><td>Reste en place lu dans l'état des réservations</td><td><span class="chip good">Faible</span></td><td>Vérifier sur 2 ou 3 dossiers que l'écart correspond (Q63) avant de l'ajouter à la règle.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 10. Maquette et questions ============ -->
+<section>
+  <h2><span class="num">10</span>Où en est la maquette (27/10), et ce qu'il reste à trancher</h2>
+  <table>
+    <thead><tr><th style="width:62%">Dans la maquette</th><th>État</th></tr></thead>
+    <tbody>
+      <tr><td>Rôle « Coordination » à la place de « Pré-Prod » pour le travail dans Circé ; la Pré-Prod reste l'équipe Broadcast (mails de correction, IP)</td><td><span class="chip good">Fait (27/10)</span></td></tr>
+      <tr><td>Instruction OK aux statuts de Circé (À traiter, En cours, Instruction ok), règle de Nariman, indépendante de la validation admin</td><td><span class="chip good">Fait</span></td></tr>
+      <tr><td>Validation admin par affiche : <s>automatique au dernier des deux jalons</s> <i>(remplacé le 02/11 par l'option A : proposée à la réception, confirmée en lot, voir l'encadré en tête)</i>, motifs de doute, bouton « Validation admin » et « Annuler la validation » (fiche de l'affiche, fiche du dossier, en lot) ; alerte « Validation admin à faire »</td><td><span class="chip warn">Règle remplacée le 02/11</span></td></tr>
+      <tr><td>Préparations à valider : par défaut, seulement ce qui reste à la Coordination ; statut « Validation admin faite » au lieu de « Validé Pré-Prod »</td><td><span class="chip good">Fait</span></td></tr>
+      <tr><td>État des réservations vivant : colonne « N° d'affiche », visible dès la réception (✓ validée, • à vérifier)</td><td><span class="chip good">Fait</span></td></tr>
+      <tr><td>Réception : la façon de trouver le dossier (n° du BL ou visuel) est retenue pour la validation ; réceptions inconnues : alerte à la Coordination</td><td><span class="chip good">Fait</span></td></tr>
+      <tr><td>Liste des trains : « Exporter les trains… » du jeudi 14 h (faces en Instruction OK seulement)</td><td><span class="chip good">Fait</span></td></tr>
+      <tr><td>Moment de l'Instruction OK automatique (Q60) : la maquette la refait quand la prépa est renvoyée, tant que les trains ne sont pas exportés</td><td><span class="chip warn">À confirmer</span></td></tr>
+      <tr><td>Changer l'ordre d'un thème dans les trains (Q46)</td><td><span class="chip neu">À faire</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="q key"><h3>Q60 · Pour Nariman : à quel moment la règle d'Instruction OK automatique se déclenche-t-elle ?</h3><p>Dès l'arrivée des instructions, Circé ignorerait ensuite les renvois de Broadcast : les trains seraient figés le lundi. Recommandé : l'appliquer le jeudi à 14 h, juste avant l'export (a) ; ou dès l'arrivée, avec réouverture si renvoi avant l'export (b). À vérifier aussi : répartition à 100 %, entretien à 8 % par défaut.</p></div>
+  <div class="q"><h3>Q61 · La « Pré-Prod Nîmes » des decks est-elle la Coordination de Nîmes ?</h3><p>Déduit de S17 : « Pré-Prod Coordination » (Instruction OK, validation admin et trains, Wissous) et « Pré-Prod Nîmes » (identification, raccrochage, validation admin et trains, Nîmes) sont séparés des gestionnaires, qui travaillent dans Broadcast ; à Wissous, l'équipe Coord. de Boulogne identifie les réceptions (S24, S68). À confirmer : ce sont bien les destinataires des alertes de réceptions inconnues.</p></div>
+  <div class="q"><h3>Q62 · Étiquettes rack à la validation <s>automatique</s> <i>(02/11 : en lot)</i></h3><p>La validation admin imprime l'étiquette rack sur l'imprimante de la plateforme. <s>En automatique, elles partiraient en rafale à l'arrivée de la prépa</s> <i>Avec la confirmation en lot (02/11), elles partiraient en rafale au clic</i> : grouper par plateforme, ou garder un bouton « imprimer » ?</p></div>
+  <div class="q"><h3>Q63 · Reste en place : l'écart correspond-il ?</h3><p>Sur 2 ou 3 dossiers « En cours » pour écart, comparer l'écart à la quantité en reste en place de Suivi › État des réservations (même dossier, plateforme, semaine). Si oui, la règle de Nariman peut l'intégrer, sans développement Broadcast.</p></div>
+  <div class="q"><h3>Q64 · Pour Broadcast : un thème partagé par deux dossiers a-t-il le même n° de thème ?</h3><p>Si oui, après la prépa, Circé peut répartir seul une affiche entre les deux dossiers ; sinon, la Coordination confirme.</p></div>
+  <div class="q"><h3>Q55 · Thème changé dans Broadcast après la validation admin</h3><p>Proposition : thème changé, validation à refaire ; quantité changée, alerte seule.</p></div>
+  <div class="q"><h3>Q56 · Pour Broadcast : le n° de thème dans l'état des réservations ?</h3><p>Une colonne dans la procédure d'export ; utile, pas une condition.</p></div>
+  <div class="q"><h3>Q46 · « Changer l'ordre des trains »</h3><p>La position d'un thème dans tous ses trains (A, B, C, D), comme le Suivi par thème de Circé, ou l'ordre des trains entre eux ?</p></div>
+  <div class="q"><h3>Q47 · « Valid PP » entre l'export et la préparation des trains</h3><p>Avec les rôles du 27/10, sans doute la vérification de la préparation des trains par la Coordination. À confirmer.</p></div>
+  <div class="q"><h3>Q50 · Le visuel « sans affiche » à 100 %</h3><p>Contournement du contrôle à 100 % quand les exceptions couvrent toute la quantité ?</p></div>
+  <div class="q"><h3>Q51 · L'Instruction OK par atelier et plateforme</h3><p>Dans Circé, par ligne (2 m² Wissous, 2 m² Nîmes) ; la maquette la fait par dossier. On garde le grain de Circé ?</p></div>
+  <div class="q done"><h3>Q45 · Instruction OK avant ou après la prépa : réglée (27/10)</h3><p>Après la prépa, règle de Nariman ; pas de développement Broadcast.</p></div>
+  <div class="q done"><h3>Q48 · Qui fait la validation admin : réglée (27/10)</h3><p>La Coordination (la Pré-Prod ne travaille pas dans Circé), <s>avec la validation automatique quand tout concorde</s> <i>(02/11 : Circé propose, la Coordination confirme en lot)</i>.</p></div>
+  <div class="q done"><h3>Q52 · Pourquoi la prépa bloque : réglée (26/10)</h3><p>La Pré-Prod ne peut l'envoyer que le lundi ; il reste mardi, mercredi et jeudi jusqu'à 14 h.</p></div>
+  <div class="q done"><h3>Q49 · Exceptions et quantité : réglée (26/10)</h3><p>Le nombre d'exceptions de l'en-tête égal à la quantité des lignes de format, hors entretien.</p></div>
+  <div class="q off"><h3>Q53 et Q54 · Faces et instructions avant la prépa : sans objet (27/10)</h3><p>L'Instruction OK avant la prépa est abandonnée ; plus besoin d'un export Broadcast anticipé.</p></div>
+</section>
+
+<!-- ============ 11. Ce que Broadcast envoie ============ -->
+<section>
+  <h2><span class="num">11</span>Pour mémoire : ce que Circé reçoit de Broadcast, et quand</h2>
+  <p class="sub">Recherche dans le code de Circé (26/10). Circé ne réagit à aucun événement « DA activée » : il interroge Broadcast par des programmes lancés à intervalles réguliers. La planification n'est pas dans le code.</p>
+  <table>
+    <thead><tr><th style="width:18%">Ce qui arrive</th><th style="width:16%">Quand</th><th style="width:24%">Dans Circé</th><th>Contenu, et ce que ça permet</th></tr></thead>
+    <tbody>
+      <tr><td><b>L'état des réservations</b> (la table qui se remplit dès la DA)</td><td>Avant la prépa, tant qu'elle n'est pas « Envoyé » ; semaine en cours à +8</td><td>Une copie de l'état des réservations de Broadcast</td><td>Par dossier × DA × destinataire × thème et bandeau × format × semaine, avec la quantité. Le thème peut être vide avant les IP. Le « reste en place » est envoyé, mais pas gardé dans la copie.</td></tr>
+      <tr><td><b>Les réceptions attendues « Broadcast »</b></td><td>Avant la prépa, calculées à partir de la ligne précédente</td><td>Les réceptions attendues, marquées « venues de Broadcast »</td><td>Circé crée déjà seul des lignes attendues avant la prépa ; quand la prépa arrive, il les bascule en lignes de prépa si dossier, format, annonceur, thème écrit et semaine correspondent. Absentes du suivi de prod tant qu'elles ne sont pas basculées.</td></tr>
+      <tr><td><b>La préparation</b>, fixe et pliage</td><td>À l'envoi de la prépa (le lundi)</td><td>La répartition par destinataire</td><td>Une ligne par détail de préparation (destinataire × thème), quantité avec entretien. Une prépa renvoyée est <b>rejetée</b> tant qu'on ne l'a pas débloquée à la main.</td></tr>
+      <tr><td><b>Les faces des trains</b>, déroulant</td><td>Quand Broadcast les écrit dans sa table d'export</td><td>Les faces des trains</td><td>Une ligne par face. Circé accepte des faces avant les instructions : le dossier est « A traiter ». Renvoyées, elles remplacent les anciennes, sauf si l'Instruction OK est faite.</td></tr>
+      <tr><td><b>Les instructions, les exceptions et le commentaire</b>, déroulant</td><td>Avec l'envoi de la prépa</td><td>Liste des instructions déroulants (en-tête, visuels, exceptions)</td><td>Le dossier passe « En cours ». Les quantités par atelier ne sont pas envoyées : Circé les compte à partir des faces. Ni le « reste en place », ni la position forcée, ni le taux d'entretien.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn"><svg><use href="#i-alert"/></svg><div><b>À signaler à la DSI :</b> les fichiers de configuration des programmes d'échange contiennent des identifiants en clair (non recopiés ici). À traiter dans le cadre de la refonte, en lien avec la certification ISO 27001.</div></div>
+</section>
+
+<!-- ============ 12. Sources ============ -->
+<section>
+  <h2><span class="num">12</span>Sources (pour l'architecte)</h2>
+  <p class="sub">Code de Circé, branche <code>develop</code> du dépôt GIT_circe. <span class="tag-c">CONSTATÉ</span> = lu dans le code ; <span class="tag-d">DÉDUIT</span> = conclusion tirée du code, à confirmer.</p>
+  <table class="src">
+    <thead><tr><th style="width:42%">Fait</th><th style="width:10%"></th><th>Où</th></tr></thead>
+    <tbody>
+      <tr><td>Statuts d'une instruction : 0 A traiter (faces reçues, en-tête créé), 1 En cours (posé à l'arrivée des instructions), 2 Instruction Ok, 4 Annulé, 5 A imprimer</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>Enums.cs:223-247</code> ; <code>p_integ_train_affiches.sql:212-214</code> ; <code>p_integ_instructions.sql:191-196</code>, <code>:261-271</code>, <code>:398-404</code></td></tr>
+      <tr><td>Instructions et faces renvoyées après l'Instruction OK : ignorées</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>p_integ_instructions.sql:170-173</code> ; <code>p_integ_train_affiches.sql:86-91</code></td></tr>
+      <tr><td>Commentaire de la prépa reçu avec les instructions</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>p_integ_instructions.sql:266</code> (<code>instr_CommentExtPlay</code>)</td></tr>
+      <tr><td>Position forcée insérée à 0 ; entretien à 8 % par défaut ; réglages verrouillés après l'Instruction OK</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>p_integ_instructions.sql:241</code>, <code>:646</code> ; <code>TrainListeInstructionBll.cs:405-428</code></td></tr>
+      <tr><td>L'Instruction OK calcule les trains (visuel par face selon les %, n° de train, ordre, version, entretien) ; repasser « En cours » efface le calcul, sauf les faces « A imprimer »</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>p_u_associe_train.sql:127-500</code> ; <code>p_u_statut_preparation.sql:19-60</code></td></tr>
+      <tr><td>Répartition à 100 % exigée à l'enregistrement</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>TrainListeInstructionBll.cs:333-340</code></td></tr>
+      <tr><td>Export des trains : faces en Instruction OK seulement, passage à « A imprimer »</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>PreparationDeroulantsRepository.cs:792-844</code>, <code>:1029-1076</code> ; <code>PreparationDeroulantsService.cs:126-127</code></td></tr>
+      <tr><td>Suivi de prod : les faces de la semaine à tous les statuts ; n° d'affiche si validée et rattachée à une ligne de prépa</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>p_s_adminSuiviRead.sql:107-114</code>, <code>:60-67</code> ; colonne « numéro affiche » : <code>SuiviSuiviProduction/Index.cshtml:88</code></td></tr>
+      <tr><td>Validation admin : case sur l'affiche ; message non bloquant si quantité reçue inférieure ; <s>aucun lien avec l'Instruction OK</s> <i>aucun test de l'Instruction OK dans le code, mais dépendance indirecte au scro (retour terrain du 02/11, voir l'encadré en tête)</i></td><td><span class="tag-c">CONSTATÉ</span></td><td><code>ReceptionListeAfficheBll.cs:867</code>, <code>Partial_ModifierDetailsAffiche.cshtml:317-319</code></td></tr>
+      <tr><td>Effets de la validation admin : picking ; « reçue et associée » envoyé à Broadcast ; étiquette rack ; liste « à traiter » ; historique <i>(corrigé le 02/11 : « UM » n'était pas démontré ; la liste des UM ne filtre pas sur la case, <code>p_s_listeUM_2m2.sql:136-141</code>, <code>PreparationController.cs:743</code>)</i></td><td><span class="tag-c">CONSTATÉ</span></td><td><s><code>p_s_listeUM_2m2.sql:53</code>, <code>p_s_listeUM_pliage.sql:50</code></s>, <code>p_EditionPicking.sql:51</code> ; <code>BatchAlimReceptionBll.cs:89</code> ; <code>ReceptionListeAfficheController.cs:189-192</code>, <code>:454-465</code> ; <code>p_GetListeAfficheATraiter.sql:77</code> ; <code>HistorisationBll.cs:29-32</code></td></tr>
+      <tr><td>Rattachement à la main (recherche par dossier, même plateforme) ; ligne déjà couverte ignorée ; dissociation</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>ReceptionListeAfficheBll.cs:497-555</code>, <code>:543</code>, <code>:577-586</code></td></tr>
+      <tr><td>N° de BL, de dossier et de DA de la livraison saisis à la main, non utilisés pour rattacher</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>livraison.sql</code> ; <code>LivraisonAfficheService.cs:406-413</code></td></tr>
+      <tr><td>« Reste en place » reçu dans l'état des réservations et affiché, absent de la copie et des exports faces / instructions</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>EXTPLAY.edmx:207</code> ; <code>SuiviEtatReservationBll.cs:131</code> ; <code>tf_prepa_Broadcast.sql</code> ; <code>ExportCirceTrainAffiche.cs</code>, <code>ExportCirceInstruction.cs</code>, <code>ExportCirceInstructionDetail.cs</code></td></tr>
+      <tr><td>Réceptions attendues « Broadcast » créées avant la prépa et basculées au texte</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>p_Alimentation_tf_prepa_affiche.sql:95-99</code>, <code>:151-155</code>, <code>:228-291</code> (fichier en UTF-16)</td></tr>
+      <tr><td>Copie de l'état des réservations de Broadcast, semaine en cours à +8</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>BatchAlimGetInstructionBc.cs:22-118</code>, <code>LivraisonAfficheRepository.cs:328-345</code></td></tr>
+      <tr><td>Prépa fixe ou pliage renvoyée : rejetée tant qu'elle n'est pas débloquée</td><td><span class="tag-c">CONSTATÉ</span></td><td><code>p_integ_preparation.sql:22-42</code></td></tr>
+      <tr><td>La case de validation admin peut se cocher sans ligne de prépa <i>(02/11 : mais le flux de validation passe par la liaison des lignes de prépa : au scro, impossible avant l'Instruction OK, retour terrain ; <code>ReceptionListeAfficheController.cs:218-254</code>)</i></td><td><span class="tag-d">DÉDUIT</span></td><td>La liste « A traiter » sépare « non validée » et « non rattachée » (<code>p_GetListeAfficheATraiter.sql:77</code>)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>Document de travail · refonte Circé · 27/10/2026 · process cible retenu par la cheffe de projet, à présenter à Fabrice, à Nariman et à l'architecte. Schémas d'origine : captures de l'équipe du 25 et du 26/10.</footer>
+</div>
+</body>
+</html>

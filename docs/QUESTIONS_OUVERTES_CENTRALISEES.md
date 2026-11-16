@@ -1,0 +1,2312 @@
+# Questions ouvertes — vue centralisée
+
+> Fichier généré le 2026-11-06 à partir de `docs/QUESTIONS_OUVERTES.md` (le fichier source reste la référence : en cas d'écart, il fait foi). Il regroupe **toutes les questions qui attendent une réponse** : celles au statut `OUVERTE` et celles au statut `HYPOTHÈSE PRISE` (Claude a avancé sur une hypothèse que l'équipe doit confirmer ou infirmer). Les questions `TRANCHÉE` ne sont pas reprises. Une ligne « Réponse de l'équipe » est prévue sous chaque fiche : après réponse, reporter la décision dans `QUESTIONS_OUVERTES.md`.
+
+## Synthèse
+
+| Catégorie | Nombre |
+|---|---|
+| Questions BLOQUANTES, statut OUVERTE | 2 |
+| Questions BLOQUANTES, HYPOTHÈSE PRISE (à valider) | 3 |
+| Questions non bloquantes, OUVERTE | 82 |
+| Questions non bloquantes, HYPOTHÈSE PRISE (à valider) | 193 |
+| **Total à traiter** | **280** |
+| Questions TRANCHÉES (non reprises) | 9 |
+
+"Bloquante" = la colonne commence par OUI dans le fichier source (certaines ne le sont que pour un point précis : lire la fiche).
+
+## Index
+
+| ID | Module | Sujet | Bloquante | Statut |
+|---|---|---|---|---|
+| [Q-001](#q-001) | TRA | Mode d'authentification (APIM ? Entra ID ?) | OUI | HYPOTHÈSE |
+| [Q-002](#q-002) | TRA | Appel de l'agent local d'impression : navigateur ou API ? | OUI | HYPOTHÈSE |
+| [Q-003](#q-003) | TRA | Profils utilisateurs de la cible | non | HYPOTHÈSE |
+| [Q-005](#q-005) | INT | Code et planification hors dépôt : procédures INTERFACE/EXTPLAY/Broadcast, service `webapicirce`, jobs (alimen | OUI | OUVERTE |
+| [Q-006](#q-006) | DATA | `p_batch_auto_instruction_ok` est-elle déployée ? | non | OUVERTE |
+| [Q-007](#q-007) | TRA | Deux copies de `circe-develop` : laquelle fait référence ? | non | OUVERTE |
+| [Q-008](#q-008) | TRA | Images des ateliers non extraites (70 : process macro/cible, matrice acteurs × étapes par site, captures Récep | non | OUVERTE |
+| [Q-009](#q-009) | TRA | Périmètre de la matrice : inclure les RG legacy provisoires hors Réception/Coordination (RG-ADM, RG-RPR, RG-IN | non | OUVERTE |
+| [Q-010](#q-010) | TRA | Secrets en clair dans le code historique (mots de passe SQL dans les `App.config` des batchs et le SSIS, clé A | non | OUVERTE |
+| [Q-100](#q-100) | REC | Fusion des affiches non reprise dans la cible | non | HYPOTHÈSE |
+| [Q-101](#q-101) | REC | Zone picking et Édition picking | non | HYPOTHÈSE |
+| [Q-102](#q-102) | REC | Grain du contrôle et de la réception : BL, palette | non | HYPOTHÈSE |
+| [Q-103](#q-103) | REC | Quantité de référence : `affiche.quantite` dénormalisée ou somme des mouvements | non | HYPOTHÈSE |
+| [Q-104](#q-104) | REC | « Affiche reçue » à l'arrivée ou après le contrôle (Q31 des sources) | non | HYPOTHÈSE |
+| [Q-105](#q-105) | REC | Valeurs par défaut et portée des paramètres Réception (Q30, Q32, Q33 des sources) | non | HYPOTHÈSE |
+| [Q-106](#q-106) | REC | Représentation de la zone tampon (allée X par site, palettes connues) | non | HYPOTHÈSE |
+| [Q-107](#q-107) | REC | Qui peut rattacher une réception inconnue | non | HYPOTHÈSE |
+| [Q-108](#q-108) | REC | État de la réception quand le dernier dossier est retiré (déjà contrôlée) | non | HYPOTHÈSE |
+| [Q-109](#q-109) | REC | Statut « Introuvable » : transition vers « Rattachée » et persistance | non | HYPOTHÈSE |
+| [Q-110](#q-110) | REC | Destinataire des alertes d'inconnue/introuvable : Coordination ou Pré-Prod (Q61) | non | HYPOTHÈSE |
+| [Q-111](#q-111) | REC | Alerte « sans instructions de pose » : libellé et canal (bandeau et mail ?) | non | HYPOTHÈSE |
+| [Q-112](#q-112) | REC | Lecture du BL et reconnaissance visuelle : technologie, périmètre (REC-17 après le 31/12) | non | HYPOTHÈSE |
+| [Q-113](#q-113) | REC | Stockage, types et taille des photos | non | HYPOTHÈSE |
+| [Q-114](#q-114) | REC | Unicité du n° de BL | non | HYPOTHÈSE |
+| [Q-115](#q-115) | REC | Création à la volée d'un imprimeur ou transporteur inconnu | non | HYPOTHÈSE |
+| [Q-116](#q-116) | REC | « Déchargé par » obligatoire ? | non | HYPOTHÈSE |
+| [Q-117](#q-117) | REC | Ajout/sortie manuels de stock, stock négatif | non | HYPOTHÈSE |
+| [Q-118](#q-118) | REC | Rebus legacy (drapeau) vs rebut cible (mouvement), tag « Au rebut », vidage | non | HYPOTHÈSE |
+| [Q-119](#q-119) | REC | Etat de destruction legacy : précédence SQL, 356/365 jours | non | OUVERTE |
+| [Q-120](#q-120) | REC | Unité de `conservation` (jours/semaines), défauts 20/365, alerte « dernier départ dépassé » | non | HYPOTHÈSE |
+| [Q-121](#q-121) | REC | Modification d'une réception validée (en-tête, quantités) | non | HYPOTHÈSE |
+| [Q-122](#q-122) | REC | Suppression/annulation d'une réception | non | HYPOTHÈSE |
+| [Q-123](#q-123) | DATA | Quantité par défaut à la reprise des rattachements existants (sans quantité) | non | OUVERTE |
+| [Q-124](#q-124) | REC | Répartition inférieure à la quantité reçue | non | HYPOTHÈSE |
+| [Q-125](#q-125) | REC | Seuils et algorithme de proposition de visuels/candidats | non | OUVERTE |
+| [Q-126](#q-126) | REC | Stockage du type de feuille et du tag « Feuille à refaire » | non | HYPOTHÈSE |
+| [Q-127](#q-127) | REC | Définition de « multi-semaines » et fond jaune (Q18) | non | HYPOTHÈSE |
+| [Q-128](#q-128) | REC | Exemplaires : 2 ou 3, destinataire (Q32) | non | HYPOTHÈSE |
+| [Q-129](#q-129) | REC | Imprimantes par plateforme et impression directe vs PDF | non | OUVERTE |
+| [Q-130](#q-130) | REC | Purge : point de départ des 4 semaines, « conservation à l'année », lignes Broadcast | non | HYPOTHÈSE |
+| [Q-131](#q-131) | REC | Résumé à 7 h, rajouts après préparation, IP tardives : forme et canal | non | OUVERTE |
+| [Q-132](#q-132) | REC | Gravité « grave » vs Critique/Important | non | HYPOTHÈSE |
+| [Q-133](#q-133) | REC | Base de l'écart de 10 % (avec ou sans entretien) et dashboard | non | OUVERTE |
+| [Q-134](#q-134) | REC | Date prévisionnelle de livraison : source, saisie | non | OUVERTE |
+| [Q-135](#q-135) | REC | Définition des thèmes exclus (« ne pas afficher », « reste en place ») | non | HYPOTHÈSE |
+| [Q-136](#q-136) | REC | Matrice profils × actions Réception | non | HYPOTHÈSE |
+| [Q-137](#q-137) | REC | Sites DBG et DBG Lyon | non | OUVERTE |
+| [Q-138](#q-138) | REC | Question référencée par RG-REC-014 mais non rédigée lors de la synthèse (sujet à reconstituer : affichage des  | non | HYPOTHÈSE |
+| [Q-139](#q-139) | REC | Suffixe « -W » : qui le pose, quel champ | non | HYPOTHÈSE |
+| [Q-140](#q-140) | REC | Comptage par morceau : mécanique | non | HYPOTHÈSE |
+| [Q-141](#q-141) | REC | Surplus en entretien « CG » : définition | non | OUVERTE |
+| [Q-142](#q-142) | REC | Non-conformité : liste, motif de rebut, Process Métier | non | OUVERTE |
+| [Q-143](#q-143) | REC | « Feuille à refaire » après modification d'annonceur/thème saisis | non | HYPOTHÈSE |
+| [Q-145](#q-145) | REC | Contrôleur lié à l'utilisateur connecté | non | OUVERTE |
+| [Q-146](#q-146) | REC | Droits des référents 8 m² / MUI (Wissous) | non | OUVERTE |
+| [Q-147](#q-147) | REC | Famille de formats 2 m² : applicabilité | non | HYPOTHÈSE |
+| [Q-148](#q-148) | REC | Remplacement de l'auto-association à l'ouverture | non | HYPOTHÈSE |
+| [Q-150](#q-150) | REC | Champs texte dossiers/semaines de la fiche et `tf_dossier_semaine_depart` | non | HYPOTHÈSE |
+| [Q-151](#q-151) | INT | Batch d'export PEX : filtre `envoye`, `IdSiteCCF` en dur, dédoublonnage | non | OUVERTE |
+| [Q-154](#q-154) | REC | Format/domaine d'allée et rayon | non | HYPOTHÈSE |
+| [Q-155](#q-155) | DATA | Reprise des données héritées : fusions, rebus, zone picking, `envoye` | non | OUVERTE |
+| [Q-157](#q-157) | REC | Délai de contrôle : heures calendaires ou ouvrées (Q33) | non | HYPOTHÈSE |
+| [Q-160](#q-160) | REC | Autres pièces jointes de livraison | non | OUVERTE |
+| [Q-162](#q-162) | REC | Étiquettes rack en rafale (Q62) | non | OUVERTE |
+| [Q-163](#q-163) | REC | Transporteur par défaut | non | OUVERTE |
+| [Q-165](#q-165) | REC | Recherche à la frappe vs Entrée | non | HYPOTHÈSE |
+| [Q-166](#q-166) | REC | Ligne du BL à quantité 0 : message | non | HYPOTHÈSE |
+| [Q-167](#q-167) | REC | Ligne cochée absente du BL : bloquant ? | non | HYPOTHÈSE |
+| [Q-168](#q-168) | REC | Format des n° de réception et d'affiche | non | HYPOTHÈSE |
+| [Q-169](#q-169) | REC | Modèle du mouvement incomplet par rapport à RG-REC-151 : pas de type « production », ni équipe, machine, trans | non | HYPOTHÈSE |
+| [Q-170](#q-170) | REC | Mouvement de quantité nulle refusé (422) et sens imposé par type | non | HYPOTHÈSE |
+| [Q-171](#q-171) | REC | Profil admin : refusé en consultation de réception / fiche affiche (REC §2 ✘*) mais autorisé à modifier les ra | non | OUVERTE |
+| [Q-172](#q-172) | REC | « Non répartie » d'une affiche négative après un rebut ou une sortie sur une affiche entièrement répartie | non | OUVERTE |
+| [Q-173](#q-173) | REC | Portée du site choisi dans le bandeau (`x-site-id`) : filtre-t-il aussi les lectures unitaires (fiche réceptio | non | HYPOTHÈSE |
+| [Q-174](#q-174) | REC | Colonne Contrôle d'une ligne dont une affiche rattachée n'a pas de réception (donnée reprise du legacy) | non | HYPOTHÈSE |
+| [Q-175](#q-175) | TRA | Export Excel des tableaux (« Exporter », EX-TRA-016, RG-REC-016) : aucune bibliothèque xlsx dans la stack | non | OUVERTE |
+| [Q-176](#q-176) | REC | Points d'interprétation de la recherche et des filtres des Réceptions attendues | non | HYPOTHÈSE |
+| [Q-177](#q-177) | REC | Points d'interprétation du panier et du bon de livraison (REC-P03) | non | HYPOTHÈSE |
+| [Q-178](#q-178) | REC | Points d'interprétation de REC-P04 à REC-P10 (validation, contrôle, impressions, réceptions inconnues, fiche a | non | HYPOTHÈSE |
+| [Q-179](#q-179) | X | Périmètre de l'administrateur : tous les sites, ou seulement ses sites ? | non | HYPOTHÈSE |
+| [Q-180](#q-180) | REC | Retrait du dernier dossier d'une affiche d'une palette à plusieurs affiches (réception normale) | non | HYPOTHÈSE |
+| [Q-181](#q-181) | REC | Propagation du rattachement à la famille 2 m² (RG-REC-043 (1)) avec des liens portant une quantité | non | OUVERTE |
+| [Q-182](#q-182) | COO | Points d'interprétation du socle Coordination (COO-P01) | non | HYPOTHÈSE |
+| [Q-183](#q-183) | COO | Points d'interprétation de l'Instruction OK et de la saisie (COO-P02) | non | HYPOTHÈSE |
+| [Q-185](#q-185) | COO | Points d'interprétation de la validation admin (COO-P03) | non | HYPOTHÈSE |
+| [Q-186](#q-186) | COO | Points d'interprétation des effets de la validation admin (COO-P04) | non | HYPOTHÈSE |
+| [Q-187](#q-187) | COO | Points d'interprétation des règles de vie des lignes attendues et de l'état des réservations (COO-P05) | non | HYPOTHÈSE |
+| [Q-188](#q-188) | COO | Points d'interprétation de l'intégration Broadcast (COO-P06) | non | HYPOTHÈSE |
+| [Q-189](#q-189) | COO | Qui peut lancer un passage d'intégration Broadcast manuel ? | non | OUVERTE |
+| [Q-190](#q-190) | COO | Points d'interprétation des alertes Pré-Prod et de la vérification des thèmes (COO-P07) | non | HYPOTHÈSE |
+| [Q-191](#q-191) | COO | Points d'interprétation du déblocage des préparations / « Rendre la main » (COO-P08, 12 points) | non | HYPOTHÈSE |
+| [Q-192](#q-192) | COO | Points d'interprétation des trains (COO-P09, 19 points) | non | HYPOTHÈSE |
+| [Q-193](#q-193) | COO | Points d'interprétation de l'export, du suivi par thème, du rouleur et du générateur (COO-P10, 19 points) | non | HYPOTHÈSE |
+| [Q-194](#q-194) | COO | Effet de « Envoyer à la machine » dans Circé (statut des faces et des unités) | non | OUVERTE |
+| [Q-195](#q-195) | COO | Points d'interprétation du suivi 8 m², du dispatch du roulage, des rouleurs et des bagues (COO-P11, 14 points) | non | HYPOTHÈSE |
+| [Q-196](#q-196) | COO | Points d'interprétation de la préparation 2 m² fixe, du pliage et du bus (COO-P12, 13 points) | non | HYPOTHÈSE |
+| [Q-197](#q-197) | COO | Points d'interprétation du colisage, de l'expédition et de la fin de journée (COO-P13, 19 points) | non | HYPOTHÈSE |
+| [Q-200](#q-200) | COO | Libellés divergents des états de validation admin, du statut du dossier et de l'alerte (« Validée » vs « Valid | non | HYPOTHÈSE |
+| [Q-201](#q-201) | COO | Rôles autorisés pour la validation admin, l'annulation, l'Instruction OK, le déblocage et le rattachement par  | non | HYPOTHÈSE |
+| [Q-202](#q-202) | COO | Effets de l'annulation d'une validation et du rattachement/retrait après validation sur les effets déjà produi | non | HYPOTHÈSE |
+| [Q-203](#q-203) | COO | Confirmation en lot : taille maximale, concurrence entre deux coordinateurs sur la même affiche, gestion des a | non | HYPOTHÈSE |
+| [Q-205](#q-205) | COO | Règle de Nariman : source du « nombre d'exceptions », écarts avec le batch legacy (normalisation des % de répa | non | HYPOTHÈSE |
+| [Q-206](#q-206) | COO | Grain de l'Instruction OK : par ligne atelier × plateforme (Circé, Q51) ou par dossier (maquette) | non | HYPOTHÈSE |
+| [Q-207](#q-207) | COO | Clé de la ligne attendue : la DA est-elle dans la clé ? (deux DA d'un même dossier : une ou deux lignes ? Q57) | non | HYPOTHÈSE |
+| [Q-208](#q-208) | COO | Broadcast peut-il fournir `IdTheme` (et définition de `IdThemeBandeau`) ? (Q56) | non | HYPOTHÈSE |
+| [Q-209](#q-209) | COO | Retirer les thèmes « reste en place » de la quantité des lignes Broadcast (Q59) et traitement de l'écart dû au | non | HYPOTHÈSE |
+| [Q-210](#q-210) | COO | Thème ou quantité modifiés après validation, ligne annulée, reprise automatique ou manuelle de la version Broa | non | HYPOTHÈSE |
+| [Q-211](#q-211) | COO | Planification et fréquence des lectures de Broadcast et du retour des réceptions (toutes les 2 h de 8 h à 18 h | non | HYPOTHÈSE |
+| [Q-212](#q-212) | COO | Moment de la bascule BC → PREPA pour le déroulant : le legacy ne crée la ligne « prépa » du déroulant qu'après | non | HYPOTHÈSE |
+| [Q-213](#q-213) | DATA | Reprise des rattachements existants (1 affiche par ligne, sans quantité) vers le lien plusieurs-à-plusieurs av | non | OUVERTE |
+| [Q-214](#q-214) | COO | Auto-rattachement à l'ouverture d'une fiche affiche (legacy) : conservé ou remplacé par la proposition de l'op | non | HYPOTHÈSE |
+| [Q-215](#q-215) | COO | Statut interne du dossier `VALIDE` de la maquette (préparation reçue ET toutes affiches confirmées) vs deux pa | non | HYPOTHÈSE |
+| [Q-216](#q-216) | COO | Renvois de Broadcast après l'Instruction OK, l'export ou sans déblocage (prépa fixe/pliage refusée) : ignorés  | non | HYPOTHÈSE |
+| [Q-217](#q-217) | COO | Déblocage de préparation et « Rendre la main à la Pré-Prod » : l'écran Déblocage (Administration) est absent d | non | HYPOTHÈSE |
+| [Q-218](#q-218) | COO | Contrôle serveur du déblocage pour un groupe de type TRAIN (aucun contrôle côté serveur dans le legacy, fail-o | non | HYPOTHÈSE |
+| [Q-219](#q-219) | COO | Mails (déblocage, demande de correction, rajouts) : liste de distribution paramétrable vs `tr_plateforme.plt_m | non | HYPOTHÈSE |
+| [Q-220](#q-220) | TRA | Paramétrage des alertes de coordination : seuils (24 h, 10 %, deadline jeudi S-2 16 h, départ S/S+1, 72 h/36 h | non | HYPOTHÈSE |
+| [Q-221](#q-221) | COO | Destinataire des alertes « Dossier introuvable » / réception inconnue à Nîmes : Coordination du site ou « Pré- | non | HYPOTHÈSE |
+| [Q-222](#q-222) | COO | Alerte « Rajout après préparation » : fenêtre exacte (nuit du jeudi au vendredi S-2 jusqu'au vendredi S) vs de | non | HYPOTHÈSE |
+| [Q-223](#q-223) | COO | Statut intermédiaire « Validation Pré-Prod » entre « En cours » et « A imprimer » (ou simple coche) : se super | non | HYPOTHÈSE |
+| [Q-224](#q-224) | COO | Propositions non validées autour de l'Instruction OK : proposition de position (début/fin) depuis le commentai | non | HYPOTHÈSE |
+| [Q-225](#q-225) | COO | « Appliquer la version Broadcast » : portée exacte (annule et remplace de la quantité seulement ou aussi du th | non | HYPOTHÈSE |
+| [Q-226](#q-226) | DATA | Requêtes de recherche de doublons de la DSI (`requetes_doublons_receptions_attendues.sql`) non fournies ; caus | non | OUVERTE |
+| [Q-227](#q-227) | DATA | Valeurs de référence codées en dur dans le legacy : sites CCF 39/40/43/44 et plateformes, exclusion « Platefor | non | HYPOTHÈSE |
+| [Q-228](#q-228) | INT | Applicabilité de reliquats legacy : variante Web API `PrepaAfficheBC` (code mort d'après EX-EXI-012), ancien é | non | OUVERTE |
+| [Q-231](#q-231) | COO | Retour « reçue et associée » vers Broadcast : à la validation admin (legacy, condition liée ET validée) ou à l | non | HYPOTHÈSE |
+| [Q-234](#q-234) | COO | Moteur de proposition de rattachement par le visuel : scores MOCK de la maquette (0,45 × texte + 0,55 × visuel | non | HYPOTHÈSE |
+| [Q-250](#q-250) | COO | Statuts du bloc : codes legacy 0-10 contre statuts d'unité cible (EN_ATTENTE, PRET, EN_PROD, PRODUIT, COLISE,  | non | HYPOTHÈSE |
+| [Q-251](#q-251) | COO | Sens de « Prêt à produire » : go de l'export du jeudi (face A imprimer) ou couverture complète des visuels reç | non | HYPOTHÈSE |
+| [Q-252](#q-252) | COO | Export des trains : heure butoir du jeudi 14 h et rôle autorisé contrôlés côté serveur ? | non | HYPOTHÈSE |
+| [Q-253](#q-253) | COO | Nombre maximal de positions par train : 4 (deck) ou 6 (code, `tf_train_export`) ; que faire au-delà de 6 contr | non | HYPOTHÈSE |
+| [Q-254](#q-254) | COO | Plafond de 20 thèmes à l'export : bloquant a priori ou a posteriori, pour quels exports (Vendôme seul ou aussi | non | HYPOTHÈSE |
+| [Q-255](#q-255) | COO | Bloc « Paris » de l'export et des faces d'entretien : reproduire l'alternance ville / commercial telle quelle  | non | OUVERTE |
+| [Q-256](#q-256) | COO | Règle d'entretien cible : grain afficheur, seuil 3, arrondi supérieur, % par défaut 8, plage 0-30, 15 % si cam | non | HYPOTHÈSE |
+| [Q-257](#q-257) | COO | Campagne contrôlée : d'où vient l'indicateur et quelle position exacte (« début de train » = position 1 ?) ; c | non | OUVERTE |
+| [Q-258](#q-258) | COO | Créer un train de pré-test / entretien : qui, quand, numérotation `TR-P`, impact du verrouillage de l'Instruct | non | OUVERTE |
+| [Q-259](#q-259) | COO | Supprimer un train : libère-t-il les quantités de couverture ; qui peut supprimer ; suppression logique ou phy | non | HYPOTHÈSE |
+| [Q-260](#q-260) | COO | Duplication de train (administration) : à conserver en V2 ? usage métier, anomalies (afficheur stocké dans `pe | non | OUVERTE |
+| [Q-261](#q-261) | COO | Fractionner / raccrocher : sémantique legacy (version du `train_id`) contre cible (position fractionnée, statu | non | OUVERTE |
+| [Q-262](#q-262) | COO | Pré-assemblage : booléen par thème (maquette, Q-COO-15) ou par lot / train ; par client et par destinataire (f | non | OUVERTE |
+| [Q-263](#q-263) | COO | Suivi par thème : réservé aux dossiers avec commentaire de préparation (cible A14) ou pour tous (maquette) ; d | non | OUVERTE |
+| [Q-264](#q-264) | COO | Suivi 8 m² (demies) : mode de saisie (par ligne), historisation, validation, périmètre Nîmes seul ou tous site | non | OUVERTE |
+| [Q-265](#q-265) | COO | Libération de la semaine contre bouton « Colisage » : qui libère, quand, annulable ; QUI CRÉE LES UM en cible  | OUI | HYPOTHÈSE |
+| [Q-266](#q-266) | COO | Alerte « Rajout après préparation » / « Arrivé après libération » : fenêtre de déclenchement (nuit du jeudi au | non | HYPOTHÈSE |
+| [Q-267](#q-267) | COO | « Rendre la main » : conséquences sur la validation admin et les affiches reçues ; fixe (modification possible | non | HYPOTHÈSE |
+| [Q-268](#q-268) | COO | Corriger l'intitulé après lancement de la production : droits limités, portée sur feuilles de stock et fichier | non | OUVERTE |
+| [Q-269](#q-269) | COO | Quantité à produire modifiable par afficheur (fixe, pliage) : règles de recalcul des autres quantités, plafond | non | OUVERTE |
+| [Q-270](#q-270) | COO | Jours d'affichage dans la préparation : présentation (une case multi-jours ou une ligne par jour) | non | OUVERTE |
+| [Q-271](#q-271) | COO | Création des UM : algorithme (afficheur effacé si destinataire non dispatch, partage de `RpcIdLstUM` dans les  | non | HYPOTHÈSE |
+| [Q-272](#q-272) | COO | Colis (interface EXP) : deux implémentations divergentes (ouverture : colis + UM à 1 ou UM à 6 ; filtre destin | non | OUVERTE |
+| [Q-273](#q-273) | COO | Statuts non synchronisés entre répartition, UM, colis et face (le statut de l'UM prime, la répartition reste à | non | HYPOTHÈSE |
+| [Q-274](#q-274) | COO | Flux AMT / Sybase → `tf_repart_calcul` (`p_integ_ptf_*`, SSIS `Flux_Repartition_Amt_Ptf`) : toujours actif ? r | non | HYPOTHÈSE |
+| [Q-275](#q-275) | COO | Déblocage de répartition : colis contenant des UM annulées laissés intacts, aucun contrôle serveur pour un gro | non | OUVERTE |
+| [Q-276](#q-276) | COO | Dispatch : algorithme de répartition cible (programme Python existant « à transmettre »), seuils 36 h et 115 % | non | OUVERTE |
+| [Q-277](#q-277) | COO | Bagues : où se règle l'impression des bagues Vendôme (partent avec le fichier), droits de réimpression (« reve | non | OUVERTE |
+| [Q-278](#q-278) | COO | Intégrer dans Circé le « Fichier Vierge », le « Tableau de Roulage » (alimenté par la bague), le reporting MUI | non | HYPOTHÈSE |
+| [Q-279](#q-279) | COO | Bus : formule des quantités à encoller (+8 % production / +20 % entretien, arrondis, combinaison des ajustemen | non | OUVERTE |
+| [Q-280](#q-280) | COO | Disponibilité physique des affiches pour la préparation : le reçu compte-t-il dès la réception (palette en sas | non | HYPOTHÈSE |
+| [Q-281](#q-281) | COO | Déclencheur des sorties de stock : fin de journée Geodis / scan Milk run à « Terminé » (cible) contre scan des | non | OUVERTE |
+| [Q-282](#q-282) | COO | Dernière minute (DM) sur train en production : règle de gestion cible (fichier à part, sortie systématique en  | non | OUVERTE |
+| [Q-283](#q-283) | COO | Statut intermédiaire « Validation Pré-Prod » entre « En cours » et « A imprimer » (EX-COO-510) : statut, coche | non | OUVERTE |
+| [Q-284](#q-284) | INT | Geodis Zoom : le batch n'enregistre jamais les réponses (`log_colis_transporteur` jamais alimentée) ; preuve d | non | OUVERTE |
+| [Q-285](#q-285) | COO | Mail « colis expédié » du batch : conserver ou remplacer par une alerte ; perte de retentative (DateMaj posée  | non | OUVERTE |
+| [Q-286](#q-286) | COO | Matrice profils × actions du bloc (export, suppression de train, libération, rendre la main, dispatch, bagues, | non | HYPOTHÈSE |
+| [Q-287](#q-287) | COO | Impressions du bloc (fiche de synthèse, bagues, picking, étiquettes colis / UM, fin de journée) : format et ag | non | OUVERTE |
+| [Q-288](#q-288) | COO | CG : ajout de quantités d'entretien reçues en plus (ex. plus d'affiches reçues que prévues) : module concerné  | non | OUVERTE |
+| [Q-301](#q-301) | DATA | rpc_statut : enums Prisma par entité ou table de référence unique ? Valeurs 0-10 partagées par 4 entités | non | HYPOTHÈSE |
+| [Q-302](#q-302) | DATA | Correspondance statuts de la cible (maquette, specs) et rpc_statut du legacy | non | HYPOTHÈSE |
+| [Q-303](#q-303) | DATA | Clé primaire de instruction_train : instr_code seul ou (instr_code, ate_id) ? | non | HYPOTHÈSE |
+| [Q-304](#q-304) | DATA | Index et contraintes réels de la production : le script réel n'a aucun index non clusterisé, le dépôt en a 19  | non | OUVERTE |
+| [Q-305](#q-305) | DATA | Réceptions attendues (tf_prepa_affiche) : clé d'unicité et colonnes à ajouter | non | HYPOTHÈSE |
+| [Q-308](#q-308) | DATA | Historique et audit : table générique étendue, historique par entité ou table commune de statut ? | non | HYPOTHÈSE |
+| [Q-309](#q-309) | DATA | Tables legacy sans équivalent cible : abandon ou reprise (journaux AMT, ARCH_*, tmp_*, trav_*, tf_evenement, t | non | HYPOTHÈSE |
+| [Q-310](#q-310) | DATA | Périmètre colisage/expédition (UM, colis, Geodis) dans la V2 | non | HYPOTHÈSE |
+| [Q-311](#q-311) | DATA | Stockage des photos (BL, affiches) : binaire en base ou fichier ? | non | HYPOTHÈSE |
+| [Q-312](#q-312) | DATA | Types et normalisation : cont_num varchar vs int, plt_id/sup_id de types différents, semaines en texte, tronca | non | HYPOTHÈSE |
+| [Q-313](#q-313) | DATA | Drapeaux bit NULL de affiche (rebus, zone_Picking, a_conserver, est_fusionne, validationAdmin, envoye) : NOT N | non | HYPOTHÈSE |
+| [Q-314](#q-314) | DATA | Semaines : migration vers semaines ISO | non | HYPOTHÈSE |
+| [Q-315](#q-315) | DATA | Codes en dur du SQL et du C# à transformer en référentiel/paramètre | non | HYPOTHÈSE |
+| [Q-316](#q-316) | DATA | Procédures stockées à reporter dans les services TypeScript : bugs documentés de REVIEW_Database_proc.md à rep | non | OUVERTE |
+| [Q-317](#q-317) | DATA | Contraintes à ajouter : FK manquantes ou redondantes (tf_prepa_affiche.plt_id/sup_id/ate_id, instr_code, tf_co | non | HYPOTHÈSE |
+| [Q-318](#q-318) | DATA | Référentiels dupliqués : TypePreparation et tr_type_preparation ; vue v_support_scrolling | non | HYPOTHÈSE |
+| [Q-320](#q-320) | DATA | Modèle utilisateur, droits et périmètre : loginWindows, 27 droits, tr_utilisateur_data, prf_id inerte | non | OUVERTE |
+| [Q-321](#q-321) | DATA | Reprise de données de la production vers la V2 : périmètre, volumes, conservation des noms de tables | non | OUVERTE |
+| [Q-322](#q-322) | DATA | Quantité d'une affiche : somme des mouvements ou colonne persistée ? | non | HYPOTHÈSE |
+| [Q-323](#q-323) | DATA | Rétention, purge et archivage (attendues 4 semaines, ARCH_* 3 ans, historique 2 ans, tt_log 2 mois, photos de  | non | OUVERTE |
+| [Q-324](#q-324) | DATA | Colonnes sans usage et comparaison colonne à colonne schéma réel / SSDT / EDMX non faite (tf_face_train à 80 c | non | HYPOTHÈSE |
+| [Q-325](#q-325) | DATA | tf_prepa_Broadcast : colonnes à conserver (IdSiteCCF, IdSurface, IdFormat, IdPreparationChapeau, IdTypePrepara | non | HYPOTHÈSE |
+| [Q-326](#q-326) | INT | Interface cible avec Broadcast/PEX : accès aux bases EXTPLAY et INTERFACE, API, fichiers ? Écritures sortantes | non | OUVERTE |
+| [Q-327](#q-327) | INT | Mails du legacy (réception, déblocage, colis) : conservés, remplacés par des alertes, ou supprimés ? | non | OUVERTE |
+| [Q-328](#q-328) | INT | Geodis Zoom, exports CSV Caire/Surf, impressions d'étiquettes : dans le périmètre V2 ? | non | HYPOTHÈSE |
+| [Q-329](#q-329) | INT | Flux historique SSIS AMT/Sybase et procédures p_integ_ptf_* : encore actifs ? | non | HYPOTHÈSE |
+| [Q-330](#q-330) | TRA | Planification des traitements automatiques en V2 (alimentation des attendues, fin de journée, purge, Instructi | non | OUVERTE |
+| [Q-331](#q-331) | TRA | Fonctions techniques du legacy à ne pas reprendre : écran de tests, ELMAH ouvert, Info poste (ping), contrôle  | non | HYPOTHÈSE |
+| [Q-332](#q-332) | TRA | Pièces jointes de livraison (partage disque DirectoryFilePieceJointeReception) : stockage V2 | non | OUVERTE |
+| [Q-333](#q-333) | TRA | Gestion des secrets et configuration en V2 (identifiants en clair du legacy) | non | HYPOTHÈSE |
+| [Q-334](#q-334) | DATA | Unicités à ajouter : livraison.Reference par plateforme, tf_UM.UM_code_barre, tf_colis.colis_code, numéro de B | non | OUVERTE |
+| [Q-335](#q-335) | DATA | Multi-sites : site vs plateforme vs atelier ; DBG et DBG Lyon ; sites 39/40/43/44 ; ateliers 11 et 12 ; Nanter | non | HYPOTHÈSE |
+| [Q-336](#q-336) | DATA | Entités implicites de la maquette sans table réelle : Dossier, Thème, Ligne de préparation, Unité de productio | non | OUVERTE |
+| [Q-337](#q-337) | DATA | Table de paramètres métier (seuil et arrondi d'entretien, écart de réception, délai de contrôle, purge…) : str | non | HYPOTHÈSE |
+| [Q-339](#q-339) | TRA | Outillage absent de la machine de développement : `pnpm` et `docker` non installés ; Node v26.0.0 (non LTS) ;  | OUI | OUVERTE |
+| [Q-340](#q-340) | TRA | Signatures de `resolveIdentity`, `SiteAgentPort`, `LlmProvider` : la demande renvoie à « CLAUDE.md §8 » qui ne | non | HYPOTHÈSE |
+| [Q-341](#q-341) | DATA | Nommage Prisma : noms métier français du schéma réel avec `@@map`/`@map`, ou anglais | non | HYPOTHÈSE |
+| [Q-342](#q-342) | TRA | Version de Node : le poste a Node v26.0.0 (non LTS) | non | HYPOTHÈSE |
+| [Q-344](#q-344) | TRA | Choix techniques pris à l'étape 2 hors liste validée : TypeScript 6.0.3 (et non 7.0.2), Nitro 3.0.260903-beta  | non | HYPOTHÈSE |
+| [Q-345](#q-345) | DATA | Auteurs (`createdById`, `updatedById`, `creePar`, `retirePar`, `validationAdminParId`) : colonnes entières SAN | non | HYPOTHÈSE |
+| [Q-346](#q-346) | DATA | Enums sans `CHECK` en base et index partiels hors schéma Prisma (conséquences de SQLite, Q-343) | non | HYPOTHÈSE |
+| [Q-347](#q-347) | DATA | Pas de table `TransitionStatut` en base (le tableau de l'étape 3 la proposait comme référentiel) | non | HYPOTHÈSE |
+| [Q-348](#q-348) | TRA | Rétention et purge des clés d'idempotence | non | HYPOTHÈSE |
+| [Q-349](#q-349) | TRA | Lecture des matrices profils × actions pour le catalogue des permissions : cases « ? » et contradictions entre | non | HYPOTHÈSE |
+| [Q-350](#q-350) | TRA | Collision des IDs EX entre specs-ateliers-besoins et specs-reception/coordination/transverse : renumérotation  | non | HYPOTHÈSE |
+| [Q-351](#q-351) | TRA | Rôle « Pré-Prod » vs « Coordination » ; contrôleur / agent de contrôle / agent de réception | non | HYPOTHÈSE |
+| [Q-352](#q-352) | TRA | Devenir des 27 droits legacy non portés clairement par les 6 rôles (Zone_Picking, fusion_affiche, train_annule | non | HYPOTHÈSE |
+| [Q-353](#q-353) | TRA | Matrice rôle × écran × action : la maquette ne fait que griser les écrans secondaires | non | OUVERTE |
+| [Q-354](#q-354) | TRA | Qui peut valider (validation admin) : Coordination seule ou aussi Administrateur ? | non | HYPOTHÈSE |
+| [Q-355](#q-355) | TRA | Périmètre exact des écrans consultables par le rôle Commerce (lecture seule) | non | OUVERTE |
+| [Q-356](#q-356) | TRA | Rôles « Patrick » et « Directeur de plateforme » absents des 6 rôles (droits spéciaux) | non | OUVERTE |
+| [Q-357](#q-357) | TRA | Lien entre périmètre utilisateur (`tr_utilisateur_data`) et sélecteur de Site | non | HYPOTHÈSE |
+| [Q-358](#q-358) | TRA | Périmètre des sites : DBG / DBG Lyon, atelier « Nîmes Pliage 12M2 », Nanterre (Bus, cible) | non | HYPOTHÈSE |
+| [Q-359](#q-359) | TRA | Comptes nominatifs vs adresses génériques partagées (Nîmes) | non | HYPOTHÈSE |
+| [Q-360](#q-360) | TRA | Export .xlsx : génération côté navigateur ou serveur, bibliothèque non prévue par la stack | non | OUVERTE |
+| [Q-361](#q-361) | TRA | Bibliothèques de tableau (colonnes déplaçables/redimensionnables, filtres d'en-tête) et de graphiques (dashboa | non | OUVERTE |
+| [Q-362](#q-362) | TRA | États chargement et erreur de page non spécifiés | non | HYPOTHÈSE |
+| [Q-363](#q-363) | TRA | Douchette : exigée par DESIGN §8 pour la Réception, exclue par la décision du 19/10 ; présente à l'Expédition | non | HYPOTHÈSE |
+| [Q-364](#q-364) | TRA | Filtre sous chaque en-tête de colonne : DESIGN §4.5 (pas de ligne de filtre) vs §4.8 du 21/10 et README §2.7 | non | HYPOTHÈSE |
+| [Q-365](#q-365) | TRA | Page d'ouverture : Pilotage › Suivi de prod (P3) alors que P1 = Réception / Coordination | non | HYPOTHÈSE |
+| [Q-366](#q-366) | TRA | Classement des écrans : Vérification des thèmes (ECR-THM) rattachée à COO ou module à part ; ECR-TRA-01 ; écra | non | HYPOTHÈSE |
+| [Q-367](#q-367) | TRA | Liste et fidélité des éditions à reproduire (RDLC -> PDF navigateur) | non | HYPOTHÈSE |
+| [Q-368](#q-368) | TRA | Génération PDF non spécifiée par les specs ; format du code-barres de l'étiquette rack | non | HYPOTHÈSE |
+| [Q-369](#q-369) | TRA | LLM : usage fonctionnel (reconnaissance visuelle, lecture du BL) | non | HYPOTHÈSE |
+| [Q-370](#q-370) | TRA | Stockage et rétention des photos de BL / d'affiche | non | HYPOTHÈSE |
+| [Q-371](#q-371) | TRA | Modèle d'une alerte (calculée ou événement daté), acquittement global ou par utilisateur, levée automatique | non | HYPOTHÈSE |
+| [Q-372](#q-372) | TRA | Gravités : correspondance « grave » du dossier Réception et codes maquette | non | HYPOTHÈSE |
+| [Q-373](#q-373) | TRA | Seuils d'alerte et valeurs MOCK sans source (36 h, 72 h, 115 %, 0,9 / 0,6 / 0,3, 60 trains) ; seuils paramétra | non | HYPOTHÈSE |
+| [Q-374](#q-374) | TRA | Catalogue exhaustif des alertes (17 types maquette vs alertes citées : surcharge/départ proche du dispatch, Br | non | HYPOTHÈSE |
+| [Q-375](#q-375) | INT | Mails sortants : lesquels partent réellement, digest 7 h, fournisseur SMTP absent de la stack | non | OUVERTE |
+| [Q-376](#q-376) | TRA | Journal d'audit : durée de conservation, accès, distinction journal / historique d'objet | non | HYPOTHÈSE |
+| [Q-377](#q-377) | INT | Retour vers Broadcast : condition d'« affiche associée » et mécanisme en V2 | non | OUVERTE |
+| [Q-378](#q-378) | INT | Interface BC : dates de validité, « annule et remplace » (adresses), périmètre des objets | non | OUVERTE |
+| [Q-379](#q-379) | INT | Fréquence de copie de l'EDR : 2 mises à jour par jour vs toutes les 2 h de 8 h à 18 h | non | HYPOTHÈSE |
+| [Q-380](#q-380) | X | Calendrier du process : prépa « le lundi » vs « jeudi S-2 » ; deadline jeudi S-2 16 h ; rajouts « nuit du jeud | non | HYPOTHÈSE |
+| [Q-381](#q-381) | X | Catalogue de statuts cible : 12 statuts du vocabulaire (EX-TRA-018) vs 109 statuts/tags (ECR-ADM-03) non valid | non | HYPOTHÈSE |
+| [Q-382](#q-382) | X | Entrées du menu actuel sans écran cible (Zone picking, Fusion des affiches, Déblocage préparations, Rafraîchir | non | HYPOTHÈSE |
+| [Q-383](#q-383) | X | Déclencheur des sorties de stock : scan des codes barre, fin de journée Geodis / expédition, ou aucune aujourd | non | HYPOTHÈSE |
+| [Q-384](#q-384) | X | Destruction et rebut : délais 4 / 2 semaines, point de départ, conservation 20 / 365 jours, rebut vs destructi | non | HYPOTHÈSE |
+| [Q-385](#q-385) | X | Fin de campagne : décision par dossier ou par visuel ; qui décide ; reprise de l'« État de destruction » legac | non | OUVERTE |
+| [Q-386](#q-386) | X | Bus : « flux existant » (S L34) vs aucun flux Broadcast pour le Bus (D6) ; entretien +20 % / +8 % de productio | non | HYPOTHÈSE |
+| [Q-387](#q-387) | X | « Rendre la main » du fixe : changement d'infos possible après envoi de la prépa (A13) ou non (A14, S L12) | non | OUVERTE |
+| [Q-388](#q-388) | X | Statut « Refusé » : ré-ouverture de colis (S L93) vs mail au commercial (A14) | non | HYPOTHÈSE |
+| [Q-389](#q-389) | X | Date prévisionnelle de livraison : source BC (Print Cityz) ou saisie manuelle par les gestionnaires | non | OUVERTE |
+| [Q-390](#q-390) | INT | Preuve de livraison : source (API Geodis Zoom), le batch actuel n'écrit jamais son résultat | non | HYPOTHÈSE |
+| [Q-391](#q-391) | TRA | Statut des EX non qualifiées : « A revoir Bao », « A creuser Rayane », « En attente input Patrick », « Refusé  | non | HYPOTHÈSE |
+| [Q-392](#q-392) | TRA | Excel non fournis : Fichier Vierge, Tableau de Roulage, synthèse du lundi (MUI) et du jeudi | non | OUVERTE |
+| [Q-393](#q-393) | TRA | Termes et références non définis : CG, CP, REP, MUI, VdP, Quick V2, APPFR-1143, « base REF », dynamisations | non | OUVERTE |
+| [Q-394](#q-394) | TRA | Process Métier (non-conformités) : lien sortant ou intégration | non | HYPOTHÈSE |
+| [Q-395](#q-395) | DATA | Stratégie de reprise de données (SQL Server -> PostgreSQL) : rattachements sans quantité, doublons d'attendues | non | OUVERTE |
+| [Q-396](#q-396) | TRA | Sauvegarde des données de la veille (« base REF ») : définition et besoin | non | OUVERTE |
+| [Q-397](#q-397) | TRA | Statut des 52 EX-EXI (description de l'existant) dans la matrice de traçabilité | non | HYPOTHÈSE |
+| [Q-398](#q-398) | COO | Alerte « affiche reçue après l'export des trains » (réception tardive) : déclencheur, gravité, destinataires,  | non | HYPOTHÈSE |
+| [Q-399](#q-399) | COO | « Complément proposé puis confirmé » (RG-X-061) : modèle de la nouvelle proposition | non | OUVERTE |
+| [Q-400](#q-400) | REC | Message « n unité(s) prête(s) à produire » (RG-X-003) : périmètre du calcul | non | HYPOTHÈSE |
+| [Q-401](#q-401) | REC | Rebut et reçu : un rebut réduit le stock mais pas le reçu (RG-REC-017) ; effet sur la couverture des trains et | non | HYPOTHÈSE |
+| [Q-402](#q-402) | COO | Validation admin d'une affiche dont le dossier est ANNULÉ : « sans objet » (RG-X-065) ou toujours possible ? | non | HYPOTHÈSE |
+| [Q-403](#q-403) | COO | Référentiel des destinataires (D-05, ECR-ADM-07) : périmètre minimal, unicité, désactivation | non | HYPOTHÈSE |
+| [Q-404](#q-404) | COO | Libération de la semaine et Colisage : points d'interprétation (suite de Q-265) | non | HYPOTHÈSE |
+| [Q-405](#q-405) | COO | Gestion des paramètres métier (D-06, ECR-ADM-05) : bornes, formats, valeurs non modifiables | non | HYPOTHÈSE |
+| [Q-406](#q-406) | TRA | Administration des utilisateurs, rôles, périmètre et sites (D-01, D-02) : périmètre minimal et garde-fous | non | HYPOTHÈSE |
+| [Q-407](#q-407) | TRA | Plateformes (D-03) et référentiels de réception (D-04) : périmètre minimal, validations, désactivation | non | HYPOTHÈSE |
+| [Q-408](#q-408) | TRA | Configuration des alertes (D-08, ECR-ADM-04) : champs configurables et effets | non | HYPOTHÈSE |
+| [Q-409](#q-409) | TRA | File d'envoi des mails et fournisseur SMTP (D-19) : mails réellement envoyés, destinataires, tentatives, canal | non | HYPOTHÈSE |
+| [Q-410](#q-410) | INT | Traitements planifiés (D-20) : liste, horaires, verrou, acteur technique | non | HYPOTHÈSE |
+| [Q-411](#q-411) | COO | Étape 8 lot 5 (D-14, D-15, D-18) : Départs camions, colonnes d'expédition, complément de génération, liste de  | non | HYPOTHÈSE |
+| [Q-412](#q-412) | TRA | Compte technique « circe-automatique » (D-20) et dernier administrateur (D-01) : garde-fous | non | HYPOTHÈSE |
+| [Q-413](#q-413) | INT | Exigence TLS du client SMTP (D-19) | non | HYPOTHÈSE |
+| [Q-414](#q-414) | COO | Source de vérité du mail et du téléphone des destinataires : Broadcast (flux RG-COO-119) ou Circé (D-05) | non | HYPOTHÈSE |
+| [Q-415](#q-415) | TRA | Générateur aléatoire des JDD : la skill circe-jdd prévoit `@faker-js/faker` (locale fr), non installé | non | HYPOTHÈSE |
+| [Q-416](#q-416) | REC | Comptage à zéro au contrôle (RG-REC-059) : le lien unique suit le comptage avec un minimum de 1 (`Math.max(1,  | non | HYPOTHÈSE |
+| [Q-417](#q-417) | REC | Écart de contrôle négatif qui rendrait le stock négatif (rebut déjà fait avant le contrôle) | non | HYPOTHÈSE |
+| [Q-418](#q-418) | COO | Quantité d'une ligne modifiée après le Colisage (ligne « En cours » dans une UM, RG-COO-239) : la quantité de  | non | OUVERTE |
+| [Q-419](#q-419) | COO | « Surplus proposé à l'autre dossier, répartition à confirmer » (RG-X-016) : modèle de la proposition faite à l | non | HYPOTHÈSE |
+
+## A. Bloquantes — OUVERTES (à trancher en priorité) (2)
+
+### Module INT (1)
+
+#### Q-005 — Code et planification hors dépôt : procédures INTERFACE/EXTPLAY/Broadcast, service `webapicirce`, jobs (alimentation des réceptions attendues, fin de journée colis, batchs)
+
+- **Module** : INT · **Bloquante** : OUI pour l'alimentation des réceptions attendues · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-integrations.md · legacy-coordination.md · legacy-reception.md
+- **Options et conséquences / hypothèse** : Qui appelle `p_Alimentation_tf_prepa_affiche` et à quelle fréquence ? Sans réponse, l'alimentation de Coordination ne se spécifie qu'à partir de la cible (option A du 02/11).
+- **Réponse de l'équipe** : 
+
+### Module TRA (1)
+
+#### Q-339 — Outillage absent de la machine de développement : `pnpm` et `docker` non installés ; Node v26.0.0 (non LTS) ; version Node à pinner dans `.nvmrc`
+
+- **Module** : TRA · **Bloquante** : OUI pour la vérification de l'étape 2 · **Statut** : OUVERTE
+- **Sources / conflit** : Constat de la session du 04/11/2026
+- **Options et conséquences / hypothèse** : Installer pnpm et Docker Desktop, ou arrêter l'étape 2 avant la vérification (`pnpm install`, bases dev/test, tests d'intégration et E2E). Choisir Node courant ou LTS.
+- **Réponse de l'équipe** : 
+
+## B. Bloquantes — HYPOTHÈSE PRISE (à valider) (3)
+
+### Module COO (1)
+
+#### Q-265 — Libération de la semaine contre bouton « Colisage » : qui libère, quand, annulable ; QUI CRÉE LES UM en cible (la libération « ne crée plus les UM », H2) ; statut initial des lignes fixe / pliage (« à libérer » contre 0 « A traiter »)
+
+- **Module** : COO · **Bloquante** : OUI — création des UM (colisage) et statut initial des lignes fixe / pliage (modélisation des statuts `tf_repart_calcul` / `tf_UM`) · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : spec EX-COO-025 (Libération = ex Colisage, qui ?) · EX-FIX-510 (garder le bouton Colisage pour Wissous) · maquette ECR-COO-09a (remplace Colisage), Q-COO-17 · legacy PreparationService.cs:81-107, EX-EXI-041
+- **Options et conséquences / hypothèse** : Options : (a) la libération crée aussi les UM (comportement legacy, atelier de Wissous) ; (b) la libération ne crée rien et les UM sont créées à la demande / à l'impression ; (c) deux boutons. Impossible tant que non tranché : le flux de création des UM (RG-COO-260, 261), le statut initial et le déclencheur de RG-COO-240 CONTRADICTION AVEC LA LETTRE DE LA MAQUETTE (audit étape 8, 2026-11-06) : ECR-COO-09a dit que la libération « remplace le bouton Colisage » ; l'option (c) conserve les DEUX boutons (« Libérer la Sxx » ne crée aucune UM, « Colisage » les crée). À VALIDER PAR L'UTILISATEUR : (a) la libération n'a AUCUN effet de verrouillage (elle n'empêche ni ne conditionne le Colisage ni la modification des lignes) ; (b) elle est IRRÉVERSIBLE (409 si déjà libérée, aucune annulation) ; (c) le Colisage est proposé à TOUS les ateliers fixes alors que EX-FIX-510 ne vise que Wissous ; (d) le code barre AA SS est dérivé du JOUR DE CRÉATION de l'UM et non de la semaine de départ ; (e) « Préparation reçue » est APPROXIMÉE par « dossier ayant des lignes actives pour (atelier, semaine) » (le statut de préparation reçue n'est pas modélisé).
+- **Décision / hypothèse prise** : Étape 8 (2026-11-05), sur autorisation de l'utilisateur (« si tu ne trouves pas d'infos, fais le plus recommandé ») : HYPOTHÈSE PRISE, option (c) (deux actions, qui satisfait à la fois la maquette ECR-COO-09a et la décision de Wissous EX-FIX-510) : « Libérer la Sxx » ne crée aucune UM (RG-COO-240, H2 de la maquette) ; un bouton « Colisage » crée les UM de la sélection (RG-COO-260 à 262, droit `unite.gerer` : coordination et chef d'équipe) ; « à libérer » reste un repère dérivé (Q-250), pas un statut persistant ; le Colisage ne dépend pas de la libération (legacy). À VALIDER par la Coordination et les plateformes ; voir Q-404.
+- **Réponse de l'équipe** : 
+
+### Module TRA (2)
+
+#### Q-001 — Mode d'authentification (APIM ? Entra ID ?)
+
+- **Module** : TRA · **Bloquante** : OUI · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : CLAUDE.md §8
+- **Options et conséquences / hypothèse** : …
+- **Décision / hypothèse prise** : Délégation de l'utilisateur : fournisseur d'identité de dev (en-tête signé HMAC, refusé au démarrage si NODE_ENV=production), sans auth réelle. HYPOTHÈSE à remplacer quand le mode (APIM/Entra ID) sera connu ; écart tracé.
+- **Réponse de l'équipe** : 
+
+#### Q-002 — Appel de l'agent local d'impression : navigateur ou API ?
+
+- **Module** : TRA · **Bloquante** : OUI pour les impressions · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : CLAUDE.md §8
+- **Options et conséquences / hypothèse** : …
+- **Décision / hypothèse prise** : Délégation de l'utilisateur : interface SiteAgentPort + MockSiteAgent ; aperçu et PDF générés dans le navigateur ; aucun envoi réel à l'agent local. À remplacer quand le mode d'appel sera connu.
+- **Réponse de l'équipe** : 
+
+## C. Non bloquantes — OUVERTES (82)
+
+### Module COO (26)
+
+#### Q-189 — Qui peut lancer un passage d'intégration Broadcast manuel ?
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-103 (« exécution manuelle possible pour l'administrateur ») · COORDINATION_REGLES_METIER.md §2 bloc 1, ligne « Lancer une lecture/alimentation Broadcast manuelle (« Rafraîchir un dossier », passage manuel) » : coord ✔ et admin ✔
+- **Options et conséquences / hypothèse** : Option 1 : administrateur seul (texte de la RG). Option 2 : Coordination et administrateur (matrice §2, qui regroupe passage manuel et « Rafraîchir un dossier »). En attendant : le plus restrictif (droit `integration.passage_manuel` = admin, règle du catalogue : non tranché → refusé) ; « Rafraîchir un dossier » reste coord + admin (droit legacy `train_rafraichir_contrat`, RG-COO-132).
+- **Réponse de l'équipe** : 
+
+#### Q-194 — Effet de « Envoyer à la machine » dans Circé (statut des faces et des unités)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-217 (« l'impression de la bague ou l'envoi du fichier à la machine fait passer l'UNITÉ de PRET à EN_PROD, RG-COO-299, point de non-retour ; « Au roulage » (face 10) : rouleur obligatoire ») · maquette ECR-GEN-03 (« Envoyer à la machine → unités EN_PROD, bague = true ») · Q-251 · Q-265 (création des unités en cible, OUVERTE)
+- **Options et conséquences / hypothèse** : ÉCART SIGNALÉ PAR L'AUDIT COO-P10 : l'implémentation initiale passait les FACES « Au roulage » sans rouleur à l'envoi, contraire à RG-COO-217. SOLUTION RETENUE (la plus conforme à RG-COO-217 et Q-251) : l'envoi ne modifie aucune face (le lot passe « Envoyé », le fichier est remis au port, la machine est tracée) ; l'effet « unités EN_PROD / bague » relève de RG-COO-299 (COO-P11) et dépend de la création des unités (Q-265 OUVERTE) ; tant que les unités n'existent pas, l'envoi n'a donc AUCUN effet de point de non-retour dans Circé (RG-COO-223 reste porté par les faces 9 / 10). Options à trancher par l'équipe : (a) conserver cette solution et porter le point de non-retour par l'unité (COO-P11 / Q-265) ; (b) exiger un rouleur à l'envoi et passer les faces « Au roulage » ; (c) autre effet. COO-P11 (2026-11-05) : l'impression de la bague (RG-COO-299) fait passer les trains PRET à EN_PROD (faces « Au roulage » avec le rouleur) : l'effet « unité EN_PROD » existe donc pour les trains par la bague ; reste à trancher l'effet de l'envoi à la machine. AUDIT COO-P10 B4 : un train envoyé à la machine restait « Prêt » (les faces ne changent pas) et pouvait être renvoyé (double production) : il est désormais « Déjà envoyé » dès qu'il figure, avec la même version, dans un lot ENVOYE (409 COO_TRAIN_DEJA_ENVOYE à la préparation et à l'envoi) ; un train modifié depuis (autre version) peut repartir ; « Générer un complément » (ECR-GEN-03) n'est pas repris.
+- **Réponse de l'équipe** : 
+
+#### Q-255 — Bloc « Paris » de l'export et des faces d'entretien : reproduire l'alternance ville / commercial telle quelle (anomalies : filtre produit sans effet, union au lieu d'intersection pour les exclusions, `ordre_reel` en `byte` limité à 25 faces par structure) ; convention `VPS_75 101 0004` codée en dur
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy PreparationDeroulantsService.cs:136-171,1068-1246 ; p_u_associe_train.sql:405-419,555-699 ; tests `CalculTrainParisTest` non lus ; aucune spec de la cible
+- **Options et conséquences / hypothèse** : Options : (a) reproduire à l'identique ; (b) reprendre l'intention (alternance paramétrée par `tr_parametre_alternance`) en corrigeant les anomalies et en sortant la convention en dur vers le paramétrage. Demander la règle métier attendue (ville de Paris : affiches à ne pas poser, EX-COO-505)
+- **Réponse de l'équipe** : 
+
+#### Q-257 — Campagne contrôlée : d'où vient l'indicateur et quelle position exacte (« début de train » = position 1 ?) ; cas CP et dynamisations non tranchés
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-COO-508, Q21 · maquette ECR-COO-01 (`controlee`, ~12 %) · aucune colonne identifiée dans le schéma réel
+- **Options et conséquences / hypothèse** : Fournir la source (champ Broadcast ? saisie Coordination ?). Sans réponse, RG-COO-204 non implémentable
+- **Réponse de l'équipe** : 
+
+#### Q-258 — Créer un train de pré-test / entretien : qui, quand, numérotation `TR-P`, impact du verrouillage de l'Instruction OK sur les positions et l'entretien
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-COO-505 · maquette ECR-COO-05c, Q-COO-14
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : réservé à `coord` ; numéro attribué par la séquence de trains avec préfixe pré-test ; l'entretien d'un train créé n'est pas figé par l'Instruction OK du dossier. Conséquence : à confirmer
+- **Réponse de l'équipe** : 
+
+#### Q-260 — Duplication de train (administration) : à conserver en V2 ? usage métier, anomalies (afficheur stocké dans `pers_nom`, +190 par exemplaire, colonnes manquantes REVIEW §2.15)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy p_u_duplication_train.sql ; aucune spec de la cible
+- **Options et conséquences / hypothèse** : Options : conserver (cas « trains de remplacement ») avec validations ; abandonner (couvert par « Créer un train »). Sans décision : tracé en écart (RG-COO-226 CONSERVÉE)
+- **Réponse de l'équipe** : 
+
+#### Q-261 — Fractionner / raccrocher : sémantique legacy (version du `train_id`) contre cible (position fractionnée, statut d'unité) ; raccrochage en masse (volumétrie) ; « changer l'ordre des trains » (position d'un thème dans tous ses trains ou ordre des trains entre eux) ; objet du drag and drop interdit après envoi de la prépa
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy TrainSuiviThemeBll.cs:214-262,531-665 · maquette ECR-COO-05, 05d · spec EX-COO-503, EX-COO-511, EX-SCR-506, EX-COO-050 (Q46)
+- **Options et conséquences / hypothèse** : À préciser avec la Coordination : un « fractionnement » crée-t-il un train distinct ou une version ; volumétrie cible du raccrochage. Sans réponse : cible = maquette pour l'écran, legacy conservé pour la version de `train_id`
+- **Réponse de l'équipe** : 
+
+#### Q-262 — Pré-assemblage : booléen par thème (maquette, Q-COO-15) ou par lot / train ; par client et par destinataire (filtre département) pour le 8 m²
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : maquette ECR-COO-06 · spec EX-SCR-507 · legacy TrainSuiviThemeBll.cs:442-485
+- **Options et conséquences / hypothèse** : Définir la granularité (thème, thème × destinataire, lot). Sans réponse : booléen par thème (maquette)
+- **Réponse de l'équipe** : 
+
+#### Q-263 — Suivi par thème : réservé aux dossiers avec commentaire de préparation (cible A14) ou pour tous (maquette) ; d'où vient l'indicateur « ne pas afficher » / « reste en place »
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-COO-509, EX-COO-502, EX-COO-046 (`EstResteEnPlace`) · maquette ECR-COO-06, ECR-COO-02
+- **Options et conséquences / hypothèse** : Confirmer la périmètre du suivi par thème et fournir la source des exclusions (champ Broadcast `EstResteEnPlace` seul ? « ne pas afficher » ?). Sans réponse : suivi pour tous les trains, exclusions lues sur l'indicateur de Broadcast
+- **Réponse de l'équipe** : 
+
+#### Q-264 — Suivi 8 m² (demies) : mode de saisie (par ligne), historisation, validation, périmètre Nîmes seul ou tous sites, remplace-t-il l'Excel PROC-06
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : maquette ECR-COO-08, Q-COO-16 · spec EX-PIL-502 (« Création demies haut / bas (Nîmes) ») · EX-EXI-037
+- **Options et conséquences / hypothèse** : Confirmer les contrôles (entier ≥ 0, finales ≤ besoin ?) et le périmètre par site. Sans réponse : saisie libre ≥ 0 avec historique
+- **Réponse de l'équipe** : 
+
+#### Q-268 — Corriger l'intitulé après lancement de la production : droits limités, portée sur feuilles de stock et fichiers déjà envoyés, fixe contre déroulant
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-FIX-509 (contradiction avec A13 slide 14) · maquette ECR-COO-09c, Q-COO-20 · contradiction n° 1
+- **Options et conséquences / hypothèse** : Préciser qui (plateforme), quoi (annonceur imprimé, thème), et si les fichiers déjà envoyés sont régénérés (complément). Sans réponse : exception à RG-COO-223 limitée à l'intitulé imprimé
+- **Réponse de l'équipe** : 
+
+#### Q-269 — Quantité à produire modifiable par afficheur (fixe, pliage) : règles de recalcul des autres quantités, plafond, droits
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-FIX-505, EX-FIX-508 · maquette ECR-COO-09 (tags « corrigé par la plateforme »)
+- **Options et conséquences / hypothèse** : Définir : la modification change-t-elle l'entretien et le total ; impact sur la couverture et sur le fichier de production. Sans réponse : champ éditable avec historique, sans recalcul
+- **Réponse de l'équipe** : 
+
+#### Q-270 — Jours d'affichage dans la préparation : présentation (une case multi-jours ou une ligne par jour)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-FIX-504 (« à creuser ») · maquette ECR-COO-09
+- **Options et conséquences / hypothèse** : Décider de la présentation. Sans réponse : colonne « Départ camion » de la maquette
+- **Réponse de l'équipe** : 
+
+#### Q-272 — Colis (interface EXP) : deux implémentations divergentes (ouverture : colis + UM à 1 ou UM à 6 ; filtre destinataire seul ou destinataire + atelier), réouverture d'un colis clos (refusée le 16/10 en maquette, EX-EXP-506 « Refusé » ambigu), contrainte Σ `uc_qte` ≤ `UM_qte`, défaut NOT EXISTS de `p_u_expedie_Colis`, qui déclenche la fin de journée
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy PreparationColisageService.cs / PreparationColisBll.cs, p_u_expedie_Colis.sql:34-73 · maquette ECR-EXP-01, 02 · spec EX-EXP-506, contradiction n° 11
+- **Options et conséquences / hypothèse** : Trancher avec le module Expédition (étape 8) ; pour le bloc COO : une UM n'est « A expédier » que quand tous ses colis le sont (HYPOTHÈSE de RG-COO-268), colis clos non rouvrable
+- **Réponse de l'équipe** : 
+
+#### Q-275 — Déblocage de répartition : colis contenant des UM annulées laissés intacts, aucun contrôle serveur pour un groupe TRAIN, utilisateur écrit vide, non-atomicité AMT + Circé + mail, mail sans gestion d'erreur, ancien écran Répartitions probablement mort
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy RG-RPR-008 à 010, AdminPreparationDeblocageBll.cs:252-333, RepartitionController.cs:218-351
+- **Options et conséquences / hypothèse** : À arbitrer avec coo1 (déblocage de préparation) : transaction unique, contrôle serveur des faces (statut ≥ 2 bloquant ?) et devenir des colis. Sans réponse : reprise à l'identique du contrôle UM ≥ 6, utilisateur tracé
+- **Réponse de l'équipe** : 
+
+#### Q-276 — Dispatch : algorithme de répartition cible (programme Python existant « à transmettre »), seuils 36 h et 115 % codés en dur (paramétrables ?), rouleurs = opérateurs et non utilisateurs, propriétaire du référentiel
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : maquette ECR-COO-10, Q-COO-21 / 22 / 23 · legacy « Liste des rouleurs » (droit `referentiel`)
+- **Options et conséquences / hypothèse** : Obtenir l'algorithme ; en attendant la règle simulée de la maquette (départ le plus proche d'abord puis rouleur le moins chargé) sert de repli. Seuils : paramètres par défaut 36 h / 115 %
+- **Réponse de l'équipe** : 
+
+#### Q-277 — Bagues : où se règle l'impression des bagues Vendôme (partent avec le fichier), droits de réimpression (« revenir de Terminé à Imprimer » restreint aux directeurs de plateforme et chefs d'équipe ; état actuel ambigu), quantité par bague en fixe / lot, code 128
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : maquette ECR-COO-11, Q-COO-24 / 25 · spec EX-ADM-503 · legacy Rapport.cs `EtiquetteBagueNewCode128`
+- **Options et conséquences / hypothèse** : Clarifier le rôle « Patrick » et la liste des profils autorisés (Q-286) ; contenu exact des états RDLC non lu. Sans réponse : réimpression pour `cheq` seul avec motif
+- **Réponse de l'équipe** : 
+
+#### Q-279 — Bus : formule des quantités à encoller (+8 % production / +20 % entretien, arrondis, combinaison des ajustements global et par centre), flux d'alimentation Nanterre (« flux existant » contre « aucun flux Broadcast pour le Bus »), anomalies de réception Bus, drapeau `busv3` et mock legacy non analysés
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-BUS-502, 503, 504 · contradiction n° 10 · maquette ECR-COO-09e · legacy IsBusV3
+- **Options et conséquences / hypothèse** : Obtenir la formule exacte et les règles d'arrondi ; décider de la source de données du Bus. Sans réponse : formule de la maquette (cmd × 1,08 + cmd × 0,20 arrondis)
+- **Réponse de l'équipe** : 
+
+#### Q-281 — Déclencheur des sorties de stock : fin de journée Geodis / scan Milk run à « Terminé » (cible) contre scan des codes barre de production (legacy / EX-SCR-517)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-STK-001, EX-STK-005, EX-SCR-517 · contradiction n° 2 de specs-ateliers-besoins.md · EX-EXI-076
+- **Options et conséquences / hypothèse** : Aligné sur la décision STK. Sans réponse : sortie de stock à l'expédition (cible A14 / A13)
+- **Réponse de l'équipe** : 
+
+#### Q-282 — Dernière minute (DM) sur train en production : règle de gestion cible (fichier à part, sortie systématique en fractionné, complément du générateur), libellés seuls dans la spec
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-COO-512, EX-EXI-078 · maquette ECR-GEN-03 (« Générer un complément »), `app.js` événement 3
+- **Options et conséquences / hypothèse** : Décrire le traitement attendu d'une DM (création d'une unité à part ? complément de fichier ?). Sans réponse : trace + alerte critique, aucune modification du train
+- **Réponse de l'équipe** : 
+
+#### Q-283 — Statut intermédiaire « Validation Pré-Prod » entre « En cours » et « A imprimer » (EX-COO-510) : statut, coche (A15 slide 4) ou déjà couvert par « Instruction ok » ; remplace le mail d'Isa aux plateformes
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-COO-510 · contradiction n° 13 · EX-COO-044, EX-EXI-034
+- **Options et conséquences / hypothèse** : Décider : coche « validé Pré-Prod » sur l'export ou statut dédié. Aucune règle écrite tant que non tranché
+- **Réponse de l'équipe** : 
+
+#### Q-285 — Mail « colis expédié » du batch : conserver ou remplacer par une alerte ; perte de retentative (DateMaj posée même en échec)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-integrations.md RG-INT-033 à 035 · spec EX-TRA-030
+- **Options et conséquences / hypothèse** : Décider avec EXP. Sans réponse : conserver à l'identique en corrigeant la perte de retentative
+- **Réponse de l'équipe** : 
+
+#### Q-287 — Impressions du bloc (fiche de synthèse, bagues, picking, étiquettes colis / UM, fin de journée) : format et agent d'impression ; PDF côté navigateur contre impression directe sur imprimante de la plateforme
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-TRA-024 à 026 · legacy Rapport.cs (RDLC → PDF / EMF imprimé sur le serveur) · Q-002
+- **Options et conséquences / hypothèse** : Dépend de Q-002 ; contenu des RDLC non lu (modèles à reprendre). Sans réponse : PDF navigateur (CLAUDE.md §3)
+- **Réponse de l'équipe** : 
+
+#### Q-288 — CG : ajout de quantités d'entretien reçues en plus (ex. plus d'affiches reçues que prévues) : module concerné (Réception ?), définition de « CG »
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : spec EX-FIX-506 (point d'interrogation sur le menu)
+- **Options et conséquences / hypothèse** : Préciser le module et la règle (surplus compté en entretien, REC). Sans réponse : traité par la Réception (surplus entretien)
+- **Réponse de l'équipe** : 
+
+#### Q-399 — « Complément proposé puis confirmé » (RG-X-061) : modèle de la nouvelle proposition
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-X-061, RG-X-018, RG-REC-040 · `specs-coordination.md` (EX-COO-011), cas 24
+- **Options et conséquences / hypothèse** : La validation admin est portée par l'AFFICHE (un complément s'ajoute à la même affiche). Options : (a) drapeau `complementAConfirmer` sur l'affiche : état « à confirmer » (tag « Complément ») sans retirer la validation du 1er lot ; (b) validation par lot de réception (mouvement) ; (c) ne rien faire (le complément est déjà couvert par la validation de l'affiche). Sans réponse : (c), test en attente (it.todo), suivi dans ECART-010, ANO-058 (RAPPORT_TESTS) et la ligne « RG-X-061 » de ECARTS.
+- **Réponse de l'équipe** : 
+
+#### Q-418 — Quantité d'une ligne modifiée après le Colisage (ligne « En cours » dans une UM, RG-COO-239) : la quantité de l'UM ne suit pas (UM 12, Σ lignes 13)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-06
+- **Sources / conflit** : RG-COO-239 (« ligne non en production »), RG-COO-260 / 261, Q-269 · test existant `unitaire-complement` (« une ligne En cours dans une UM se modifie ») · constat ANO-063
+- **Options et conséquences / hypothèse** : OUVERTE, non bloquante, aucun code changé (comportement testé par l'étape 6). Options : (a) refuser la modification dès qu'une UM existe (409) ; (b) répercuter sur l'UM et ses colis. Recommandée : (a). L'invariant INV-050 exclut les UM dont une ligne a été modifiée.
+- **Réponse de l'équipe** : 
+
+### Module DATA (13)
+
+#### Q-006 — `p_batch_auto_instruction_ok` est-elle déployée ?
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : bdd.md (dans le `.sqlproj` et le SQL réel) contre legacy-integrations.md (absente du `.sqlproj`)
+- **Options et conséquences / hypothèse** : À vérifier sur la base réelle. Conditionne l'Instruction OK automatique (Q60 des sources).
+- **Réponse de l'équipe** : 
+
+#### Q-123 — Quantité par défaut à la reprise des rattachements existants (sans quantité)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : `[DC] §13`
+- **Options et conséquences / hypothèse** : À définir à l'étape 3/8.
+- **Réponse de l'équipe** : 
+
+#### Q-155 — Reprise des données héritées : fusions, rebus, zone picking, `envoye`
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy
+- **Options et conséquences / hypothèse** : À définir.
+- **Réponse de l'équipe** : 
+
+#### Q-213 — Reprise des rattachements existants (1 affiche par ligne, sans quantité) vers le lien plusieurs-à-plusieurs avec quantité ; dédoublonnage des attendues ; état « reçu » du legacy (`ARecevoir` non remis à zéro)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-coordination.md EX-COO-039 (« reprise ... non définie ») ; bdd.md §7.5 ; legacy `ARecevoir`
+- **Options et conséquences / hypothèse** : Options : quantité du lien = quantité reçue de l'affiche si une seule ligne ; sinon répartition à décider. Conséquence : migration (étape 8/9)
+- **Réponse de l'équipe** : 
+
+#### Q-226 — Requêtes de recherche de doublons de la DSI (`requetes_doublons_receptions_attendues.sql`) non fournies ; causes des doublons « à confirmer »
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-coordination.md EX-COO-041 (« non fourni / illisible »)
+- **Options et conséquences / hypothèse** : Obtenir le fichier et un export des doublons réels pour dimensionner la reprise (RG-COO-090)
+- **Réponse de l'équipe** : 
+
+#### Q-304 — Index et contraintes réels de la production : le script réel n'a aucun index non clusterisé, le dépôt en a 19 ; second projet SQL ClearChannel.CIRCE.Database non comparé
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : bdd.md §0 §7.1 (E4) · DATABASE.sqlproj
+- **Options et conséquences / hypothèse** : Demander à la DSI un export de sys.indexes et des contraintes. Sans réponse : reprendre les 19 index du dépôt comme base de performance et ajouter seulement les contraintes sourcées. Aucun impact sur les règles métier.
+- **Réponse de l'équipe** : 
+
+#### Q-316 — Procédures stockées à reporter dans les services TypeScript : bugs documentés de REVIEW_Database_proc.md à reproduire ou corriger ?
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : bdd.md §8 · circe-develop/docs/REVIEW_Database_proc.md · BRIEF règle 3
+- **Options et conséquences / hypothèse** : Pour chaque règle portée par une procédure : CONSERVÉE (reportée en service), MODIFIÉE (spec) ou ECART/Q. Les bugs de la revue reflètent la production actuelle : décision cas par cas, jamais en silence. Les procédures sans appelant (p_batch, archivage, fin de journée) relèvent de Q-005/Q-330.
+- **Réponse de l'équipe** : 
+
+#### Q-320 — Modèle utilisateur, droits et périmètre : loginWindows, 27 droits, tr_utilisateur_data, prf_id inerte
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-admin.md RG-ADM-010 à 016 · Q-001 · Q-003 · EX-TRA-001 à 007
+- **Options et conséquences / hypothèse** : Dépend de Q-001 (authentification) et Q-003 (profils) : table Utilisateur, rôle (provisoire : 6 rôles de la maquette) et périmètre (site/atelier). Le périmètre par atelier du legacy (RG-COO-092) et le choix de site (EX-TRA-006) restent à relier.
+- **Réponse de l'équipe** : 
+
+#### Q-321 — Reprise de données de la production vers la V2 : périmètre, volumes, conservation des noms de tables
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : MISSION.md et specs lues : aucune exigence explicite · ANALYSE_MODELE_DONNEES.md §5
+- **Options et conséquences / hypothèse** : Options : démarrage à vide (référentiels + JDD) ; reprise partielle (référentiels, affiches et mouvements en cours) ; reprise complète. Hypothèse de travail non retenue formellement : aucune reprise à l'étape 3. Conséquences : dédoublonnage des attendues, conversion de statuts, semaines ISO, orphelins, photos.
+- **Réponse de l'équipe** : 
+
+#### Q-323 — Rétention, purge et archivage (attendues 4 semaines, ARCH_* 3 ans, historique 2 ans, tt_log 2 mois, photos de BL, journal)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-TRA-042 · legacy-integrations.md RG-INT-042 · maquette (purgeAttendues 4, valeur MOCK)
+- **Options et conséquences / hypothèse** : Seule la purge des attendues à 4 semaines (sauf conservation à l'année) est dans les specs ; les autres durées sont du legacy non confirmé et celles du journal et des photos ne sont pas définies. Sans réponse : pas de purge automatique à l'étape 3.
+- **Réponse de l'équipe** : 
+
+#### Q-334 — Unicités à ajouter : livraison.Reference par plateforme, tf_UM.UM_code_barre, tf_colis.colis_code, numéro de BL
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : bdd.md §10 (contraintes absentes, règle « Reference unique par plateforme » à confirmer) · legacy-reception.md RG-REC-074
+- **Options et conséquences / hypothèse** : Aucune règle sourcée ne l'impose pour le BL : sans spec, pas d'unicité ajoutée (la règle de doublon de BL, si voulue, relève du module REC).
+- **Réponse de l'équipe** : 
+
+#### Q-336 — Entités implicites de la maquette sans table réelle : Dossier, Thème, Ligne de préparation, Unité de production, Libération de semaine, Alerte, Mail, Journal, Opérateur : persistées ou calculées ?
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-04
+- **Sources / conflit** : maquettes-reception-coordination.md §4 · schéma réel (aucune table équivalente sauf approximations) · EX-TRA-027 à 032 (alertes calculées ou événements, acquittement)
+- **Options et conséquences / hypothèse** : À décider entité par entité lors de la spec des parcours (étapes 5/6) : (a) vue/calcul sur tables existantes (dossier = regroupement par cont_num) ; (b) table dédiée (libération de semaine, alerte acquittée). Les champs MOCK ne valent pas décision.
+- **Décision / hypothèse prise** : Partiel (étape 3) : seul `Dossier` est persisté, avec le statut de préparation (RG-COO-063) ; Thème, Ligne de préparation, Unité de production, Libération de semaine, Alerte, Mail restent NON modélisés (décision aux étapes 5/6).
+- **Réponse de l'équipe** : 
+
+#### Q-395 — Stratégie de reprise de données (SQL Server -> PostgreSQL) : rattachements sans quantité, doublons d'attendues, référentiels, purge des destinations
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-coordination.md « Sections non comprises » ; EX-TRA-511
+- **Options et conséquences / hypothèse** : Options : migration complète, ou référentiels seuls (seed:ref). Conséquence : jeu de données de recette
+- **Réponse de l'équipe** : 
+
+### Module INT (8)
+
+#### Q-151 — Batch d'export PEX : filtre `envoye`, `IdSiteCCF` en dur, dédoublonnage
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy RG-REC-110 · EX-TRA-039
+- **Options et conséquences / hypothèse** : À trancher.
+- **Réponse de l'équipe** : 
+
+#### Q-228 — Applicabilité de reliquats legacy : variante Web API `PrepaAfficheBC` (code mort d'après EX-EXI-012), ancien écran Répartitions déblocables (Sybase AMT), « Rafraîchir un dossier », suivi d'intégration par groupe (`count(distinct rpc_statut) <> 8`), type de préparation forcé des visuels, textes des constantes de formats de saisie
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-coordination.md §9 ; legacy-integrations.md RG-INT-012 ; EX-EXI-012
+- **Options et conséquences / hypothèse** : Options : conserver à l'identique (par défaut pour ne rien perdre), ou abandonner après confirmation de la DSI/Coordination. Aucun développement avant décision pour RG-COO-109, 150 ; reprise à l'identique pour RG-COO-123, 128
+- **Réponse de l'équipe** : 
+
+#### Q-284 — Geodis Zoom : le batch n'enregistre jamais les réponses (`log_colis_transporteur` jamais alimentée) ; preuve de livraison et statut Livré de la cible ; protocole et hash à reprendre ?
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-integrations.md RG-INT-031, 032 · maquette ECR-EXP-02 (DEM-007)
+- **Options et conséquences / hypothèse** : À traiter avec le module Expédition / interfaces (étape 8). Hors bloc COO
+- **Réponse de l'équipe** : 
+
+#### Q-326 — Interface cible avec Broadcast/PEX : accès aux bases EXTPLAY et INTERFACE, API, fichiers ? Écritures sortantes (réceptions, accusé de statut, déblocage)
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-integrations.md RG-INT-001 à 013, 020 à 022, 044 · EX-TRA-039 (Circé ne peut pas écrire dans Broadcast) · Q-005
+- **Options et conséquences / hypothèse** : Le legacy écrit dans INTERFACE/EXTPLAY (réceptions, accusé, déblocage) alors que la spec dit que Circé n'écrit pas dans Broadcast : contradiction à lever, ainsi que le mécanisme du retour BC (ANO-05). Bloque l'implémentation des flux (étape 8), pas le schéma.
+- **Réponse de l'équipe** : 
+
+#### Q-327 — Mails du legacy (réception, déblocage, colis) : conservés, remplacés par des alertes, ou supprimés ?
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-integrations.md RG-INT-034 RG-INT-043 RG-INT-044 · EX-TRA-004 (plus de mail à la réception d'un dossier pour Commerce) · EX-TRA-030 (alertes remplacent mails)
+- **Options et conséquences / hypothèse** : Décider mail par mail ; contradiction interne de la spec (alertes vs mails de correction à la Pré-Prod). Impact : service d'envoi, destinataires par plateforme (tr_adresseMail_plateforme) et alertes.
+- **Réponse de l'équipe** : 
+
+#### Q-375 — Mails sortants : lesquels partent réellement, digest 7 h, fournisseur SMTP absent de la stack
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-transverse.md contradiction 6, EX-TRA-029, EX-TRA-030 ; ECR-ADM-04 ; legacy-admin.md RG-ADM-043 à 045
+- **Options et conséquences / hypothèse** : Options : bandeau seul en P1 ; mails conservés (correction Broadcast, rajout après préparation) en étape 8 avec un service d'envoi à valider. Conséquence : alertes COO de type mail
+- **Réponse de l'équipe** : 
+
+#### Q-377 — Retour vers Broadcast : condition d'« affiche associée » et mécanisme en V2
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-transverse.md EX-TRA-039 (ANO-05) ; legacy-integrations.md (`CIRCE_PEX_RECEPTION`) ; Q-005
+- **Options et conséquences / hypothèse** : Options : condition legacy conservée (liée ET validation admin) ; autre condition. Conséquence : interface étape 8 ; sans effet sur les écrans P1
+- **Réponse de l'équipe** : 
+
+#### Q-378 — Interface BC : dates de validité, « annule et remplace » (adresses), périmètre des objets
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-TRA-512, EX-TRA-514
+- **Options et conséquences / hypothèse** : Options : versionnage par date de validité pour tous les flux, ou limité aux adresses. Conséquence : modèle des destinataires/adresses
+- **Réponse de l'équipe** : 
+
+### Module REC (17)
+
+#### Q-119 — Etat de destruction legacy : précédence SQL, 356/365 jours
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy RG-REC-050, 051 · EX-STK-504
+- **Options et conséquences / hypothèse** : À arbitrer avec le module Stocks.
+- **Réponse de l'équipe** : 
+
+#### Q-125 — Seuils et algorithme de proposition de visuels/candidats
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : Q-REC-15, 25 maquette (valeurs fabriquées)
+- **Options et conséquences / hypothèse** : À fixer si reconnaissance implémentée.
+- **Réponse de l'équipe** : 
+
+#### Q-129 — Imprimantes par plateforme et impression directe vs PDF
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy RG-ADM-041 · Q-002
+- **Options et conséquences / hypothèse** : Lié à Q-002.
+- **Réponse de l'équipe** : 
+
+#### Q-131 — Résumé à 7 h, rajouts après préparation, IP tardives : forme et canal
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-REC-063, 505
+- **Options et conséquences / hypothèse** : À fixer avec la liste de distribution.
+- **Réponse de l'équipe** : 
+
+#### Q-133 — Base de l'écart de 10 % (avec ou sans entretien) et dashboard
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-REC-516 à 519 vs EX-REC-064
+- **Options et conséquences / hypothèse** : À trancher.
+- **Réponse de l'équipe** : 
+
+#### Q-134 — Date prévisionnelle de livraison : source, saisie
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-REC-008, 520
+- **Options et conséquences / hypothèse** : À trancher.
+- **Réponse de l'équipe** : 
+
+#### Q-137 — Sites DBG et DBG Lyon
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-TRA-006
+- **Options et conséquences / hypothèse** : À trancher.
+- **Réponse de l'équipe** : 
+
+#### Q-141 — Surplus en entretien « CG » : définition
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-REC-025, FIX-506
+- **Options et conséquences / hypothèse** : À définir.
+- **Réponse de l'équipe** : 
+
+#### Q-142 — Non-conformité : liste, motif de rebut, Process Métier
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-REC-024, 028
+- **Options et conséquences / hypothèse** : À cadrer.
+- **Réponse de l'équipe** : 
+
+#### Q-145 — Contrôleur lié à l'utilisateur connecté
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : Q-REC-9 maquette
+- **Options et conséquences / hypothèse** : À trancher.
+- **Réponse de l'équipe** : 
+
+#### Q-146 — Droits des référents 8 m² / MUI (Wissous)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-REC-077
+- **Options et conséquences / hypothèse** : À définir.
+- **Réponse de l'équipe** : 
+
+#### Q-160 — Autres pièces jointes de livraison
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : Q-REC-23
+- **Options et conséquences / hypothèse** : À trancher.
+- **Réponse de l'équipe** : 
+
+#### Q-162 — Étiquettes rack en rafale (Q62)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-COO-014
+- **Options et conséquences / hypothèse** : À trancher.
+- **Réponse de l'équipe** : 
+
+#### Q-163 — Transporteur par défaut
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : MOCK
+- **Options et conséquences / hypothèse** : À trancher.
+- **Réponse de l'équipe** : 
+
+#### Q-171 — Profil admin : refusé en consultation de réception / fiche affiche (REC §2 ✘*) mais autorisé à modifier les rattachements (COO §2 ✔) et à consulter l'historique (REC §2 ✔)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-04
+- **Sources / conflit** : RECEPTION_REGLES_METIER.md §2 · COORDINATION_REGLES_METIER.md §2 · Q-136, Q-349
+- **Options et conséquences / hypothèse** : Option 1 : admin consulte aussi les affiches et réceptions (cohérent avec « historique ✔ »). Option 2 : garder ✘* (admin agit sans voir la fiche). HYPOTHÈSE actuelle : option 2 (lecture stricte des ✘*) ; incohérence signalée par l'audit de REC-P01.
+- **Réponse de l'équipe** : 
+
+#### Q-172 — « Non répartie » d'une affiche négative après un rebut ou une sortie sur une affiche entièrement répartie
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-X-060 (Σ liens ≤ reçu) · RG-REC-153 (rebut = mouvement négatif) · Q-208
+- **Options et conséquences / hypothèse** : Options : (a) refuser le rebut au-delà de la part non répartie ; (b) l'accepter et signaler la répartition à revoir ; (c) réduire automatiquement les liens. Aucune source ; aujourd'hui : (b) sans alerte (valeur négative affichée).
+- **Réponse de l'équipe** : 
+
+#### Q-181 — Propagation du rattachement à la famille 2 m² (RG-REC-043 (1)) avec des liens portant une quantité
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-043 (« à la réception, le rattachement s'étend à toutes les lignes 2 m² du même dossier/annonceur/thème/plateforme/semaine » ; « applicabilité en cible à confirmer ») · Q-147 · Q-306 (lien N-N avec quantité) · RG-X-060 (Σ liens ≤ reçu)
+- **Options et conséquences / hypothèse** : Le legacy liait sans quantité ; en cible chaque lien porte une quantité et la somme ne dépasse pas le reçu : propager imposerait une répartition non décrite. Options : (a) pas de propagation (une ligne par visuel) ; (b) propagation avec répartition à saisir ; (c) lien « famille » sans quantité. NON IMPLÉMENTÉ en attendant (ECART-103) ; la recherche et le libellé 2 m² (RG-REC-043 (2), (3)) sont faits.
+- **Réponse de l'équipe** : 
+
+### Module TRA (15)
+
+#### Q-007 — Deux copies de `circe-develop` : laquelle fait référence ?
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : inventaire.md
+- **Options et conséquences / hypothèse** : Identiques sauf assets statiques (`Content/`). Hypothèse : la copie interne à circe-cv1.
+- **Réponse de l'équipe** : 
+
+#### Q-008 — Images des ateliers non extraites (70 : process macro/cible, matrice acteurs × étapes par site, captures Réception/Raccrochage/Validation admin)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-ateliers-besoins.md
+- **Options et conséquences / hypothèse** : Fournir des exports PNG/PDF des slides, ou confirmer que le contenu est couvert par les HTML. Risque : règles manquantes.
+- **Réponse de l'équipe** : 
+
+#### Q-009 — Périmètre de la matrice : inclure les RG legacy provisoires hors Réception/Coordination (RG-ADM, RG-RPR, RG-INT) ?
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : docs/_travail/legacy-*.md
+- **Options et conséquences / hypothèse** : Hypothèse : non, elles alimentent l'étape 8 et les écarts ; la matrice ne porte que EX, ECR, RG-REC, RG-COO, RG-X.
+- **Réponse de l'équipe** : 
+
+#### Q-010 — Secrets en clair dans le code historique (mots de passe SQL dans les `App.config` des batchs et le SSIS, clé API Geodis)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-integrations.md
+- **Options et conséquences / hypothèse** : À signaler à la DSI ; aucun secret recopié dans les docs de travail. Ne bloque pas la modélisation.
+- **Réponse de l'équipe** : 
+
+#### Q-175 — Export Excel des tableaux (« Exporter », EX-TRA-016, RG-REC-016) : aucune bibliothèque xlsx dans la stack
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE · **Date** : 2026-11-04
+- **Sources / conflit** : CLAUDE.md §3 (ne rien ajouter sans question validée) · maquette §2.1
+- **Options et conséquences / hypothèse** : Option 1 : ajouter une bibliothèque xlsx (côté navigateur). Option 2 : export CSV (sans dépendance), ouvrable dans Excel. Aucun export tant que non tranché.
+- **Réponse de l'équipe** : 
+
+#### Q-330 — Planification des traitements automatiques en V2 (alimentation des attendues, fin de journée, purge, Instruction OK automatique) : où et comment ?
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : Q-005 · legacy-integrations.md §6 (aucune planification versionnée) · CLAUDE.md §3 (ne rien ajouter à la stack sans question validée)
+- **Options et conséquences / hypothèse** : Options : tâches planifiées dans apps/api (nécessite une bibliothèque de planification ou un déclenchement externe cron) ; endpoints d'administration appelés par un ordonnanceur de l'hébergeur. Fréquences à fournir par la DSI et la Coordination.
+- **Réponse de l'équipe** : 
+
+#### Q-332 — Pièces jointes de livraison (partage disque DirectoryFilePieceJointeReception) : stockage V2
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : legacy-reception.md RG-REC-080 · EX-TRA-042 (rétention photos/PJ non définie) · CLAUDE.md §3
+- **Options et conséquences / hypothèse** : Choisir un stockage compatible avec la stack (base ou volume applicatif) et une rétention ; lien avec Q-311.
+- **Réponse de l'équipe** : 
+
+#### Q-353 — Matrice rôle × écran × action : la maquette ne fait que griser les écrans secondaires
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : maquettes-reception-coordination.md §1.3 et Q-B ; maquettes-autres-modules.md ECR-NAV-01 ; legacy-admin.md RG-ADM-015, 023
+- **Options et conséquences / hypothèse** : Options : (a) écran primaire = écriture, secondaire = lecture seule ; (b) secondaire = interdit ; (c) matrice fournie par l'équipe. Conséquence : tests de permissions écrits sur la matrice retenue ; proposée par les agents REC/COO pour leur périmètre
+- **Réponse de l'équipe** : 
+
+#### Q-355 — Périmètre exact des écrans consultables par le rôle Commerce (lecture seule)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-transverse.md EX-TRA-004 ; README H10 (à valider avec Commerce, AUT-05) ; maquette sans contrôle effectif
+- **Options et conséquences / hypothèse** : Options : suivi et affiches reçues uniquement, ou tous les écrans en lecture. Conséquence : permissions de lecture du rôle `com`
+- **Réponse de l'équipe** : 
+
+#### Q-356 — Rôles « Patrick » et « Directeur de plateforme » absents des 6 rôles (droits spéciaux)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-ateliers-besoins.md EX-ADM-503 (ré-impression des bagues), EX-SCR-512 (n° de panneau BC), glossaire
+- **Options et conséquences / hypothèse** : Options : rôle supplémentaire, ou permission fine attribuable au rôle `admin` / `cheq`. Conséquence : restriction de ré-impression des bagues (ECR-COO-11) non testable tant que non tranché
+- **Réponse de l'équipe** : 
+
+#### Q-360 — Export .xlsx : génération côté navigateur ou serveur, bibliothèque non prévue par la stack
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-transverse.md EX-TRA-016 ; CLAUDE.md §3 (rien à ajouter sans question validée)
+- **Options et conséquences / hypothèse** : Options : bibliothèque xlsx côté navigateur (ajout de dépendance à valider) ; CSV en repli. Conséquence : boutons Exporter de tous les tableaux
+- **Réponse de l'équipe** : 
+
+#### Q-361 — Bibliothèques de tableau (colonnes déplaçables/redimensionnables, filtres d'en-tête) et de graphiques (dashboard) hors stack imposée
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-transverse.md EX-TRA-015, EX-TRA-023 ; maquette (Tabulator, ECharts) non imposée ; CLAUDE.md §3
+- **Options et conséquences / hypothèse** : Options : composants maison sur Radix/Tailwind, ou ajout d'une bibliothèque à valider. Conséquence : conformité aux maquettes des tableaux P1 (étape 5)
+- **Réponse de l'équipe** : 
+
+#### Q-392 — Excel non fournis : Fichier Vierge, Tableau de Roulage, synthèse du lundi (MUI) et du jeudi
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-ateliers-besoins.md EX-SCR-501, EX-SCR-502, EX-SCR-515, EX-SCR-516
+- **Options et conséquences / hypothèse** : Fournir les fichiers ; sinon hors périmètre P1 et noté en écart
+- **Réponse de l'équipe** : 
+
+#### Q-393 — Termes et références non définis : CG, CP, REP, MUI, VdP, Quick V2, APPFR-1143, « base REF », dynamisations
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-ateliers-besoins.md « Références non résolues » ; specs-existant-process.md glossaire
+- **Options et conséquences / hypothèse** : À définir par l'équipe métier ; aucune règle déduite de ces termes en attendant
+- **Réponse de l'équipe** : 
+
+#### Q-396 — Sauvegarde des données de la veille (« base REF ») : définition et besoin
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : EX-TRA-510
+- **Options et conséquences / hypothèse** : À définir par l'exploitation ; hors périmètre applicatif en attendant
+- **Réponse de l'équipe** : 
+
+### Module X (3)
+
+#### Q-385 — Fin de campagne : décision par dossier ou par visuel ; qui décide ; reprise de l'« État de destruction » legacy ; critère « BDX »
+
+- **Module** : X · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : maquettes-autres-modules.md ECR-STK-03 (questions) ; legacy-reception.md (Destruction)
+- **Options et conséquences / hypothèse** : Options : décision par dossier (maquette) ou par visuel (RP32 #4). Conséquence : modèle des décisions ; écran P2 à confirmer
+- **Réponse de l'équipe** : 
+
+#### Q-387 — « Rendre la main » du fixe : changement d'infos possible après envoi de la prépa (A13) ou non (A14, S L12)
+
+- **Module** : X · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-ateliers-besoins.md contradiction 1, EX-FIX-509, EX-FIX-510
+- **Options et conséquences / hypothèse** : Options : A13 (possible) ; A14 (impossible pour le fixe). Concerne ECR-COO-09 : peut recouper une question COO
+- **Réponse de l'équipe** : 
+
+#### Q-389 — Date prévisionnelle de livraison : source BC (Print Cityz) ou saisie manuelle par les gestionnaires
+
+- **Module** : X · **Bloquante** : NON · **Statut** : OUVERTE
+- **Sources / conflit** : specs-ateliers-besoins.md contradiction 9, EX-REC-516, EX-REC-520 ; ECR-PIL-01 (« Print Cityz : à demander »)
+- **Options et conséquences / hypothèse** : Options : saisie manuelle avec commentaires (A14, S) ; source BC (A13). Conséquence : champ et écran de saisie
+- **Réponse de l'équipe** : 
+
+## D. Non bloquantes — HYPOTHÈSE PRISE (à valider) (193)
+
+### Module COO (61)
+
+#### Q-182 — Points d'interprétation du socle Coordination (COO-P01)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-COO-040, 041, 045, 046, 062, 063, 165 à 169 · §3.2.c · p_u_statut_preparation.sql
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) une instruction sans atelier n'est visible et modifiable que par un utilisateur « tous les sites » (RG-COO-167 ne dit rien de ce cas) ; (2) droits : annuler / remettre à traiter = `instruction.annuler`, retour arrière de l'Instruction OK = `instruction.instruction_ok` (coord, admin dans les deux cas, matrice §2) ; (3) l'effacement du calcul des trains (RG-COO-046) ne s'applique qu'en sortie d'INSTRUCTION_OK (le legacy l'exécute pour tout passage à 0, 1, 4) ; (4) l'annulation d'un dossier (vente annulée, action système) ne change pas le statut de ses instructions : l'Instruction OK s'affiche « — » (RG-COO-062) ; (5) les renvois Broadcast ignorés (RG-COO-041 / 053) sont journalisés (RENVOI_BROADCAST_IGNORE) ; l'alerte « Rajout après préparation » relève de COO-P05 ; (6) le dossier d'une instruction intégrée est retrouvé par n° de dossier s'il existe (création du dossier : RG-COO-091, hors COO-P01) ; (7) « tsr_repart_code = 0 » (RG-COO-041) n'a pas de colonne dans le modèle cible : non repris ; (8) 403 du rôle Commerce : règle citée RG-COO-168 ; autres profils : RG-COO-165 ; (9) RG-COO-062 : aucune transition demandée par un utilisateur sur une instruction d'un dossier annulé (409 citant RG-COO-062) ; (10) intégration de la prépa sur un dossier annulé : résultat « DOSSIER_ANNULE » sans erreur (traitement par lot : le dossier n'est pas rouvert, pas d'exception) ; (11) RG-COO-063 « instruction → EN_COURS » : effet de l'intégration des instructions (RG-COO-041), à enchaîner par le traitement d'alimentation (étape 8) ; (12) RG-COO-087 « date de fermeture » d'une ligne ANNULEE : portée par la date de modification (pas de colonne dédiée ; `purgee_le` reste réservé à la purge automatique RG-REC-180) ; (13) conflit d'idempotence de la Coordination : règle citée RG-REC-008 (exigence transverse « doubles soumissions », CLAUDE.md §6) ; (14) la condition « groupe de préparation Broadcast au statut envoyé (133) » de RG-COO-063 est vérifiée par le traitement d'alimentation (étape 8), pas par `integrerPreparation` ; (15) un dossier sans instruction ni ligne attendue n'apparaît dans la liste pour personne, admin compris (rien à coordonner) ; liste filtrée et paginée en mémoire (volumétrie à vérifier à l'étape 9) ; (16) RG-COO-041 détails / visuels : les détails ne sont remplacés que si le flux les fournit ; un visuel absent d'un renvoi n'est pas supprimé ; un visuel créé reçoit le statut EN_COURS (celui de l'instruction intégrée) ; les visuels n'ont pas de colonne de version (écriture système dans la transaction de l'intégration).
+- **Réponse de l'équipe** : 
+
+#### Q-183 — Points d'interprétation de l'Instruction OK et de la saisie (COO-P02)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-COO-042 à 060, 133 · Q-204 (TRANCHÉE b), Q-205, Q-206, Q-209, Q-219, Q-224, Q-225, Q-257, Q-375 · p_batch_auto_instruction_ok.sql
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) règle de Nariman : « exceptions » = nombre de lignes de détail de l'instruction (`instruction_detail`), « quantité hors entretien » = nombre de faces non « entretien » de l'instruction (équivalent du batch legacy : Σ détails = faces reçues) ; 0 = 0 est conforme ; (2) répartition à 100 % : dimension = support du visuel, par type de préparation ; une instruction sans visuel est conforme ; (3) écart Broadcast / Circé (RG-COO-055) = Σ qte_BC − Σ qte_prépa des lignes attendues ACTIVE non exclues (« ne pas afficher / reste en place », Q-209) du dossier ; null tant qu'aucune qte_prépa n'est connue ; un écart non nul empêche l'Instruction OK automatique ; (4) « Appliquer la version Broadcast » : qte_prépa := qte_BC sur ces lignes, statut de ligne recalculé dans la même transaction, refusé sans écart (409) ; le thème n'est pas repris (pas de thème Broadcast distinct dans le modèle ; Q-225 partiel) ; recalcul / signalement des trains : coo2 ; (5) Instruction OK manuelle groupée en tout ou rien ; l'action n'est proposée qu'après la prépa reçue ; (6) entretien / position modifiables seulement « En cours » (RG-COO-048, 050) ; annonceur figé en Instruction OK / Prêt à produire (RG-COO-047) ; commentaire toujours modifiable ; (7) proposition de position (RG-COO-059) : « début de train » / « en tête » → 1, « fin de train » → 2 ; jamais appliquée ; (8) Instruction OK automatique évaluée à l'intégration de la prépa (dossier → PREPARATION_RECUE ou renvoi) et à celle de chaque instruction quand la prépa est reçue ; renvoi d'une instruction en Instruction OK = réouverture (RG-COO-054) puis mise à jour ; (9) demande de correction : tracée (ENVOYEE), mail non envoyé tant que Q-375 est ouverte ; « Production lancée » non détectée (statuts de production : coo2) ; (10) filtre « À faire » sans la part validation admin (COO-P03) ; défaut de l'écran : « À faire » (maquette) ; (11) grain de l'écart (RG-COO-051, 167) : pour l'Instruction OK automatique, l'écart d'une instruction se lit sur les lignes de la plateforme de son atelier ; à l'écran et pour « Appliquer la version Broadcast », sur les lignes du périmètre de l'utilisateur (les lignes d'un autre site ne sont jamais modifiées) ; (12) l'écart est sommé au grain retenu : des écarts de signe contraire sur deux lignes se compensent (pas de contrôle ligne à ligne : à confirmer) ; (13) renvoi d'une prépa conforme : l'Instruction OK est rouverte puis repasse aussitôt en automatique (une Instruction OK « après contrôle » devient « automatique ») ; (14) « Appliquer la version Broadcast » ne relance pas l'évaluation automatique (l'Instruction OK reste à faire par la Coordination) ; (15) un commentaire fait seulement d'espaces compte comme vide ; (16) RG-COO-058 / Q-209 : les lignes « reste en place » étant exclues de l'écart, un écart dû seulement à elles ne bloque pas l'Instruction OK automatique — à réconcilier avec « RG-COO-058 non implémentée » lors de la validation sur 2-3 dossiers ; (17) une demande de correction passe FAITE à l'intégration suivante de la prépa du dossier (§3.1.e « Corrigé par Broadcast ») ; (18) entretien et position ne se modifient que sur une instruction « En cours » d'un dossier dont la prépa est reçue (l'état ATTENTE « À traiter · prépa pas reçue » de la maquette n'est pas modifiable) ; le commentaire reste libre.
+- **Réponse de l'équipe** : 
+
+#### Q-185 — Points d'interprétation de la validation admin (COO-P03)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-003 à 007, 011, 012, 019, 020 · RG-X-053 · maquette data.js (`C.vaMotifs`, `C.vaEtat`, `casSurs`) · Q-178 (1) · Q-200, Q-203, Q-215, Q-228
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) RG-COO-007 : l'état de validation est CALCULÉ à la lecture (fonction pure) ; seul le motif ANNULEE est persisté (`affiche.validation_annulee`, posé par « Annuler la validation », effacé par toute validation et quand la validation devient caduque) ; (2) RG-COO-006 THEME : plusieurs thèmes distincts parmi les lignes ACTIVES non exclues du même dossier / plateforme / format / semaine ET thème de l'affiche ≠ thème de la ligne (accents, casse, espaces ignorés ; maquette `normTxt`) ; en V2 l'agent choisit la ligne, le motif ne naît donc que d'un thème corrigé ou d'un rattachement à un autre thème ; (3) FORMAT = support de l'affiche ≠ support de la ligne ; SANS_IP = ligne sans thème (Q-178 (1)) ; BL = lien VISUEL / MAIN ou n° de dossier de l'affiche absent de ses lignes (RG-COO-005 (b)) ; MULTI = liens vers ≥ 2 dossiers ; (4) RG-COO-011 : dossier « cas sûr » (pré-coché, compté dans « Cocher les cas sûrs (n) ») = validation à confirmer sans doute ET ni Instruction OK en cours ni écart Broadcast / Circé (maquette `casSurs` : « il ne reste que des rattachements proposés ») ; pré-cochage tant que l'utilisateur n'a pas touché la sélection ni un filtre ; (5) RG-COO-019 : dossier annulé = « — », rien à valider (« Valider la sélection » → 422 RG-COO-013) ; (6) RG-COO-012 : seuls les doutes AFFICHÉS dans la modale (id + version) sont confirmés ; un doute non vu ou modifié est ignoré et listé (DOUTE_NON_VU / VERSION) ; « sans doute seulement » ignore les doutes (DOUTE_NON_CONFIRME) ; (7) RG-COO-003 : les contrôles de format du n° de dossier saisi (« + », semaines) ne s'appliquent pas en V2 (le dossier vient d'une ligne attendue choisie, jamais d'une chaîne libre) ; textes legacy : Q-228 ; (8) RG-COO-010 : le toast de la maquette (« n° d'affiche dans le suivi de prod, picking et étiquette rack débloqués, Broadcast informé ») n'est pas repris tant que ces effets (COO-P04, étape 8) ne sont pas faits : message « n affiche(s) confirmée(s) par la Coordination. » ; (9) une affiche liée à plusieurs dossiers apparaît dans chacun ; la pastille d'un dossier ne compte que les affiches des lignes du périmètre de l'utilisateur (RG-COO-167) ; (10) RG-COO-005 (a) / RG-X-055 (ANO-028) : une affiche dont un lien actif vise une ligne attendue fermée (ANNULEE) n'est pas un cas sûr : motif technique LIGNE_FERMEE « Ligne attendue fermée : à re-rattacher » (libellé tiré de RG-X-055, absent de la liste RG-COO-006) ; le déplacement du lien (RG-X-055) reste à faire ; (11) RG-COO-009 contre RG-REC-003 : le refus de la validation UNITAIRE (POST /api/affiches/:id/validation-admin, Réception) garde `REC_VALIDATION_RESERVEE` / RG-REC-003 ; le lot (Coordination) renvoie `PERMISSION` / RG-COO-009 ; à aligner en COO-P04 ; (12) RG-COO-010 / Q-203 (ANO-026, ANO-027) : aucun plafond de taille de lot ; un doute envoyé qui n'est plus à confirmer est listé en `PLUS_A_CONFIRMER` ; un lot qui n'écrit rien (doutes non vus seulement) → 422 RG-COO-013 avec `details.ignorees` (audit M7) ; (13) libellés : motifs et états courts de l'énoncé RG-COO-006 / 007 à l'écran (la maquette a des libellés longs, `M.VA_MOTIFS`, Q-200) ; « Cocher les cas sûrs (n) » : n = dossiers cas sûrs sous le filtre (toutes pages, RG-COO-011), le clic coche ceux de la page affichée.
+- **Réponse de l'équipe** : 
+
+#### Q-186 — Points d'interprétation des effets de la validation admin (COO-P04)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-008 à 032, 064 · RG-X-014, 015, 050, 051, 052, 058 · ECR-REC-04 · REC §2 / COO §2 · Q-002, Q-003, Q-005, Q-136, Q-162, Q-185 (8) (11), Q-202, Q-210, Q-220, Q-231
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) RG-COO-009 contre RG-REC-003 (Q-185 (11)) : chaque module cite sa règle — l'endpoint Coordination (POST /api/coordination/affiches/:id/validation-admin, lot) renvoie `PERMISSION` / RG-COO-009, l'endpoint Réception de la fiche affiche garde `REC_VALIDATION_RESERVEE` / RG-REC-003 (même droit `validation_admin.valider`, mêmes écritures, RG-X-015) ; (2) RG-COO-010 / Q-185 (8) : toast de la maquette repris, « Broadcast informé » devient « Broadcast informé au prochain retour » tant que le retour (RG-COO-024 / 134) est BLOQUÉ par Q-005 ; (3) RG-X-052 / Q-202 : la validation est portée par l'AFFICHE (pas par lien, modèle Q-300) : un surplus rattaché par la Coordination garde la validation, rattaché par un autre rôle l'affiche entière repasse « à confirmer » (lecture prudente de RG-COO-017) ; (4) RG-COO-015 : aucun marqueur de compte générique dans le modèle (Q-003) : la garantie implémentée est qu'aucun traitement automatique n'écrit de validation (par = utilisateur authentifié) ; (5) RG-COO-023 : drapeau persisté `affiche.etiquette_rack_a_imprimer` posé au passage non validée → validée (lot, unitaire, fiche affiche, rattachement par la Coordination), levé à l'impression de l'étiquette (RG-REC-085), inchangé au décochage ; liste groupée par plateforme avec « Imprimer » (proposition Q62, Q-162 ouverte), PDF navigateur (Q-002) ; (6) RG-COO-030 : motif THEME persisté (`affiche.theme_modifie`) posé par `effetsLigneModifiee` (thème de la ligne changé, comparaison texte faute d'IdTheme sur la ligne), effacé par la reconfirmation ; libellé affiché = celui du motif THEME ; (7) RG-COO-021 / 026 : faute d'écrans Suivi de production / État des réservations (ECR-PIL, D-10), le n° visible et la marque • / ✓ sont exposés dans la fiche dossier (lignes attendues) ; (8) RG-COO-025 : « à traiter » exposé par l'API de la liste des affiches (champ et filtre `aTraiter`), sans filtre d'écran (absent de la maquette) ; (9) RG-COO-022 : seul effet picking existant en V2 = l'édition picking (RG-REC-093), limitée aux affiches validées ; aucune action de zone picking (Q-382) ; (10) RG-COO-009 : le message de la maquette « Réservé à la Coordination : choisissez le rôle « Coordination » en haut de page pour valider » (à reformuler en production) devient « Réservé à la Coordination : la validation admin est faite par les rôles Coordination et administrateur. » (pas de choix du rôle en V2) ; (11) ECR-REC-04 : l'admin CONSULTE les réceptions inconnues (droit `reception.inconnue.consulter`) : COO §2 lui donne « Rattacher une réception inconnue » ✔ (vaut validation) alors que REC §2 met ✘* (déduit) pour la consultation — sans consultation le rattachement serait impossible ; badge des inconnues visible pour l'admin ; (12) RG-COO-030 / 031 / 032 : alertes CALCULÉES (effets-validation.ts:alertesValidation, lue par les Alertes Pré-Prod) à partir de l'état persisté (`theme_modifie`, lien actif sur ligne ANNULEE, écart prépa / BC d'une affiche validée), sans table d'alertes (même choix que les alertes Réception, Q-220) ; toute écriture du thème ou des quantités d'une ligne passe par lignes-maj.ts:mettreAJourLigneAttendue ; (13) une mise à jour (prépa, Broadcast) visant une ligne FERMÉE (ANNULEE) est ignorée et tracée au journal (`RENVOI_BROADCAST_IGNORE`, « ligne fermée : mise à jour ignorée ») sans faire échouer l'intégration (option a ; option b refusée : un 409 ferait échouer toute la prépa) ; (14) RG-COO-010 / 029 : dans « Valider la sélection », une cible de fusion héritée est ignorée et listée (`FUSIONNEE`) sans bloquer les autres ; (15) RG-COO-030 : thèmes comparés sans casse, accents ni espaces multiples (normaliserTheme).
+- **Réponse de l'équipe** : 
+
+#### Q-187 — Points d'interprétation des règles de vie des lignes attendues et de l'état des réservations (COO-P05)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-080 à 090, 094 à 101, 105 à 108 · ECR-PIL-03 · Q-005, Q-207, Q-208, Q-209, Q-212, Q-226, Q-227
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) contrat d'entrée interne `LigneLueBroadcast` (colonnes de RG-COO-092) et `LignePrepa` (RG-COO-094) pour les traitements d'alimentation, en attendant la récupération réelle chez Broadcast (Q-005, BLOQUÉE) ; (2) RG-COO-081 : un site CCF rattaché à plusieurs plateformes → ligne écartée avec alerte « donnée de référence manquante » (aucun choix arbitraire) ; (3) RG-COO-101 : au grain thème, un thème présent sur plusieurs semaines a pour attendu le MAX des semaines (compté une fois) et pour reçu la somme des liens ; (4) RG-COO-085 : l'affiche déplacée vers la ligne du thème garde sa validation admin (le déplacement n'a lieu que sans ambiguïté de thème), sa feuille de stock est « à refaire » ; sans désignation unique, le lien reste sur la ligne provisoire fermée (motif LIGNE_FERMEE, encadré « à re-rattacher » de la fiche dossier, alerte RG-COO-032) au lieu d'une table de proposition `tf_edr_rapprochement` ; (5) RG-COO-107 « Où en est-il » après validation : toutes les unités (répartitions, UM prioritaire, faces) « Terminé » → Expédié ; toutes « À expédier » ou au-delà → Produit ; sinon Prêt ou en production ; « Livré (preuve reçue) » non calculable (preuve de livraison absente du modèle) ; (6) grains servis : Dossier, DA (dossier × format × plateforme), Thème, Format (libellés de la maquette `PAR`) ; les grains Destinataire, Afficheur, Unité, Colis, Départ camion attendent les données de préparation, d'UM et de colis (COO-P12 / P13) ; indicateurs selon la maquette `PHASES` (screens/reservations.js:39) : « validation admin à confirmer » compte dans « En pré-production » (CORRIGÉ à l'audit, la 1re version la comptait dans « Affiches attendues ») ; un clic sur une tuile filtre toutes les étapes de sa phase (`ou` multi-valeurs) ; (7) RG-COO-083 : l'exemple de la fiche (« 2026-12-14 → S07/2027 ») contredit l'énoncé (« lundi + 8 semaines » donne S06/2027, 2026 comptant 53 semaines ISO) : l'énoncé (calcul en dates) est appliqué ; (8) les lignes fermées (provisoire remplacé, ligne plus vue) ne figurent pas dans l'état des réservations, sauf si le dossier est annulé (« Annulé », attendu 0) ; (9) RG-COO-089 : `DELETE /api/coordination/lignes-attendues/:id` : droit `alimentation.manuelle` (coord, admin) vérifié dans le service (403 sinon), puis 404 / 403 de périmètre, puis toujours 409 ; (10) RG-COO-095 : quantité d'une ligne bandeau = Σ `rpc_qte` des répartitions portant ce repiquage (faces : nombre de faces) ; (11) paramètres (Q-337) `coordination.fenetreSemaines` = 8, `coordination.destinatairesExclus` et `coordination.supportsBandeau` = valeurs codées en dur du legacy (Q-227) ; (12) RG-COO-087 : seules les lignes BC des plateformes gérées par Broadcast (site CCF renseigné) peuvent être « plus vues » ; les lignes d'un dossier dont la prépa est « Envoyé » (exclu de la lecture) ne sont pas fermées ; (13) RG-COO-088 : le filtre « non entièrement couvertes » s'applique aux PROPOSITIONS (tri par reste) du rattachement manuel, pas à la recherche saisie ; (14) RG-COO-080 : un thème renommé (IP saisies, version Broadcast) qui prend la clé d'une autre ligne active est FUSIONNÉ dans celle-ci (quantités additionnées comme deux DA, liens déplacés, ligne renommée fermée, effets RG-COO-030 sur ses affiches validées), jamais d'erreur d'unicité ; (15) liseré de l'état des réservations (maquette `tone`) et deadline Pré-Prod paramétrée (`coordination.deadlinePrepa` = « -2;4;16:00 », jeudi S-2 16 h, RG-COO-066 / 076) calculée en UTC (fuseau des plateformes non modélisé).
+- **Réponse de l'équipe** : 
+
+#### Q-188 — Points d'interprétation de l'intégration Broadcast (COO-P06)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-091 à 093, 102 à 104, 109, 115 à 123, 125 à 132, 134 · Q-005, Q-010, Q-211, Q-216, Q-227, Q-228, Q-231
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) contrat d'entrée d'un LOT (`LotIntegrationSchema` : état des réservations, destinataires, groupes de préparation, faces, instructions, dossiers annulés, indicateur `lectureComplete`) ; le lot n'entre QUE par le connecteur (port `BroadcastPort`) ou la commande `integration:lot` d'un ordonnanceur (écritures « Circé (automatique) ») — aucune route utilisateur ne dépose de lot (audit COO-P06) ; seul un lot `lectureComplete = true` ferme les lignes des dossiers absents (RG-COO-087) ; aucun adaptateur réel (Q-005, BLOQUÉE) : sans source, le passage manuel échoue explicitement et le planificateur ne démarre pas ; (2) ordre fixe : état des réservations en tête (lecture séparée dans le legacy), puis destinataires → préparations → trains → instructions / annulations (RG-COO-115), retour vers Broadcast en dernier ; (3) le dossier (`dossier`, Q-336) est créé « À traiter » au premier flux qui le cite ; (4) verrou de passage : unicité `passage_integration.verrou` ; un verrou laissé par un arrêt du serveur est libéré après 6 × le délai d'un flux ; (5) RG-COO-134 appliquée selon son texte et le legacy (`p_batch_alimentation_circe_pex_reception.sql` : lignes `FromBroadcast` nul ou 0) : (a) affiches liées à une ligne de la fenêtre NON issue de Broadcast — correspondance retenue : `FromBroadcast = 0` ↔ source PREPA ; (b) affiches de `tf_dossier_semaine_depart` sans lien vers une telle ligne ; (6) format du paramètre des types forcés (RG-COO-128) ; identifiants legacy (ateliers, types, supports) repris tels quels et vérifiés dans le référentiel (absent → null + donnée de référence manquante) ; (7) délai d'un flux : 600 s (aucune valeur source) ; (8) écran « Chargements Broadcast » (/coordination/integration) sans maquette : journal des passages et flux, passage manuel, « Rafraîchir un dossier » ; consultation réservée au droit `alimentation.manuelle` (coord / admin) ; (9) RG-COO-091 / 116 : l'erreur d'UN dossier (groupe, instruction) est annulée seule et comptée dans le flux (statut 0 avec erreurs) ; seule une erreur du flux lui-même le met en échec (statut 2) et arrête les suivants ; (10) RG-COO-122 : renvoi non intégré signalé par l'action de journal PREPA_RENVOYEE_NON_INTEGREE (Q-216), lue par les Alertes (COO-P07) ; (11) RG-COO-123 : « partiel » = détails refusés ou ignorés (la condition legacy `count(distinct rpc_statut) <> 8` n'est pas reproduite, Q-228) ; (12) les messages vers Broadcast (accusé, purge INTERFACE, rafraîchir, retour) sont mis en file (`envoi_broadcast`) et rejoués à chaque passage ; (13) RG-COO-109 non développée (Q-228) ; (14) passage manuel réservé à l'administrateur (RG-COO-103), voir Q-189 ; (15) « Rafraîchir un dossier » : dossier connu de Circé → contrôle de périmètre (RG-COO-167) ; dossier pas encore intégré → réservé aux utilisateurs de tous les sites ; (16) RG-COO-130 3e clause (UpdateRessource) : panels relevés avant la suppression des anciennes faces parmi les faces existantes du même dossier, panel, semaine et année du contrat (statut ≤ 4) ; la correspondance legacy par IdFaceOTAffichage (non repris) est approchée ainsi.
+- **Réponse de l'équipe** : 
+
+#### Q-190 — Points d'interprétation des alertes Pré-Prod et de la vérification des thèmes (COO-P07)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-033, 053, 066 à 076, 103, 116, 122 ; RG-REC-184 ; RG-X-057 · maquettes ECR-TRA-01, ECR-THM-01 à 03 (`alertes.js`, `themes.js`, `data.js` C.alertes / C.prodLancee) · Q-220, Q-222, Q-371
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) « production lancée » = une face, une répartition ou une UM du dossier aux statuts A_IMPRIMER, PREPARE, A_EXPEDIER, TERMINE, EXPORT_PREPA, AU_ROULAGE, ou une instruction PRET_A_PRODUIRE (maquette `C.prodLancee` : unité en production ou au-delà) — utilisée par RG-COO-068 (gravité), 069 (refus), 074 (DM) ; (2) alertes calculées à la lecture, acquittement persisté (global, auteur, date, Q-371) avec une signature gravité + message : une alerte aggravée ou dont le message change redevient ouverte ; le droit d'acquitter reste refusé à tous les rôles (catalogue, Q-220) ; (3) les alertes nées d'un événement daté (renvoi ignoré, prépa intégrée dans la fenêtre, prépa renvoyée non intégrée, alertes d'alimentation) restent affichées `alertes.joursEvenements` = 7 jours (aucune source pour la durée) ; (4) RG-COO-066 : dossiers au premier départ entre S et S+2 (maquette : S+1 et S+2 avec une horloge en S) ; un dossier sans fiche est « À traiter » ; (5) RG-REC-184 et RG-COO-071 décrivent la même exception : Pilotage › Alertes ne garde que l'alerte par affiche (RG-COO-071) ; l'écran Alertes de la Réception (REC-P10) est inchangé ; (6) type `INTEGRATION` ajouté pour les alertes techniques (RG-COO-103, 116, 122, 081, 085), sans type dans la maquette ; la colonne « Besoins » (identifiants de besoins de la maquette) est remplacée par la règle ; (7) « thème de Circé » = thème de l'affiche reçue (imprimé sur la feuille de stock), « thème de Broadcast » = thème de la ligne attendue (mis à jour par la lecture, RG-COO-081) ; « Reprendre la version BC » aligne l'affiche ; la validation reste à refaire (RG-COO-030) ; (8) l'annonceur imprimé corrigé par la plateforme (fixe / colle, FIX-15) n'est pas modélisé : tous les noms viennent de Broadcast ; (9) RG-COO-032 est rangée sous le type « Écart Broadcast / Circé » (« type écart / dossier annulé ») ; (10) RG-COO-073 : fenêtre paramétrée « -2;5;00:00\|0;5;23:59 » (vendredi S-2 0 h → vendredi S 23 h 59) évaluée sur chaque semaine de départ du dossier, à la date d'intégration de la prépa (journal) ; (11) RG-COO-053 / 074 : renvoi ignoré d'une instruction INSTRUCTION_OK ou PRET_A_PRODUIRE → « Dernière minute » (Critique) si la production est lancée, sinon « Rajout après préparation » (Important) ; renvoi d'une instruction annulée : sans alerte ; (12) vérification des thèmes : un thème = (dossier, intitulé) d'une ligne active non provisoire, non exclue, au départ ≥ semaine en cours, dossier non annulé, dans le périmètre ; clé de groupe = identifiants triés ; « Corrigé par Broadcast » = demande dont l'ancien intitulé n'existe plus sur le dossier (calculé) ; « Déjà traités » = corrigés + différents ; un lien `?dossier=` montre tous les états ; (13) consultation de la vérification des thèmes réservée à coord / admin (droit `verification_themes.consulter`, RG-COO-075 « rôle coord/admin ») ; demandes et verdicts : droit `broadcast.correction.demander` ; (14) alertes techniques de l'intégration visibles des seuls détenteurs de `alimentation.manuelle` (coord, admin) ; (15) Pilotage › Alertes : départ S + S+1 par défaut côté écran (les alertes sans semaine restent) ; ECR-COO-01 : deadline du premier départ du dossier ; (16) RG-COO-068 (ANO-036) : « après la validation / l'Instruction OK » = affiche validée dont la ligne a changé de thème, ou affiche (même non validée) d'un dossier en Instruction OK / Prêt à produire dont le thème diffère de celui de la ligne ; seule la validation des affiches validées est défaite (RG-COO-030) ; (17) RG-COO-031 (ANO-037) : l'écart de quantité après validation est un événement journalisé, affiché 7 jours (point (3)) ; (18) paramètre `coordination.fenetreRajout` vide ou mal formé : valeur par défaut de RG-COO-073 ; (19) un même dossier n'a qu'UNE alerte « Écart Broadcast / Circé » : l'écart calculé (BC-) prime sur la quantité modifiée après validation (QTE-), sinon la modification la plus récente.
+- **Réponse de l'équipe** : 
+
+#### Q-191 — Points d'interprétation du déblocage des préparations / « Rendre la main » (COO-P08, 12 points)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-140 à 152, 277 à 279 ; RG-X-059 · legacy `AdminPreparationDeblocageBll.cs` (source de la recherche = procédure Broadcast `P_CirceRecherchePreparationDeblocable`, hors dépôt : Q-005) · Q-217, Q-218, Q-219, Q-227, Q-275, Q-382
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) source des groupes : la recherche Broadcast n'étant pas disponible (Q-005), un groupe est construit à partir des données de Circé : groupe **UM** = TOUTES les répartitions Circé d'un même groupe Broadcast (`IdGroupePreparation`), quels que soient leurs dossiers et semaines (comme le legacy `p_s_controle_rendumain(IdGroupePreparation)` et la demande `P_CirceDebloquerGroupePreparation` : audit COO-P08 B1) : contrôle des UM et annulation portent sur le groupe entier, présenté sur une seule ligne avec le détail de ses tranches dossier × semaine ; chaque tranche est rapprochée de la ligne de l'état des réservations du même dossier, semaine et type de préparation (prépa chapeau, surface, site, quantité) ; groupe **TRAIN** = lignes de l'état des réservations (prépa chapeau × dossier × semaine × surface × type × site) sans répartition Circé ; la recherche par n° de préparation passe par l'état des réservations ; (2) référentiel des types fusionné (Q-318) : la « famille » d'un type de préparation (règles `tr_atelier_droit_prepa`) est le type lui-même ; les ateliers de l'utilisateur = ateliers de son périmètre (tous les ateliers de la plateforme pour une ligne de périmètre sans atelier) ; (3) la demande `P_CirceDebloquerGroupePreparation` à Broadcast est mise en file (`envoi_broadcast`, type DEBLOQUER_GROUPE) dans la transaction du déblocage et rejouée par le passage d'intégration (envoi réel BLOQUÉ, Q-005) ; si Broadcast la refuse plus tard, l'échec reste visible dans la file (RG-COO-145 voulait l'appel avant l'écriture Circé) ; (4) contrôle d'un groupe TRAIN (Q-218) : faces du dossier × semaine sur les supports de la surface (correspondance surface × format → support, tous formats) et sur un atelier déroulant (SCROLL) du site ; aucune correspondance ⇒ refus explicite 422 ; (5) état du groupe (§3.2.e) : UM « débloqué » quand toutes ses répartitions sont annulées, « intégré » dès qu'une répartition non annulée existe (prépa renvoyée) — RISQUE : si Broadcast ne renvoie qu'une partie du groupe (réintégration partielle), le groupe redevient « intégré » sur cette seule partie, les tranches non renvoyées restent annulées et un nouveau « Rendre la main » n'annule que la partie réintégrée ; la cohérence du renvoi complet repose sur Broadcast (à confirmer avec la Pré-Prod) ; TRAIN « débloqué » tant qu'aucune face n'a été intégrée après le dernier déblocage ; débloquer un groupe débloqué ⇒ 409 ; (6) « Rendre la main » de l'écran de déblocage = le déblocage du groupe (RG-COO-151, Q-382) ; motif vide ⇒ motif par défaut de la maquette ; le passage des unités en « En attente » et l'action sur les unités de l'écran ECR-COO-09b relèvent de RG-COO-243 (COO-P12) ; (7) mail (Q-219, Q-375) : destinataires = adresses de la plateforme du site ; aucun envoi, statut tracé (NON_ENVOYE / SANS_DESTINATAIRE) ; (8) suivi (RG-COO-149) : période en dates (jour) incluses, défaut = du même jour du mois précédent à aujourd'hui ; périmètre = plateformes de l'utilisateur ; (9) emplacement de l'écran : `/coordination/deblocage` (Coordination › Administration), sans maquette cible (Q-217) ; (10) RG-COO-150 (ancien écran AMT « Répartitions déblocables ») non développé tant que Q-228 est ouverte ; (11) RG-COO-142 : la plateforme d'un site est déduite du référentiel (site CCF porté par la plateforme), et non de la règle codée en dur du legacy « site 39 → plateforme 1, tout autre site → plateforme 2 » ; (12) une demande de déblocage refusée ou non reçue par Broadcast (échec d'envoi de la file) lève l'alerte « Déblocage non transmis à Broadcast » (Pilotage › Alertes, Important, RG-COO-145) jusqu'à son envoi réussi.
+- **Réponse de l'équipe** : 
+
+#### Q-192 — Points d'interprétation des trains (COO-P09, 19 points)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-200 à 209, 218 à 229, 307, 308 · legacy `p_u_associe_train.sql`, `p_u_duplication_train.sql` · maquette ECR-COO-05 · Q-250, Q-251, Q-253, Q-255, Q-256, Q-258, Q-259, Q-260, Q-261, Q-280, Q-286
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) le contrat des faces Broadcast (COO-P06) porte, en champs optionnels, l'emplacement legacy (secteur, département, commune, n° d'emplacement, adresse), le n° de train et le rang ; la version du train cherche les faces du même tuple d'emplacement (`empl_ident` non repris) ; (2) un visuel dont le type de préparation n'est pas au référentiel (non repris, Q-319) est traité comme un visuel (legacy tpr 10) ; bandeau = type BDX du paramètre `integration.typesVisuels` ; (3) une face « Instruction ok » sans identifiant de train (emplacement inconnu) est ANNULÉE avec historique au lieu d'être supprimée (legacy : `delete … train_id is null`, global ; V2 : limité à l'instruction calculée) ; une face d'entretien sans secteur ni atelier n'est pas créée (tracé) ; l'anti-doublon ne touche jamais une face en production (RG-COO-223) et inclut les faces sans type ; (4) faces d'entretien : départ = départ du groupe (le legacy posait la date du calcul) ; grain AFFICHEUR / VILLE, seuil 3 et arrondi SUPERIEUR / PROCHE en paramètres (Q-256) ; (5) train créé par la Coordination : n° « TR-Pnnnn » séquentiel, une face « A imprimer » (pas d'export), afficheur = premier afficheur connu du destinataire, départ = départ connu du destinataire cette semaine sinon le lundi ; réservé à `coord` (Q-258) ; (6) statut d'unité calculé (Q-250) : 9 / 10 → EN_PROD, 6 → PRODUIT, 7 → COLISE, 8 → EXPEDIE, sinon EN_ATTENTE / PRET selon la couverture ; l'indicateur « En production » compte EN_PROD et PRODUIT ; les indicateurs ignorent le filtre Statut ; (7) couverture calculée à chaque lecture (aucun historique du passage EN_ATTENTE → PRET, qui n'est pas persisté) ; reçu = somme des liens actifs des lignes du thème sur le site, toutes lignes (Q-280) ; les faces déjà en production consomment aussi le reçu ; (8) version d'un train (RG-COO-308) = empreinte « nombre de faces . somme des versions . id max » ; (9) raccrochage : la face ajoutée a un cadre propre (− id du visuel) pour ne pas être prise pour un doublon ; « même semaine » = semaine du contrat ; le besoin du thème se calcule depuis les faces (pas d'écriture « qte += nb » sur la ligne attendue) ; (10) machine non modélisée (D-02) : colonne « — », pas de filtre Machine ; (11) RG-COO-229 : droit `suivi_8m2.saisir` (coord, cheq) ; (12) annuler un thème / débloquer une semaine : critère atelier × semaine de départ, sans version (action par critère, contrôles dans la transaction ; RG-COO-308 ne cite pas ces deux actions parmi les actions de masse à version, RG-COO-307 n'exige que leur historique, fait) ; (13) duplication conservée avec validations (train source existant, cibles libres) tant que Q-260 n'est pas tranchée ; (14) une Instruction OK sans face n'écrit pas de trace de calcul ; (15) fractionnement : sémantique cible (positions marquées fractionnées) ; la version du `train_id` legacy n'est pas incrémentée (Q-261) ; (16) ANO-041 : le « Destinataire (du site) » de RG-COO-224 est contrôlé par le service avec le critère de la modale (destinataire actif ayant des faces ou des répartitions sur la plateforme de l'atelier) ; refus 422 `COO_DESTINATAIRE_HORS_SITE` (la règle ne donne ni code ni message) ; (17) ANO-040 : le quota d'un visuel est calculé en arithmétique entière (pourcentage arrondi à l'unité = fréquence au centième du legacy, `int(fréquence × nombre de faces)`), pas en flottant ; l'entretien (RG-COO-203) de même, au centième de pourcentage ; (18) ANO-042 : tout paramètre « semaine de départ » doit être une semaine ISO réelle (2026 compte 53 semaines, 2027 en compte 52), sinon 400 ; (19) RG-COO-219 : la « ligne » dont le statut doit être 5 est la répartition du thème (`tf_repart_calcul`, même atelier, dossier, thème et semaine du contrat) ; sans répartition (déroulant en V2) seule la condition sur les faces s'applique ; message « Le statut du thème ne permet pas l'annulation ! » (RG-COO-219).
+- **Réponse de l'équipe** : 
+
+#### Q-193 — Points d'interprétation de l'export, du suivi par thème, du rouleur et du générateur (COO-P10, 19 points)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-210 à 217, 230 à 236 · legacy `PreparationDeroulantsService.cs` (CSV d'export), `TrainPreparationBll.cs` · maquette ECR-COO-05b, 06, 07, ECR-GEN-01 / 03 · Q-002, Q-251 à Q-255, Q-260, Q-262, Q-263, D-15
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) le fichier d'export et le fichier du générateur sont SIMULÉS (D-15) : CSV du legacy (30 caractères par champ, 6 contrats, thème et repiquage fusionnés en 2 m²) avec les colonnes disponibles en V2 (adresse 2, réseau, type vides), stocké en base et téléchargeable, jamais déposé ; le fichier du générateur porte une première ligne « # SIMULATION » ; le CSV d'export (Surf, Caire) ne peut pas porter de ligne de commentaire sans casser son format : il est marqué SIMULÉ par son NOM (suffixe `_SIMULE`), par le champ `fichierSimule` du résultat, de l'historique et du lot (colonne `fichier_simule`), par un avertissement dans le message et dans la modale, et par le journal du lot (audit COO-P10 B1) ; « simulation d'export » (fonctionnelle, aucun statut modifié) et « fichier simulé » (jamais déposé, D-15) sont deux notions distinctes à l'écran ; en-tête CSV : « Section » = nom d'origine du destinataire (legacy DestNomOri, `PreparationDeroulantsService.cs:418`) ; « CentreCommercial » = jour et date de départ pour l'export Surf alors que le legacy y met `Agreement` (non modélisé en V2 ; l'export Caire du legacy utilise bien la date) ; « Statut » = code numérique de la face alors que le legacy écrit « A » (HYPOTHÈSE à confirmer avec le format réel D-15) ; en production l'envoi à la machine est refusé (port MachineNonConfiguree, comme Broadcast) ; (2) l'export d'un train de plus de `trains.positionsMax` contrats est une erreur 422 explicite sans aucun changement (Q-253) ; (3) la simulation écrit le lot et le journal mais ni statut ni tf_train_export ; elle exige aussi au moins un dossier exportable ; (4) « dossier exportable » = instruction Instruction OK avec mode AUTO ou MANUEL, dossier dont la préparation est reçue ; « déjà exporté » = instruction Prêt à produire ; « En cours » = faces au statut 0 / 1 / 3 du départ ; marquage exporté = date et utilisateur sur l'instruction + journal du dossier ; (5) pré-assemblé = toutes les faces non fractionnées du thème le sont, ou une face du thème est en production (initialisation à Fait) ; booléen par thème (Q-262) ; besoin = nombre de trains qui portent le thème ; « Entretien » = nombre de faces d'entretien du thème (l'énoncé de RG-COO-230 dit `qteEnt − qte` : ces quantités ne sont pas modélisées sur les faces V2, écart assumé) ; « visuel » = position / face d'un train, comme dans RG-COO-233 (« tous les visuels non fractionnés du train »), d'où le message « n visuel(s) pré-assemblé(s) » qui compte des faces ; (6) exclusions du suivi par thème = ligne attendue `themeExclu` (RG-REC-014), sans effet sur RG-COO-232 (Q-263) ; (7) ateliers autorisés à l'export préparation = paramètre `trains.ateliersExportPrepa` (valeur du legacy 5 ; 6, absente du référentiel V2) ; plafond de 20 couples (thème, repiquage) compté par atelier et semaine de départ, faces déjà à 9 incluses ; (8) rouleur valide = actif et rattaché à l'atelier du train ou sans atelier ; pas de réaffectation d'un train en production ; poste « Table k » non modélisé ; (9) « Au roulage » (9 → 10) n'accepte que des faces « Export prépa » ; (10) ECR-GEN-01 : tiroirs = visuels distincts (dossier, thème, repiquage) hors positions fractionnées, plafond `trains.tiroirsMax` = 20 bloquant (Q-254), seuls les trains PRET se préparent ; (11) [REMPLACÉE par la question Q-194, audit COO-P10 B2] « Envoyer à la machine » ne modifie AUCUNE face : le lot passe « Envoyé » (version +1, machine tracée), le fichier est remis au port ; les faces ne passent « Au roulage » que par l'action explicite « Au roulage » avec rouleur obligatoire (RG-COO-217) ; l'envoi n'exige pas que le train soit exporté (Q-251) mais exige un train PRET dont la version est celle du « Préparer » (audit B3, RG-COO-308) ; lot versionné G-nnnn (RG-COO-307) ; (12) l'écran n'a pas d'équivalent maquette pour « Annuler thème » / « Débloquer semaine » : boutons du Suivi par thème, selon RG-COO-219 / 220 ; (13) périmètre des lots (RG-COO-167, ANO-045 à 048) : un lot d'export ou de génération (fichier avec destinataires, adresses, annonceurs, thèmes) n'est visible que si TOUS ses ateliers sont dans le périmètre de l'utilisateur (colonne `ate_ids`) ; un lot antérieur à la colonne (sans atelier) n'est visible que de qui voit toutes les plateformes ; un lot exporté par l'administrateur sur plusieurs sites n'est donc visible que de lui ; refus d'un fichier hors périmètre : 403 `COO_PERIMETRE_INTERDIT` ; le journal des passages d'intégration reste global (lot Broadcast système, hors site) ; (14) ordre des écritures de « Envoyer à la machine » : le dépôt au port est la DERNIÈRE opération de la transaction (après les écritures de faces, du lot et du journal) : une écriture en échec ne remet aucun fichier, un dépôt en échec annule tout ; risque résiduel (échec de la validation après un dépôt réussi) à traiter avec D-15 par une vraie boîte d'envoi ; le lot `G-nnnn` identifie le fichier pour dédoublonnage ; (15) « Export préparation puis Générer le fichier » (RG-COO-215) : le fichier Caire est produit par l'export préparation lui-même (faces 5 → 9) ; le générateur Vendôme (ECR-GEN-01) ne prend que des trains PRET aux faces « A imprimer » : un train « Export prépa » n'est donc pas proposé au générateur, par construction (Q-250 : « Export prépa » compte comme En production). ; (16) un lot d'export préparation ne porte qu'UNE semaine de départ : une sélection à cheval sur plusieurs semaines est refusée (422 COO_EXPORT_PREPA_MULTI_SEMAINES, aucun changement) car le lot n'enregistre qu'une semaine (audit m9) ; (17) historiques d'exports et de générations (RG-COO-167) : lecture par paquets de 200 lots (curseur) jusqu'à 100 / 50 lots visibles du périmètre, pour qu'un site ne soit pas noyé par les lots des autres (audit m6) ; (18) versions des trains stockées au « Préparer » (colonne `versions_trains`) et revérifiées à l'envoi : train disparu ou version changée → 409 COO_TRAIN_MODIFIE, train plus PRET → 409 COO_TRAIN_NON_PRET (audit B3) ; (19) recherche du générateur côté API (train, destinataire, afficheur, annonceur, thème, sans casse ni accents) et clés de visuels par train pour le compteur « n / 20 tiroirs » (union côté écran, le refus restant prononcé par l'API ; audit m2).
+- **Réponse de l'équipe** : 
+
+#### Q-195 — Points d'interprétation du suivi 8 m², du dispatch du roulage, des rouleurs et des bagues (COO-P11, 14 points)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-234, 237, 291 à 303 · maquette ECR-COO-08, 10, 11 · Q-002, Q-250, Q-251, Q-262, Q-264, Q-265, Q-276, Q-277, Q-278, Q-286, Q-287, Q-319
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) l'unité de production du déroulant est le TRAIN (Q-250) ; une bague est imprimable si l'unité est « Prêt à produire » ET si toutes ses faces sont « A imprimer » : la table de transitions des faces n'a pas de « Instruction ok » → « Au roulage » (RG-COO-218) : un train prêt mais pas exporté n'est pas imprimable (raison listée) ; les unités UM (rouleau) et lot attendent la création des UM (Q-265 OUVERTE) ; (2) une bague par train, numéro = identifiant de la bague, « Nb aff » = positions non fractionnées, « boucle » non modélisée, code-barres Code 39 des chiffres du numéro (aperçu navigateur : Q-002, Q-287) ; (3) « Modifier les textes » : réservé aux bagues déjà imprimées ; 422 si un texte est vide (« Le thème et l'annonceur ne peuvent pas être vides. »), si rien n'a changé (« Rien n'a changé. ») ou si les positions ne sont pas exactement celles de la bague ; (4) réimpression : chef d'équipe seul (Q-277 sans réponse, Q-286) ; la précision du motif « Autre » est facultative ; (5) sans départ choisi, la liste des bagues porte sur les trains partant depuis 14 jours ; (6) dispatch : les rouleurs proposés sont les opérateurs actifs de l'atelier (un rouleur sans atelier n'est pas proposé) ; la charge décrit l'atelier (les filtres dossier / destinataire / statut ne la changent pas) ; moyenne = faces totales / rouleurs de l'atelier ; surcharge si la charge dépasse STRICTEMENT le seuil ; seuils 36 h et 115 % en paramètres (Q-276) ; (7) dispatch, train « En production » : réaffectation possible (RG-COO-294 « train non livré ») mais désaffectation refusée (409 : rouleur obligatoire à « Au roulage », RG-COO-217) ; « Tout désaffecter » laisse ces trains et les compte à part ; l'hypothèse de COO-P10 (Q-193) qui refuse la réaffectation d'un train en production reste valable pour l'action « Choisir le rouleur » (RG-COO-236) ; (8) « Proposer une répartition » : règle simulée de la maquette ; 422 s'il n'y a aucun train non affecté ou aucun rouleur actif ; charge de départ = faces déjà affectées sur l'atelier ; ex æquo : plus petit identifiant de rouleur ; (9) liste de picking : une ligne par affiche rattachée aux visuels des trains du rouleur (emplacement = allée-rayon, quantité = quantité rattachée), triée par emplacement, trains PRET / EN_PROD seulement ; (10) suivi 8 m² : ateliers 8 m² = paramètre `suivi8m2.ateliers` (VIDE par défaut : les identifiants legacy 7 et 8 ne sont pas supposés, Q-319 ; sans paramètre aucun thème n'est suivi) ; saisie libre ≥ 0 sans plafond, le reste à faire = besoin − finales peut être négatif (Q-264 sans réponse) ; (11) rouleurs : nom unique par atelier (casse ignorée), suppression refusée (409) si référencé par une face ou une bague, désactivation par date de fin ; gestion réservée à l'administrateur (écran `/coordination/rouleurs`, sans E2E) ; (12) RG-COO-303 (tableau de roulage) : aucune route (Q-278, hors périmètre initial) ; la bague porte l'atelier, le rouleur, la date et l'auteur qui l'alimenteraient ; (13) RG-COO-234 : le pré-assemblage 8 m² reste un booléen par thème (Q-262 sans réponse) ; (14) limite de paramètres de SQLite (ANO-049) : les listes d'ateliers d'un administrateur sont lues par paquets.
+- **Réponse de l'équipe** : 
+
+#### Q-196 — Points d'interprétation de la préparation 2 m² fixe, du pliage et du bus (COO-P12, 13 points)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-124, 238 à 251, 290, 304 à 306 · maquette ECR-COO-09 (09a à 09e) · Q-002, Q-224, Q-256, Q-261, Q-265, Q-266, Q-267, Q-269, Q-270, Q-271, Q-279, Q-287, Q-319
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) RG-COO-124 : le contrat de préparation (HYPOTHÈSE Q-188 (1)) est étendu de `quantiteEntretien` et `datePremierDepart` (colonnes `QuantiteEntretien` et `DatePremierDepart` de `trav_preparation`) ; réalignement à chaque passage sur les lignes « A traiter » / « En cours » du groupe, y compris celles déjà intégrées ; lundi à jeudi : départ ≥ lundi + 14 j ; vendredi à dimanche : départ ≥ lundi + 21 j ET sans UM ; calcul ISO en UTC ; (2) l'afficheur d'une répartition est son destinataire (le grain de l'entretien est destinataire × thème × dossier × semaine) ; l'entretien suit les paramètres de COO-P09 (seuil 3, arrondi supérieur) avec un minimum de 1 dès le seuil ; le % vient de l'instruction du dossier (Broadcast), sinon 8 % ; (3) type d'unité : « pliage » et « bus » sont portés par les paramètres `unitaire.typesPliage` et `unitaire.typesBus` (types de préparation, VIDES par défaut : aucun identifiant legacy supposé, Q-319) ; tout autre type d'un atelier fixe est « 2 m² fixe » ; la ligne affichée regroupe les répartitions d'un même destinataire × thème × dossier × semaine (RG-COO-248) ; la correction d'intitulé est autorisée même si la production est lancée (exception à RG-COO-223 limitée à l'intitulé imprimé) et s'applique à toutes les unités du thème du même site ; (4) « Rendre la main » (unitaire) : unités non lancées = répartition « A traiter » / « En cours » dont l'UM n'est pas « Préparé » ou au-delà ; elles repassent « A traiter » (EN_ATTENTE), l'UM est supprimée comme au retrait ; ne touche NI la validation admin NI les affiches reçues NI le groupe Broadcast (annulation côté Circé : déblocage du groupe, COO-P08) ; le comptage de pliage passe les UM « Préparé » et l'« alerte qualité » en cas d'écart est une entrée de journal (aucun écran d'alerte) ; (5) quantités à encoller (Bus) : calcul Broadcast = commande × 1,28 arrondi à l'entier (« +8 % +20 % »), ajustement global et par centre en % additifs avec plancher −100 %, un enregistrement par plateforme × semaine sous verrou de version ; (6) « Retirer » traite l'UM en entier (toutes ses répartitions, comme le legacy) et exige qu'elles soient toutes « En cours » ; « Préparer » : seules les UM « En cours » ou « Préparé » ; (7) la création des UM, la libération de la semaine, le statut initial « à libérer » et le repère « Arrivé après libération » (RG-COO-240 à 242, 260, RG-X-076) restent BLOQUÉS par Q-265 (OUVERTE) : l'écran l'annonce, aucune route n'existe ; (8) RG-COO-251 : aucun réordonnancement n'existe en V2 (test d'absence) ; (9) l'affiche reçue indicative (RG-COO-290) est lue dans un module séparé : aucun code qui écrit une UM ou une répartition ne lit la validation admin (RG-COO-027) ; (10) la saisie du suivi 8 m² n'a plus de plafond fonctionnel (Q-195 (10)) : seule la limite d'un entier 32 bits (2 147 483 647) rejette ; (11) les lectures dont la liste dépend des données (dossiers, ateliers, faces, trains, affiches) sont faites par paquets (`parPaquets`, ANO-050 / 051) ; le traitement des dossiers absents d'une lecture complète (RG-COO-087) filtre en mémoire ; (12) B4 / Q-194 : la garde « déjà envoyé » repose sur la version du train (somme des versions de ses faces) ; toute écriture ultérieure d'une face (affectation de rouleur, pré-assemblage) change la version et rend le train de nouveau renvoyable : risque de double production à arbitrer avec Q-194 ; (13) ECR-COO-09 : « Générer les fichiers multi-rouleuse » et « Imprimer les bagues » ne sont pas proposés depuis l'écran unitaire (le générateur et l'écran Bagues sont des écrans à part). ; (14) COO-P13 : lecture ALTERNATIVE de (5) à valider (Q-279) : « +8 % +20 % arrondis » pourrait se lire terme par terme (une commande de 2 donnerait 2 au lieu de 3) ; la lecture retenue arrondit le total (commande × 1,28).
+- **Réponse de l'équipe** : 
+
+#### Q-197 — Points d'interprétation du colisage, de l'expédition et de la fin de journée (COO-P13, 19 points)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-249, 263 à 271, 280 ; RG-X-087 · maquette ECR-EXP-01, 02 · Q-005, Q-175, Q-265, Q-271, Q-272, Q-273, Q-274, Q-275, Q-281, Q-284, Q-285, Q-286, Q-310, Q-319, Q-375
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) le colisage consomme les UM EXISTANTES (leur création, RG-COO-260 à 262, reste BLOQUÉE par Q-265) ; une UM se désigne par son code barre ou par `UM-<id>` ; la version `PreparationColisBll` (destinataire ET atelier identiques à ceux du colis) est retenue ; (2) statuts du colis : 1 / 7 / 8 du legacy = « Colis ouvert » / « Clos · à expédier » / « Expédié » ; « Livré » (preuve de livraison Geodis) n'est pas modélisé (Q-284) ; un colis clos ne se rouvre pas (409, décision du 16/10, Q-272) ; (3) un train s'ajoute en entier (toutes ses faces non annulées) à un colis d'atelier déroulant ; « Il existe déjà un train dans ce colis » est lu comme « le train est déjà rattaché à un colis » ; les faces 5 / 9 / 10 passent à 7 (§3.2) : la condition cible « face PRODUIT » n'est pas appliquée (aucun statut de face PRODUIT) ; (4) retirer un train rend ses faces au statut d'avant l'ajout (lu dans l'historique, sinon « Au roulage » si un rouleur est affecté, « A imprimer » sinon) ; (5) retirer une UM : « En cours » si elle n'est plus dans aucun colis, « A expédier » si ses colis restants sont tous clos ; un colis vidé est supprimé (maquette ECR-EXP-01) ; (6) Σ uc_qte ≤ UM_qte (le legacy ne le contrôlait pas, Q-272) ; quantité par défaut = reste à placer ; (7) « Expédier » : une UM n'est « A expédier » que lorsque TOUS ses colis sont clos (défaut de `p_u_expedie_Colis` corrigé) ; transporteur et tarif = défaut du couple destinataire × atelier ; fichier BL Calberson non repris (transporteur unique Geodis en cible, étape 8) ; colis vide refusé ; (8) fin de journée : exécution MANUELLE (le batch planifié est hors dépôt, Q-005) ; colis → « Terminé » (« Expédié »), UM → « Terminé » quand tous leurs colis le sont, faces 7 → 8 ; ateliers déroulants : aucune sortie de stock automatique (la quantité d'affiches par face n'est pas sourcée) ; (9) RG-X-087 (Q-281 sans réponse : sortie à l'expédition) : une sortie « Expédition C-… » par UM expédiée, FIFO sur les affiches reçues du même dossier, de la même plateforme et du même thème (casse et accents ignorés), dans la même transaction ; jamais de stock négatif : le manquant est tracé (STOCK_INSUFFISANT / AUCUNE_AFFICHE) ; (10) RG-COO-263 : minimum 1 kg conservé (Q-271) ; majoration de 3 kg des ateliers du paramètre `colis.ateliersMajoration` (vide par défaut : aucun identifiant legacy, Q-319) ; (11) RG-COO-271 : le mail « colis expédié » est tracé au journal et jamais envoyé (Q-375, Q-285) ; `mailEnvoye` reste faux (retentative non perdue) ; (12) intégration AMT (RG-COO-272 à 276) NON reprise (Q-274) : aucune route, tests d'absence ; la correction `UM_qte = 0 → 1` n'est pas reproduite ; (13) le site choisi dans le bandeau (en-tête x-site-id) restreint le périmètre de TOUTES les routes de Coordination (listes, fiches, actions ; ANO-053, Q-173) ; le lot d'intégration Broadcast (système) n'est pas concerné ; droits des colis : `colis.gerer` (chef d'équipe et expédition ; coordination, administrateur et commerce refusés selon la matrice §2, Q-286) ; (14) ANO-054 : une UM « Annulé » restée dans un colis (déblocage, RG-COO-278) n'est pas expédiée : la fin de journée ne génère aucune sortie de stock pour elle (RG-X-087, Q-275) ; (15) À ARBITRER (comportement conservé, conforme au legacy) : expédier un colis qui ne contient qu'une partie de la quantité d'une UM (ex. 4 sur 10) passe l'UM à « A expédier » : les 6 restantes sortent de la liste « à coliser » et ne peuvent plus être placées ; (16) À ARBITRER (comportement conservé) : après le retrait d'une fraction d'UM alors que son autre colis est déjà « Terminé », l'UM passe « A expédier » mais la fin de journée ne la reprend pas (elle ne s'appuie que sur les colis « A expédier ») : l'UM reste « A expédier » ; (17) la fin de journée tient dans une seule transaction (délai explicite de 60 s, environ 4 000 colis en 3,4 s mesurés) : au-delà de quelques dizaines de milliers de colis un découpage serait nécessaire. (18) À ARBITRER (audit final m1) : le cas legacy « re-saisie » (colis déjà « Expédié », seul le code externe change) n'est pas repris : un colis déjà expédié est refusé en 409 ; (19) « Fin de journée » est confirmée à l'écran (action irréversible) et agit sur TOUT le périmètre, quels que soient les filtres de la liste. Reste à l'écran : étiquette Geodis, boucle, canal, preuve de livraison, ECR-EXP-03 « Départs camions » (étape 8).
+- **Réponse de l'équipe** : 
+
+#### Q-200 — Libellés divergents des états de validation admin, du statut du dossier et de l'alerte (« Validée » vs « Validation admin faite » ; « À confirmer : proposé / doute / Réception inconnue » vs « Proposée par Circé / À vérifier / Orpheline » ; alerte « à confirmer » vs « à faire »)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md « Contradictions » 3, 4, 5 ; [PC] / [DC] / [DESIGN] §11
+- **Options et conséquences / hypothèse** : Option 1 : libellés de [PC] et de la maquette. Option 2 : libellés de [DC]. Conséquence : libellés des écrans, des filtres et des alertes (pas du modèle). HYPOTHÈSE retenue : états « Réception inconnue / À confirmer : proposé / À confirmer : doute / Validée » ; pastille dossier « Validée » (+ « Aucune affiche reçue ») ; alerte « Validation admin à confirmer »
+- **Réponse de l'équipe** : 
+
+#### Q-201 — Rôles autorisés pour la validation admin, l'annulation, l'Instruction OK, le déblocage et le rattachement par l'agent de réception
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy-admin.md (droit `validation_admin` testé seulement en front) ; README §3 (« Valider visible pour la Coordination ») ; maquette `instructions.js:16-18` (coord ET admin) ; Q-COO-5 et Q-COO-6 de la maquette
+- **Options et conséquences / hypothèse** : Option 1 : `coord` seul. Option 2 : `coord` et `admin` (maquette). HYPOTHÈSE retenue : `coord` + `admin` pour valider, annuler, Instruction OK, Appliquer la version Broadcast, Demander une correction, déblocage ; `recep` peut rattacher mais ne valide pas ; `com` lecture seule. Conséquence : tests de permissions à refaire si les profils réels diffèrent (voir Q-003)
+- **Réponse de l'équipe** : 
+
+#### Q-202 — Effets de l'annulation d'une validation et du rattachement/retrait après validation sur les effets déjà produits (picking, étiquette rack imprimée, n° d'affiche du suivi de prod, « reçue et associée » envoyé à Broadcast)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-009, 014 (silencieux sur l'annulation) ; README §3 ; maquette Q-COO-18
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : l'annulation retire les effets de lecture (n° ✓ → •, `EstAssociee` faux au passage suivant, picking réservé aux affiches validées) mais ne détruit ni étiquette imprimée, ni stock, ni production lancée ; un rattachement manuel du surplus après validation ne retire pas les validations des autres liens. Conséquence : tests RG-COO-014, RG-X-050, RG-X-052
+- **Réponse de l'équipe** : 
+
+#### Q-203 — Confirmation en lot : taille maximale, concurrence entre deux coordinateurs sur la même affiche, gestion des affiches changées entre la sélection et la confirmation
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-008 (ambiguïté) ; maquette Q-E (idempotence/concurrence)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : pas de plafond ; verrouillage optimiste par affiche (`version`) ; les affiches périmées ou déjà validées sont ignorées et listées, les autres sont confirmées dans la même transaction ; `Idempotency-Key` obligatoire ; pré-cochage une seule fois par arrivée sur l'écran
+- **Réponse de l'équipe** : 
+
+#### Q-205 — Règle de Nariman : source du « nombre d'exceptions », écarts avec le batch legacy (normalisation des % de répartition, ligne « Sans affiche », commentaire vide seul des ateliers) et état réel en production
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-018, 023 ; specs-ateliers EX-COO-508 ; legacy `p_batch_auto_instruction_ok.sql` ; maquette Q-COO-1 ; Q-006
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : règle de la spec = commentaire vide ET exceptions = quantité (hors entretien) ET répartition à 100 % ; la répartition vient de Broadcast ; la normalisation « Sans affiche » du legacy n'est pas reprise. Conséquence : tests RG-COO-042, 043, 049
+- **Réponse de l'équipe** : 
+
+#### Q-206 — Grain de l'Instruction OK : par ligne atelier × plateforme (Circé, Q51) ou par dossier (maquette)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-049 ; [PP] §10 ; maquette ECR-COO-01 (une ligne par dossier) ; legacy `instr_code` (dossier × semaine × atelier)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : le modèle garde le grain legacy (dossier × semaine × atelier) ; l'écran agrège par dossier et l'action groupée s'applique à toutes les instructions `EN_COURS` du dossier. Conséquence : modèle Prisma de l'instruction, clé `instr_code`
+- **Réponse de l'équipe** : 
+
+#### Q-207 — Clé de la ligne attendue : la DA est-elle dans la clé ? (deux DA d'un même dossier : une ou deux lignes ? Q57) ; même thème chez deux ateliers (Q58)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-032 ([PP] R1 inclut la DA ; [RA]/[DC] RG-AT-01 l'excluent)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : [RA] RG-AT-01 : DA et atelier hors clé, quantités additionnées sur une ligne ; DA conservées en liste. Conséquence : index unique et schéma Prisma de la ligne attendue ; modifiable par migration
+- **Réponse de l'équipe** : 
+
+#### Q-208 — Broadcast peut-il fournir `IdTheme` (et définition de `IdThemeBandeau`) ? (Q56)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-033 ; bdd.md §7.5 ; [RA] §4
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : à défaut d'`IdTheme`, rapprochement par thème écrit normalisé (majuscules, espaces, accents) avec alerte, comme prévu par la spec. Conséquence : clé de ligne, RG-COO-081, 084, 105
+- **Réponse de l'équipe** : 
+
+#### Q-209 — Retirer les thèmes « reste en place » de la quantité des lignes Broadcast (Q59) et traitement de l'écart dû au « reste en place » (Q63)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-034, 023 ; [PP] §10
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : oui, `EstResteEnPlace` est retiré de `qte_bc` ; l'Instruction OK automatique sur écart = quantité reste en place n'est PAS implémentée avant validation sur 2-3 dossiers. Conséquence : RG-COO-082, 055, 058
+- **Réponse de l'équipe** : 
+
+#### Q-210 — Thème ou quantité modifiés après validation, ligne annulée, reprise automatique ou manuelle de la version Broadcast (Q55)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-016 ; [RA] RG-VA-02 ; maquette ECR-THM-03 (« À décider »)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : thème changé : validation à refaire ; quantité changée : alerte seule ; ligne annulée : alerte, lien conservé ; reprise de la version Broadcast uniquement sur clic de la Coordination. Conséquence : RG-COO-030 à 032, 068, RG-X-055, 057, 064, 065
+- **Réponse de l'équipe** : 
+
+#### Q-211 — Planification et fréquence des lectures de Broadcast et du retour des réceptions (toutes les 2 h de 8 h à 18 h d'après D1/D3 ; « 2 màj/jour » d'après l'atelier 14 ; legacy inconnu)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-existant-process.md EX-EXI-012 ; specs-ateliers contradiction 15 ; Q-005
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : planificateur interne à l'API, toutes les 2 h de 8 h à 18 h, paramétrable ; passage manuel possible. Conséquence : RG-COO-103 ; la partie « qui appelle `p_Alimentation_tf_prepa_affiche` aujourd'hui » reste dans Q-005
+- **Réponse de l'équipe** : 
+
+#### Q-212 — Moment de la bascule BC → PREPA pour le déroulant : le legacy ne crée la ligne « prépa » du déroulant qu'après l'Instruction OK (thème des faces) ; la spec bascule « à l'arrivée de la prépa »
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `p_Alimentation_tf_prepa_affiche.sql:157-188` ; EX-EXI-019 ; specs-coordination.md EX-COO-036, 040
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : la bascule se fait à l'arrivée de la prépa avec les thèmes des instructions (spec). Conséquence : sources de la ligne PREPA du déroulant et condition de visibilité au suivi de prod (RG-COO-086, 094, 105) ; à confirmer avec la Coordination
+- **Réponse de l'équipe** : 
+
+#### Q-214 — Auto-rattachement à l'ouverture d'une fiche affiche (legacy) : conservé ou remplacé par la proposition de l'option A
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `ReceptionListeAfficheController.cs:218-257` ; specs-coordination.md EX-COO-004 (silencieux)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : supprimé (aucune écriture en lecture), remplacé par la proposition de rattachement à la réception. Conséquence : RG-X-062
+- **Réponse de l'équipe** : 
+
+#### Q-215 — Statut interne du dossier `VALIDE` de la maquette (préparation reçue ET toutes affiches confirmées) vs deux pastilles indépendantes de la spec
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette `data.js` `C.majStatutVA` ; specs-coordination.md EX-COO-013 ; [PC] p.1
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : pas de statut persisté ; « Validation admin faite » = calcul de la pastille, indépendant de la prépa. Conséquence : machine d'états du dossier et historique
+- **Réponse de l'équipe** : 
+
+#### Q-216 — Renvois de Broadcast après l'Instruction OK, l'export ou sans déblocage (prépa fixe/pliage refusée) : ignorés sans rien dire (legacy) ou alerte
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `p_integ_instructions.sql:578-590`, `p_integ_preparation.sql:31-54` ; specs-coordination.md EX-COO-022 ; EX-EXI-033 (« alerte, rien ne change ») ; maquette `renvoiPrepa`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : le renvoi est ignoré (trains figés, ligne déjà intégrée) ET une alerte « Rajout après préparation » est levée à la Coordination (et aux chefs d'équipe après l'export). Conséquence : RG-COO-053, 122, 129
+- **Réponse de l'équipe** : 
+
+#### Q-217 — Déblocage de préparation et « Rendre la main à la Pré-Prod » : l'écran Déblocage (Administration) est absent du menu de la maquette cible ; conséquences sur la validation admin et les affiches reçues (Q-COO-18) ; contradiction ateliers 13 / 14 sur le fixe
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `AdminPreparationDeblocageBll.cs` ; maquette ECR-COO-09b ; EX-EXI-045 ; specs-ateliers contradiction 1
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : le déblocage legacy est conservé comme action de la Coordination (équivalent de « Rendre la main ») ; il ne modifie ni la validation admin, ni les affiches reçues, ni le stock. Conséquence : RG-COO-140 à 152, RG-X-059 ; emplacement de l'écran à valider
+- **Réponse de l'équipe** : 
+
+#### Q-218 — Contrôle serveur du déblocage pour un groupe de type TRAIN (aucun contrôle côté serveur dans le legacy, fail-open si la table de correspondance support est incomplète)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `AdminPreparationDeblocageBll.cs:154-267` ; EX-EXI-032 (« uniquement si la prod n'est pas lancée »)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : refuser côté serveur si au moins une face du groupe est au statut ≥ 2 ; correspondance support absente ⇒ refus explicite. Conséquence : RG-COO-142, 144
+- **Réponse de l'équipe** : 
+
+#### Q-219 — Mails (déblocage, demande de correction, rajouts) : liste de distribution paramétrable vs `tr_plateforme.plt_mail`, échec SMTP non bloquant, destinataires réels « Pré-Prod · gestionnaires <pôle> »
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `AdminPreparationDeblocageBll.cs:252-333`, `ToolBll.cs:391-456` ; maquette Q-COO-9, ECR-ADM-04 ; EX-TRA-030
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : envoi après commit, échec tracé sans annuler l'action ; destinataires issus des listes de distribution (Administration) ; repli sur les adresses de la plateforme. Conséquence : RG-COO-057, 073, 147
+- **Réponse de l'équipe** : 
+
+#### Q-221 — Destinataire des alertes « Dossier introuvable » / réception inconnue à Nîmes : Coordination du site ou « Pré-Prod Nîmes » ; équipe « Coord. Réception » de Boulogne pour Wissous
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md Q61 ; maquette ECR-REC-04 (Q-REC-16)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : Coordination du site (rôle `coord` du périmètre du site) ; la Pré-Prod Nîmes est assimilée à la Coordination (déduit). Conséquence : destinataires de RG-COO-072
+- **Réponse de l'équipe** : 
+
+#### Q-222 — Alerte « Rajout après préparation » : fenêtre exacte (nuit du jeudi au vendredi S-2 jusqu'au vendredi S) vs deadline Pré-Prod jeudi S-2 16 h vs envoi de la prépa « le lundi » ; liste de distribution à établir ; calendrier du process
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers EX-COO-503 et contradiction 16 ; specs-existant-process.md EX-EXI-077 ; maquette `M.deadlinePP`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : fenêtre de l'atelier 14 (jeudi→vendredi S-2 nuit jusqu'au vendredi S) paramétrable ; deadlines en paramètres. Conséquence : RG-COO-066, 073, 076
+- **Réponse de l'équipe** : 
+
+#### Q-223 — Statut intermédiaire « Validation Pré-Prod » entre « En cours » et « A imprimer » (ou simple coche) : se superpose à « Instruction ok » existant
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers EX-COO-510 et contradiction 13 ; specs-coordination.md EX-COO-024 (Q47)
+- **Options et conséquences / hypothèse** : Option 1 : ne rien ajouter (Instruction OK puis Prêt à produire couvrent le besoin). Option 2 : coche « validé Pré-Prod » posée à l'export. HYPOTHÈSE retenue : non implémenté (aucun statut ajouté) ; lien avec l'export : coo2
+- **Réponse de l'équipe** : 
+
+#### Q-224 — Propositions non validées autour de l'Instruction OK : proposition de position (début/fin) depuis le commentaire libre, autre taux d'entretien, « reste en place » automatique (Q63), entretien repris de Broadcast (priorité entre prépa envoyée et campagne contrôlée)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-coordination.md EX-COO-023 ; specs-ateliers EX-COO-501, 508 ; EX-REC-518
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : entretien repris de Broadcast (8 % avant l'envoi, 15 % si campagne contrôlée) ; la position est proposée à partir du commentaire mais jamais appliquée sans confirmation ; l'Instruction OK automatique sur « reste en place » n'est pas implémentée. Conséquence : RG-COO-048, 058, 059
+- **Réponse de l'équipe** : 
+
+#### Q-225 — « Appliquer la version Broadcast » : portée exacte (annule et remplace de la quantité seulement ou aussi du thème), recalcul des trains non produits, trains en production seulement signalés
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette ECR-COO-02 ; specs-coordination.md EX-COO-019, 028 ; EX-TRA-514
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : annule et remplace quantité et thème pour les lignes non produites ; les trains en production sont signalés à l'atelier sans modification. Conséquence : RG-COO-056
+- **Réponse de l'équipe** : 
+
+#### Q-231 — Retour « reçue et associée » vers Broadcast : à la validation admin (legacy, condition liée ET validée) ou à la réception (cible « Affiche reçue » posée par la réception) ; mécanisme du retour à définir
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-039 (« ANO-05 corrigé côté affiche reçue mais retour BC à définir ») ; specs-ateliers EX-REC-503 ; legacy `BatchAlimReceptionBll.cs:89`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : `EstAssociee` reste conditionné à lien ET validation admin ; la colonne « Affiche reçue » de l'état des réservations suit la réception. Conséquence : RG-COO-024, 026, 134, RG-X-053
+- **Réponse de l'équipe** : 
+
+#### Q-234 — Moteur de proposition de rattachement par le visuel : scores MOCK de la maquette (0,45 × texte + 0,55 × visuel ; seuils 0,9 / 0,6 / 0,3) et définition du « à coup sûr » ; ordre des candidats
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette ECR-REC-04 (Q-REC-15 : scores fabriqués) ; specs-reception EX-REC-038
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : seule la lecture du n° de dossier/DA sur le BL peut produire un cas sûr ; toute proposition par le visuel ou à la main est un doute (motif BL) ; les scores de la maquette ne sont pas des valeurs métier. Conséquence : RG-COO-004, 005, 018
+- **Réponse de l'équipe** : 
+
+#### Q-250 — Statuts du bloc : codes legacy 0-10 contre statuts d'unité cible (EN_ATTENTE, PRET, EN_PROD, PRODUIT, COLISE, EXPEDIE, LIVRE) et persistance de l'entité « train »
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `Enums.cs:52-77` + bdd.md §4.1 (tr_statut absent, Q-004) · maquette ECR-ADM-03, README §5 (A imprimer = Prêt à produire ; Préparé = Produit ; 9 et 10 = En production ; Terminé = Expédié puis Livré)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : la face (`tf_face_train`), l'UM, la répartition et le colis gardent un `rpc_statut` explicite (table de transitions) ; l'« unité de production » de la cible est une vue / entité calculée avec statut à 7 valeurs et table de correspondance legacy ↔ cible (utile à la migration) ; « à libérer » et « arrivé après libération » sont des repères dérivés. Conséquence : à reprendre si l'équipe veut persister l'unité
+- **Réponse de l'équipe** : 
+
+#### Q-251 — Sens de « Prêt à produire » : go de l'export du jeudi (face A imprimer) ou couverture complète des visuels reçus (PRET calculé)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : spec EX-COO-024 + PC p.1 (exportée le jeudi ; ex A imprimer) · maquette ECR-COO-05 (EN_ATTENTE → PRET automatique) et ECR-COO-05b (export pose `exporte` sur le dossier) · EX-PIL-501 (B = 100 % visuels reçus)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : deux notions distinctes : (a) le go des plateformes = face exportée (2 → 5) ; (b) PRET = couverture complète ; les actions de production (bagues, fichiers, dispatch) exigent PRET (couvert) et ne sont pas bloquées par l'export (les chefs d'équipe démarrent avant jeudi à leurs risques, EX-COO-003). Conséquence : libellé affiché à l'utilisateur à arbitrer
+- **Réponse de l'équipe** : 
+
+#### Q-252 — Export des trains : heure butoir du jeudi 14 h et rôle autorisé contrôlés côté serveur ?
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette ECR-COO-05b (« aucun contrôle d'heure ni de rôle ») · spec EX-COO-024 · legacy PreparationDeroulantsController.cs:71-134 (aucun contrôle) · Q-COO-12
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : pas de blocage horaire serveur (le jalon est suivi par l'alerte « Préparation non reçue », coo1) ; l'action est réservée à `coord` (et `admin`) côté service. Option : blocage ou avertissement après 14 h
+- **Réponse de l'équipe** : 
+
+#### Q-253 — Nombre maximal de positions par train : 4 (deck) ou 6 (code, `tf_train_export`) ; que faire au-delà de 6 contrats
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : spec EX-EXI-033 · maquette ECR-COO-05, ECR-ADM-05 (liste 4 / 6 non liée), Q-COO-11, H5 · legacy RG-COO-070 (« Train supérieur à 6 »)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : paramètre « positions max par train » de valeur par défaut 6 (capacité de l'export et du code) tant que l'atelier n'a pas tranché ; au-delà, refus « Train complet » au raccrochage et erreur d'export explicite. Conséquence : tests écrits sur le paramètre
+- **Réponse de l'équipe** : 
+
+#### Q-254 — Plafond de 20 thèmes à l'export : bloquant a priori ou a posteriori, pour quels exports (Vendôme seul ou aussi export préparation / Caire / Exporter les trains)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy TrainPreparationBll.cs:22-23,257-291 (contrôle a posteriori sans annulation) · spec EX-COO-024, ANO-13, README H6 · EX-SCR-518 (l'utilisateur supprime les lignes à la main)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : refus a priori (422, aucune modification) pour l'export préparation et la génération Vendôme ; export des trains du jeudi non concerné. Option : alerte non bloquante
+- **Réponse de l'équipe** : 
+
+#### Q-256 — Règle d'entretien cible : grain afficheur, seuil 3, arrondi supérieur, % par défaut 8, plage 0-30, 15 % si campagne contrôlée, quid des quantités < 10
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette ECR-ADM-05 et données MOCK (valeurs par défaut non issues d'une spec) · legacy `round`, par thème (RG-COO-068) · EX-FIX-508, EX-COO-501, PP-04 / PP-05
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : valeurs de la maquette = valeurs par défaut de paramètres modifiables (seuil 3, arrondi supérieur, grain afficheur, 8 %, 15 % CC) ; legacy conservé en comparaison. À valider par les ateliers (Nîmes, Wissous)
+- **Réponse de l'équipe** : 
+
+#### Q-259 — Supprimer un train : libère-t-il les quantités de couverture ; qui peut supprimer ; suppression logique ou physique
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette ECR-COO-05e, Q-COO-13 (la maquette recalcule) · spec EX-COO-505
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : suppression logique (annulation avec motif et historique), couverture recalculée, réservé à `coord`. Conséquence : à confirmer
+- **Réponse de l'équipe** : 
+
+#### Q-266 — Alerte « Rajout après préparation » / « Arrivé après libération » : fenêtre de déclenchement (nuit du jeudi au vendredi S-2 jusqu'au vendredi S) contre deadline Pré-Prod (jeudi S-2 16 h) contre date de libération ; destinataires par plateforme ; alerte sur renvoi après export
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : spec EX-COO-503, EX-FIX-503, EX-TRA-031, EX-COO-044 · maquette ECR-ADM-04 (listes de distribution), `app.js` événements 1, 2, 9 · contradiction n° 16 de specs-ateliers-besoins.md
+- **Options et conséquences / hypothèse** : Fixer la fenêtre exacte et la liste de distribution par plateforme (Administration). HYPOTHÈSE : alerte dès qu'une préparation est reçue après la libération ou après l'Instruction OK, destinataires = liste de distribution par plateforme
+- **Réponse de l'équipe** : 
+
+#### Q-267 — « Rendre la main » : conséquences sur la validation admin et les affiches reçues ; fixe (modification possible après envoi) contre déroulant (seulement si production non lancée) ; contradiction A13 slide 14 contre A14 slide 30
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette ECR-COO-09b, Q-COO-18 · spec EX-EXI-045 · contradiction n° 1 de specs-ateliers-besoins.md
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : validation admin et affiches reçues inchangées (comme pour une préparation renvoyée) ; dossier → PREPA_RECUE, unités non lancées → EN_ATTENTE ; refus si unité EN_PROD (point de non-retour)
+- **Réponse de l'équipe** : 
+
+#### Q-271 — Création des UM : algorithme (afficheur effacé si destinataire non dispatch, partage de `RpcIdLstUM` dans les UM pleines), absence de filtre de statut d'origine, transaction par UM, `UM_qte = 0 → 1` silencieux à la purge, poids minimum 1 kg « Calberson » et +3 kg ateliers 7 / 8, création de l'UM bus (mock)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy PreparationService.cs:113-269, PreparationRepository.cs:190-303, p_integ_ptf_purge.sql:14-31, p_u_poidsColis.sql
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : seule la répartition à 0 entre dans une UM (409 sinon) ; une transaction par opération de colisage ; `UM_qte = 0 → 1` non reproduit ; poids minimum 1 kg conservé tant que le transporteur n'est pas tranché. À valider
+- **Réponse de l'équipe** : 
+
+#### Q-273 — Statuts non synchronisés entre répartition, UM, colis et face (le statut de l'UM prime, la répartition reste à 1 / 6) : propager ou calculer le statut effectif
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-RPR-015, p_s_adminSuiviRead.sql:70-79 · `MiseAJourStatutUm` non lu
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : statut effectif calculé (UM prime sur la répartition) sans propagation d'écriture ; lectures de la cible via une vue unique. Conséquence : une règle lisant `tf_repart_calcul.rpc_statut` doit passer par cette vue
+- **Réponse de l'équipe** : 
+
+#### Q-274 — Flux AMT / Sybase → `tf_repart_calcul` (`p_integ_ptf_*`, SSIS `Flux_Repartition_Amt_Ptf`) : toujours actif ? règles de doublon, transcodage, anomalies 903 / 905 / 906 / 907, purge totale, statuts de répartition désactivés
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy p_integ_ptf_reparts.sql, p_integ_ptf_purge.sql, p_integ_ptf_statut_repart.sql · bdd.md §7.3 (« probablement hérité ») · legacy-integrations.md RG-INT-041
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : l'alimentation de `tf_repart_calcul` se fait par Broadcast (`p_integ_preparation`, coo1) ; les règles AMT (RG-COO-272 à 276) sont documentées CONSERVÉES mais non reprises en V2 tant que le flux n'est pas confirmé actif. À confirmer avec la DSI (Q-005)
+- **Réponse de l'équipe** : 
+
+#### Q-278 — Intégrer dans Circé le « Fichier Vierge », le « Tableau de Roulage » (alimenté par la bague), le reporting MUI du lundi et la synthèse du jeudi : dans le périmètre V2 ?
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : spec EX-SCR-501, 502, 515, 516 (« à creuser Rayane ») · EX-SCR-504
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : hors périmètre initial (contenus des Excel non fournis) ; écart consigné dans ECARTS_EXISTANT_VS_CIBLE.md. À arbitrer
+- **Réponse de l'équipe** : 
+
+#### Q-280 — Disponibilité physique des affiches pour la préparation : le reçu compte-t-il dès la réception (palette en sas « À contrôler ») ou après le contrôle ; règle de couverture « départ le plus proche servi d'abord » ; surplus > 10 %
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette `app.js` événement 5 (unités → PRET avec réception A_CONTROLER), ECR-PIL-03 (Q41) · REC (contrôle)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : le reçu compte à l'enregistrement de la réception (comme la maquette) ; le contrôle n'est pas bloquant pour la couverture ; couverture « départ le plus proche d'abord ». À confirmer avec REC
+- **Réponse de l'équipe** : 
+
+#### Q-286 — Matrice profils × actions du bloc (export, suppression de train, libération, rendre la main, dispatch, bagues, réimpression) : seuls `coord` / `cheq` sont indiqués par la maquette ; rôle « Patrick », droits des `admin` et `com`
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquette `M.ROLES`, Q-B · legacy 27 droits sans contrôle serveur (RG-COO-090, RG-ADM-015) · spec EX-SCR-512, EX-ADM-503 · Q-003
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : matrice du fragment `coo2-2-profils.md` (actions de coordination réservées à `coord`, actions d'atelier à `cheq` + `coord`, `admin` = `coord` sur les actions d'administration). Les cellules « ? Q-286 » sont à décider ; tests de permissions à refaire si l'équipe choisit d'autres profils
+- **Réponse de l'équipe** : 
+
+#### Q-398 — Alerte « affiche reçue après l'export des trains » (réception tardive) : déclencheur, gravité, destinataires, durée
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-X-010, RG-X-011, RG-X-075, RG-X-085 · `specs-coordination.md` (EX-COO-044) · Q-266, Q-375
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : alerte CALCULÉE à la lecture (type « Rajout après préparation », gravité Important, destinataires Coordination et chefs d'équipe) pour toute affiche dont le mouvement de réception ou de complément est postérieur au 1er export des trains (`export_trains`, nature EXPORT_TRAINS, fichier simulé compris) d'un train du dossier, sur un lien actif ; visible `alertes.joursEvenements` jours ; message distinct quand le visuel ne figure dans aucun train du dossier ; trains figés, aucun raccrochage automatique ; mail non envoyé (Q-375). Alternative : déclencher aussi à l'arrivée après la libération (fixe / pliage / bus : Q-265).
+- **Réponse de l'équipe** : 
+
+#### Q-402 — Validation admin d'une affiche dont le dossier est ANNULÉ : « sans objet » (RG-X-065) ou toujours possible ?
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-X-065, RG-X-028, RG-COO-087, Q-210 · cellule C-02 de ANALYSE_FONCTIONNELLE_COMPLETE.md §6.6
+- **Options et conséquences / hypothèse** : L'énoncé de RG-X-065 dit « leur validation devient sans objet » ; aucune source ne dit si l'API doit la REFUSER. HYPOTHÈSE (comportement actuel, circuits indépendants RG-X-028) : « Valider » reste possible sur une affiche dont le lien est conservé, sans aucun mouvement ni effet sur la ligne annulée. Alternative : 409 « dossier annulé » (validation sans objet). À arbitrer avec la Coordination.
+- **Réponse de l'équipe** : 
+
+#### Q-403 — Référentiel des destinataires (D-05, ECR-ADM-07) : périmètre minimal, unicité, désactivation
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : ECR-ADM-07 (« Destinataires et afficheurs » : Site, Destinataire, Boucle, Afficheurs ; « + Ajouter » factice dans la maquette) · legacy-integrations.md §9 · RG-COO-120 · PLAN D-05
+- **Options et conséquences / hypothèse** : HYPOTHÈSES (étape 8, autorisées par l'utilisateur, à valider) : (1) seul l'administrateur gère le référentiel (`referentiel.gerer`, comme les rouleurs) ; (2) le nom d'origine (clé d'intégration Broadcast) est unique (casse ignorée) et non modifiable ; le libellé, le dispatch O / N (RG-COO-260), le mail, le téléphone et l'adresse principale sont éditables ; (3) pas de suppression : désactivation et réactivation (un destinataire est référencé par les lignes, UM, faces, colis) ; (4) les destinataires sont globaux (sans site) : pas de filtre de périmètre ; (5) le transport par défaut (`tr_ate_dest_trans`) n'est que compté, son édition n'est pas reprise (Geodis seul, ECR-ADM-06) ; (6) l'afficheur est le destinataire (Q-196) : pas de référentiel d'afficheurs distinct ; boucle, canal, jour et heure de départ (ECR-ADM-06), équipes et machines (RG-ADM-046), postes (RG-ADM-047) et la purge de la liste des destinations (EX-TRA-511) NE SONT PAS repris (non nécessaires à Réception et Coordination à ce stade, voir ECARTS).
+- **Réponse de l'équipe** : 
+
+#### Q-404 — Libération de la semaine et Colisage : points d'interprétation (suite de Q-265)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-COO-240 à 242, 260 à 262, RG-X-076 · Q-265, Q-250, Q-266, Q-271, Q-375
+- **Options et conséquences / hypothèse** : HYPOTHÈSES (étape 8, option (c) de Q-265, à valider) : (1) « Libérer » est refusé en 409 pour une semaine déjà libérée, jamais annulable (la règle ne prévoit pas d'annulation) ; (2) seuls les ateliers FIXE se libèrent (fixe, pliage, bus) ; (3) « dossiers Préparation reçue » de l'historique de libération = dossiers qui ont des lignes actives pour (atelier, semaine) ; le toast compte ceux dont des affiches restent à confirmer ; (4) « Arrivé après libération » est dérivé : une ligne créée après la date de libération de sa semaine (pas de colonne persistante) ; l'alerte APRES_LIBERATION est calculée à la lecture (gravité importante, chefs d'équipe et Coordination), regroupée par dossier ; mail non envoyé (Q-375) ; (5) le regroupement du Colisage ajoute l'atelier et la semaine de départ aux clés de `BuildUm` (une UM porte un seul atelier et un seul départ) ; l'afficheur est le destinataire (Q-196) : il ne clôt jamais une UM ; `DesDispatch` N n'efface rien ; (6) code barre AASS-+id sur 13 chiffres : AA / SS = année et semaine ISO du jour de création ; code synthèse = AASSMMJJ + atelier sur 2 chiffres au moins + destinataire sur 8 : un identifiant d'atelier supérieur à 99 allonge le code (le legacy avait une dizaine d'ateliers) ; (7) le reliquat d'une ligne scindée par la quantité d'UM du support est une NOUVELLE répartition « A traiter » rattachée à l'UM suivante ; (8) une quantité nulle ne produit pas d'UM (422, RG-COO-275 extrait) ; (9) le Colisage ne dépend pas de la libération ni de la validation admin. CONTRADICTION AVEC LA LETTRE DE LA MAQUETTE (audit étape 8, 2026-11-06) : ECR-COO-09a dit que la libération « remplace le bouton Colisage » ; l'option (c) conserve les DEUX boutons (« Libérer la Sxx » ne crée aucune UM, « Colisage » les crée). À VALIDER PAR L'UTILISATEUR : (a) la libération n'a AUCUN effet de verrouillage (elle n'empêche ni ne conditionne le Colisage ni la modification des lignes) ; (b) elle est IRRÉVERSIBLE (409 si déjà libérée, aucune annulation) ; (c) le Colisage est proposé à TOUS les ateliers fixes alors que EX-FIX-510 ne vise que Wissous ; (d) le code barre AA SS est dérivé du JOUR DE CRÉATION de l'UM et non de la semaine de départ ; (e) « Préparation reçue » est APPROXIMÉE par « dossier ayant des lignes actives pour (atelier, semaine) » (le statut de préparation reçue n'est pas modélisé).
+- **Réponse de l'équipe** : 
+
+#### Q-405 — Gestion des paramètres métier (D-06, ECR-ADM-05) : bornes, formats, valeurs non modifiables
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : ECR-ADM-05 (champs modifiables en mémoire, « Règles Trains » en lecture, « persistance et audit des changements » en question) · EX-TRA-041 · RG-REC-178 · Q-319, Q-373, Q-105
+- **Options et conséquences / hypothèse** : HYPOTHÈSES (étape 8 lot 2, option recommandée autorisée par l'utilisateur, à valider) : (1) tous les paramètres lus par Réception et Coordination sont listés avec leur valeur courante, leur valeur initiale (celle du seed, issue des règles : jamais une valeur de maquette définitive, Q-373) et leur source ; (2) bornes : celles de RG-REC-178 pour la Réception (écart 0 à 100 %, purge 1 à 52 semaines, délai de contrôle 1 à 720 h, comptage par morceau 0 à 1000, feuilles 1 à 5 d'après ECR-ADM-05), bornes TECHNIQUES larges pour les autres (aucune source ne les fixe) : entretien 0 à 100, plafond de thèmes 1 à 1000, fenêtre 1 à 52 semaines, similarité 0 à 1, positions max 1 à 12 (4 ou 6 : Q-253), tiroirs 1 à 100, seuils du dispatch (heures 1 à 720, charge 1 à 1000 %), départ grave 0 à 52 semaines, jours d'événement 1 à 60, délai d'intégration 1 à 86 400 s ; (3) énumérations : grain d'entretien AFFICHEUR ou VILLE, arrondi SUPERIEUR ou PROCHE (valeurs lues par le code) ; (4) les listes d'ateliers (8 m², majoration de 3 kg, export préparation) et de types de préparation (pliage, bus) n'acceptent que des identifiants EXISTANTS, sans doublon, séparés par « ; » ; vides admises ; AUCUN identifiant legacy (ateliers 7 et 8, type 23) n'est supposé : il revient à l'administrateur de les saisir à la reprise des référentiels (Q-319, D-23) ; (5) les valeurs structurées (routages, horaires, deadlines, fenêtres de rajout, supports à bandeau, regroupements d'enseignes, destinataires exclus, formats de retour) sont AFFICHÉES en lecture seule : aucun format d'édition n'est maquetté et une saisie libre casserait l'intégration (422 ADM_PARAMETRE_NON_MODIFIABLE) ; (6) l'allée des inconnues reste réglée par site dans l'écran Réception (Q-105) ; (7) paramètres globaux uniquement, administrateur seul (`parametrage.gerer`, comme RG-REC-178) ; verrou de version (0 tant que la valeur du seed n'a jamais été écrite), valeur identique = aucune écriture, historique et journal (ancienne → nouvelle valeur, auteur) ; réponse « s'applique aux prochains traitements » (ECR-ADM-05).
+- **Réponse de l'équipe** : 
+
+#### Q-411 — Étape 8 lot 5 (D-14, D-15, D-18) : Départs camions, colonnes d'expédition, complément de génération, liste de picking d'un lot, zone d'impression navigateur
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : maquette ECR-EXP-02 / 03 (colonnes Clos le, Expédié le, Récépissé ; Départs camions), ECR-GEN-03 (historique « Modifiées depuis », « Générer un complément », « Liste de picking »), ECR-COO-09d / 11 / ECR-REC-09 (impression), RG-COO-074, RG-COO-215 à 217, RG-COO-296, RG-COO-246, RG-COO-299, RG-X-077 · Q-002, Q-194, Q-195, Q-197, Q-250, Q-277, Q-281, Q-284, Q-285, Q-287, Q-367, Q-390, Q-403
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, autorisée par l'utilisateur le 2026-11-06, à valider) : (1) ECR-EXP-03 « Départs camions » : lecture seule, droit `colis.gerer` (chef d'équipe et expédition, comme EX-01 / 02) ; le jour, l'heure, la boucle et le canal de départ ne sont pas modélisés (Q-403) : un départ est une SEMAINE ISO, une ligne = départ × destinataire (colonne « Destinations ») × plateforme ; la colonne « Boucle » et le filtre Canal sont absents ; sans filtre de départ, fenêtre des 14 derniers jours et à venir (la maquette ne donne pas de fenêtre) ; (2) unités = trains (statut calculé, Q-250 : En attente d'affiches = EN_ATTENTE ; En cours = PRET, EN_PROD, PRODUIT ; Colisées / parties = COLISE, EXPEDIE, LIVRE) et UM des ateliers fixes (En cours / Préparé = en cours ; A expédier / Terminé = colisée ; Annulé exclue) ; les UM dont le type figure dans `unitaire.typesBus` sont exclues (la maquette exclut le site Nanterre / Bus, identifié ici par le paramètre, Q-319) ; avancement = colisées / unités ; liseré : critique si des unités attendent et que le départ (date du train, seuil de 36 h de la maquette) est dans moins de 36 h, attention si des unités attendent, prêt si tout est colisé ; (3) ECR-EXP-02 : « Clos le » = date de clôture du colis (`colis_dat_expe` legacy, posée par « Expédier »), « Expédié le » = date de la transition vers « Terminé » (fin de journée, lue dans l'historique) ; « Récépissé » = code externe du transporteur (le code Geodis `906xxxxx` n'est pas généré : Geodis hors périmètre, D-17) ; tri par statut (ouvert, clos, expédié) puis du plus récent ; (4) statut « Livré » NON ajouté : Q-284 n'a pas d'option recommandée et Q-390 (HYPOTHÈSE) renvoie la preuve de livraison à D-17 / Geodis ; l'indicateur « Livrés » reste vide ; (5) « Générer un complément » (RG-COO-074, ECR-GEN-03) : sur un lot DÉJÀ ENVOYÉ, un nouveau lot « Préparé » ne contient que les trains dont la composition a changé depuis le « Préparer » (version = empreinte des faces, RG-COO-308) ; réponse à la question de la maquette « nouvelle version ou complément ? » : COMPLÉMENT (nouveau lot G-nnnn, fichier `..._C<n>`, lien `complement_de_id` vers le lot d'origine), le lot d'origine est verrouillé (version +1 : deux compléments du même état sont refusés en 409) ; le complément s'envoie comme un lot normal, et accepte les trains « En production » (c'est le cas d'une dernière minute sur un train en production, RG-X-077) ; rejets : lot non envoyé (409 COO_COMPLEMENT_LOT_NON_ENVOYE), aucun train modifié (422 COO_COMPLEMENT_VIDE), train en attente d'affiches (409), plus de 20 tiroirs (422, RG-COO-216) ; droit `roulage.preparer` ; (6) historique : colonnes Fichiers (toujours 1 : un fichier Vendôme par lot), Modifiées depuis (trains modifiés ou disparus), lot d'origine ; ligne critique si des trains ont été modifiés ; « Par » reste affiché ; (7) liste de picking d'un lot : un tiroir par visuel distinct (positions fractionnées exclues, ordre d'apparition), une ligne par affiche rattachée (Quantité = quantité rattachée, Q-195 ; Emplacement = allée-rayon), un visuel sans affiche rattachée reste listé (quantité et emplacement vides) ; « Tout télécharger » non repris (un seul fichier par lot Vendôme) ; (8) envoi à la machine : option (a) de Q-194 conservée (l'envoi ne modifie pas les faces ; le point de non-retour est porté par la bague, RG-COO-299, ou « Au roulage ») ; Q-194 reste OUVERTE ; (9) D-18 : l'impression est le `window.print()` du navigateur (PDF navigateur, jamais côté serveur) ; ANOMALIE CORRIGÉE : la feuille de style d'impression ne montrait que `.zone-impression`, donc la fiche de synthèse (ECR-COO-09d), la liste de picking et les bagues imprimaient une PAGE BLANCHE ; elles sont désormais dans une zone d'impression (modèle `Edition` : titre, filtres appliqués, date d'édition ; bagues : une étiquette par bloc insécable) et la boîte de la modale ne rogne plus l'impression ; la mise en page RDLC d'origine n'est pas lue (Q-277, Q-287) ; la numérotation « Page n/N » des éditions n'est pas ajoutée (la feuille de stock garde son « Page 1/1 » de la maquette) ; les codes (A- + 13 chiffres, UM-, bagues) existaient déjà ; impression physique par l'agent local : Q-002 (hypothèse inchangée : MockSiteAgent)
+- **Réponse de l'équipe** : 
+
+#### Q-414 — Source de vérité du mail et du téléphone des destinataires : Broadcast (flux RG-COO-119) ou Circé (D-05)
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : RG-COO-119, RG-COO-120, ECR-ADM-07 · Q-403 · audit étape 8 (M3)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, autorisée par l'utilisateur le 2026-11-06, à valider) : le flux Broadcast écrasait `mail` et `telephone` à chaque passage, y compris ceux édités à la main dans D-05. Désormais une édition manuelle du mail ou du téléphone pose l'indicateur `contactModifie` (colonne `dest_contact_modifie`, migration ALTER) et le flux ne les écrase plus pour ce destinataire ; un destinataire jamais édité reste aligné sur Broadcast. Pas de retour automatique à Broadcast (aucun bouton « réaligner »). À valider : source de vérité cible, besoin d'un réalignement ou d'une alerte d'écart.
+- **Réponse de l'équipe** : 
+
+#### Q-419 — « Surplus proposé à l'autre dossier, répartition à confirmer » (RG-X-016) : modèle de la proposition faite à la Coordination quand un visuel est commun à plusieurs dossiers
+
+- **Module** : COO · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : RG-X-016 (« un visuel commun à plusieurs dossiers : une ligne par dossier, surplus proposé à l'autre dossier, la Coordination confirme ») · spec `[PP] §6`, `[RA]` (EX-COO-045, EX-COO-039) · RG-X-052 · audit final (étape 10) : la Q-123 citée jusque-là (quantité par défaut à la reprise des rattachements, D-23) est hors sujet
+- **Options et conséquences / hypothèse** : OUVERTE, non bloquante, aucun code. HYPOTHÈSE la plus conservatrice : AUCUNE proposition automatique ; le surplus reste sur l'affiche et la Coordination le rattache à la main à l'autre dossier (RG-X-052, déjà implémenté, validation conservée), le reçu restant compté une seule fois (RG-X-060). Options : (a) conserver cette hypothèse ; (b) créer une proposition « répartition à confirmer » (état et écran à définir, lien avec RG-X-061 / Q-399).
+- **Réponse de l'équipe** : 
+
+### Module DATA (24)
+
+#### Q-227 — Valeurs de référence codées en dur dans le legacy : sites CCF 39/40/43/44 et plateformes, exclusion « Plateforme Derichebourg (Lyon) », routage ateliers (fixe 1/4, pliage 2/3/9/10, déroulant 5/6/7/8/11/12), supports bandeau 100/102/105/107, transporteur/tarif par défaut, `plt_id == 1 ? 39 : 40` ; DBG / DBG Lyon et Nanterre (Bus)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `p_integ_preparation.sql`, `p_integ_instructions.sql`, `p_Alimentation_tf_prepa_affiche.sql`, `BatchAlimReceptionBll.cs:79` ; specs-transverse.md EX-TRA-006 ; EX-EXI-003
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : ces valeurs sont reprises telles quelles dans des tables de référence paramétrables (seed issu du legacy) ; l'applicabilité de DBG / DBG Lyon est à confirmer. Conséquence : référentiels (étape 3), RG-COO-081, 093, 095, 118 à 121, 126, 134, 141
+- **Réponse de l'équipe** : 
+
+#### Q-301 — rpc_statut : enums Prisma par entité ou table de référence unique ? Valeurs 0-10 partagées par 4 entités
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §4.1 (FK vers tr_statut depuis instruction_train, instruction_visuels, tf_face_train, tf_repart_calcul, tf_UM, tf_colis) · legacy-repartition-production.md (cycles de vie différents et non synchronisés) · CLAUDE.md §6 · Q-004 (contenu de tr_statut)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : un enum Prisma par entité (Instruction, FaceTrain, et les entités de production lues seulement) ne retenant que les valeurs effectivement utilisées par l'entité, table de transitions explicite dans le service ; les codes legacy 0-10 sont conservés en valeurs numériques de correspondance pour la reprise. À revoir si l'équipe veut un catalogue paramétrable (Paramétrage › Statuts).
+- **Réponse de l'équipe** : 
+
+#### Q-302 — Correspondance statuts de la cible (maquette, specs) et rpc_statut du legacy
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md (Paramétrage › Statuts non fourni) · maquette M.STATUTS (15 codes, unité EN_ATTENTE à LIVRE, dossier A_TRAITER/PREPA_RECUE/VALIDE/ANNULE, Instruction OK) · legacy 0-10
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : pour Réception et Coordination, les statuts cibles sont modélisés par les specs Réception/Coordination consolidées (étapes 5/6) ; rpc_statut 0-10 reste la référence des entités héritées (instruction, face) jusqu'à tranchage. Les statuts de production aval (EN_PROD, COLISE, EXPEDIE, LIVRE) sont reportés à l'étape 8.
+- **Réponse de l'équipe** : 
+
+#### Q-303 — Clé primaire de instruction_train : instr_code seul ou (instr_code, ate_id) ?
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : Script réel CIRCE SQL.sql (PK_INSTRUCTION_TRAIN sur instr_code seul, vérifié) · commentaire de p_batch_auto_instruction_ok (plusieurs lignes par instr_code via ate_id) · bdd.md §10 n°4
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : suivre le schéma réel (PK instr_code, clé naturelle varchar(18) calculée année+semaine+C0+atelier+dossier, RG-COO-046) avec identifiant technique éventuel en plus. À confirmer par lecture de la production (doublons de instr_code) : si des doublons existent la clé change.
+- **Réponse de l'équipe** : 
+
+#### Q-305 — Réceptions attendues (tf_prepa_affiche) : clé d'unicité et colonnes à ajouter
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §2.3 §7.5 §9.2 · receptions_attendues_doublons_tables_regles.html §4 (RG-AT-04/05 du doc source) · legacy-coordination.md RG-COO-005 à 009
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : reprendre le doc cible : une ligne ACTIVE par plateforme × dossier × support × thème × bandeau × semaine (index unique partiel), second index pour les lignes sans thème, colonnes source (BC/PREPA), etat_ligne (ACTIVE/ANNULEE), qte_bc, qte_prepa, date_vue_bc, FK plt_id/sup_id/ate_id. Dépend de la fourniture de IdThemeBandeau par Broadcast (Q-325) et de Q-005 pour l'alimentation.
+- **Réponse de l'équipe** : 
+
+#### Q-308 — Historique et audit : table générique étendue, historique par entité ou table commune de statut ?
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §5 (histo_historique_entite sans seed, aucun historique de statut côté coordination) · CLAUDE.md §6 · EX-TRA-034 à 036 · maquette Journal
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : conserver un journal générique d'audit (type d'entité, id, action, ancienne/nouvelle valeur, auteur, date) alimenté par les services, plus une table dédiée de transitions de statut (entité, ancien, nouveau, par, le, motif) ; les actions applicatives deviennent des valeurs d'enum. Les auteurs sont des identifiants utilisateur (plus de varchar(20) tronqués). Dépend de Q-001 pour l'identité.
+- **Réponse de l'équipe** : 
+
+#### Q-309 — Tables legacy sans équivalent cible : abandon ou reprise (journaux AMT, ARCH_*, tmp_*, trav_*, tf_evenement, tr_statut_colis, tf_anomalies, tr_societe, tr_atelier_support, tr_commune…)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §7.3 §9.4 · legacy-integrations.md RG-INT-041 · SSIS non lu
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : non reprises dans le Prisma de l'étape 3 (journaux AMT, ARCH_*, tmp_*, trav_* remplacées par import API/stratégie d'archivage), sauf validation contraire DSI ; aucune suppression en production sans accord (usage SSIS et batchs externes non vérifié).
+- **Réponse de l'équipe** : 
+
+#### Q-310 — Périmètre colisage/expédition (UM, colis, Geodis) dans la V2
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §9 Q-e · CLAUDE.md §1 (Réception et Coordination prioritaires) · legacy-repartition-production.md · EX-TRA-040
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : seules les colonnes et tables nécessaires à Réception/Coordination sont modélisées à l'étape 3 (statut de tf_UM pour le blocage du déblocage, tf_repart_calcul) ; colis, UM_colis, colis_ext, logs transporteur sont reportés à l'étape 8.
+- **Réponse de l'équipe** : 
+
+#### Q-311 — Stockage des photos (BL, affiches) : binaire en base ou fichier ?
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : Schéma réel photo.image_file varbinary(max), volume inconnu · EX-TRA-042 (rétention des photos non définie) · CLAUDE.md §3 (stack figée)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : bytea dans PostgreSQL (aucun composant nouveau dans la stack) avec limite de taille à l'API ; à reconsidérer selon le volume réel à demander à la DSI.
+- **Réponse de l'équipe** : 
+
+#### Q-312 — Types et normalisation : cont_num varchar vs int, plt_id/sup_id de types différents, semaines en texte, troncatures, IDs d'affichage de la maquette
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §10 (cont_num varchar(50) dans affiche, int ailleurs ; plt_id tinyint vs int ; affiche.semaines texte ; troncatures REVIEW §2.11/2.16) · maquette (IDs R26, TR-nnnn = MOCK)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : numéros de dossier en entier, identifiants numériques techniques alignés (Int), semaines dérivées de la table de départs, longueurs de texte alignées sur le plus large ; les IDs d'affichage de la maquette ne sont pas repris sans spec (numéro lisible = champ à définir par parcours).
+- **Réponse de l'équipe** : 
+
+#### Q-313 — Drapeaux bit NULL de affiche (rebus, zone_Picking, a_conserver, est_fusionne, validationAdmin, envoye) : NOT NULL DEFAULT false ?
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §10 · REVIEW_Database_proc.md §2.1 (NULL traité comme 0 par le C#, pas par certaines procédures)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : NOT NULL DEFAULT false, NULL historique converti en false ; les comportements divergents des procédures sont des écarts à décider règle par règle (ECART) et non reproduits en silence.
+- **Réponse de l'équipe** : 
+
+#### Q-314 — Semaines : migration vers semaines ISO
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §10 n°8 (DATEPART(wk) mélangé à ISO_WEEK, 52 semaines en dur) · legacy-integrations.md RG-INT-010 (décalage probable d'une semaine) · legacy-coordination.md RG-COO-002 · doc cible (ISO exigé)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : semaines ISO 8601 partout (année ISO, 52 ou 53 semaines) ; les données historiques non ISO sont à recalculer si reprise (Q-321). Le comportement legacy en fin d'année est un écart à documenter, pas à reproduire.
+- **Réponse de l'équipe** : 
+
+#### Q-315 — Codes en dur du SQL et du C# à transformer en référentiel/paramètre
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §7.4 §10 n°9 (sup_id 26/1026/1027, ate_id 5/6/7/8/11/12, 133, plateformes par nom, Sans affiche, VPS_75 101 0004) · legacy-integrations.md RG-INT-005 RG-INT-021
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : drapeaux et paramètres en base (ex. est_deroulant sur la catégorie de support, tables d'inclusion/exclusion existantes) ; les valeurs exactes de seed sont à fournir (Q-319). Ne pas reproduire les constantes dans le code V2.
+- **Réponse de l'équipe** : 
+
+#### Q-317 — Contraintes à ajouter : FK manquantes ou redondantes (tf_prepa_affiche.plt_id/sup_id/ate_id, instr_code, tf_colis_ext)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §10 (contraintes absentes, 3 FK redondantes sur tf_face_train.dest_id)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : ajouter les FK sourcées par le schéma et par l'usage ; la reprise (Q-321) devra traiter les orphelins. Les CHECK (quantité positive, semaine 1-53) ne sont ajoutés que s'ils sont portés par une règle (RG) sourcée.
+- **Réponse de l'équipe** : 
+
+#### Q-318 — Référentiels dupliqués : TypePreparation et tr_type_preparation ; vue v_support_scrolling
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §6 §9.1
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : fusion en un seul référentiel de types de préparation, la vue remplacée par un drapeau sur la catégorie de support (cf. Q-315).
+- **Réponse de l'équipe** : 
+
+#### Q-322 — Quantité d'une affiche : somme des mouvements ou colonne persistée ?
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-TRA-037 (stock = somme des mouvements) · legacy RG-REC-023 RG-REC-075 RG-REC-079 (double source, écrasement vs cumul) · schéma (affiche.quantite NOT NULL)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : le stock fait foi par la somme des mouvements (spec explicite) ; une colonne de quantité éventuelle n'est qu'un cache maintenu dans la même transaction. Les comportements legacy d'écrasement sont des écarts à documenter.
+- **Réponse de l'équipe** : 
+
+#### Q-324 — Colonnes sans usage et comparaison colonne à colonne schéma réel / SSDT / EDMX non faite (tf_face_train à 80 colonnes, tf_repart_calcul)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §7.2 §Reste à faire
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : ne reprendre que les colonnes lues ou écrites par les règles Réception/Coordination sourcées ; les autres sont listées en ECART avec décision à l'étape 3.
+- **Réponse de l'équipe** : 
+
+#### Q-325 — tf_prepa_Broadcast : colonnes à conserver (IdSiteCCF, IdSurface, IdFormat, IdPreparationChapeau, IdTypePreparation, EstResteEnPlace, date_vue, IdTheme) et mode de mise à jour
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : bdd.md §7.5 §9.2 · legacy-integrations.md RG-INT-011 (suppression puis recréation par dossier, sans transaction)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : conserver ces colonnes pour rapprocher par identifiants ; mise à jour par dossier dans une transaction. IdTheme supposé fourni par Broadcast : non établi (à demander).
+- **Réponse de l'équipe** : 
+
+#### Q-335 — Multi-sites : site vs plateforme vs atelier ; DBG et DBG Lyon ; sites 39/40/43/44 ; ateliers 11 et 12 ; Nanterre (Bus) cible
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-TRA-006 · legacy-integrations.md RG-INT-021 (plt_id 1 → 39, sinon 40) · bdd.md §7.4 · maquette (NIM, WIS, NAN)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : Site ≡ plateforme (glossaire specs-transverse.md) et l'atelier appartient à un site ; DBG/DBG Lyon et Nanterre sont hors périmètre tant que la spec ne les confirme pas. Le mapping Broadcast IdSiteCCF devient une colonne du référentiel (Q-315).
+- **Réponse de l'équipe** : 
+
+#### Q-337 — Table de paramètres métier (seuil et arrondi d'entretien, écart de réception, délai de contrôle, purge…) : structure et valeurs
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-TRA-041 (Circé n'a pas de table de paramètres) · maquette Paramètres (valeurs MOCK : 3, 0.10, 24, 4…)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : table de paramètres typés (clé, valeur, portée site) créée à l'étape 3 sans valeurs métier ; les valeurs viennent des specs consolidées ou d'une décision, jamais des MOCK.
+- **Réponse de l'équipe** : 
+
+#### Q-341 — Nommage Prisma : noms métier français du schéma réel avec `@@map`/`@map`, ou anglais
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : ANALYSE_MODELE_DONNEES.md §3 (noms conservés si cela facilite migration et recette) · Q-321 · skill circe-migration-prisma
+- **Options et conséquences / hypothèse** : HYPOTHÈSE (délégation de l'utilisateur) : modèles et champs en français métier conservés, `@@map`/`@map` vers les noms réels quand la table existe ; tables nouvelles nommées dans le même style. Conséquence : lisibilité pour l'équipe métier, reprise facilitée.
+- **Décision / hypothèse prise** : Délégation de l'utilisateur
+- **Réponse de l'équipe** : 
+
+#### Q-345 — Auteurs (`createdById`, `updatedById`, `creePar`, `retirePar`, `validationAdminParId`) : colonnes entières SANS clé étrangère vers `Utilisateur`
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : CLAUDE.md §6 / skill circe-migration-prisma (auteurs en FK) · étape 3
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : pas de FK pour éviter ~50 relations inverses dans le schéma ; l'id auteur vient de l'identité résolue et est contrôlé par le service ; `JournalAudit.parId` et `StatutHistorique.parId` ont, eux, une vraie FK. Conséquence : un auteur supprimé ne bloque rien (les utilisateurs ne sont jamais supprimés). À revoir si l'équipe exige l'intégrité référentielle des auteurs.
+- **Réponse de l'équipe** : 
+
+#### Q-346 — Enums sans `CHECK` en base et index partiels hors schéma Prisma (conséquences de SQLite, Q-343)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : Étape 3 · Q-343 · Q-305
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : les statuts sont validés par Prisma et par les services (machines d'états, CLAUDE.md §6) ; les 4 index uniques partiels sont en SQL brut dans la migration initiale et vérifiés par le test d'intégration ; ne jamais les supprimer aux migrations suivantes (Prisma n'a pas signalé de dérive). Conséquence : une écriture SQL directe peut stocker un statut invalide.
+- **Réponse de l'équipe** : 
+
+#### Q-347 — Pas de table `TransitionStatut` en base (le tableau de l'étape 3 la proposait comme référentiel)
+
+- **Module** : DATA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : CLAUDE.md §6 (table de transitions explicite dans le service) · ANALYSE_MODELE_DONNEES.md §3.1
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : les transitions vivent uniquement dans le code des services (une source de vérité, testée par les 409) ; pas de doublon en base. Conséquence : `seed:ref` ne charge aucune transition ; la correspondance des codes legacy 0–10 reste dans les enums (Q-004).
+- **Réponse de l'équipe** : 
+
+### Module INT (6)
+
+#### Q-328 — Geodis Zoom, exports CSV Caire/Surf, impressions d'étiquettes : dans le périmètre V2 ?
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy-integrations.md RG-INT-031 RG-INT-032 RG-INT-045 · EX-TRA-040 (hors périmètre sauf Broadcast et Process Métier) · Q-002
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : hors périmètre Réception/Coordination, reportés à l'étape 8 ; le batch Zoom du legacy est cassé (réponse jamais enregistrée) et n'est pas une référence de comportement. L'export CSV des trains fait partie de la Coordination cible (à confirmer par la spec Coordination).
+- **Réponse de l'équipe** : 
+
+#### Q-329 — Flux historique SSIS AMT/Sybase et procédures p_integ_ptf_* : encore actifs ?
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy-integrations.md RG-INT-041 · bdd.md §7.3
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : abandonnés (remplacés par les flux Broadcast/PEX), non repris en V2 ; à confirmer par la DSI car des données AMT pourraient cohabiter en production.
+- **Réponse de l'équipe** : 
+
+#### Q-379 — Fréquence de copie de l'EDR : 2 mises à jour par jour vs toutes les 2 h de 8 h à 18 h
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers-besoins.md contradiction 15 ; specs-existant-process.md contradiction 5 ; Q-005
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : fréquence paramétrable, défaut toutes les 2 h de 8 h à 18 h (HTML du 02/11)
+- **Réponse de l'équipe** : 
+
+#### Q-390 — Preuve de livraison : source (API Geodis Zoom), le batch actuel n'écrit jamais son résultat
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-existant-process.md EX-EXI-072 ; EX-PIL-502 ; ECR-EXP-02 ; legacy-integrations.md §10
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : statut « Livré » alimenté en étape 8 ; simulé jusque-là ; « Expédié » posé par la fin de journée
+- **Réponse de l'équipe** : 
+
+#### Q-410 — Traitements planifiés (D-20) : liste, horaires, verrou, acteur technique
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : EX-REC-512, RG-REC-180 / 181, RG-COO-269, RG-COO-042, legacy-integrations.md §10 (planification non versionnée : « sans appelant ») · Q-005, Q-006, Q-130, Q-204, Q-211, Q-375, Q-409
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, autorisée par l'utilisateur le 2026-11-06, à valider) : (1) quatre tâches idempotentes (`modules/taches/service.ts`) : FIN_JOURNEE_COLIS (même fonction `finDeJournee` que l'action manuelle, même transaction unique, RG-COO-269), PURGE_ATTENDUES (`purgerReceptionsAttendues`, RG-REC-180 / 181, hypothèses de Q-130 inchangées), INSTRUCTION_OK_AUTO (RG-COO-042 : la règle de Nariman, déjà évaluée à l'arrivée de la prépa (Q-204 option b), est REJOUÉE en rattrapage sur les instructions « En cours » dont la prépa est reçue, une transaction par instruction ; équivalent de `p_batch_auto_instruction_ok` dont le déploiement est inconnu : Q-006), ENVOI_MAILS (file de Q-409) ; (2) HORAIRES : paramètres D-06 `taches.finJourneeColis`, `taches.purgeAttendues`, `taches.instructionOkAuto`, `taches.envoiMails` (format « HH:MM » séparés par « ; », heure locale du serveur), VIDES par défaut = désactivées : aucun horaire n'est sourcé (Q-005), on n'en invente pas ; l'administrateur les règle dans « Règles métier » ; (3) acteur : compte technique « Circé (automatique) » (`circe-automatique`, créé au premier besoin, INACTIF donc jamais authentifiable, rôle Expédition en mémoire pour la garde `colis.gerer`, tous sites) ; visible dans la liste des utilisateurs (D-01) tant qu'on ne le filtre pas ; (4) ORDONNANCEUR : pulsation interne de 30 s, désactivable (`ORDONNANCEUR_ACTIF=false`), lance une tâche dont un horaire est échu depuis la pulsation précédente ; en plus : commande `pnpm --filter @circe/api taches:executer <TACHE|toutes>` (cron externe, déclencheur COMMANDE) et `POST /api/admin/taches/:tache/executer` (déclencheur MANUEL, `parametrage.gerer`) ; (5) VERROU : `tache_execution.verrou` UNIQUE = nom de la tâche tant qu'elle s'exécute → 409 `TACHE_DEJA_EN_COURS` (sans règle : exigence technique, aucune RG ne la porte), verrou périmé libéré au bout de 2 h ; l'ordonnanceur ignore une tâche verrouillée (tracé au journal applicatif) ; (6) JOURNAL d'exécution : tâche, déclencheur, acteur, début, fin, statut (EN_COURS / SUCCES / ECHEC), message, résultat JSON ; `GET /api/admin/taches` (horaires, dernière exécution) et `/executions` ; une tâche en échec laisse ses écritures annulées et un statut ECHEC (HTTP 200 pour l'exécution manuelle : l'échec est dans la réponse) ; (7) la POST manuelle exige `Idempotency-Key` mais ne stocke pas de rejeu (la tâche ouvre ses propres transactions, SQLite n'a pas de transaction imbriquée) : le verrou et l'idempotence propre de la tâche évitent tout double effet ; (8) le batch réel Broadcast (alimentation, EDR) reste hors périmètre et simulé par ses ports (Q-005) ; l'archivage et la purge de l'historique (`p_d_purge_histo`, EX-TRA-511) ne sont pas repris. Alternative : planificateur externe seul (cron), ou jobs sourcés par la DSI (Q-005).
+- **Réponse de l'équipe** : 
+
+#### Q-413 — Exigence TLS du client SMTP (D-19)
+
+- **Module** : INT · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : core/ports/mail.ts · Q-409, Q-375 · audit étape 8 (M2)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, autorisée par l'utilisateur le 2026-11-06, à valider) : dès qu'un identifiant (`SMTP_USER`) est configuré, l'envoi est refusé sur une connexion non chiffrée (erreur explicite avant toute connexion) : exiger `SMTP_SECURE=true` (TLS implicite). STARTTLS n'est pas implémenté (écart tracé) ; sans identifiant (relais interne), la connexion en clair reste possible. À valider : politique de l'hébergeur (STARTTLS, port 587, vérification du certificat, relais sans authentification).
+- **Réponse de l'équipe** : 
+
+### Module REC (55)
+
+#### Q-100 — Fusion des affiches non reprise dans la cible
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-060 à 064 (fusion, droit `fusion_affiche`, champs `est_fusionne`, `fusion_affiche`) · `[README] §3, §7` (« Zone picking et Fusion non repris ; fusion inopérante ANO-15 »)
+- **Options et conséquences / hypothèse** : Option 1 : écran supprimé, données héritées en lecture seule. Option 2 : reprendre la fonction. HYPOTHÈSE retenue : option 1 (règles marquées SUPPRIMÉE : RG-REC-163, 165, 166, 167, 168 ; RG-REC-169 est MODIFIÉE = lecture seule des fusions héritées). ⚠ Contradiction à lever avec Q-382 (qui range la fusion parmi les fonctions legacy conservées) ; migration des fusions existantes à décider (Q-155).
+- **Réponse de l'équipe** : 
+
+#### Q-101 — Zone picking et Édition picking
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-029, 101 · `[README] §7` (Zone picking non repris) · EX-TRA-025 (liste de picking citée parmi les éditions existantes)
+- **Options et conséquences / hypothèse** : Garder la donnée `zone_Picking` et l'Édition picking, ou les abandonner. HYPOTHÈSE : écran Zone picking abandonné, Édition picking CONSERVÉE (RG-REC-093) tant que non tranché.
+- **Réponse de l'équipe** : 
+
+#### Q-102 — Grain du contrôle et de la réception : BL, palette
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §10, §13` (EX-REC-011, 080 : « grain à trancher : contrôle par BL ou par palette »)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : une réception = un BL = une unité de contrôle ; une palette avec deux BL = deux réceptions.
+- **Réponse de l'équipe** : 
+
+#### Q-103 — Quantité de référence : `affiche.quantite` dénormalisée ou somme des mouvements
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-023 · `[DC] §9` (stock = somme des mouvements)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : stock = Σ mouvements, reçu = Σ rattachements actifs ; colonne `quantite` supprimée ou recalculée.
+- **Réponse de l'équipe** : 
+
+#### Q-104 — « Affiche reçue » à l'arrivée ou après le contrôle (Q31 des sources)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §9, §17` (question clé ouverte) · maquette (à l'arrivée)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : à l'arrivée de la palette, corrigée ensuite par le contrôle.
+- **Réponse de l'équipe** : 
+
+#### Q-105 — Valeurs par défaut et portée des paramètres Réception (Q30, Q32, Q33 des sources)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §11` (10 %, 4 sem., 24 h, 30, 2, X) · ECR-ADM-05
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : valeurs par défaut citées, paramètres globaux sauf l'allée tampon (par site).
+- **Réponse de l'équipe** : 
+
+#### Q-106 — Représentation de la zone tampon (allée X par site, palettes connues)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §7, §9, §11` (« allée X à fixer par site ») · maquette (`Z-tampon`)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : allée/rayon vides + indicateur zone tampon pour les palettes connues ; allée paramétrée par site pour les inconnues.
+- **Réponse de l'équipe** : 
+
+#### Q-107 — Qui peut rattacher une réception inconnue
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §7` / `[README] §3` · Q-REC-18 maquette
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : coord et recep peuvent rattacher ; seul coord/admin vaut validation.
+- **Réponse de l'équipe** : 
+
+#### Q-108 — État de la réception quand le dernier dossier est retiré (déjà contrôlée)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §9` / `§10` (contradiction) · EX-REC-053
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : A_IDENTIFIER dans tous les cas (maquette).
+- **Réponse de l'équipe** : 
+
+#### Q-109 — Statut « Introuvable » : transition vers « Rattachée » et persistance
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-REC-055 (« à confirmer ») · Q36, Q37 sources
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : horodatage `signale_le` ; Introuvable → Rattachée autorisé ; pas de retour.
+- **Réponse de l'équipe** : 
+
+#### Q-110 — Destinataire des alertes d'inconnue/introuvable : Coordination ou Pré-Prod (Q61)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[PR]` (Pré-Prod) / `[DC]` (Coordination) ; Nîmes « Pré-Prod Nîmes »
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : rôle Coordination du site ; Wissous : équipe Coord. Réception de Boulogne.
+- **Réponse de l'équipe** : 
+
+#### Q-111 — Alerte « sans instructions de pose » : libellé et canal (bandeau et mail ?)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §11` / principe « pas de mail »
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : bandeau ; mail seulement si canal configuré.
+- **Réponse de l'équipe** : 
+
+#### Q-112 — Lecture du BL et reconnaissance visuelle : technologie, périmètre (REC-17 après le 31/12)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §4` · EX-REC-004, 007
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : V1 sans lecture automatique ; interface `LlmProvider` prévue.
+- **Réponse de l'équipe** : 
+
+#### Q-113 — Stockage, types et taille des photos
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy `photo.image_file` varbinary · `bdd.md §10` (Q-h)
+- **Options et conséquences / hypothèse** : Valeurs de type/taille à fixer ; stockage objet ou base. HYPOTHÈSE : métadonnées en base, fichier hors base.
+- **Réponse de l'équipe** : 
+
+#### Q-114 — Unicité du n° de BL
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy (aucun contrôle) · `bdd.md §10`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : avertissement confirmable.
+- **Réponse de l'équipe** : 
+
+#### Q-115 — Création à la volée d'un imprimeur ou transporteur inconnu
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-REC-074
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : listes fermées.
+- **Réponse de l'équipe** : 
+
+#### Q-116 — « Déchargé par » obligatoire ?
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : Q-REC-2 maquette
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : facultatif.
+- **Réponse de l'équipe** : 
+
+#### Q-117 — Ajout/sortie manuels de stock, stock négatif
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-021, 022 · EX-REC-057
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : conservés (module Stocks), quantité > 0, sortie ≤ disponible.
+- **Réponse de l'équipe** : 
+
+#### Q-118 — Rebus legacy (drapeau) vs rebut cible (mouvement), tag « Au rebut », vidage
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-040, 041 · `[DC] §5, §10`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : drapeau remplacé par mouvements ; migration des rebus en mouvement.
+- **Réponse de l'équipe** : 
+
+#### Q-120 — Unité de `conservation` (jours/semaines), défauts 20/365, alerte « dernier départ dépassé »
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-010, 031
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : règles conservées, unité à confirmer.
+- **Réponse de l'équipe** : 
+
+#### Q-121 — Modification d'une réception validée (en-tête, quantités)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-079 · Q-REC-11, 23 maquette
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : pas de modification de l'en-tête ; corrections par mouvements.
+- **Réponse de l'équipe** : 
+
+#### Q-122 — Suppression/annulation d'une réception
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy (aucune) · EX-REC-081
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : aucune suppression.
+- **Réponse de l'équipe** : 
+
+#### Q-124 — Répartition inférieure à la quantité reçue
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-REC-039
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : autorisée (le surplus reste en stock).
+- **Réponse de l'équipe** : 
+
+#### Q-126 — Stockage du type de feuille et du tag « Feuille à refaire »
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §6, §13`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : colonnes sur l'affiche.
+- **Réponse de l'équipe** : 
+
+#### Q-127 — Définition de « multi-semaines » et fond jaune (Q18)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DC] §6`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : ≥ 2 semaines distinctes.
+- **Réponse de l'équipe** : 
+
+#### Q-128 — Exemplaires : 2 ou 3, destinataire (Q32)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[PR]` / `[DC]` / `[README]`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : 2 par défaut.
+- **Réponse de l'équipe** : 
+
+#### Q-130 — Purge : point de départ des 4 semaines, « conservation à l'année », lignes Broadcast
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : EX-REC-075, 512
+- **Options et conséquences / hypothèse** : À fixer.
+- **Décision / hypothèse prise** : HYPOTHÈSES (REC-P02, apps/api/src/modules/reception/purge.ts) : (1) ancienneté comptée depuis le lundi ISO de la semaine de départ de la ligne ; (2) « purgée » = ligne fermée (etat_ligne ANNULEE + purgee_le), jamais supprimée (RG-COO-089) ; (3) « conservation à l'année » = colonne conserver_annee (source de la valeur non définie : toujours faux tant que non alimentée) ; (4) les lignes venues de Broadcast sont purgées aussi (cible RG-REC-180 ; le legacy ne les purgeait pas). Planification : Q-005
+- **Réponse de l'équipe** : 
+
+#### Q-132 — Gravité « grave » vs Critique/Important
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-TRA-028
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : grave = Important.
+- **Réponse de l'équipe** : 
+
+#### Q-135 — Définition des thèmes exclus (« ne pas afficher », « reste en place »)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-REC-009
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : champ `exclu` de Broadcast.
+- **Réponse de l'équipe** : 
+
+#### Q-136 — Matrice profils × actions Réception
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : Q-003, EX-REC-076, maquette `roles`
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : écran primaire = écriture, secondaire = lecture.
+- **Réponse de l'équipe** : 
+
+#### Q-138 — Question référencée par RG-REC-014 mais non rédigée lors de la synthèse (sujet à reconstituer : affichage des « Réceptions attendues », colonnes/filtres ou lignes exclues)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-014 (Questions liées) · EX-REC-008, 009 · ECR-REC-01
+- **Options et conséquences / hypothèse** : Aucune hypothèse prise ; à reconstituer à l'étape 5 (REC-P01) à partir de [DC] §4 avant d'implémenter RG-REC-014 (Q-135 couvre déjà les thèmes exclus).
+- **Décision / hypothèse prise** : Reconstituée (REC-P02) : la question portait sur les lignes affichées des Réceptions attendues. HYPOTHÈSE : une ligne par ligne attendue ACTIVE (clé RG-COO-080, semaine comprise), hors dossiers annulés, thèmes exclus (Q-135) et lignes purgées (Q-130) ; un dossier sur plusieurs semaines donne une ligne par semaine (la maquette montre une ligne « S43+S44 » : regroupement d'affichage à décider avec COO-P05)
+- **Réponse de l'équipe** : 
+
+#### Q-139 — Suffixe « -W » : qui le pose, quel champ
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-REC-015
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : posé par l'alimentation (Coordination).
+- **Réponse de l'équipe** : 
+
+#### Q-140 — Comptage par morceau : mécanique
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : Q-REC-8 maquette
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : libellé sans calcul.
+- **Réponse de l'équipe** : 
+
+#### Q-143 — « Feuille à refaire » après modification d'annonceur/thème saisis
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : Q-REC-21 maquette
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : comme la maquette (non posé).
+- **Réponse de l'équipe** : 
+
+#### Q-147 — Famille de formats 2 m² : applicabilité
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-075, 090
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : conservée.
+- **Réponse de l'équipe** : 
+
+#### Q-148 — Remplacement de l'auto-association à l'ouverture
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-093
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : supprimée.
+- **Réponse de l'équipe** : 
+
+#### Q-150 — Champs texte dossiers/semaines de la fiche et `tf_dossier_semaine_depart`
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy RG-REC-025, 026
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : remplacés par rattachements.
+- **Réponse de l'équipe** : 
+
+#### Q-154 — Format/domaine d'allée et rayon
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : Maquette (placeholders)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : texte libre.
+- **Réponse de l'équipe** : 
+
+#### Q-157 — Délai de contrôle : heures calendaires ou ouvrées (Q33)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-REC-019
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : calendaires.
+- **Réponse de l'équipe** : 
+
+#### Q-165 — Recherche à la frappe vs Entrée
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : `[DESIGN]` vs REC-10
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : frappe.
+- **Réponse de l'équipe** : 
+
+#### Q-166 — Ligne du BL à quantité 0 : message
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : Q-REC-5
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : ignorée avec mention.
+- **Réponse de l'équipe** : 
+
+#### Q-167 — Ligne cochée absente du BL : bloquant ?
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-REC-006
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : non bloquant.
+- **Réponse de l'équipe** : 
+
+#### Q-168 — Format des n° de réception et d'affiche
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : MOCK
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : identifiants entiers ; code-barres A- + 13 chiffres.
+- **Réponse de l'équipe** : 
+
+#### Q-169 — Modèle du mouvement incomplet par rapport à RG-REC-151 : pas de type « production », ni équipe, machine, transporteur, imprimeur, référence explicite
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-151 · `bdd.md` (Activite / Equipe / Machine non reprises, Q-309) · Q-103
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : types et champs ajoutés par migration avec le parcours qui les écrit (production : hors Réception/Coordination ; transporteur et imprimeur : portés par la livraison du mouvement de réception). Conséquence : RG-REC-151 reste PARTIEL.
+- **Réponse de l'équipe** : 
+
+#### Q-170 — Mouvement de quantité nulle refusé (422) et sens imposé par type
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-151 (silencieux sur 0) · RG-REC-153 (négatifs : rebut, destruction, expédition, renvoi)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : un mouvement de quantité 0 n'a pas de sens (refus 422 `REC_MOUVEMENT_QUANTITE`) ; réception, complément et ajout manuel sont positifs (déduit). À confirmer.
+- **Réponse de l'équipe** : 
+
+#### Q-173 — Portée du site choisi dans le bandeau (`x-site-id`) : filtre-t-il aussi les lectures unitaires (fiche réception, fiche affiche) ou seulement les listes ?
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-001 (« le site choisi vaut pour toute l'application ») · RG-COO-167 · audit REC-P01
+- **Options et conséquences / hypothèse** : Aujourd'hui : le site est vérifié dans le périmètre (403 sinon) mais ne filtre que ce qui sera listé (REC-P02). Option : refuser (403) la lecture d'un objet d'un autre site que celui choisi, même dans le périmètre. À décider avant REC-P02.
+- **Décision / hypothèse prise** : HYPOTHÈSE (REC-P02) : le site choisi (x-site-id) filtre les LISTES et les badges ; sans site choisi, tout le périmètre. Les lectures unitaires ne sont filtrées que par le périmètre (pas encore de sélecteur de site dans l'interface)
+- **Réponse de l'équipe** : 
+
+#### Q-174 — Colonne Contrôle d'une ligne dont une affiche rattachée n'a pas de réception (donnée reprise du legacy)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-019 (silencieux) · Q-155 (reprise)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : l'affiche compte comme contrôlée (pas de palette dans le sas). Alternative : « À contrôler » jusqu'à un contrôle explicite.
+- **Réponse de l'équipe** : 
+
+#### Q-176 — Points d'interprétation de la recherche et des filtres des Réceptions attendues
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-012, 013, 015, 018 · maquette ECR-REC-01 · audit REC-P02
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) « semaine de production » = semaine ISO courante ; options du filtre Départ ≥ semaine courante, libellé « · en production » sur la semaine courante seulement (« en préparation », « à venir » : correspondance non sourcée) ; (2) n° recherché à l'égalité (pas de préfixe) ; (3) suffixe « -W » accepté en minuscule dans la recherche, refusé dans le paramètre `dossier` (RG-REC-013 écrit -W) ; (4) attendu = 0 et reçu > 0 → Surplus (RG-REC-018 pose « attendu > 0 ») ; (5) libellé de RG-REC-013 corrigé (« Le n° de dossier doit comporter 6 chiffres… ») au lieu du message legacy fautif : « libellé corrigé à valider » ; (6) recherche sans suggestions (combobox de la maquette) : puces seulement.
+- **Réponse de l'équipe** : 
+
+#### Q-177 — Points d'interprétation du panier et du bon de livraison (REC-P03)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-014, 021, 023, 024, 033, 035, 036 · maquette ECR-REC-01 (ordre des refus reception.js:503-509) · Q-113 vs Q-311
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) « agents de réception » (« Déchargé par ») = utilisateurs actifs au rôle recep du site (pas de table d'agents, D-04) ; (2) contrôles hors des 5 étapes de la maquette placés entre « aucune ligne cochée » et « deux plateformes » : doublon du panier, quantité négative (toute ligne du panier), ligne plus attendue (ACTIVE / non purgée / non exclue → 422 REC_LIGNE_INDISPONIBLE), périmètre (403), ligne inexistante (404) ; (3) toutes les lignes cochées à 0 → 422 REC_AUCUNE_QUANTITE ; (4) une ligne cochée à 0 d'une autre plateforme bloque quand même (RG-REC-024 avant RG-REC-023) ; (5) doublon de BL : même n° (sans espaces autour, sensible à la casse) sur la même plateforme, message avec les identifiants de réception (pas de préfixe « R », Q-168) ; (6) photos stockées EN BASE (Q-311 retenue contre Q-113 « fichier hors base ») ; types JPEG, PNG, WebP, PDF ; 10 Mo au plus ; (7) mode de rattachement toujours MAIN tant qu'il n'y a ni lecture du BL ni reconnaissance (Q-112) : le mode envoyé par le client n'est pas accepté. (8) une photo de BL n'est utilisable que par son auteur ou si elle est déjà liée au périmètre (même règle que la consultation), et une photo déjà jointe à une réception est refusée (422 REC_PHOTO_DEJA_JOINTE) ; (9) RG-REC-023 « attendu avec entretien si pas de reste » : l'entretien n'est pas connu côté Réception, la quantité par défaut est l'attendu ; (10) le lien « voir le visuel » est dans la colonne d'actions et s'affiche pour chaque ligne (disponibilité réelle du visuel : D-10). (11) une photo déjà liée à une AFFICHE du périmètre (mais à aucune réception) est acceptée comme photo du BL : à trancher quand les photos d'affiche seront écrites (REC-P04, P07) ; le contenu du fichier n'est pas comparé au type déclaré (en-tête nosniff posé).
+- **Réponse de l'équipe** : 
+
+#### Q-178 — Points d'interprétation de REC-P04 à REC-P10 (validation, contrôle, impressions, réceptions inconnues, fiche affiche, stock, alertes, administration)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-036 à 189 · maquettes ECR-REC-01 à 10 · Q-107, Q-108, Q-112, Q-117, Q-124, Q-133, Q-143, Q-372
+- **Options et conséquences / hypothèse** : HYPOTHÈSES : (1) RG-REC-047 : une ligne sans thème (IP non saisies) exige l'intitulé lu sur l'affiche à la validation (422 REC_INTITULE_REQUIS), qui devient le thème de l'affiche ; (2) RG-REC-144 : conservation par défaut 20 à la création (valeur legacy) ; (3) RG-REC-059 : l'écart de contrôle ajuste aussi la quantité du lien quand l'affiche n'a qu'un lien actif (jamais sous 1) ; avec plusieurs liens, seul le stock change ; (4) RG-REC-150 : après « Changer de thème », l'ancienne ligne attendue sans plus aucune affiche rattachée passe ANNULEE (retirée des attendues et de la recherche), sans alerte ; (5) RG-REC-098 : la photo de l'affiche est facultative ; une photo déjà liée à une réception OU à une affiche est refusée (422 REC_PHOTO_DEJA_JOINTE) — remplace le point (11) de Q-177 ; (6) RG-REC-111 / 135 / 136 : tout rattachement manuel (inconnue, autre dossier, changement de thème) vaut validation admin pour coord/admin (droit validation_admin.valider) et remet la validation « à confirmer » pour les autres rôles ; (7) statut « réception inconnue » (5 valeurs) CALCULÉ : liens actifs, signalement, statut de la réception, type de feuille et tag ; (8) RG-REC-112 : un signalement n'est possible qu'une fois, sur une réception À identifier sans lien ; (9) alertes RG-REC-182 à 189 CALCULÉES à la lecture (pas de table, pas d'acquittement : Q-220, Q-371) ; « grave » = Important ; gravité non précisée = À surveiller ; RG-REC-183 = lignes en Surplus ; RG-REC-184 = ligne sans thème ayant reçu une affiche ; RG-REC-185 « À surveiller » avant le délai ; RG-REC-189 « À surveiller » au-delà du délai, « Important » au double ; (10) RG-REC-179 : libellé de référentiel unique (casse ignorée, 409 REC_REFERENTIEL_DOUBLON) ; désactivation au lieu de suppression ; (11) RG-REC-084 : étiquette rack refusée (409) pour une affiche sans dossier ; feuille « définitive » dès qu'un lien actif existe ; (12) RG-REC-093 : édition picking conservée (Q-101) en données seules (affiches validées admin, hors zone picking, par date d'entrée) ; (13) RG-REC-155 : ajout / sortie manuels codés (quantité > 0, sortie ≤ disponible) mais refusés à tous par le catalogue tant que Q-117 est ouverte ; (14) RG-REC-169 : lecture seule d'une affiche CIBLE de fusion (ligne `fusion_affiche` dont elle n'est pas le chapeau), contrôlée à chaque écriture versionnée ; (15) RG-REC-104 / 106 : identification par le visuel non proposée (reconnaissance BLOQUÉE Q-112) : seule la voie « par n° de dossier » est à l'écran ; (16) ECR-REC-06 (fiche réception) lue depuis GET /api/receptions/:id/controle (droit reception.sas.consulter) ; (17) RG-REC-085 : message « n feuille(s) … prête(s) à imprimer » au lieu de « envoyées à l'imprimante (simulation) » : l'impression est faite par le navigateur (Q-002) ; (18) RG-REC-068 : l'imprimeur corrigé au contrôle est porté par les affiches de la palette ; l'imprimeur de la livraison (BL) reste celui saisi à l'arrivée ; (19) RG-REC-066 : la case « +N en entretien » apparaît et est acceptée si la quantité comptée dépasse l'ATTENDU des lignes rattachées (sans entretien : l'entretien n'est pas connu côté Réception, Q-177 (9), Q-141) ; N ≤ comptée − attendu (422 REC_SURPLUS_ENTRETIEN_INVALIDE) ; (20) RG-REC-040 : complément refusé si la ligne n'est pas Partielle (422 REC_COMPLEMENT_INVALIDE) ; (21) RG-REC-136 : tri « reste décroissant, 6 au plus » fait par l'API (`tri=reste&max=6`) ; (22) PUT des paramètres : jeton de concurrence = valeurs lues (`precedent`), 409 REC_CONFLIT_VERSION si elles ont changé ; (23) RG-REC-066 sur un complément : le comptage du BL courant est comparé à l'attendu total des lignes de l'affiche (le reçu antérieur n'est pas déduit) ; (24) RG-REC-086 : les n exemplaires sont rendus par le navigateur (copies masquées à l'écran, visibles à l'impression) ; RG-REC-090 : « Étiquettes rack » ouvre l'aperçu en mode étiquette (une étiquette rack = la feuille de stock, RG-REC-076), refusé pour une affiche sans dossier.
+- **Réponse de l'équipe** : 
+
+#### Q-180 — Retrait du dernier dossier d'une affiche d'une palette à plusieurs affiches (réception normale)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RG-REC-114 (« renvoie l'affiche dans les réceptions inconnues ; la réception redevient A_IDENTIFIER ») · §3.2 · RG-REC-071 (une réception À identifier n'est pas contrôlable) · Q-108 · audit REC-P04..P10 (M1)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : la réception ne repasse À identifier que si AUCUNE de ses affiches n'a plus de dossier ; sinon elle garde son statut (les autres affiches restent contrôlables) ; l'affiche orpheline apparaît dans « Réceptions inconnues » (même issue d'une réception normale), se rattache depuis cet écran (la réception ne change de statut que si elle était À identifier) ; les alertes RG-REC-185/186 portent sur toute réception À identifier. Alternative : réception À identifier dans tous les cas (Q-108 strict), ce qui sort du sas des affiches encore identifiées. Limite : « En attente depuis » part de l'arrivée de la palette, pas du moment où l'affiche est redevenue orpheline (pas de date d'orphelinat en base).
+- **Réponse de l'équipe** : 
+
+#### Q-400 — Message « n unité(s) prête(s) à produire » (RG-X-003) : périmètre du calcul
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-X-003, Q-102, Q-250, Q-251
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : « unité » = train (Q-250) ; le nombre de trains qui passent EN_ATTENTE → PRET est calculé AVANT / APRÈS les écritures, dans la transaction de « Valider la réception » et du rattachement d'une inconnue (pas du retrait ni du contrôle, qui ne changent pas le reçu) ; champ `unitesPretes` ajouté aux deux réponses ; unités fixe / pliage / bus : après Q-265.
+- **Réponse de l'équipe** : 
+
+#### Q-401 — Rebut et reçu : un rebut réduit le stock mais pas le reçu (RG-REC-017) ; effet sur la couverture des trains et sur « Σ liens ≤ stock »
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-05
+- **Sources / conflit** : RG-REC-017, RG-X-060, RG-X-079
+- **Options et conséquences / hypothèse** : Constat (étape 7) : après un rebut de 4 sur 10 reçus, la ligne reste « Complète », le train reste PRÊT et la somme des liens (10) dépasse le stock (6). HYPOTHÈSE : conforme à RG-REC-017 (le reçu ne baisse pas) ; la répartition ultérieure est contrôlée sur le stock courant (`assertRepartitionPossible`). À arbitrer : un rebut doit-il remettre un visuel « manquant » ?
+- **Réponse de l'équipe** : 
+
+#### Q-416 — Comptage à zéro au contrôle (RG-REC-059) : le lien unique suit le comptage avec un minimum de 1 (`Math.max(1, …)`, Q-178), d'où un lien actif de 1 sur une affiche au stock 0 (Σ liens > reçu)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : RG-REC-059, RG-X-060, Q-178 · `reception/controle.ts` · constat des JDD massifs (limites, écart −100 %)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, à valider) : comportement conservé (minimum 1) ; l'invariant INV-033 tolère « 1 par lien actif ». Alternative : retirer le lien (l'affiche redevient orpheline) ou autoriser un lien de 0. ANO-064 OUVERTE.
+- **Réponse de l'équipe** : 
+
+#### Q-417 — Écart de contrôle négatif qui rendrait le stock négatif (rebut déjà fait avant le contrôle)
+
+- **Module** : REC · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : RG-REC-064 (rebut plafonné au disponible), RG-REC-151 (stock = Σ mouvements), Q-197 (9) · constat ANO-061
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, autorisée par l'utilisateur le 2026-11-06, à valider) : tout mouvement négatif qui ferait passer le stock sous 0 est refusé en 422 `REC_STOCK_NEGATIF` (RG-REC-064), rien n'est écrit (`reception/stock.ts`). Risque : palette bloquée « À contrôler » tant que le comptage est incohérent avec le stock (aucun profil n'a `stock.mouvement_manuel`). Alternative : plafonner l'écart au stock disponible, tracé dans le motif.
+- **Réponse de l'équipe** : 
+
+### Module TRA (39)
+
+#### Q-003 — Profils utilisateurs de la cible
+
+- **Module** : TRA · **Bloquante** : NON (rôles provisoires admis par CLAUDE.md §8) · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : legacy-admin.md (27 droits `tr_utilisateur_menu` + périmètre `tr_utilisateur_data`, `prf_id` inerte, libellés `tr_profil` absents) · maquette `M.ROLES` (coord, cheq, recep, expe, admin, com) · CLAUDE.md §8
+- **Options et conséquences / hypothèse** : Hypothèse proposée : profils provisoires = les 6 rôles de la maquette, mappés sur les droits legacy. Conséquence : tests de permissions écrits sur ces rôles, à refaire si l'équipe en choisit d'autres.
+- **Décision / hypothèse prise** : Délégation de l'utilisateur : 6 rôles provisoires de la maquette (coord, cheq, recep, expe, admin, com) mappés sur les droits legacy ; tests de permissions à refaire si les profils réels diffèrent.
+- **Réponse de l'équipe** : 
+
+#### Q-220 — Paramétrage des alertes de coordination : seuils (24 h, 10 %, deadline jeudi S-2 16 h, départ S/S+1, 72 h/36 h), gravités, destinataires, canaux, correspondance « grave » = Important ; acquittement par utilisateur ou global ; alerte calculée ou événement daté
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-027 à 029 ; ECR-TRA-01 (Q-TRA-1 à 4) ; ECR-ADM-04
+- **Options et conséquences / hypothèse** : HYPOTHÈSE retenue : tous les seuils et destinataires sont des paramètres ; « grave » = Important (serious) ; alerte à clé stable levée automatiquement quand la condition disparaît. Conséquence : RG-COO-033, 066 à 076 ; l'acquittement (qui) reste ouvert côté transverse
+- **Réponse de l'équipe** : 
+
+#### Q-331 — Fonctions techniques du legacy à ne pas reprendre : écran de tests, ELMAH ouvert, Info poste (ping), contrôle ConfigCat (PastillePrepaBus, IsBusV3)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy-admin.md RG-ADM-048 RG-ADM-050 RG-ADM-052 · legacy-integrations.md RG-INT-044
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : non reprises ; le déblocage Broadcast est implémenté sans feature flag ConfigCat (la valeur du flag en production est inconnue : à confirmer).
+- **Réponse de l'équipe** : 
+
+#### Q-333 — Gestion des secrets et configuration en V2 (identifiants en clair du legacy)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : EX-TRA-038 (certification ISO 27001) · Q-010
+- **Options et conséquences / hypothèse** : Secrets hors dépôt (variables d'environnement ou coffre selon l'hébergement), jamais dans les fichiers de configuration versionnés ; mécanisme précis à choisir à l'étape 2.
+- **Décision / hypothèse prise** : Étape 2 : secrets et configuration en variables d'environnement (`.env` non versionné, `.env.example` sans secret), validées par Zod au démarrage. Coffre éventuel selon l'hébergement : à décider.
+- **Réponse de l'équipe** : 
+
+#### Q-340 — Signatures de `resolveIdentity`, `SiteAgentPort`, `LlmProvider` : la demande renvoie à « CLAUDE.md §8 » qui ne les décrit pas (§8 ne contient que les profils)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : CLAUDE.md §8 · Q-001 · Q-002 · Q-112
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : interfaces vides ; `resolveIdentity` factice (en-tête ou utilisateur fixe), actif seulement en `development`/`test`, marqué `Q-001` ; `SiteAgentPort` pour l'agent d'impression, `LlmProvider` pour la lecture de BL. Conséquence : à remplacer à l'étape 4 / après Q-001, Q-002.
+- **Réponse de l'équipe** : 
+
+#### Q-342 — Version de Node : le poste a Node v26.0.0 (non LTS)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : Q-339
+- **Options et conséquences / hypothèse** : HYPOTHÈSE (délégation) : cible Node 24 LTS (`engines` >=24), `.nvmrc` à 24 ; le poste en v26 reste toléré en dev. Installation de pnpm par npm, Docker Desktop à installer par l'utilisateur (Q-339).
+- **Décision / hypothèse prise** : Délégation de l'utilisateur
+- **Réponse de l'équipe** : 
+
+#### Q-344 — Choix techniques pris à l'étape 2 hors liste validée : TypeScript 6.0.3 (et non 7.0.2), Nitro 3.0.260903-beta (préversion), exécution de l'API par `tsx` (pas de build JS), Prisma 7.10.1 (8.0 rc non retenue), relais `/api` par route serveur TanStack plutôt que `routeRules` Nitro
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : Étape 2 · Q-338 (versions pinnées, publiées depuis plus de 2 semaines)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : TypeScript 7.0.2 écarté car `typescript-eslint` 8.72 exige TypeScript < 6.1 ; seule version de Nitro 3 publiée depuis plus de 2 semaines = bêta (la rc du 29/10 est trop récente) ; `tsx` évite d'ajouter un bundler (CLAUDE.md §3) ; le relais par route lit `API_URL` à l'exécution (pas figé au build). Conséquence : à revoir avant production (build JS de l'API, Nitro stable, TypeScript 7).
+- **Réponse de l'équipe** : 
+
+#### Q-348 — Rétention et purge des clés d'idempotence
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : CLAUDE.md §6 · RG-REC-008 (durée non spécifiée)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : 24 h (`IDEMPOTENCY_TTL_MS`) ; une clé expirée est supprimée à sa réutilisation ; `purgerClesExpirees` existe mais n'est pas planifiée (planificateur : D-20, Q-005).
+- **Réponse de l'équipe** : 
+
+#### Q-349 — Lecture des matrices profils × actions pour le catalogue des permissions : cases « ? » et contradictions entre les deux documents
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RECEPTION_REGLES_METIER.md §2 · COORDINATION_REGLES_METIER.md §2 · Q-117, Q-136, Q-201, Q-220, Q-286
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : « ? » = REFUSÉ tant que non tranché (fail-closed) — en particulier `stock.mouvement_manuel` et `alerte.acquitter` ne sont accordés à PERSONNE ; ✔* = accordé (Q-136). Contradictions : « Signaler Dossier introuvable » admin (REC ✘*, COO ✔ via RG-X-054) → accordé ; « Acquitter une alerte » (REC ✔, COO « ? » Q-220) → refusé. Conséquence : des actions sont bloquées pour tous jusqu'à décision ; à revoir avec l'équipe ligne par ligne ; incohérence admin (consultation ✘* vs rattachement / historique ✔) : Q-171 (`apps/api/src/core/permissions/catalogue.ts`, colonne source).
+- **Réponse de l'équipe** : 
+
+#### Q-350 — Collision des IDs EX entre specs-ateliers-besoins et specs-reception/coordination/transverse : renumérotation +500 appliquée
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers-besoins.md (EX-REC-001…, EX-COO-001…, EX-TRA-001…) vs specs-reception.md / specs-coordination.md / specs-transverse.md (mêmes IDs, autre sens)
+- **Options et conséquences / hypothèse** : Les ateliers réutilisent des IDs déjà définis. HYPOTHÈSE : tout EX des ateliers est cité avec +500 (EX-REC-001 ateliers = EX-REC-501, EX-COO-012 = EX-COO-512, EX-FIX-003 = EX-FIX-503) ; les EX des autres specs et les EX-EXI gardent leur ID. Conséquence : la matrice porte les IDs +500 ; à confirmer par l'équipe ou à renuméroter à la source
+- **Réponse de l'équipe** : 
+
+#### Q-351 — Rôle « Pré-Prod » vs « Coordination » ; contrôleur / agent de contrôle / agent de réception
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-003 et contradictions 7-8 ; specs-reception.md contradiction 1 (alerte réceptions inconnues : Pré-Prod ou Coordination) ; maquettes-autres-modules.md §0.6 (rôle Pré-Prod supprimé le 27/10)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : Pré-Prod = gestionnaires dans Broadcast hors Circé ; Coordination = rôle Circé (y compris « Pré-Prod Nîmes ») ; contrôleur = agent de réception ; alerte réceptions inconnues adressée à Coordination (dossier Réception du 26/10, plus récent). Si faux : permissions et destinataires d'alertes à revoir
+- **Réponse de l'équipe** : 
+
+#### Q-352 — Devenir des 27 droits legacy non portés clairement par les 6 rôles (Zone_Picking, fusion_affiche, train_annuler_theme, duplication_train, Activite_Production, retirer)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : legacy-admin.md « Profils réels » §2 ; tra-fonc-1-acteurs.md §1.2 ; Q-003
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : les 27 droits deviennent des permissions fines agrégées dans les 6 rôles provisoires ; les droits sans équivalent restent attribuables individuellement (rien n'est perdu). Alternative : les abandonner si l'équipe le décide
+- **Réponse de l'équipe** : 
+
+#### Q-354 — Qui peut valider (validation admin) : Coordination seule ou aussi Administrateur ?
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-005 et README §3 (« Valider » visible seulement Coordination) vs maquette (`role === 'coord' / 'admin'`) vs legacy (droit `validation_admin` attribuable à tout utilisateur)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : coord et admin autorisés, recep / cheq / expe / com refusés. Si Coordination seule : retirer `admin`
+- **Réponse de l'équipe** : 
+
+#### Q-357 — Lien entre périmètre utilisateur (`tr_utilisateur_data`) et sélecteur de Site
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-006 ; legacy-admin.md RG-ADM-016
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : les sites sélectionnables sont limités au périmètre de l'utilisateur ; « Tous les sites » = union de son périmètre ; contrôle côté serveur
+- **Réponse de l'équipe** : 
+
+#### Q-358 — Périmètre des sites : DBG / DBG Lyon, atelier « Nîmes Pliage 12M2 », Nanterre (Bus, cible)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-006 ; specs-existant-process.md EX-EXI-003 ; ECR-ADM-01 (encadré À confirmer)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : référentiel initial = Nîmes, Wissous, Nanterre (cible) ; DBG et Pliage 12M2 non repris tant que non confirmés. Conséquence : seed:ref et filtres
+- **Réponse de l'équipe** : 
+
+#### Q-359 — Comptes nominatifs vs adresses génériques partagées (Nîmes)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-007 ; EX-ADM-502 ; Q-001
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : comptes nominatifs requis (traçabilité du contrôleur et du valideur) ; comptes génériques non repris ; reprise des comptes à la migration
+- **Réponse de l'équipe** : 
+
+#### Q-362 — États chargement et erreur de page non spécifiés
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-020 ; maquettes-reception-coordination.md Q-C ; CLAUDE.md §6
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : composants communs (squelette de chargement, encadré d'erreur avec action « Réessayer ») dont le libellé est décidé à l'étape 5
+- **Réponse de l'équipe** : 
+
+#### Q-363 — Douchette : exigée par DESIGN §8 pour la Réception, exclue par la décision du 19/10 ; présente à l'Expédition
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md contradiction 2, EX-TRA-021 ; ECR-EXP-01 (bandeau Douchette)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : pas de scan à la Réception ; champ de saisie compatible douchette à l'Expédition et pour les bagues
+- **Réponse de l'équipe** : 
+
+#### Q-364 — Filtre sous chaque en-tête de colonne : DESIGN §4.5 (pas de ligne de filtre) vs §4.8 du 21/10 et README §2.7
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md contradiction 1 ; EX-TRA-014
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : filtres d'en-tête présents (version la plus récente, implémentée dans la maquette)
+- **Réponse de l'équipe** : 
+
+#### Q-365 — Page d'ouverture : Pilotage › Suivi de prod (P3) alors que P1 = Réception / Coordination
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquettes-autres-modules.md ECR-NAV-01 ; EX-TRA-008
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : en attendant le dashboard, ouverture sur le premier écran P1 autorisé du rôle (Réception pour recep, Validation admin pour coord, Alertes sinon)
+- **Réponse de l'équipe** : 
+
+#### Q-366 — Classement des écrans : Vérification des thèmes (ECR-THM) rattachée à COO ou module à part ; ECR-TRA-01 ; écran d'alerte intitulés proches « dans Broadcast » ou dans Circé
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquettes-autres-modules.md §1 (THM « fonctionnellement Coordination ») ; maquettes-reception-coordination.md Q-A ; EX-THM-502, EX-COO-513
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : ECR-THM = P2 (dépendance), ECR-TRA-01 = P1 transverse ; l'écran d'alerte est dans Circé (ECR-THM-01)
+- **Réponse de l'équipe** : 
+
+#### Q-367 — Liste et fidélité des éditions à reproduire (RDLC -> PDF navigateur)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-024, EX-TRA-025 ; legacy-admin.md RG-ADM-060 (contenu des .rdlc non lu) ; Q-002
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : P1 = feuille de stock / étiquette rack, bagues, fiche de synthèse ; étiquettes colis, picking, fiches de préparation en étape 8 ; mise en page refaite à partir de la maquette
+- **Réponse de l'équipe** : 
+
+#### Q-368 — Génération PDF non spécifiée par les specs ; format du code-barres de l'étiquette rack
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-026 ; legacy-admin.md RG-ADM-062 (« A- » + id sur 13 caractères)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : PDF A4 côté navigateur ; code-barres au format legacy conservé
+- **Réponse de l'équipe** : 
+
+#### Q-369 — LLM : usage fonctionnel (reconnaissance visuelle, lecture du BL)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : CLAUDE.md §3 ; EX-REC-507 ; specs-reception.md (REC-17 hors périmètre avant 31/12)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : aucun usage LLM en P1 ; seule l'interface `LlmProvider` est prévue au socle
+- **Réponse de l'équipe** : 
+
+#### Q-370 — Stockage et rétention des photos de BL / d'affiche
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquettes-reception-coordination.md ECR-REC-07 ; EX-TRA-042 ; legacy-reception.md (partage disque des pièces jointes) ; stack sans stockage de fichiers
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : stockage derrière une interface `FileStore` (volume local en développement) ; rétention illimitée jusqu'à décision. À valider avant l'étape 5 REC-P01
+- **Réponse de l'équipe** : 
+
+#### Q-371 — Modèle d'une alerte (calculée ou événement daté), acquittement global ou par utilisateur, levée automatique
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-027 ; maquettes-reception-coordination.md ECR-TRA-01 (Q-TRA-1, Q-TRA-2)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : alerte persistée (clé, type, gravité, périmètre, état) recalculée à chaque événement, acquittement global avec auteur et date, levée automatique quand la condition disparaît
+- **Réponse de l'équipe** : 
+
+#### Q-372 — Gravités : correspondance « grave » du dossier Réception et codes maquette
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-028 ; maquette (critical / serious / warning / info / good)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : critical = Critique, serious = Important, warning = À surveiller, info = Info, good = OK ; « grave » non repris comme niveau
+- **Réponse de l'équipe** : 
+
+#### Q-373 — Seuils d'alerte et valeurs MOCK sans source (36 h, 72 h, 115 %, 0,9 / 0,6 / 0,3, 60 trains) ; seuils paramétrables
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : maquettes-reception-coordination.md §4 (remarques) ; EX-TRA-029, EX-TRA-041 ; ECR-ADM-05
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : tous paramétrables (EX-TRA-041) avec valeurs initiales de la maquette, à confirmer ; les valeurs MOCK ne sont jamais définitives
+- **Réponse de l'équipe** : 
+
+#### Q-374 — Catalogue exhaustif des alertes (17 types maquette vs alertes citées : surcharge/départ proche du dispatch, Broadcast ≠ Circé)
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-031 (table non fournie) ; ECR-ADM-04
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : périmètre P1 = 17 types de la maquette ; autres types ajoutés si une spec les décrit
+- **Réponse de l'équipe** : 
+
+#### Q-376 — Journal d'audit : durée de conservation, accès, distinction journal / historique d'objet
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-034 ; ECR-ADM-08
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : historique d'objet par entité (CLAUDE.md §6) plus journal applicatif unique, conservation sans limite jusqu'à décision
+- **Réponse de l'équipe** : 
+
+#### Q-391 — Statut des EX non qualifiées : « A revoir Bao », « A creuser Rayane », « En attente input Patrick », « Refusé »
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers-besoins.md « Statuts de lignes » : FIX-503, FIX-504, FIX-508, COO-501, COO-502, COO-503, COO-511, REC-505, BUS-501, QUA-501, STK-504 (A revoir Bao) ; FIX-507, SCR-501 à SCR-504 (A creuser Rayane) ; SCR-505 (Patrick) ; EXP-506, REC-523 (refusé)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : les EX « A revoir / A creuser / En attente » sont traitées comme exigences non validées (implémentées seulement si une spec 02/11 ou la maquette les couvre, sinon écart) ; les EX refusées ne sont pas implémentées
+- **Réponse de l'équipe** : 
+
+#### Q-394 — Process Métier (non-conformités) : lien sortant ou intégration
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : EX-QUA-501 ; EX-TRA-040 ; maquettes-autres-modules.md ECR-STK-01 (QUA-03 non couvert)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : lien sortant depuis l'onglet Mouvements de la fiche affiche ; intégration hors périmètre
+- **Réponse de l'équipe** : 
+
+#### Q-397 — Statut des 52 EX-EXI (description de l'existant) dans la matrice de traçabilité
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-existant-process.md · MATRICE_TRACABILITE_SPECIFICATIONS.md
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : lignes présentes en À FAIRE avec la remarque « existant : référence » ; HORS PÉRIMÈTRE seulement après validation de l'équipe. Alternative : les retirer de la matrice (perte de la traçabilité des règles legacy).
+- **Réponse de l'équipe** : 
+
+#### Q-406 — Administration des utilisateurs, rôles, périmètre et sites (D-01, D-02) : périmètre minimal et garde-fous
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : ECR-ADM-01 (lecture seule, pas de CRUD), ECR-ADM-07 (« gestion des utilisateurs / droits : phase 4 »), legacy-admin.md RG-ADM-010 à 017 provisoires · EX-TRA-001 à 007 · Q-001, Q-003, Q-320, Q-352, Q-358, Q-359
+- **Options et conséquences / hypothèse** : HYPOTHÈSES (étape 8 lot 2, option recommandée autorisée par l'utilisateur, à valider) : (1) nouveau droit `utilisateur.gerer`, administrateur seul ; (2) un compte = identifiant externe (unique, casse ignorée, sans espace ni « ; »), nom, rôles (au moins un parmi les 6 provisoires), périmètre (site entier ou atelier d'un site) ; AUCUN mot de passe (Q-001), pas d'invitation ni de mail ; comptes nominatifs (Q-359) ; (3) les rôles et le périmètre sont REMPLACÉS à chaque modification ; effet immédiat (l'identité est relue en base à chaque requête) ; (4) un compte désactivé ne s'authentifie plus (401) ; jamais de suppression (journal, historique) ; (5) un compte sans périmètre est admis : accès nul tant qu'il n'est pas affecté ; l'administrateur voit tous les sites (RG-COO-167) : son périmètre est sans objet ; (6) un administrateur ne modifie NI ses rôles, NI son périmètre, NI son état (409 ADM_AUTO_MODIFICATION) : pas d'élévation de ses propres droits et pas d'auto-verrouillage ; l'acteur étant toujours un administrateur actif, le dernier administrateur ne peut pas être retiré par l'API ; (7) liste bornée à 200 lignes (filtres texte / rôle / état, total fourni) ; (8) D-02 : sites et ateliers en LECTURE seule (ECR-ADM-01 : « lecture seule, pas de CRUD » ; PLAN D-02), droit `parametrage.gerer` ; formats, machines et gammes de fabrication NON modélisés (ECARTS) ; DBG / DBG Lyon et « Nîmes Pliage 12M2 » non repris (Q-358).
+- **Réponse de l'équipe** : 
+
+#### Q-407 — Plateformes (D-03) et référentiels de réception (D-04) : périmètre minimal, validations, désactivation
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : legacy-admin.md RG-ADM-040 à 044 provisoires (écrans « Plateforme » et « Plateforme Mail », aucune validation, pas de suppression d'imprimante) · ECR-ADM-07 (« + Ajouter » factice ; questions : saisie réelle, libellé libre, désactivation) · RG-REC-035 / 179 · Q-115, Q-177, Q-178, Q-002, Q-375
+- **Options et conséquences / hypothèse** : HYPOTHÈSES (étape 8 lot 3, option recommandée autorisée par l'utilisateur le 2026-11-06, à valider) : (1) D-03 : droit `parametrage.gerer` (administrateur seul, l'existant ne contrôlait pas le droit côté serveur : RG-ADM-040) ; seules les plateformes existantes se modifient (ni création ni suppression, RG-ADM-040) ; coordonnées, mail de déblocage (`plt_mail`, RG-ADM-044) et id site CCF éditables sous verrou de version ; (2) longueurs d'existant contrôlées en 400 au lieu d'une erreur SQL de troncature (code postal 5, téléphone 14, mail 500) ; (3) mails de réception (RG-ADM-042 / 043) : liste distincte du mail de déblocage ; syntaxe d'adresse vérifiée (l'existant n'imposait rien), adresse normalisée en minuscules, doublon par plateforme refusé (409), suppression physique journalisée mais contrôlée (l'adresse doit appartenir à la plateforme demandée : l'existant ne le vérifiait pas) ; AUCUN mail n'est envoyé (Q-375) : seules la configuration et sa lecture (`mailsReception`) sont livrées ; (4) imprimantes (RG-ADM-040 / 041) : nom obligatoire (l'existant insérait un nom vide), unique par plateforme (casse ignorée), jamais supprimées mais désactivables / réactivables (la cible n'a pas de source : option la plus conservatrice) ; seules les actives sont des cibles (`imprimantesCibles`) ; AUCUNE impression n'est appelée (Q-002) ; (5) D-04 : imprimeurs et livreurs réutilisent l'API REC-P10 existante (`/api/referentiels/:ref`, `referentiel.gerer`), écran `/admin/referentiels` avec saisie réelle d'un libellé libre, désactivation / réactivation, ni suppression ni renommage (maquette) ; (6) agents de réception / contrôleurs = utilisateurs `recep` (Q-177 (1)) : liste en lecture seule (actifs et désactivés, 200 premiers, filtre texte), gérés dans « Utilisateurs » (D-01) ; pas de table de contrôleurs distincte.
+- **Réponse de l'équipe** : 
+
+#### Q-408 — Configuration des alertes (D-08, ECR-ADM-04) : champs configurables et effets
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : ECR-ADM-04 (maquette : seul le canal est modifiable, 17 types, 5 canaux ; seuils, destinataires et gravités non modifiables ; listes de distribution en lecture, non maquettées) · EX-TRA-029, EX-ADM-504, RG-REC-190 (BLOQUÉ jusqu'ici) · Q-373, Q-375, Q-220
+- **Options et conséquences / hypothèse** : HYPOTHÈSES (étape 8 lot 3, option recommandée autorisée par l'utilisateur le 2026-11-06, à valider) : (1) droit `parametrage.gerer` (administrateur seul : COO §2) ; (2) les 18 types calculés (17 de la maquette + `INTEGRATION`, Q-190 (6)) sont listés avec leur déclencheur et leur seuil EN LECTURE SEULE (le seuil réel est un paramètre métier de D-06, sa valeur courante est affichée) ; `DEPART_RISQUE` est listé « non calculée » (valeurs de maquette sans source, Q-373) ; (3) modifiables : le canal (Bandeau, Bandeau + mail, Bandeau + mail immédiat, Bandeau + digest 7h, Désactivée : libellés de la maquette) et les rôles destinataires (EX-TRA-029 : « destinataires » configurables) ; la gravité reste calculée par les règles ; (4) sans ligne : canal Bandeau et destinataires calculés par défaut ; une ligne est créée à la première modification (version 0 → 1) sous verrou de version, journalisée ; (5) EFFETS réels, dans Pilotage › Alertes seulement : « Désactivée » retire le type (la maquette montre MAIL_COMMERCIAL désactivée) ; des destinataires configurés remplacent les destinataires calculés ; les canaux « mail » et « digest » sont enregistrés SANS EFFET (aucun mail, Q-375) ; l'écran Alertes de la Réception (`GET /api/alertes/reception`) n'applique pas encore la configuration (ECARTS) ; (6) listes de distribution et « mails existants dans le code » non repris (non maquettés : RP34, Q-375) ; (7) acquittement inchangé (Q-220).
+- **Réponse de l'équipe** : 
+
+#### Q-409 — File d'envoi des mails et fournisseur SMTP (D-19) : mails réellement envoyés, destinataires, tentatives, canal
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : EX-TRA-030, legacy-admin.md RG-ADM-043 à 045 provisoires, legacy-integrations.md RG-INT-033 à 035 · Q-375, Q-285, Q-219, Q-408
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, autorisée par l'utilisateur le 2026-11-06, à valider) : (1) interface `MailPort` (`core/ports/mail.ts`), adaptateurs : boîte d'envoi de DÉVELOPPEMENT / test (défaut, aucun mail réel, canal SIMULE), client SMTP minimal (EHLO, AUTH LOGIN, MAIL FROM, RCPT TO, DATA ; ni STARTTLS ni pièce jointe) NON ACTIVÉ par défaut : il n'est créé que si `MAIL_MODE=smtp` ET `SMTP_HOST` ET `MAIL_EXPEDITEUR` sont renseignés ; en production sans SMTP, adaptateur « non configuré » qui refuse (jamais de succès simulé) ; (2) aucun envoi dans une transaction métier : le fait écrit une ligne de `mail_file` dans SA transaction (clé de fait unique : idempotence), l'envoi est fait après le commit par la tâche `ENVOI_MAILS` ou `POST /api/admin/file-envoi/traiter` (Q-219 : échec tracé sans annuler l'action) ; (3) mails branchés (déjà tracés) : « colis expédié » (RG-COO-271 ; un mail par colis au mail du destinataire D-05, texte sans pièce jointe Excel : Q-285 « conserver à l'identique » ramené à l'essentiel), déblocage (RG-COO-147 ; adresses `plt_mail` de la plateforme, D-03), demande de correction Broadcast (RG-COO-057 ; adresses des plateformes des lignes actives du dossier dans le périmètre, repli de Q-219), correction d'intitulé « Prévenir la Pré-Prod » (RG-COO-244). NON branchés, faute de déclencheur source : le mail « Rajout après préparation » (RG-COO-073 : l'alerte est CALCULÉE à la lecture, Q-398 ; aucun événement ni liste de distribution sourcée), le mail de demande de correction d'intitulé au gestionnaire du pôle (RG-COO-069 / 070, `demande_theme`), le mail aux chefs d'équipe à la reprise d'un thème en production (RG-COO-068), les canaux « mail » et « digest 7 h » de D-08 ; (4) sans adresse valide : rien en file, la trace dit « sans destinataire » (adresses invalides écartées, doublons supprimés) ; (5) statuts EN_ATTENTE, EN_COURS (réservation atomique : deux traitements n'envoient jamais la même ligne ; réservation périmée de 15 min reprise), ENVOYE, ECHEC ; 10 tentatives (RG-ADM-045), UNE par passage du traitement (le legacy les espaçait de 10 s) ; relance manuelle d'un échec (`parametrage.gerer`, verrou de version) ; (6) `mailEnvoye` (colis, demande de correction) et `mailStatut` (déblocage : SIMULE / ENVOYE / ECHEC) ne passent à « envoyé » qu'à un envoi RÉEL réussi (canal SMTP) : la retentative n'est jamais perdue (Q-285) ; avec la boîte d'envoi, `mailEnvoye` reste faux ; (7) consultation et pilotage de la file : API seule, droit `parametrage.gerer` (aucune maquette de l'écran : ECR-ADM-04 ne configure que les canaux) ; (8) routes nommées `/admin/file-envoi` (RG-REC-191 : aucune route contenant « mail » côté Réception). Alternative : bandeau seul (les alertes remplacent les mails), ou fournisseur SMTP imposé (OVH, SendGrid…). À faire valider : adresses expéditeur et serveur, STARTTLS, pièce jointe des mails colis, liste de distribution, mail de rajout après préparation.
+- **Réponse de l'équipe** : 
+
+#### Q-412 — Compte technique « circe-automatique » (D-20) et dernier administrateur (D-01) : garde-fous
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : taches/service.ts `identiteSysteme`, admin/utilisateurs.ts · Q-410 (3), Q-406, RG-REC-002 · audit étape 8 (M1, m1)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, autorisée par l'utilisateur le 2026-11-06, à valider) : (1) l'identifiant `circe-automatique` (casse ignorée) ne peut être ni créé, ni modifié, ni activé, ni doté de rôle ou de périmètre depuis D-01 (409 `ADM_COMPTE_TECHNIQUE`) et est MASQUÉ de la liste ; (2) `identiteSysteme` s'arrête (409 `TACHE_COMPTE_TECHNIQUE_INVALIDE`) si le compte est actif ou porte un rôle ou un périmètre : les tâches n'agissent jamais sous une identité compromise ; (3) dernier administrateur : après les écritures de `modifierUtilisateur`, les administrateurs actifs sont RECOMPTÉS dans la transaction ; retirer le dernier est refusé (409 `ADM_DERNIER_ADMIN`). Un compte technique créé directement en base reste hors de portée de l'application.
+- **Réponse de l'équipe** : 
+
+#### Q-415 — Générateur aléatoire des JDD : la skill circe-jdd prévoit `@faker-js/faker` (locale fr), non installé
+
+- **Module** : TRA · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-06
+- **Sources / conflit** : `.claude/skills/circe-jdd/SKILL.md` · CLAUDE.md §3 (rien à ajouter sans question validée)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE PRISE (option recommandée, autorisée par l'utilisateur le 2026-11-06, à valider) : générateur pseudo-aléatoire maison déterministe (mulberry32, `apps/api/test/jdd/prng.ts`) et listes fictives (annonceurs, thèmes, noms) ; même seed = mêmes données (vérifié par `JDD-020`). Alternative : ajouter faker (dépendance de test).
+- **Réponse de l'équipe** : 
+
+### Module X (8)
+
+#### Q-179 — Périmètre de l'administrateur : tous les sites, ou seulement ses sites ?
+
+- **Module** : X · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE · **Date** : 2026-11-04
+- **Sources / conflit** : RECEPTION_REGLES_METIER.md §2 (mapping des droits : « tous rôles : périmètre par site conservé », RG-REC-001) · COORDINATION_REGLES_METIER.md RG-COO-167 (« l'admin voit tous les sites ») · core/identity.ts (toutesPlateformes = admin) · test stock-alertes-complement « RG-REC-001 l'administrateur ne règle pas un site hors de son périmètre » (it.fails)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : RG-COO-167 (règle explicite sur l'admin) prévaut : l'admin voit et règle tous les sites (paramètres par site, référentiels). Alternative : périmètre par site pour l'admin aussi (REC §2) ; il faudrait alors lui donner explicitement tous les sites dans son périmètre. Le test témoin passe en échec attendu tant que l'hypothèse tient.
+- **Réponse de l'équipe** : 
+
+#### Q-380 — Calendrier du process : prépa « le lundi » vs « jeudi S-2 » ; deadline jeudi S-2 16 h ; rajouts « nuit du jeudi au vendredi S-2 jusqu'au vendredi S »
+
+- **Module** : X · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-existant-process.md EX-EXI-077 et contradiction 1 ; specs-ateliers-besoins.md contradiction 16
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : jours et heures paramétrables ; défaut deadline Pré-Prod jeudi S-2 16 h, export des trains jeudi 14 h. Peut recouper des questions COO
+- **Réponse de l'équipe** : 
+
+#### Q-381 — Catalogue de statuts cible : 12 statuts du vocabulaire (EX-TRA-018) vs 109 statuts/tags (ECR-ADM-03) non validés ; statut intermédiaire « Validation Pré-Prod » ou coche
+
+- **Module** : X · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-existant-process.md EX-EXI-071, EX-EXI-074 ; EX-COO-510 ; Q-004
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : statuts persistés = ceux des machines d'états des entités (maquette) ; tags/repères calculés non persistés ; « Validation Pré-Prod » traité par COO
+- **Réponse de l'équipe** : 
+
+#### Q-382 — Entrées du menu actuel sans écran cible (Zone picking, Fusion des affiches, Déblocage préparations, Rafraîchir un dossier, Dupliquer train, Analyse Production, État de destruction, Expedition ext, Admin Equipe / Machine, Poste de travail)
+
+- **Module** : X · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-transverse.md EX-TRA-012 ; ECR-NAV-02 (« Pas encore dans la maquette ») ; legacy-admin.md §4
+- **Options et conséquences / hypothèse** : ⚠ Contradiction avec Q-100 pour Fusion et Zone picking (SUPPRIMÉES par hypothèse dans RECEPTION_REGLES_METIER.md) : à arbitrer ensemble. HYPOTHÈSE : fonctions legacy conservées (ne rien perdre), écran de rattachement arbitré à l'étape 8 ; « Déblocage » -> « Rendre la main », « Écarts » -> « Annule et remplace »
+- **Réponse de l'équipe** : 
+
+#### Q-383 — Déclencheur des sorties de stock : scan des codes barre, fin de journée Geodis / expédition, ou aucune aujourd'hui
+
+- **Module** : X · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers-besoins.md contradiction 2, EX-STK-501, EX-STK-505, EX-SCR-517 ; EX-EXI-076 ; ECR-EXP-02
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : sortie de stock à la fin de journée Geodis / expédition (maquette, A13 #13, A14) ; EX-SCR-517 écarté
+- **Réponse de l'équipe** : 
+
+#### Q-384 — Destruction et rebut : délais 4 / 2 semaines, point de départ, conservation 20 / 365 jours, rebut vs destruction
+
+- **Module** : X · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers-besoins.md contradiction 8, EX-STK-503, EX-STK-504 ; EX-TRA-042 ; ECR-ADM-05
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : délais paramétrables (2 m² : 4 ; 8 m² : 2 ; autres : 4) ; point de départ = dernier départ du dossier (maquette) ; rebut et destruction = deux mouvements distincts
+- **Réponse de l'équipe** : 
+
+#### Q-386 — Bus : « flux existant » (S L34) vs aucun flux Broadcast pour le Bus (D6) ; entretien +20 % / +8 % de production
+
+- **Module** : X · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers-besoins.md contradiction 10, EX-BUS-502, EX-BUS-503 ; EX-EXI-003
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : Bus intégré aux écrans (ECR-COO-09) sans flux Broadcast ; alimentation manuelle ou à définir
+- **Réponse de l'équipe** : 
+
+#### Q-388 — Statut « Refusé » : ré-ouverture de colis (S L93) vs mail au commercial (A14)
+
+- **Module** : X · **Bloquante** : NON · **Statut** : HYPOTHÈSE PRISE
+- **Sources / conflit** : specs-ateliers-besoins.md contradiction 11, EX-EXP-506, EX-REC-523 ; ECR-ADM-04 (MAIL_COMMERCIAL désactivée) ; ECR-EXP-01 (colis clos ne se rouvre pas)
+- **Options et conséquences / hypothèse** : HYPOTHÈSE : les deux besoins sont écartés (conforme à la maquette) ; probable décalage de ligne dans la synthèse
+- **Réponse de l'équipe** : 

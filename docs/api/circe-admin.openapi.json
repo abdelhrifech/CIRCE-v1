@@ -1,0 +1,86 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CIRCE administration probes",
+    "version": "1.0.0",
+    "description": "Port technique 9180, distinct de l’API. Ne pas exposer ce port par la route utilisateur."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:9180",
+      "description": "Port d’administration ; hôte configurable par environnement."
+    }
+  ],
+  "paths": {
+    "/healthz/live": {
+      "get": {
+        "operationId": "liveness",
+        "description": "Processus actif, sans accès à la base ni au collecteur.",
+        "responses": {
+          "200": {
+            "description": "Processus actif",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "alive"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthz/ready": {
+      "get": {
+        "operationId": "readiness",
+        "description": "Base indispensable disponible dans le délai technique ; 503 pendant l’arrêt.",
+        "responses": {
+          "200": {
+            "description": "Prêt à recevoir des requêtes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "ready"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Dépendance indisponible, délai dépassé ou arrêt en cours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "not_ready"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

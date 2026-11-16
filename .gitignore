@@ -1,0 +1,14 @@
+node_modules
+dist
+.output
+.nitro
+.tanstack
+.vinxi
+*.tsbuildinfo
+.env
+apps/api/prisma/*.db
+apps/api/prisma/*.db-journal
+apps/api/src/generated
+playwright-report
+test-results
+.DS_Store

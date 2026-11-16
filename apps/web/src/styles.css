@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+/* ECR-REC-09 / D-18 : seule la zone `.zone-impression` est imprimée (feuilles de stock A4, éditions, bagues). */
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .zone-impression,
+  .zone-impression * {
+    visibility: visible;
+  }
+  /* D-18 : le contenu de la page et le fond de la modale ne réservent aucune page blanche ; la boîte de la modale ne
+     rogne plus la zone d'impression (position fixe, translation, hauteur maximale, défilement). */
+  body > *:not(:has(.zone-impression)) {
+    display: none !important;
+  }
+  [role='dialog'] {
+    position: static !important;
+    translate: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+  }
+  .zone-impression {
+    position: absolute;
+    inset: 0;
+    max-height: none;
+    overflow: visible;
+    background: white;
+  }
+  .feuille-stock {
+    break-after: page;
+    print-color-adjust: exact;
+  }
+  /* D-18 : éditions (fiche de synthèse, liste de picking) et bagues. */
+  .edition table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+  }
+  .edition thead {
+    display: table-header-group;
+  }
+  .edition tr {
+    break-inside: avoid;
+  }
+  .etiquette-bague {
+    break-inside: avoid;
+    print-color-adjust: exact;
+  }
+}

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pages de Circé par étape du process : de la DA activée au stock</title>
+<style>
+  /* Même palette que « 2. PRE-PRODUCTION/process_preprod_avant_apres.html » et que la maquette. Page à lire de haut en bas,
+     imprimable en A4 paysage. Document de travail en lecture seule : rien n'est modifié dans Circé ni dans la maquette. */
+  :root {
+    --navy: #1b2a44; --ink: #1f2937; --ink-2: #475467; --ink-3: #667085; --line: #d9dee5; --page: #e9edf2;
+    --rec: #0a6f93; --rec-bg: #e3f1f8;       /* Réception */
+    --pp: #6b2fc9; --pp-bg: #f2eafe;         /* Coordination */
+    --bc: #8a5a00; --bc-bg: #fff3cd;         /* Broadcast, Pré-Prod */
+    --auto: #475467; --auto-bg: #eef1f5;     /* Circé, automatique */
+    --cheq: #0b7a55; --cheq-bg: #e6f6ef;     /* Chef d'équipe, plateformes */
+    --good: #0b7a55; --good-bg: #e6f6ef;
+    --warn: #8a5a00; --warn-bg: #fff3cd;
+    --ser: #b42318; --ser-bg: #fde8e6;
+    --new: #c4320a; --new-bg: #fff1e8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font: 15px/1.45 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; color: var(--ink); background: var(--page); padding: 24px 12px 48px; }
+  .doc { max-width: 1500px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+  section { background: #fff; border-radius: 10px; box-shadow: 0 4px 18px rgba(16, 24, 40, .10); padding: 22px 28px 24px; }
+  header.top { background: #fff; border-radius: 10px; box-shadow: 0 4px 18px rgba(16, 24, 40, .10); padding: 22px 28px; border-top: 6px solid var(--navy); }
+  .kick { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
+  h1 { margin: 4px 0 6px; font-size: 28px; font-weight: 650; color: var(--navy); letter-spacing: -.01em; }
+  h2 { margin: 0 0 4px; font-size: 21px; font-weight: 650; color: var(--navy); display: flex; align-items: center; gap: 10px; }
+  h2 .num { width: 30px; height: 30px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  h3 { margin: 0; font-size: 16px; font-weight: 650; color: var(--navy); line-height: 1.25; }
+  .lead { margin: 0; color: var(--ink-2); }
+  .sub { margin: 2px 0 14px; color: var(--ink-3); font-size: 14px; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 4px 0; padding-left: 18px; }
+  li { margin: 3px 0; }
+  b, strong { font-weight: 650; }
+  .muted { color: var(--ink-3); }
+  .small { font-size: 13px; }
+
+  .who { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 999px; white-space: nowrap; margin: 1px 0; }
+  .who::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .who.rec { color: var(--rec); background: var(--rec-bg); }
+  .who.pp { color: var(--pp); background: var(--pp-bg); }
+  .who.bc { color: var(--bc); background: var(--bc-bg); }
+  .who.auto { color: var(--auto); background: var(--auto-bg); }
+  .who.cheq { color: var(--cheq); background: var(--cheq-bg); }
+  .legend { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; font-size: 13px; color: var(--ink-2); }
+
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 650; padding: 2px 9px; border-radius: 6px; white-space: nowrap; }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .chip.good { color: var(--good); background: var(--good-bg); }
+  .chip.warn { color: var(--warn); background: var(--warn-bg); }
+  .chip.ser { color: var(--ser); background: var(--ser-bg); }
+  .chip.neu { color: var(--ink-2); background: var(--auto-bg); }
+  .chip.new { color: var(--new); background: var(--new-bg); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); font-weight: 700; padding: 8px 8px; border-bottom: 2px solid var(--line); background: #f6f8fa; position: sticky; top: 0; }
+  td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.k { font-weight: 650; color: var(--navy); }
+  td.num { text-align: center; font-weight: 700; color: var(--navy); white-space: nowrap; }
+  table.big { font-size: 12.5px; table-layout: fixed; }
+  table.big th:nth-child(1) { width: 3.2%; }
+  table.big th:nth-child(2) { width: 8%; }
+  table.big th:nth-child(3) { width: 7%; }
+  table.big th:nth-child(4) { width: 12%; }
+  table.big th:nth-child(5) { width: 23%; }
+  table.big th:nth-child(6) { width: 15%; }
+  table.big th:nth-child(7) { width: 12%; }
+  table.big th:nth-child(8) { width: 12%; }
+  table.big th:nth-child(9) { width: 7.8%; }
+  table.big td { overflow-wrap: anywhere; }
+  table.big tr.added td { background: #fbfcfd; }
+  table.big tr.added td.num::after { content: "ajoutée"; display: block; font-size: 10px; font-weight: 700; color: var(--new); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+  table.big ul { padding-left: 15px; }
+  table.big p { margin: 3px 0; }
+
+  .callout { border-radius: 10px; padding: 12px 16px; margin-top: 14px; }
+  .callout.info { background: var(--rec-bg); color: #0b4a63; }
+  .callout.warn { background: var(--warn-bg); color: #5c3c00; }
+  .callout.good { background: var(--good-bg); color: #0a5a40; }
+  .callout.new { background: var(--new-bg); color: #6b2a07; }
+  .callout b { color: inherit; }
+  .q { border: 1.5px solid #e3b341; background: #fff8e1; border-radius: 10px; padding: 10px 15px; margin-top: 10px; }
+  .q h3 { display: flex; align-items: center; gap: 8px; }
+  .q h3::before { content: ""; width: 12px; height: 12px; background: #e3b341; transform: rotate(45deg); border-radius: 2px; flex: none; }
+  .q p { font-size: 14px; color: var(--ink-2); }
+  .q .qui { font-size: 12.5px; font-weight: 700; color: var(--bc); }
+  .src { font-size: 13px; }
+  .src td { padding: 6px 8px; }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12px; background: #f2f4f7; padding: 1px 5px; border-radius: 4px; }
+  .tag-c, .tag-d, .tag-a { font-size: 10.5px; font-weight: 700; border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+  .tag-c { color: var(--good); background: var(--good-bg); }
+  .tag-d { color: var(--warn); background: var(--warn-bg); }
+  .tag-a { color: var(--ser); background: var(--ser-bg); }
+
+  /* Chaîne des grains : une ligne par changement */
+  .grains { margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .gr { display: grid; grid-template-columns: 210px 1fr 150px; gap: 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+  .gr:first-child { border-top: 0; }
+  .gr > div { padding: 9px 12px; }
+  .gr .step { background: #f6f8fa; border-right: 1px solid var(--line); font-weight: 650; color: var(--navy); }
+  .gr .step span { display: block; font-weight: 400; color: var(--ink-3); font-size: 12px; }
+  .gr .rupt { border-left: 1px solid var(--line); display: flex; align-items: center; }
+  .gr.cut { background: var(--new-bg); }
+  .gr.cut .step { background: #ffe6d6; }
+
+  footer { text-align: center; font-size: 12.5px; color: var(--ink-3); }
+  #print { position: fixed; top: 10px; right: 12px; z-index: 2; background: var(--navy); color: #fff; border: 0; border-radius: 6px; padding: 6px 12px; font: inherit; font-size: 12.5px; cursor: pointer; opacity: .85; }
+  @media (max-width: 980px) { .gr { grid-template-columns: 1fr; } }
+  @media print {
+    @page { size: A4 landscape; margin: 10mm; }
+    body { background: #fff; padding: 0; font-size: 12px; }
+    #print { display: none; }
+    section, header.top { box-shadow: none; border: 1px solid var(--line); }
+    th { position: static; }
+    .doc { gap: 10px; max-width: none; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<button id="print" onclick="window.print()">Imprimer</button>
+
+<div class="doc">
+
+<header class="top">
+  <div class="kick">Refonte Circé · Pages et process · 29/10/2026, mis à jour le 02/11 · phase 1 sur 5 : avant l'affiche</div>
+  <h1>Quelle page de Circé pour chaque étape du process, et qu'est-ce qui l'alimente ?</h1>
+  <p class="lead">Pour chaque étape : la page de Circé actuel (as-is) et celle de la maquette (cible), ce qui l'alimente et quand, et le grain d'une ligne. Cette version couvre la phase 1 : <b>1 DA activée · 2 IP saisies · 3 envoi de la prépa</b>, plus cinq étapes techniques que le process ne nomme pas (1b, 1c, 3a, 3b, 3c). Les phases 2 à 5 suivent, une par une, après ton accord.</p>
+  <div class="legend">
+    <span class="tag-c">CONSTATÉ</span> lu pendant cette session, avec fichier:ligne
+    <span class="tag-d">DÉDUIT</span> conclusion tirée du code, avec le raisonnement
+    <span class="tag-a">À CONFIRMER</span> non démontrable ici ; la personne qui peut trancher est nommée
+  </div>
+  <div class="legend">
+    <span class="who bc">Broadcast · Pré-Prod</span>
+    <span class="who rec">Réception</span>
+    <span class="who auto">Circé automatique</span>
+    <span class="who pp">Coordination</span>
+    <span class="who cheq">Chef d'équipe</span>
+  </div>
+  <p class="small muted">Sources : Circé actuel = dépôt <code>GIT_circe</code>, branche <code>develop</code>, lu par git (la procédure <code>p_Alimentation_tf_prepa_affiche</code>, en UTF-16, a été décodée dans un dossier temporaire hors dépôt). Maquette = <code>2. CIRCE CIBLE/maquette/assets/js/core.js</code> (menu <code>NAV</code>), <code>screens/*.js</code> et <code>data.js</code>. Aucun identifiant ni mot de passe recopié ; seule la clé <code>weeks</code> d'un fichier de configuration a été lue.</p>
+</header>
+
+<section>
+  <h2><span class="num">1</span> En bref</h2>
+  <ul>
+    <li><b>Précision du 02/11 : à l'envoi de la prépa, une ligne fixe arrive directement dans « 2m² fixe › A traiter », au statut « À traiter ».</b> Le code le confirme : la ligne naît à ce statut et l'écran lit exactement ce statut, sans attendre la validation admin ni le Colisage (étape 3, section 3). Cela donne une étape à l'écran « A traiter » (section 5). La maquette, elle, ne montre pas cet état : elle crée les UM déjà « En attente d'affiches » ou « Prêt ».</li>
+    <li><b>Tes quatre points de départ tiennent, avec des nuances.</b> Le point 4 (la face n'existe qu'à partir de la prépa) n'est démontré qu'à moitié : le code ne l'impose pas (voir la section 2).</li>
+    <li><b>Aucune page de Circé ne correspond à « DA activée » ni à « IP saisies ».</b> Circé n'a pas d'événement : il relit Broadcast, en direct pour l'écran (Suivi › Etat des réservations), par programmes à intervalles pour les réceptions attendues. La planification de ces programmes n'est pas dans le dépôt.</li>
+    <li><b>Le grain change cinq fois avant la production</b> : la DA se regroupe en plateforme, l'IP ne découpe pas, la prépa découpe (destinataire ou face), puis tout se re-regroupe vers l'attendue (section 4).</li>
+    <li><b>Trois constats nouveaux</b> par rapport à ce qui était écrit : (a) « Affiche reçue » de Suivi › Etat des réservations veut dire reçue <i>et validée</i>, sans test de plateforme ; (b) un support sans correspondance (valeur 0) fait sans doute disparaître la ligne attendue (déduit : il faut qu'aucune catégorie de support n'ait l'identifiant 0, à vérifier par la DSI) ; (c) la lecture par Web API de la prépa Broadcast n'est appelée par aucune page.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">2</span> Tes quatre points de départ, revérifiés</h2>
+  <p class="sub">Chaque point a été relu dans le code, pas repris du document du 27/10.</p>
+  <table>
+    <thead><tr><th style="width:24%">Point de départ</th><th style="width:11%">Verdict</th><th>Ce que dit le code</th><th style="width:22%">Nuance ou limite</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="k">1. Suivi › Etat des réservations lit Broadcast en direct (<code>P_CirceEtatReservation_New</code>), sans notion de face</td>
+        <td><span class="chip good">Vrai</span></td>
+        <td>L'écran appelle la procédure à chaque lecture (<code>SuiviEtatReservationRepository.cs:26</code>, base EXTPLAY, schéma <code>ope</code>, <code>EXTPLAY.edmx:45-51</code>). Les colonnes renvoyées (<code>EXTPLAY.edmx:187-214</code>) n'ont ni n° de face ni n° d'unité. <span class="tag-c">CONSTATÉ</span></td>
+        <td>L'écran n'est pas 100 % Broadcast : il lit aussi la table de Circé <code>tf_prepa_affiche</code> et les affiches (<code>SuiviEtatReservationRepository.cs:30-36</code>) pour la colonne « Aff. reçus ». Le corps de la procédure est dans Broadcast, absent du dépôt. <span class="tag-a">À CONFIRMER Broadcast</span></td>
+      </tr>
+      <tr>
+        <td class="k">2. Avant la prépa, les attendues viennent d'un batch (<code>tf_prepa_Broadcast</code> puis <code>p_Alimentation_tf_prepa_affiche</code>), au grain dossier × format × plateforme × thème × semaine</td>
+        <td><span class="chip warn">Vrai, incomplet</span></td>
+        <td>Le batch copie l'état des réservations de la semaine courante à +8 (<code>BatchAlimGetInstructionBc.cs:47-65</code> ; <code>weeks</code> = 8, <code>App.config:12</code>) dans <code>tf_prepa_Broadcast</code> (<code>LivraisonAfficheRepository.cs:330-343</code>). La procédure en fait des lignes <code>tf_prepa_affiche</code> avec <code>FromBroadcast = 1</code> (<code>p_Alimentation_tf_prepa_affiche.sql:95-99, :151-155</code>). <span class="tag-c">CONSTATÉ</span></td>
+        <td>Le regroupement (<code>:155</code>) contient aussi l'<b>annonceur</b>, le <b>bandeau</b> (<code>repiquage</code>), la <b>DA chapeau</b> et la <b>quantité</b> elle-même. Le destinataire effectif disparaît : il sert seulement à retrouver la plateforme par son nom (<code>:101-103</code>). Aucun appelant dans le code C# (seule trace : <code>DATABASE.sqlproj:86</code>) : un job SQL, <span class="tag-d">DÉDUIT</span> ; <span class="tag-a">À CONFIRMER DSI</span>.</td>
+      </tr>
+      <tr>
+        <td class="k">3. À la saisie des IP, la ligne attendue est mise à jour mais pas découpée par thème</td>
+        <td><span class="chip good">Vrai</span></td>
+        <td>Pour les lignes « Broadcast », le contrôle d'existence n'a pas de condition de thème (<code>:154</code>, <code>:200</code>), donc le 2<sup>e</sup> thème n'est jamais créé ; la mise à jour (<code>:211-224</code>) rapproche sans le thème (dossier, support, semaine, année, plateforme) et écrase thème, annonceur et quantité. <span class="tag-c">CONSTATÉ</span></td>
+        <td>Avec deux thèmes, la jointure donne deux correspondances pour une ligne : SQL Server en retient une, au hasard. <span class="tag-d">DÉDUIT</span> (comportement connu de la mise à jour avec jointure multiple). La mise à jour ne vérifie pas si la ligne porte déjà une affiche : elle peut changer le thème d'une ligne déjà rattachée. <span class="tag-d">DÉDUIT</span> (aucune condition sur <code>affiche_livraison_Id</code>, <code>:211-224</code>).</td>
+      </tr>
+      <tr>
+        <td class="k">4. La face n'existe qu'à partir de la prépa, et seulement pour le déroulant scro</td>
+        <td><span class="chip warn">Moitié vrai</span></td>
+        <td><b>« Seulement le scro » : vrai.</b> L'atelier n'est posé que pour les surfaces 5 (2 m²) et 7 (8 m²) de Wissous et Nîmes ; tout le reste reçoit l'atelier 0 (<code>p_integ_train_affiches.sql:46-51</code>). Fixe et pliage n'ont pas de face : leur grain est le détail de préparation (<code>p_integ_preparation.sql:92-135</code>). <span class="tag-c">CONSTATÉ</span><br><b>« À partir de la prépa » : non démontré.</b> Circé intègre les faces dès qu'elles sont dans la table d'export de Broadcast, sans regarder la prépa (<code>BatchAlimBll.cs:129-163</code> ; <code>p_integ_train_affiches.sql:21-32</code>) et crée alors l'en-tête d'instruction au statut 0 (<code>:212-222</code>). <span class="tag-c">CONSTATÉ</span></td>
+        <td><span class="tag-a">À CONFIRMER Broadcast</span> : à quel moment la table d'export des faces est-elle remplie (DA, IP ou envoi de la prépa) ? <b>Recommandation</b> : écrire « la face arrive avec la prépa » dans la cible (c'est ce que suppose le process du 27/10 et seul Broadcast peut l'alimenter), mais ne pas l'écrire comme une règle de Circé tant que Broadcast n'a pas répondu. Raison : le code accepte les deux ; si les faces arrivaient plus tôt, le Suivi de production les montrerait déjà (<code>p_s_adminSuiviRead.sql:107-114</code>, sans filtre de statut).</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">3</span> Le tableau de la phase 1</h2>
+  <p class="sub">Les étapes 1, 2 et 3 sont les tiennes. Les lignes « ajoutée » (1b, 1c, 3a, 3b, 3c) sont des traitements ou écrans que le process ne nomme pas, mais sans lesquels les trois étapes ne s'expliquent pas.</p>
+  <table class="big">
+    <thead><tr>
+      <th>#</th><th>Étape</th><th>Qui</th><th>Page Circé actuel</th><th>Alimentée par, quand</th><th>Grain d'une ligne</th><th>Page maquette</th><th>Écart</th><th>Fiabilité</th>
+    </tr></thead>
+    <tbody>
+
+      <!-- 1 -->
+      <tr>
+        <td class="num">1</td>
+        <td class="k">DA activée</td>
+        <td><span class="who bc">Broadcast</span></td>
+        <td><b>Suivi › Etat des réservations</b> (<code>_MenuNew.cshtml:124</code>). Aucune autre page ne montre la DA seule.</td>
+        <td>
+          <ul>
+            <li><b>Lecture en direct</b>, à chaque recherche de l'écran : <code>P_CirceEtatReservation_New(…, true)</code> sur la base EXTPLAY, semaine de début et de fin choisies par l'utilisateur (<code>SuiviEtatReservationBll.cs:64-83</code>, <code>SuiviEtatReservationRepository.cs:26</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>Les lignes sont filtrées par les ateliers de l'utilisateur : sites 39, 40, 43, 44 (<code>SuiviEtatReservationBll.cs:89-107</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>La colonne « Aff. reçus » croise avec la table Circé <code>tf_prepa_affiche</code> et les affiches (<code>:141</code>, <code>:183-192</code>).</li>
+            <li>Pas d'événement « DA activée » : la page montre ce que Broadcast renvoie. Les DA annulées sont-elles renvoyées, avec quel statut ? <span class="tag-a">À CONFIRMER Broadcast</span></li>
+          </ul>
+        </td>
+        <td>Ce que renvoie la procédure. <span class="tag-d">DÉDUIT</span> des colonnes (<code>EXTPLAY.edmx:187-214</code>) : DA chapeau × dossier de vente × site × destinataire effectif × surface × format × thème × bandeau × semaine, avec la quantité. Le thème peut être vide (colonne nullable, <code>:198</code>).<br><b>Pas de face.</b></td>
+        <td><b>Pilotage › État des réservations vivant</b> (<code>core.js:378</code>). Avant les IP : ligne « DA activée, IP à saisir » au grain « DA : dossier × type de réalisation × plateforme » (<code>reservations.js:15, :53</code> ; <code>data.js:780-786</code>).</td>
+        <td>
+          <ul>
+            <li>La maquette lit « une base unique » (<code>C.base</code>) qui n'existe pas encore ; Circé lit Broadcast.</li>
+            <li>La maquette choisit son grain (« Afficher par », <code>reservations.js:50-61</code>) ; Circé n'en a qu'un.</li>
+            <li>Circé : « Affiche reçue » = reçue <b>et validée</b>, sans test de plateforme (<code>:183-192</code>) ; la maquette la tire de la réception.</li>
+          </ul>
+        </td>
+        <td><span class="tag-c">CONSTATÉ</span> lecture, filtre, jointure<br><span class="tag-d">DÉDUIT</span> grain exact<br><span class="tag-a">À CONFIRMER Broadcast</span> corps de la procédure</td>
+      </tr>
+
+      <!-- 1b -->
+      <tr class="added">
+        <td class="num">1b</td>
+        <td class="k">Copie de l'état des réservations dans Circé</td>
+        <td><span class="who auto">Circé automatique</span></td>
+        <td>Aucune page (traitement). Effets visibles en 1c.</td>
+        <td>
+          <ul>
+            <li><b>Batch</b> <code>BatchAlimPexCirceInsBC</code> : lit <code>P_CirceEtatReservation_New(…, false)</code> de la semaine courante à +8 (<code>PrepaAfficheBCRepository.cs:28</code> ; <code>BatchAlimGetInstructionBc.cs:47-65</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>Calcule le support : <code>sup_id</code> par surface × format (<code>Transaco_Surface_Format</code>), <b>0 si aucune correspondance</b> (<code>:120-129</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>Pour chaque dossier présent dans le retour, efface ses lignes <code>tf_prepa_Broadcast</code> et les recrée (<code>LivraisonAfficheRepository.cs:330-343</code>). Un dossier qui n'est plus renvoyé n'est pas touché. <span class="tag-d">DÉDUIT</span> (même boucle)</li>
+            <li>Fréquence et ordre avec 1c : hors dépôt. <span class="tag-a">À CONFIRMER DSI</span></li>
+            <li><b>Ancienne voie Web API</b> (<code>LivraisonAfficheService.cs:879-899</code>) : aucune page ne l'appelle (3 occurrences dans tout le dépôt) ; l'écran Réception calcule un « délai de 5 h » puis ignore le résultat (<code>LivraisonAfficheController.cs:47</code>, <code>LivraisonAfficheService.cs:867-877</code>). <span class="tag-d">DÉDUIT</span> : code mort.</li>
+          </ul>
+        </td>
+        <td>Une ligne <code>tf_prepa_Broadcast</code> = une ligne de l'état des réservations (<code>tf_prepa_Broadcast.sql:1-23</code>). <b>Perdus à la copie</b> : site, surface et format (gardés sous la seule forme du support), n° de préparation chapeau, « reste en place », Print, compagne contrôlée, photo, description du thème (<code>BatchAlimGetInstructionBc.cs:96-115</code> comparé à <code>EXTPLAY.edmx:187-214</code>). <span class="tag-c">CONSTATÉ</span></td>
+        <td>Aucune page (traitement technique). La V2 prévoit de garder ces identifiants (document <i>receptions_attendues_doublons_tables_regles.html</i>, section 4 : non relu ligne à ligne ici).</td>
+        <td>La maquette suppose une base alimentée sans copie ; Circé copie par dossier, avec remplacement complet.</td>
+        <td><span class="tag-c">CONSTATÉ</span><br><span class="tag-a">À CONFIRMER DSI</span> planification</td>
+      </tr>
+
+      <!-- 1c -->
+      <tr class="added">
+        <td class="num">1c</td>
+        <td class="k">Fabrication des « réceptions attendues » avant la prépa</td>
+        <td><span class="who auto">Circé automatique</span></td>
+        <td><b>Réception › Réception des affiches</b> (<code>_MenuNew.cshtml:105</code>) : liste des attendues de la plateforme, sans affiche liée et non reçues, plus celles reçues en partie (<code>Fn_GetPrepaAffiche.sql:157-160, :189-218</code>). <span class="tag-c">CONSTATÉ</span> pour la fonction ; <span class="tag-d">DÉDUIT</span> qu'elle alimente cet écran (page non relue).<br>Absentes de <b>Suivi › Suivi de production</b> : il lit les répartitions et les faces, pas les attendues « Broadcast » (<code>p_s_adminSuiviRead.sql:72-114</code>).</td>
+        <td>
+          <ul>
+            <li><b>Procédure</b> <code>p_Alimentation_tf_prepa_affiche</code> : lit <code>tf_prepa_Broadcast</code> où le statut de prépa n'est pas « Envoyé » (<code>:95-99</code>), sur la semaine courante à +8 (<code>:54-74</code>). La plateforme est retrouvée par le nom du destinataire (<code>:101-103</code>). Elle insère dans <code>tf_prepa_affiche</code> avec <code>FromBroadcast = 1</code> si aucune ligne n'existe déjà pour dossier × support × semaine × plateforme (<code>:151-155</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>Semaines « à l'américaine » : <code>DATEPART(wk, …)</code> (<code>:22-24</code>) ; le programme C# 1b utilise la culture courante (<code>BatchAlimGetInstructionBc.cs:50-54</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>Aucun appelant dans le code C# : job SQL. <span class="tag-d">DÉDUIT</span> ; <span class="tag-a">À CONFIRMER DSI</span> (job, fréquence, ordre après 1b, version installée).</li>
+          </ul>
+        </td>
+        <td>Une ligne <code>tf_prepa_affiche</code> (<code>FromBroadcast = 1</code>) = plateforme × support (format) × dossier × annonceur × thème × bandeau × semaine × DA chapeau, avec la <b>quantité dans le regroupement</b> (<code>:155</code>) : deux lignes de même clé et de quantités différentes ne s'additionnent pas. Le destinataire effectif est perdu. <span class="tag-c">CONSTATÉ</span> (regroupement), <span class="tag-d">DÉDUIT</span> (effet).</td>
+        <td><b>Réception › Réception des affiches</b>, vue « Réceptions attendues » (<code>core.js:384</code> ; <code>reception.js:29-45, :604</code>). Une ligne par thème du dossier ; avant les IP, un thème provisoire « (IP non saisies) » (<code>data.js:235</code>).</td>
+        <td>
+          <ul>
+            <li>Grain : Circé = support × plateforme × thème × bandeau × DA ; maquette = thème du dossier.</li>
+            <li><b>Incohérence dans la maquette</b> : avant les IP, Réception crée autant de thèmes provisoires que de thèmes futurs (<code>data.js:231-240</code>), alors que Pilotage n'a qu'une ligne de DA (<code>data.js:780-786</code>) et que la cible écrite prévoit une seule ligne provisoire par plateforme × format. <span class="tag-c">CONSTATÉ</span></li>
+            <li><b>Risques actuels</b> : support à 0 → ligne écartée par la jointure sur <code>tr_categorie_support</code> (<code>:98</code>) ; plateforme introuvable → <code>plt_id</code> nul jamais reconnu par le contrôle d'existence, ligne recréée à chaque passage (<code>:154</code>) ; deux plateformes correspondantes → la sous-requête échoue (<code>:101-103</code>) ; branche de fin d'année invalide, colonne <code>ate_id</code> écrite deux fois (<code>:162</code>). <span class="tag-d">DÉDUIT</span></li>
+          </ul>
+        </td>
+        <td><span class="tag-c">CONSTATÉ</span> code<br><span class="tag-d">DÉDUIT</span> risques<br><span class="tag-a">À CONFIRMER DSI</span> job, mesure (requêtes prêtes)</td>
+      </tr>
+
+      <!-- 2 -->
+      <tr>
+        <td class="num">2</td>
+        <td class="k">IP saisies</td>
+        <td><span class="who bc">Pré-Prod, dans Broadcast</span><br><span class="who auto">Circé automatique</span></td>
+        <td><b>Aucune page d'IP dans Circé</b> (pas d'entrée de menu). Effets visibles : Suivi › Etat des réservations (le thème s'affiche à la lecture suivante) ; Réception › Réception des affiches (le thème de la ligne attendue après le passage de 1b puis 1c).</td>
+        <td>
+          <ul>
+            <li><b>Aucun événement « IP saisies »</b> : le thème et la quantité changent dans le retour de <code>P_CirceEtatReservation_New</code>. <span class="tag-d">DÉDUIT</span> (thème nullable, <code>EXTPLAY.edmx:198</code> ; la procédure n'est pas dans le dépôt)</li>
+            <li>Au passage suivant de 1b, les lignes du dossier sont recréées ; puis 1c : <b>pas d'insertion du 2<sup>e</sup> thème</b> (<code>:154</code>) et <b>écrasement</b> des lignes <code>FromBroadcast = 1</code> rapprochées sans le thème (<code>:211-224</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>Déroulant : le détail des IP (visuels, exceptions, commentaire) n'arrive pas par cette voie, mais avec les instructions (voir 3). <span class="tag-d">DÉDUIT</span> ; <span class="tag-a">À CONFIRMER Broadcast</span> : à quel moment le thème devient visible dans l'état des réservations.</li>
+          </ul>
+        </td>
+        <td>L'IP fait passer d'<b>une ligne sans thème à N thèmes</b>. Circé <b>ne découpe pas</b> : une seule ligne reste, avec un thème arbitraire et la quantité d'un des N. <span class="tag-c">CONSTATÉ</span> (<code>:154, :211-224</code>), <span class="tag-d">DÉDUIT</span> (arbitraire).</td>
+        <td><b>Pilotage › État des réservations vivant</b> : étape « IP saisies, prépa attendue » (<code>reservations.js:16</code>), ligne au grain du thème avec la quantité de Broadcast (<code>data.js:787-792</code>). <b>Pilotage › Alertes</b> : « Réception sans IP » (<code>alertes.js:8</code>). Pas de page de saisie : décision du 27/10, la Pré-Prod ne travaille que dans Broadcast.</td>
+        <td>La maquette découpe par thème dès les IP ; Circé actuel ne découpe pas et peut perdre un thème jusqu'à la prépa. La cible déplacerait l'affiche déjà reçue vers le bon thème (règle R3 du document du 27/10).</td>
+        <td><span class="tag-c">CONSTATÉ</span> lignes citées<br><span class="tag-d">DÉDUIT</span> effet<br><span class="tag-a">À CONFIRMER Broadcast</span></td>
+      </tr>
+
+      <!-- 3a -->
+      <tr class="added">
+        <td class="num">3a</td>
+        <td class="k">Adresses des destinataires (pré-requis de la prépa)</td>
+        <td><span class="who auto">Circé automatique</span></td>
+        <td><b>Administration › Liste des adresses</b> (<code>_MenuNew.cshtml:167</code>, contrôleur <code>PreparationExpedition.ViewListeAdresse</code>). <span class="tag-d">DÉDUIT</span> qu'elle montre ce référentiel (table lue par la page non vérifiée).</td>
+        <td>Premier des trois flux du programme <code>BatchAlimPexCirce</code> (<code>BatchAlimBll.cs:47, :55-86</code>) : adresses des afficheurs depuis Broadcast, puis <code>p_integ_destinataire</code> (<code>BatchAlimRepository.cs:75-78, :102-116</code>). Elles servent à retrouver le <code>dest_id</code> de chaque ligne de prépa (<code>p_integ_preparation.sql:204-215</code>). <span class="tag-c">CONSTATÉ</span></td>
+        <td>Un destinataire : plateforme, site, société sous-traitante, afficheur ou dépôt (types 1 à 5, commentaire de <code>p_integ_destinataire.sql</code>). <span class="tag-c">CONSTATÉ</span></td>
+        <td><b>Administration › Paramétrage</b>, onglets « Référentiels » et « Transport » (destinataires, boucles : <code>parametrage.js:285</code>). <span class="tag-d">DÉDUIT</span></td>
+        <td>La maquette ne dit pas d'où viennent les destinataires, ni comment ils sont tenus à jour.</td>
+        <td><span class="tag-c">CONSTATÉ</span> flux<br><span class="tag-d">DÉDUIT</span> pages</td>
+      </tr>
+
+      <!-- 3 -->
+      <tr>
+        <td class="num">3</td>
+        <td class="k">Envoi de la prépa (le lundi)</td>
+        <td><span class="who bc">Pré-Prod, dans Broadcast</span><br><span class="who auto">Circé automatique</span></td>
+        <td>
+          Selon l'atelier :
+          <ul>
+            <li><b>2m² fixe › A traiter</b>, <b>Préparation</b> (<code>_MenuNew.cshtml:20, :25</code>)</li>
+            <li><b>Pliage › A traiter</b>, <b>Préparation</b> (<code>:41, :46</code>)</li>
+            <li><b>Trains › Liste des instructions</b>, <b>Liste des trains</b>, <b>Suivi par thème</b>, <b>Préparation</b> (<code>:64, :69, :76, :82</code>)</li>
+            <li><b>Suivi › Suivi de production</b> (<code>:123</code>)</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li><b>Programme</b> <code>BatchAlimPexCirce</code>, trois flux à la suite : destinataires, préparation, faces et instructions (<code>BatchAlimBll.cs:47-49</code>). <span class="tag-c">CONSTATÉ</span> ; fréquence hors dépôt, <span class="tag-a">À CONFIRMER DSI</span></li>
+            <li><b>Fixe et pliage</b> : <code>P_ExportPrepaCirce</code> (base INTERFACE) → <code>trav_preparation</code> → <code>p_integ_preparation</code> → <code>tf_repart_calcul</code> (<code>BatchAlimRepository.cs:162-233</code> ; <code>p_integ_preparation.sql:92-135, :222-228</code>). Ensuite Circé informe Broadcast du groupe intégré (<code>P_MajStatutGroupePreparation</code>, <code>BatchAlimRepository.cs:248-265</code>). Une prépa déjà intégrée est refusée (<code>:23-45</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li><b>Fixe : arrivée directe dans « 2m² fixe › A traiter »</b> (précision du 02/11, relue dans le code). Chaque ligne naît au statut 0, « À traiter » (<code>p_integ_preparation.sql:123</code>), dans l'atelier fixe de Wissous (1) ou de Nîmes (4) (<code>:100-101</code>). L'écran « A traiter » lit ce statut et rien d'autre : <code>rpc_statut = 0</code>, ateliers 1 et 4, semaine choisie (<code>p_s_listeprepa2m2.sql:71-74</code>, appelée par <code>PreparationRepository.cs:29</code>). <b>Aucune condition de validation admin, de réception ni de Colisage.</b> Le Colisage fait sortir la ligne de cet écran : il crée l'UM et passe la ligne à « En cours » (<code>PreparationRepository.cs:266-267</code>). Le moment est celui du passage suivant du programme, pas celui du clic d'envoi dans Broadcast. <span class="tag-c">CONSTATÉ</span> ; <span class="tag-a">À CONFIRMER DSI</span> fréquence du programme. Pliage : même statut 0 à l'intégration, ateliers 2, 3 et 9 (<code>:96-99</code>) ; sa procédure de liste n'a pas été relue. <span class="tag-d">DÉDUIT</span></li>
+            <li><b>Déroulant</b> : les types 17 à 21 sont exclus de <code>p_integ_preparation</code> (<code>:135, :243</code>) ; ils passent par les faces (<code>p_integ_train_affiches.sql:176-222</code>) puis les instructions, qui mettent l'en-tête au statut 1 « En cours » et gardent le commentaire de prépa (<code>p_integ_deroulants.sql:20-32</code> ; <code>p_integ_instructions.sql:186-196, :261-271</code>). Les instructions déjà en statut 2 ou 5 sont ignorées (<code>:170-173</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li><span class="tag-a">À CONFIRMER Broadcast</span> : les faces et les instructions sont-elles écrites à l'envoi de la prépa, ou avant ? (voir section 2, point 4)</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li><b>Fixe, pliage</b> : une ligne <code>tf_repart_calcul</code> = un détail de préparation (destinataire × thème × surface × semaine), quantité avec entretien (<code>p_integ_preparation.sql:92-135</code>) ; une ligne de bandeau en plus pour le pliage (<code>:143-177</code>).</li>
+            <li><b>Déroulant</b> : une ligne <code>tf_face_train</code> = une <b>face</b> ; l'en-tête d'instruction = dossier × semaine × atelier (<code>instr_code</code>, <code>p_integ_train_affiches.sql:79-83, :212-222</code>).</li>
+          </ul>
+          <span class="tag-c">CONSTATÉ</span>
+        </td>
+        <td>
+          <ul>
+            <li><b>Pré-production › Préparations à valider</b> (<code>core.js:394</code> ; <code>instructions.js:184</code>)</li>
+            <li><b>Déroulant</b> › Liste des instructions, Liste des trains, Suivi par thème, Préparation (<code>core.js:404-407</code>)</li>
+            <li><b>2 m² fixe › Préparation</b>, <b>Pliage › Préparation</b> (<code>core.js:414, :418</code>)</li>
+            <li><b>Pilotage › Suivi de prod</b>, en tête de chaque onglet d'atelier (<code>core.js:375, :369</code>)</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>La maquette ajoute une page transverse (« Préparations à valider », tous ateliers) ; Circé n'en a pas : tout dépend du type de production.</li>
+            <li>Instruction OK : par atelier × plateforme dans Circé, par dossier dans la maquette, d'après la question 51 du document du 27/10 (restée ouverte ; le code de la maquette n'a pas été relu sur ce point).</li>
+            <li>Les entrées « A traiter » de Circé (2m² fixe, Pliage) n'ont pas d'équivalent dans le menu de la maquette (<code>core.js:412-418</code>), et la maquette ne montre pas l'état « À traiter » d'une ligne fixe : elle crée les UM dès la génération des lignes, « En attente d'affiches » ou « Prêt » (<code>data.js:317-320</code>), et réserve « À traiter » au dossier dont Broadcast n'a encore rien envoyé (<code>data.js:108</code>).</li>
+            <li><b>Deux sens pour « À traiter »</b> : avant la prépa, le dossier dans Broadcast ; après la prépa, la ligne fixe dans Circé. Même piège que « En cours » (INC-01 de la synthèse).</li>
+          </ul>
+        </td>
+        <td><span class="tag-c">CONSTATÉ</span> flux et grains<br><span class="tag-d">DÉDUIT</span> sources des pages « Préparation » (non relues)<br><span class="tag-a">À CONFIRMER Broadcast, DSI</span></td>
+      </tr>
+
+      <!-- 3b -->
+      <tr class="added">
+        <td class="num">3b</td>
+        <td class="k">Bascule des attendues en lignes de prépa (« raccrochage »)</td>
+        <td><span class="who auto">Circé automatique</span></td>
+        <td><b>Réception › Liste des affiches</b>, colonne « orpheline » quand la bascule échoue (<code>_MenuNew.cshtml:106</code> ; <code>p_GetListeAfficheATraiter.sql:55-58</code>). <span class="tag-d">DÉDUIT</span> que cette page lit cette procédure (non relue).<br><b>Suivi › Suivi de production</b> : la ligne n'y apparaît qu'après (<code>p_s_adminSuiviRead.sql:67</code>).</td>
+        <td>
+          <ul>
+            <li>Au passage de 1c qui suit la prépa : les lignes <code>FromBroadcast = 1</code> dont dossier, support, annonceur, semaine et <b>thème écrit</b> retrouvent une ligne <code>tf_repart_calcul</code> ou une face de départ futur passent à <code>FromBroadcast = NULL</code> (<code>:228-291</code>). Sinon 1c ajoute une ligne de prépa à côté (<code>:124-147</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>Les faces ne comptent que si elles ont un thème (<code>:143</code>), posé au calcul des trains à l'Instruction OK (<code>p_u_statut_preparation.sql:63-64</code> ; <code>p_u_associe_train.sql:219-221, :327-329</code>) et retiré quand le statut revient à 0, 1, 4 ou 5 (<code>:44</code>). Donc, pour le déroulant, l'attendue de prépa n'existe qu'<b>après</b> l'Instruction OK. <span class="tag-c">CONSTATÉ</span></li>
+            <li>La quantité n'est pas recalculée à la bascule : aucune mise à jour de <code>Qte_Theorique</code> dans <code>:228-291</code>. <span class="tag-c">CONSTATÉ</span> ; l'écart avec la quantité de la prépa n'est pas signalé. <span class="tag-d">DÉDUIT</span></li>
+          </ul>
+        </td>
+        <td>Rupture dans les deux sens. <b>Fixe, pliage</b> : détail (destinataire × thème) → attendue regroupée par plateforme × support × thème × bandeau × semaine × atelier, en somme (<code>:128-135</code>) : <b>le destinataire disparaît</b>. <b>Déroulant</b> : face → attendue regroupée par thème, en comptage (<code>:139-147</code>) : <b>la face disparaît</b>. <span class="tag-c">CONSTATÉ</span></td>
+        <td>Pas de page : le lien est un attribut de la base (la ligne « bascule »). <b>Pilotage › Alertes</b> : « Écart Broadcast / Circé » (<code>alertes.js:14</code>) ; colonne « Écart BC / Circé » de <b>Préparations à valider</b> (<code>instructions.js:262</code>).</td>
+        <td>Maquette : rattachement par identifiants, sans recréer de ligne (V2). Circé : par comparaison de textes, d'où doublons et orphelines (document du 26/10, section 2).</td>
+        <td><span class="tag-c">CONSTATÉ</span> code<br><span class="tag-d">DÉDUIT</span> effets<br><span class="tag-a">À CONFIRMER DSI</span> mesure</td>
+      </tr>
+
+      <!-- 3c -->
+      <tr class="added">
+        <td class="num">3c</td>
+        <td class="k">Renvoi ou déblocage d'une prépa</td>
+        <td><span class="who pp">Coordination ?</span> Droit « débloquer » : rôle exact à confirmer</td>
+        <td><b>Administration › Déblocage préparations</b>, <b>Préparations débloquées</b>, <b>Rafraichir un dossier</b> (<code>_MenuNew.cshtml:146, :151, :156</code>).</td>
+        <td>
+          <ul>
+            <li><b>Saisie humaine.</b> Le déblocage agit des deux côtés : Broadcast (<code>P_CirceDebloquerGroupePreparation</code>) et Circé (<code>p_u_statut_repart_deblocage</code>) (<code>AdminPreparationDeblocageRepository.cs:62-77</code>). <span class="tag-c">CONSTATÉ</span></li>
+            <li>« Rafraichir un dossier » relance l'export des faces et instructions du dossier côté Broadcast (<code>ope.P_ExportTrainAfficheTravailCirce</code>, <code>AdminContratRepository.cs:21-36</code>) ; Circé les reprend au passage suivant du programme. <span class="tag-d">DÉDUIT</span> (corps non lu)</li>
+            <li>Sans déblocage, une prépa renvoyée est refusée (<code>p_integ_preparation.sql:23-45</code>) ; des faces et des instructions dont l'en-tête est déjà au statut 2 (Instruction ok) ou 5 sont ignorées (<code>p_integ_train_affiches.sql:88-91</code>, <code>p_integ_instructions.sql:170-173</code>). Le libellé du statut 5 diffère entre le commentaire SQL (« A préparer », <code>p_u_statut_preparation.sql:21</code>) et le document du 27/10 (« A imprimer ») ; l'énumération du code n'a pas été relue. <span class="tag-c">CONSTATÉ</span></li>
+          </ul>
+        </td>
+        <td>Déblocage : le groupe de préparation (<code>IdGroupePreparation</code>). Rafraîchissement : le dossier (<code>cont_num</code>). <span class="tag-c">CONSTATÉ</span></td>
+        <td><b>Aucune page.</b> Seul l'effet est simulé : Circé refait l'Instruction OK tant que les trains ne sont pas exportés, alerte après l'export (<code>app.js:21-29</code>).</td>
+        <td>La maquette ne reprend ni le déblocage ni le rafraîchissement. Le moment de l'Instruction OK automatique (question 60) n'est pas tranché.</td>
+        <td><span class="tag-c">CONSTATÉ</span><br><span class="tag-a">À CONFIRMER Coordination</span> qui s'en sert</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">4</span> Les ruptures de grain de la phase 1</h2>
+  <p class="sub">Une ligne se découpe, ou se regroupe, ou devrait se découper et ne le fait pas. Lues de haut en bas : de la DA à l'attendue.</p>
+  <div class="grains">
+    <div class="gr">
+      <div class="step">DA (étape 1)<span>Broadcast, lecture directe</span></div>
+      <div>Ligne de l'état des réservations : DA chapeau × dossier × site × destinataire effectif × surface × format × (thème, vide avant les IP) × bandeau × semaine. <span class="tag-d">DÉDUIT</span></div>
+      <div class="rupt"><span class="chip neu">point de départ</span></div>
+    </div>
+    <div class="gr">
+      <div class="step">Copie (1b)<span>tf_prepa_Broadcast</span></div>
+      <div>Même grain, avec le support calculé (0 si inconnu) ; les identifiants site, surface, format, préparation chapeau sont perdus. <span class="tag-c">CONSTATÉ</span></div>
+      <div class="rupt"><span class="chip good">pas de rupture</span></div>
+    </div>
+    <div class="gr cut">
+      <div class="step">Attendue « Broadcast » (1c)<span>tf_prepa_affiche, FromBroadcast = 1</span></div>
+      <div><b>Le destinataire effectif se fond dans la plateforme</b> (par le nom) ; la DA et la quantité restent dans la clé. Plateforme × support × dossier × annonceur × thème × bandeau × semaine × DA. <span class="tag-c">CONSTATÉ</span></div>
+      <div class="rupt"><span class="chip warn">se regroupe</span></div>
+    </div>
+    <div class="gr cut">
+      <div class="step">IP saisies (2)<span>de 1 ligne sans thème à N thèmes</span></div>
+      <div><b>La ligne ne se découpe pas</b> : une ligne reste, avec le thème et la quantité d'un des N, au hasard ; le contrôle d'existence ignore le thème. <span class="tag-c">CONSTATÉ</span> / <span class="tag-d">DÉDUIT</span></div>
+      <div class="rupt"><span class="chip ser">devrait se découper</span></div>
+    </div>
+    <div class="gr cut">
+      <div class="step">Prépa fixe, pliage (3)<span>tf_repart_calcul</span></div>
+      <div><b>Se découpe par destinataire</b> : un détail = destinataire × thème × surface × semaine ; le pliage ajoute une ligne de bandeau. <span class="tag-c">CONSTATÉ</span></div>
+      <div class="rupt"><span class="chip warn">se découpe</span></div>
+    </div>
+    <div class="gr cut">
+      <div class="step">Prépa déroulant (3)<span>tf_face_train, instruction_train</span></div>
+      <div><b>Se découpe en faces</b> ; l'en-tête d'instruction est au grain dossier × semaine × atelier. Les faces n'ont de thème qu'après l'Instruction OK. <span class="tag-c">CONSTATÉ</span></div>
+      <div class="rupt"><span class="chip warn">se découpe</span></div>
+    </div>
+    <div class="gr cut">
+      <div class="step">Retour vers l'attendue (3b)<span>tf_prepa_affiche, source prépa</span></div>
+      <div><b>Se regroupe</b> : somme des détails (le destinataire disparaît) ou comptage des faces par thème (la face disparaît). La quantité de l'attendue « Broadcast » n'est pas recalculée. <span class="tag-c">CONSTATÉ</span></div>
+      <div class="rupt"><span class="chip warn">se regroupe</span></div>
+    </div>
+    <div class="gr">
+      <div class="step">Lecture par l'écran (étapes 1 et suivi)<span>deux grains, un seul écran</span></div>
+      <div>« Affiche reçue » de Suivi › Etat des réservations est calculée par dossier × semaine × thème écrit, <b>sans plateforme ni face</b>, alors que les lignes de l'écran sont plus fines (destinataire). Suivi de production : atelier × dossier × annonceur × statut × support × thème × bandeau (<code>p_s_adminSuiviRead.sql:95-114</code>). <span class="tag-c">CONSTATÉ</span></div>
+      <div class="rupt"><span class="chip warn">grain plus gros que la ligne</span></div>
+    </div>
+  </div>
+  <div class="callout info"><b>Ce que la maquette fait autrement</b> : une base à la ligne la plus fine (dossier × thème × destinataire × afficheur × unité), regroupée à la demande, avec un reçu compté une fois par thème (<code>reservations.js:6-9</code> ; <code>data.js:731-737</code>). Avant les IP, la maquette a une ligne de DA ; mais Réception › attendues garde, elle, un thème provisoire par thème futur (voir 1c).</div>
+</section>
+
+<section>
+  <h2><span class="num">5</span> Étapes sans page, pages sans étape (phase 1)</h2>
+  <table>
+    <thead><tr><th style="width:26%">Cas</th><th>Constat</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Étape sans page, Circé actuel</td><td>1b, 1c et 3b (traitements) ; 2 « IP saisies » (hors Circé, décision du 27/10) ; 1 « DA activée » n'a pas de page dédiée : seule la lecture directe de Suivi › Etat des réservations.</td></tr>
+      <tr><td class="k">Étape sans page, maquette</td><td>1b (technique), 3a (aucun écran de suivi du flux des adresses), <b>3c</b> (renvoi et déblocage : ni page, ni sous-entrée ; seul l'effet est simulé).</td></tr>
+      <tr><td class="k">Page sans étape nommée, Circé actuel</td><td>Administration › Déblocage préparations, Préparations débloquées, Rafraichir un dossier : servent à 3c, que le process ne nomme pas. Les écrans « A traiter » (2m² fixe, Pliage) : ils sont l'arrivée de l'étape 3 (envoi de la prépa), d'après ta précision du 02/11 ; leur suite (Colisage, UM, validation admin) reste à voir en phase 3.</td></tr>
+      <tr><td class="k">Page sans étape nommée, maquette</td><td>Aucune pour cette phase : Pilotage › État des réservations vivant sert les étapes 1 et 2 ; Pré-production › Préparations à valider sert l'étape 3, puis les étapes 7 et 8 (validation admin, Instruction OK), qui seront traitées en phase 3.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">6</span> Points relevés dans cette phase, pour la liste finale</h2>
+  <p class="sub">Carnet provisoire : la liste finale (10 questions au plus) sera établie à la fin des cinq phases, en regroupant ces points avec ceux des phases suivantes.</p>
+  <div class="q"><h3>Broadcast : que renvoie exactement <code>P_CirceEtatReservation_New</code> ?</h3><p>Que change le paramètre <code>etatResaScreen</code> (vrai pour l'écran, faux pour le batch) ? Les DA annulées sont-elles renvoyées avec un statut ? Le thème est-il vide avant les IP ? La quantité inclut-elle l'entretien ? <span class="qui">Qui peut répondre : Broadcast (Nariman ou l'équipe Broadcast)</span></p></div>
+  <div class="q"><h3>Broadcast : quand les faces et les instructions sont-elles écrites dans la table d'export ?</h3><p>À l'envoi de la prépa, ou plus tôt (DA, IP) ? Le code de Circé accepte les deux. <span class="qui">Qui peut répondre : Broadcast (Nariman)</span></p></div>
+  <div class="q"><h3>DSI : planification des trois traitements</h3><p>Quel job lance <code>p_Alimentation_tf_prepa_affiche</code>, <code>BatchAlimPexCirceInsBC</code> et <code>BatchAlimPexCirce</code>, à quelle fréquence, dans quel ordre ? La version installée de la procédure a-t-elle la branche de fin d'année corrigée (colonne en double, <code>:162</code>) ? <span class="qui">Qui peut répondre : DSI</span></p></div>
+  <div class="q"><h3>DSI : combien de lignes sont touchées par les défauts de 1c ?</h3><p>Lignes <code>tf_prepa_Broadcast</code> avec support à 0 ou sans plateforme retrouvée ; doublons de <code>tf_prepa_affiche</code> (requêtes déjà prêtes dans <i>requetes_doublons_receptions_attendues.sql</i>). <span class="qui">Qui peut répondre : DSI</span></p></div>
+  <div class="q"><h3>Coordination : qui utilise Déblocage préparations et Rafraichir un dossier, et quand ?</h3><p>Pour décider si la cible doit les reprendre (étape 3c) ou les rendre inutiles. <span class="qui">Qui peut répondre : Coordination</span></p></div>
+  <div class="q"><h3>Coordination : que verrouille vraiment la validation admin au fixe ?</h3><p>Mes notes du 25/10 écrivaient qu'elle « autorise les UM du fixe et du pliage » (<code>p_s_listeUM_2m2.sql:53</code>). Relu le 02/11 : la liste des UM ne filtre pas sur elle ; elle renseigne seulement le n° d'affiche et un « oui / non » (<code>p_s_listeUM_2m2.sql:136-141</code> ; <code>PreparationController.cs:743</code>), et aucune vue ni aucun script de préparation ne l'utilise pour bloquer (recherche dans les vues et scripts du dépôt). Elle reste un verrou pour le picking et le n° d'affiche du suivi de prod. <span class="tag-c">CONSTATÉ</span> ; l'écran réel peut avoir un comportement que le code ne montre pas. <span class="qui">Qui peut répondre : Coordination (un dossier sans validation admin peut-il être colisé au fixe ?)</span></p></div>
+  <div class="q"><h3>Coordination : « Affiche reçue » doit-elle rester « reçue et validée » ?</h3><p>Aujourd'hui l'écran n'affiche « oui » qu'après la validation admin (<code>SuiviEtatReservationBll.cs:183-187</code>). La cible (attente de Fabrice) veut le n° d'affiche dès la réception. <span class="qui">Qui peut répondre : Coordination, Fabrice</span></p></div>
+</section>
+
+<section>
+  <h2><span class="num">7</span> Sources lues pour cette phase</h2>
+  <table class="src">
+    <thead><tr><th style="width:46%">Fichier</th><th>Lignes lues</th></tr></thead>
+    <tbody>
+      <tr><td>Circé · <code>Views/Shared/_MenuNew.cshtml</code></td><td>:14-28, :34-49, :57-86, :100-115, :118-130, :140-167</td></tr>
+      <tr><td>Circé · <code>BLL/BatchAlimBll.cs</code>, <code>BatchAlimGetInstructionBc.cs</code></td><td>Entiers</td></tr>
+      <tr><td>Circé · <code>Repositories/BatchAlimRepository.cs</code></td><td>:46-116, :162-334</td></tr>
+      <tr><td>Circé · <code>Repositories/LivraisonAfficheRepository.cs</code>, <code>PrepaAfficheBCRepository.cs</code>, <code>SuiviEtatReservationRepository.cs</code></td><td>:295-386 ; entiers ; entiers</td></tr>
+      <tr><td>Circé · <code>BLL/SuiviEtatReservationBll.cs</code>, <code>LivraisonAfficheService.cs</code> (:840-950), <code>LivraisonAfficheController.cs</code> (:35-75, :440-462)</td><td>Entiers ; extraits</td></tr>
+      <tr><td>Circé · <code>DAL/EXTPLAY.edmx</code></td><td>:36-56, :124, :186-215</td></tr>
+      <tr><td>Base · <code>p_Alimentation_tf_prepa_affiche.sql</code> (UTF-16, décodé), <code>tf_prepa_Broadcast.sql</code>, <code>tf_prepa_affiche.sql</code>, <code>Fn_GetPrepaAffiche.sql</code></td><td>Entiers</td></tr>
+      <tr><td>Base · <code>p_integ_preparation.sql</code>, <code>p_integ_train_affiches.sql</code>, <code>p_integ_deroulants.sql</code>, <code>p_integ_destinataire.sql</code> (en-tête)</td><td>Entiers ; entiers ; entiers ; :1-30</td></tr>
+      <tr><td>Base · <code>p_integ_instructions.sql</code>, <code>p_u_statut_preparation.sql</code>, <code>p_u_associe_train.sql</code></td><td>:160-280 ; :15-70 ; recherche de « theme » (:219-221, :327-329)</td></tr>
+      <tr><td>Base · <code>p_s_adminSuiviRead.sql</code>, <code>p_GetListeAfficheATraiter.sql</code></td><td>Entiers</td></tr>
+      <tr><td>Circé · <code>AdminPreparationDeblocageRepository.cs</code>, <code>AdminContratRepository.cs</code></td><td>:20-77 ; entier</td></tr>
+      <tr><td>Maquette · <code>core.js</code> (:340-440), <code>reservations.js</code>, <code>data.js</code> (:196-244, :731-801), <code>reception.js</code> (:28-48), <code>instructions.js</code> (:1-40), <code>alertes.js</code>, <code>app.js</code>, <code>parametrage.js</code></td><td>Extraits et recherches</td></tr>
+      <tr><td>Circé · <code>PreparationController.cs</code>, <code>PreparationRepository.cs</code>, <code>PreparationService.cs</code> (relus le 02/11)</td><td>:302-373, :743 ; :25-68, :190-300 ; :20-29, :71-78</td></tr>
+      <tr><td>Base · <code>p_s_listeprepa2m2.sql</code>, <code>p_s_listeUM_2m2.sql</code>, <code>p_integ_preparation.sql</code> (relus le 02/11)</td><td>Entier ; :38-153 ; :84-136</td></tr>
+      <tr><td>Process cible · <code>2. PRE-PRODUCTION/process_preprod_avant_apres.html</code>, <code>receptions_attendues_doublons_tables_regles.html</code> ; <code>00_synthese_powerpoint.md</code> (:120-190)</td><td>Pour la cible et le rétroplanning ; jamais comme preuve du code actuel</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">Non lus pour cette phase, donc présentés comme déduits : le corps de <code>P_CirceEtatReservation_New</code> et de <code>P_ExportPrepaCirce</code> (côté Broadcast, hors dépôt), les écrans « Préparation » (fixe, pliage) et l'écran « A traiter » du pliage (celui du fixe a été relu le 02/11 : contrôleur, procédure de liste, Colisage), le contenu de <code>p_u_statut_repart_deblocage</code>. Le document du 27/10 (<i>Réception des affiches, le dossier complet</i>) n'a pas été lu : il relève de la phase 2.</p>
+</section>
+
+<section>
+  <h2><span class="num">8</span> Phases à venir</h2>
+  <table>
+    <thead><tr><th style="width:28%">Phase</th><th style="width:34%">Étapes</th><th>État</th></tr></thead>
+    <tbody>
+      <tr><td class="k">1 · Avant l'affiche</td><td>1, 1b, 1c, 2, 3a, 3, 3b, 3c</td><td><span class="chip good">Faite, en attente de ton accord</span></td></tr>
+      <tr><td class="k">2 · Réception</td><td>4, 5, 6</td><td><span class="chip neu">À faire</span></td></tr>
+      <tr><td class="k">3 · Pré-production et Coordination</td><td>7, 8, 9, 10</td><td><span class="chip neu">À faire</span></td></tr>
+      <tr><td class="k">4 · Production et aval</td><td>11, 12, 13, 14</td><td><span class="chip neu">À faire</span></td></tr>
+      <tr><td class="k">5 · Stock et suivi</td><td>15, 16</td><td><span class="chip neu">À faire</span>, puis la liste des ruptures de grain et les 10 questions au plus</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>Document de travail · refonte Circé · 29/10/2026 · phase 1 · lecture seule du dépôt, de la maquette et des docs ; aucun accès réseau.</footer>
+
+</div>
+</body>
+</html>

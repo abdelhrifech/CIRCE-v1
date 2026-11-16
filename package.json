@@ -1,0 +1,43 @@
+{
+  "name": "circe-v2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @circe/api --filter @circe/web dev",
+    "start:all": "node scripts/start.mjs",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck && tsc -p tsconfig.json",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "pnpm -r --if-present test",
+    "test:int": "pnpm --filter @circe/api test:int",
+    "test:e2e": "playwright test",
+    "db:up": "pnpm --filter @circe/api db:up",
+    "db:test:up": "pnpm --filter @circe/api db:test:up",
+    "seed:ref": "pnpm --filter @circe/api seed:ref",
+    "seed:demo": "pnpm --filter @circe/api seed:demo",
+    "seed:centres": "pnpm --filter @circe/api seed:centres",
+    "jdd": "pnpm --filter @circe/api jdd",
+    "dev:user": "pnpm --filter @circe/api dev:user",
+    "seed:news": "pnpm --filter @circe/api seed:news",
+    "seed:scenarios": "pnpm --filter @circe/api seed:scenarios",
+    "api:contract": "pnpm --filter @circe/api openapi:generate",
+    "api:contract:check": "pnpm --filter @circe/api openapi:check"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "eslint": "10.13.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0"
+  }
+}

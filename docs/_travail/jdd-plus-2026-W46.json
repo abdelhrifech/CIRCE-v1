@@ -1,0 +1,2177 @@
+{
+  "lot": "2026-W46",
+  "catalogue": [
+    {
+      "centre": "Wissous",
+      "scenario": "2m fixe · attendu sans IP",
+      "dossier": 4046000,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m déroulant · attendu avec IP",
+      "dossier": 4046001,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W45"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m fixe · réception partielle 35 sur 100",
+      "dossier": 4046002,
+      "afficheIds": [
+        76
+      ],
+      "ncId": null,
+      "semaine": "2026-W47"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m déroulant · complète à contrôler",
+      "dossier": 4046003,
+      "afficheIds": [
+        77
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m fixe · surplus 125 sur 100",
+      "dossier": 4046004,
+      "afficheIds": [
+        78
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m déroulant · contrôle validé, feuille à imprimer",
+      "dossier": 4046005,
+      "afficheIds": [
+        79
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m fixe · validation administrative attendue",
+      "dossier": 4046006,
+      "afficheIds": [
+        80
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m déroulant · contrôlée et validée",
+      "dossier": 4046007,
+      "afficheIds": [
+        81
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m fixe · comptage 90 pour BL de 100",
+      "dossier": 4046008,
+      "afficheIds": [
+        82
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m déroulant · complément 40 puis 60",
+      "dossier": 4046009,
+      "afficheIds": [
+        83
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m fixe · sans BL, doute à confirmer",
+      "dossier": 4046010,
+      "afficheIds": [
+        84
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m déroulant · 10 affiches au rebut",
+      "dossier": 4046011,
+      "afficheIds": [
+        85
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m fixe · surplus entretien de 20",
+      "dossier": 4046012,
+      "afficheIds": [
+        86
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m déroulant · feuille déjà imprimée",
+      "dossier": 4046013,
+      "afficheIds": [
+        87
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "4 m² scro · manque à J−3",
+      "dossier": 4046014,
+      "afficheIds": [
+        88
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "8 m² scro · manque à J−3",
+      "dossier": 4046015,
+      "afficheIds": [
+        89
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "12 m² colle · manque à J−3",
+      "dossier": 4046016,
+      "afficheIds": [
+        90
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "8 m² colle · manque à J−3",
+      "dossier": 4046017,
+      "afficheIds": [
+        91
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "4 m² colle · manque à J−3",
+      "dossier": 4046018,
+      "afficheIds": [
+        92
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Affiches trempées ou abîmées",
+      "dossier": 4046019,
+      "afficheIds": [
+        93
+      ],
+      "ncId": 7,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Encre qui a coulé",
+      "dossier": 4046020,
+      "afficheIds": [
+        94
+      ],
+      "ncId": 8,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Erreur de format (ex. scro reçu à la place de colle)",
+      "dossier": 4046021,
+      "afficheIds": [
+        95
+      ],
+      "ncId": 9,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Erreur de papier",
+      "dossier": 4046022,
+      "afficheIds": [
+        96
+      ],
+      "ncId": 10,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Casse à la production",
+      "dossier": 4046023,
+      "afficheIds": [
+        97
+      ],
+      "ncId": 11,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Thèmes mélangés",
+      "dossier": 4046024,
+      "afficheIds": [
+        98
+      ],
+      "ncId": 12,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Formats mélangés",
+      "dossier": 4046025,
+      "afficheIds": [
+        99
+      ],
+      "ncId": 13,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Palettes non conformes",
+      "dossier": 4046026,
+      "afficheIds": [
+        100
+      ],
+      "ncId": 14,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Croix mal positionnées",
+      "dossier": 4046027,
+      "afficheIds": [
+        101
+      ],
+      "ncId": 15,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Écart de quantité",
+      "dossier": 4046028,
+      "afficheIds": [
+        102
+      ],
+      "ncId": 16,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Rouleaux au lieu de palettes",
+      "dossier": 4046029,
+      "afficheIds": [
+        103
+      ],
+      "ncId": 17,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · BL non conforme",
+      "dossier": 4046030,
+      "afficheIds": [
+        104
+      ],
+      "ncId": 18,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC réception · Papier de mauvaise qualité",
+      "dossier": 4046031,
+      "afficheIds": [
+        105
+      ],
+      "ncId": 19,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC quantité · non bloquante",
+      "dossier": 4046032,
+      "afficheIds": [
+        106
+      ],
+      "ncId": 20,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC croix · non bloquante",
+      "dossier": 4046033,
+      "afficheIds": [
+        107
+      ],
+      "ncId": 21,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC multiple · décision et traitement plateforme",
+      "dossier": 4046034,
+      "afficheIds": [
+        108
+      ],
+      "ncId": 22,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC agence · Affiches Non Reçues ou Quantité livrée insuffisante",
+      "dossier": 4046035,
+      "afficheIds": [
+        109
+      ],
+      "ncId": 23,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC agence · Assemblage Non Conforme",
+      "dossier": 4046036,
+      "afficheIds": [
+        110
+      ],
+      "ncId": 24,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC agence · Bandeaux non reçus",
+      "dossier": 4046037,
+      "afficheIds": [
+        111
+      ],
+      "ncId": 25,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC agence · Palette/Colis/Affiches reçus abîmés",
+      "dossier": 4046038,
+      "afficheIds": [
+        112
+      ],
+      "ncId": 26,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC agence · Papier de mauvaise qualité / Qualité zip",
+      "dossier": 4046039,
+      "afficheIds": [
+        113
+      ],
+      "ncId": 27,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC agence · Reçu mauvaises affiches / bandeaux",
+      "dossier": 4046040,
+      "afficheIds": [
+        114
+      ],
+      "ncId": 28,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC formulaire · visuel non conforme",
+      "dossier": 4046041,
+      "afficheIds": [
+        115
+      ],
+      "ncId": 29,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "NC formulaire · papier pour statistiques",
+      "dossier": 4046042,
+      "afficheIds": [
+        116
+      ],
+      "ncId": 30,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "2m fixe · réception sans IP avec intitulé saisi",
+      "dossier": 4046043,
+      "afficheIds": [
+        208
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Inconnue rattachée · à contrôler",
+      "dossier": 4046044,
+      "afficheIds": [
+        209
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Inconnue contrôlée · feuille définitive à imprimer",
+      "dossier": 4046045,
+      "afficheIds": [
+        210
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Inconnue · feuille définitive imprimée",
+      "dossier": 4046046,
+      "afficheIds": [
+        211
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 01",
+      "dossier": 4046047,
+      "afficheIds": [
+        220
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 02",
+      "dossier": 4046048,
+      "afficheIds": [
+        221
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 03",
+      "dossier": 4046049,
+      "afficheIds": [
+        222
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 04",
+      "dossier": 4046050,
+      "afficheIds": [
+        223
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 05",
+      "dossier": 4046051,
+      "afficheIds": [
+        224
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 06",
+      "dossier": 4046052,
+      "afficheIds": [
+        225
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 07",
+      "dossier": 4046053,
+      "afficheIds": [
+        226
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 08",
+      "dossier": 4046054,
+      "afficheIds": [
+        227
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 09",
+      "dossier": 4046055,
+      "afficheIds": [
+        228
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 10",
+      "dossier": 4046056,
+      "afficheIds": [
+        229
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 11",
+      "dossier": 4046057,
+      "afficheIds": [
+        230
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "Sans IP · visuel saisi 12",
+      "dossier": 4046058,
+      "afficheIds": [
+        231
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · prochaine échéance · cas 01",
+      "dossier": 4046059,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · prochaine échéance · cas 02",
+      "dossier": 4046060,
+      "afficheIds": [
+        232
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · prochaine échéance · cas 03",
+      "dossier": 4046061,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · prochaine échéance · cas 04",
+      "dossier": 4046062,
+      "afficheIds": [
+        233
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · prochaine échéance · cas 05",
+      "dossier": 4046063,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · prochaine échéance · cas 06",
+      "dossier": 4046064,
+      "afficheIds": [
+        234
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · prochaine échéance · cas 07",
+      "dossier": 4046065,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · prochaine échéance · cas 08",
+      "dossier": 4046066,
+      "afficheIds": [
+        235
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · échéance dépassée · cas 01",
+      "dossier": 4046067,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · échéance dépassée · cas 02",
+      "dossier": 4046068,
+      "afficheIds": [
+        236
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · échéance dépassée · cas 03",
+      "dossier": 4046069,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "J−3 · échéance dépassée · cas 04",
+      "dossier": 4046070,
+      "afficheIds": [
+        237
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "JDD+ inconnue 2026-W46 Wissous · sans BL",
+      "dossier": null,
+      "afficheIds": [
+        117
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "JDD+ inconnue 2026-W46 Wissous · avec BL et NC",
+      "dossier": null,
+      "afficheIds": [
+        118
+      ],
+      "ncId": 31,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Wissous",
+      "scenario": "JDD+ inconnue 2026-W46 Wissous · signalée introuvable",
+      "dossier": null,
+      "afficheIds": [
+        119
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m fixe · attendu sans IP",
+      "dossier": 4046100,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m déroulant · attendu avec IP",
+      "dossier": 4046101,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W45"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m fixe · réception partielle 35 sur 100",
+      "dossier": 4046102,
+      "afficheIds": [
+        120
+      ],
+      "ncId": null,
+      "semaine": "2026-W47"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m déroulant · complète à contrôler",
+      "dossier": 4046103,
+      "afficheIds": [
+        121
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m fixe · surplus 125 sur 100",
+      "dossier": 4046104,
+      "afficheIds": [
+        122
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m déroulant · contrôle validé, feuille à imprimer",
+      "dossier": 4046105,
+      "afficheIds": [
+        123
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m fixe · validation administrative attendue",
+      "dossier": 4046106,
+      "afficheIds": [
+        124
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m déroulant · contrôlée et validée",
+      "dossier": 4046107,
+      "afficheIds": [
+        125
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m fixe · comptage 90 pour BL de 100",
+      "dossier": 4046108,
+      "afficheIds": [
+        126
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m déroulant · complément 40 puis 60",
+      "dossier": 4046109,
+      "afficheIds": [
+        127
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m fixe · sans BL, doute à confirmer",
+      "dossier": 4046110,
+      "afficheIds": [
+        128
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m déroulant · 10 affiches au rebut",
+      "dossier": 4046111,
+      "afficheIds": [
+        129
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m fixe · surplus entretien de 20",
+      "dossier": 4046112,
+      "afficheIds": [
+        130
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m déroulant · feuille déjà imprimée",
+      "dossier": 4046113,
+      "afficheIds": [
+        131
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "4 m² scro · manque à J−3",
+      "dossier": 4046114,
+      "afficheIds": [
+        132
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "8 m² scro · manque à J−3",
+      "dossier": 4046115,
+      "afficheIds": [
+        133
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "12 m² colle · manque à J−3",
+      "dossier": 4046116,
+      "afficheIds": [
+        134
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "8 m² colle · manque à J−3",
+      "dossier": 4046117,
+      "afficheIds": [
+        135
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "4 m² colle · manque à J−3",
+      "dossier": 4046118,
+      "afficheIds": [
+        136
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Affiches trempées ou abîmées",
+      "dossier": 4046119,
+      "afficheIds": [
+        137
+      ],
+      "ncId": 32,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Encre qui a coulé",
+      "dossier": 4046120,
+      "afficheIds": [
+        138
+      ],
+      "ncId": 33,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Erreur de format (ex. scro reçu à la place de colle)",
+      "dossier": 4046121,
+      "afficheIds": [
+        139
+      ],
+      "ncId": 34,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Erreur de papier",
+      "dossier": 4046122,
+      "afficheIds": [
+        140
+      ],
+      "ncId": 35,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Casse à la production",
+      "dossier": 4046123,
+      "afficheIds": [
+        141
+      ],
+      "ncId": 36,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Thèmes mélangés",
+      "dossier": 4046124,
+      "afficheIds": [
+        142
+      ],
+      "ncId": 37,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Formats mélangés",
+      "dossier": 4046125,
+      "afficheIds": [
+        143
+      ],
+      "ncId": 38,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Palettes non conformes",
+      "dossier": 4046126,
+      "afficheIds": [
+        144
+      ],
+      "ncId": 39,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Croix mal positionnées",
+      "dossier": 4046127,
+      "afficheIds": [
+        145
+      ],
+      "ncId": 40,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Écart de quantité",
+      "dossier": 4046128,
+      "afficheIds": [
+        146
+      ],
+      "ncId": 41,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Rouleaux au lieu de palettes",
+      "dossier": 4046129,
+      "afficheIds": [
+        147
+      ],
+      "ncId": 42,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · BL non conforme",
+      "dossier": 4046130,
+      "afficheIds": [
+        148
+      ],
+      "ncId": 43,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC réception · Papier de mauvaise qualité",
+      "dossier": 4046131,
+      "afficheIds": [
+        149
+      ],
+      "ncId": 44,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC quantité · non bloquante",
+      "dossier": 4046132,
+      "afficheIds": [
+        150
+      ],
+      "ncId": 45,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC croix · non bloquante",
+      "dossier": 4046133,
+      "afficheIds": [
+        151
+      ],
+      "ncId": 46,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC multiple · décision et traitement plateforme",
+      "dossier": 4046134,
+      "afficheIds": [
+        152
+      ],
+      "ncId": 47,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC agence · Affiches Non Reçues ou Quantité livrée insuffisante",
+      "dossier": 4046135,
+      "afficheIds": [
+        153
+      ],
+      "ncId": 48,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC agence · Assemblage Non Conforme",
+      "dossier": 4046136,
+      "afficheIds": [
+        154
+      ],
+      "ncId": 49,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC agence · Bandeaux non reçus",
+      "dossier": 4046137,
+      "afficheIds": [
+        155
+      ],
+      "ncId": 50,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC agence · Palette/Colis/Affiches reçus abîmés",
+      "dossier": 4046138,
+      "afficheIds": [
+        156
+      ],
+      "ncId": 51,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC agence · Papier de mauvaise qualité / Qualité zip",
+      "dossier": 4046139,
+      "afficheIds": [
+        157
+      ],
+      "ncId": 52,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC agence · Reçu mauvaises affiches / bandeaux",
+      "dossier": 4046140,
+      "afficheIds": [
+        158
+      ],
+      "ncId": 53,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC formulaire · visuel non conforme",
+      "dossier": 4046141,
+      "afficheIds": [
+        159
+      ],
+      "ncId": 54,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "NC formulaire · papier pour statistiques",
+      "dossier": 4046142,
+      "afficheIds": [
+        160
+      ],
+      "ncId": 55,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "2m fixe · réception sans IP avec intitulé saisi",
+      "dossier": 4046143,
+      "afficheIds": [
+        212
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Inconnue rattachée · à contrôler",
+      "dossier": 4046144,
+      "afficheIds": [
+        213
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Inconnue contrôlée · feuille définitive à imprimer",
+      "dossier": 4046145,
+      "afficheIds": [
+        214
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Inconnue · feuille définitive imprimée",
+      "dossier": 4046146,
+      "afficheIds": [
+        215
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 01",
+      "dossier": 4046147,
+      "afficheIds": [
+        238
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 02",
+      "dossier": 4046148,
+      "afficheIds": [
+        239
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 03",
+      "dossier": 4046149,
+      "afficheIds": [
+        240
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 04",
+      "dossier": 4046150,
+      "afficheIds": [
+        241
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 05",
+      "dossier": 4046151,
+      "afficheIds": [
+        242
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 06",
+      "dossier": 4046152,
+      "afficheIds": [
+        243
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 07",
+      "dossier": 4046153,
+      "afficheIds": [
+        244
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 08",
+      "dossier": 4046154,
+      "afficheIds": [
+        245
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 09",
+      "dossier": 4046155,
+      "afficheIds": [
+        246
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 10",
+      "dossier": 4046156,
+      "afficheIds": [
+        247
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 11",
+      "dossier": 4046157,
+      "afficheIds": [
+        248
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "Sans IP · visuel saisi 12",
+      "dossier": 4046158,
+      "afficheIds": [
+        249
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · prochaine échéance · cas 01",
+      "dossier": 4046159,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · prochaine échéance · cas 02",
+      "dossier": 4046160,
+      "afficheIds": [
+        250
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · prochaine échéance · cas 03",
+      "dossier": 4046161,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · prochaine échéance · cas 04",
+      "dossier": 4046162,
+      "afficheIds": [
+        251
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · prochaine échéance · cas 05",
+      "dossier": 4046163,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · prochaine échéance · cas 06",
+      "dossier": 4046164,
+      "afficheIds": [
+        252
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · prochaine échéance · cas 07",
+      "dossier": 4046165,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · prochaine échéance · cas 08",
+      "dossier": 4046166,
+      "afficheIds": [
+        253
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · échéance dépassée · cas 01",
+      "dossier": 4046167,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · échéance dépassée · cas 02",
+      "dossier": 4046168,
+      "afficheIds": [
+        254
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · échéance dépassée · cas 03",
+      "dossier": 4046169,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "J−3 · échéance dépassée · cas 04",
+      "dossier": 4046170,
+      "afficheIds": [
+        255
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "JDD+ inconnue 2026-W46 Nîmes · sans BL",
+      "dossier": null,
+      "afficheIds": [
+        161
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "JDD+ inconnue 2026-W46 Nîmes · avec BL et NC",
+      "dossier": null,
+      "afficheIds": [
+        162
+      ],
+      "ncId": 56,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nîmes",
+      "scenario": "JDD+ inconnue 2026-W46 Nîmes · signalée introuvable",
+      "dossier": null,
+      "afficheIds": [
+        163
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m fixe · attendu sans IP",
+      "dossier": 4046200,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m déroulant · attendu avec IP",
+      "dossier": 4046201,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W45"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m fixe · réception partielle 35 sur 100",
+      "dossier": 4046202,
+      "afficheIds": [
+        164
+      ],
+      "ncId": null,
+      "semaine": "2026-W47"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m déroulant · complète à contrôler",
+      "dossier": 4046203,
+      "afficheIds": [
+        165
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m fixe · surplus 125 sur 100",
+      "dossier": 4046204,
+      "afficheIds": [
+        166
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m déroulant · contrôle validé, feuille à imprimer",
+      "dossier": 4046205,
+      "afficheIds": [
+        167
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m fixe · validation administrative attendue",
+      "dossier": 4046206,
+      "afficheIds": [
+        168
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m déroulant · contrôlée et validée",
+      "dossier": 4046207,
+      "afficheIds": [
+        169
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m fixe · comptage 90 pour BL de 100",
+      "dossier": 4046208,
+      "afficheIds": [
+        170
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m déroulant · complément 40 puis 60",
+      "dossier": 4046209,
+      "afficheIds": [
+        171
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m fixe · sans BL, doute à confirmer",
+      "dossier": 4046210,
+      "afficheIds": [
+        172
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m déroulant · 10 affiches au rebut",
+      "dossier": 4046211,
+      "afficheIds": [
+        173
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m fixe · surplus entretien de 20",
+      "dossier": 4046212,
+      "afficheIds": [
+        174
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m déroulant · feuille déjà imprimée",
+      "dossier": 4046213,
+      "afficheIds": [
+        175
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "4 m² scro · manque à J−3",
+      "dossier": 4046214,
+      "afficheIds": [
+        176
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "8 m² scro · manque à J−3",
+      "dossier": 4046215,
+      "afficheIds": [
+        177
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "12 m² colle · manque à J−3",
+      "dossier": 4046216,
+      "afficheIds": [
+        178
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "8 m² colle · manque à J−3",
+      "dossier": 4046217,
+      "afficheIds": [
+        179
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "4 m² colle · manque à J−3",
+      "dossier": 4046218,
+      "afficheIds": [
+        180
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Affiches trempées ou abîmées",
+      "dossier": 4046219,
+      "afficheIds": [
+        181
+      ],
+      "ncId": 57,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Encre qui a coulé",
+      "dossier": 4046220,
+      "afficheIds": [
+        182
+      ],
+      "ncId": 58,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Erreur de format (ex. scro reçu à la place de colle)",
+      "dossier": 4046221,
+      "afficheIds": [
+        183
+      ],
+      "ncId": 59,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Erreur de papier",
+      "dossier": 4046222,
+      "afficheIds": [
+        184
+      ],
+      "ncId": 60,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Casse à la production",
+      "dossier": 4046223,
+      "afficheIds": [
+        185
+      ],
+      "ncId": 61,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Thèmes mélangés",
+      "dossier": 4046224,
+      "afficheIds": [
+        186
+      ],
+      "ncId": 62,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Formats mélangés",
+      "dossier": 4046225,
+      "afficheIds": [
+        187
+      ],
+      "ncId": 63,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Palettes non conformes",
+      "dossier": 4046226,
+      "afficheIds": [
+        188
+      ],
+      "ncId": 64,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Croix mal positionnées",
+      "dossier": 4046227,
+      "afficheIds": [
+        189
+      ],
+      "ncId": 65,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Écart de quantité",
+      "dossier": 4046228,
+      "afficheIds": [
+        190
+      ],
+      "ncId": 66,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Rouleaux au lieu de palettes",
+      "dossier": 4046229,
+      "afficheIds": [
+        191
+      ],
+      "ncId": 67,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · BL non conforme",
+      "dossier": 4046230,
+      "afficheIds": [
+        192
+      ],
+      "ncId": 68,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC réception · Papier de mauvaise qualité",
+      "dossier": 4046231,
+      "afficheIds": [
+        193
+      ],
+      "ncId": 69,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC quantité · non bloquante",
+      "dossier": 4046232,
+      "afficheIds": [
+        194
+      ],
+      "ncId": 70,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC croix · non bloquante",
+      "dossier": 4046233,
+      "afficheIds": [
+        195
+      ],
+      "ncId": 71,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC multiple · décision et traitement plateforme",
+      "dossier": 4046234,
+      "afficheIds": [
+        196
+      ],
+      "ncId": 72,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC agence · Affiches Non Reçues ou Quantité livrée insuffisante",
+      "dossier": 4046235,
+      "afficheIds": [
+        197
+      ],
+      "ncId": 73,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC agence · Assemblage Non Conforme",
+      "dossier": 4046236,
+      "afficheIds": [
+        198
+      ],
+      "ncId": 74,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC agence · Bandeaux non reçus",
+      "dossier": 4046237,
+      "afficheIds": [
+        199
+      ],
+      "ncId": 75,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC agence · Palette/Colis/Affiches reçus abîmés",
+      "dossier": 4046238,
+      "afficheIds": [
+        200
+      ],
+      "ncId": 76,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC agence · Papier de mauvaise qualité / Qualité zip",
+      "dossier": 4046239,
+      "afficheIds": [
+        201
+      ],
+      "ncId": 77,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC agence · Reçu mauvaises affiches / bandeaux",
+      "dossier": 4046240,
+      "afficheIds": [
+        202
+      ],
+      "ncId": 78,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC formulaire · visuel non conforme",
+      "dossier": 4046241,
+      "afficheIds": [
+        203
+      ],
+      "ncId": 79,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "NC formulaire · papier pour statistiques",
+      "dossier": 4046242,
+      "afficheIds": [
+        204
+      ],
+      "ncId": 80,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "2m fixe · réception sans IP avec intitulé saisi",
+      "dossier": 4046243,
+      "afficheIds": [
+        216
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Inconnue rattachée · à contrôler",
+      "dossier": 4046244,
+      "afficheIds": [
+        217
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Inconnue contrôlée · feuille définitive à imprimer",
+      "dossier": 4046245,
+      "afficheIds": [
+        218
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Inconnue · feuille définitive imprimée",
+      "dossier": 4046246,
+      "afficheIds": [
+        219
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 01",
+      "dossier": 4046247,
+      "afficheIds": [
+        256
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 02",
+      "dossier": 4046248,
+      "afficheIds": [
+        257
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 03",
+      "dossier": 4046249,
+      "afficheIds": [
+        258
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 04",
+      "dossier": 4046250,
+      "afficheIds": [
+        259
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 05",
+      "dossier": 4046251,
+      "afficheIds": [
+        260
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 06",
+      "dossier": 4046252,
+      "afficheIds": [
+        261
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 07",
+      "dossier": 4046253,
+      "afficheIds": [
+        262
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 08",
+      "dossier": 4046254,
+      "afficheIds": [
+        263
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 09",
+      "dossier": 4046255,
+      "afficheIds": [
+        264
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 10",
+      "dossier": 4046256,
+      "afficheIds": [
+        265
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 11",
+      "dossier": 4046257,
+      "afficheIds": [
+        266
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "Sans IP · visuel saisi 12",
+      "dossier": 4046258,
+      "afficheIds": [
+        267
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · prochaine échéance · cas 01",
+      "dossier": 4046259,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · prochaine échéance · cas 02",
+      "dossier": 4046260,
+      "afficheIds": [
+        268
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · prochaine échéance · cas 03",
+      "dossier": 4046261,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · prochaine échéance · cas 04",
+      "dossier": 4046262,
+      "afficheIds": [
+        269
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · prochaine échéance · cas 05",
+      "dossier": 4046263,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · prochaine échéance · cas 06",
+      "dossier": 4046264,
+      "afficheIds": [
+        270
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · prochaine échéance · cas 07",
+      "dossier": 4046265,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · prochaine échéance · cas 08",
+      "dossier": 4046266,
+      "afficheIds": [
+        271
+      ],
+      "ncId": null,
+      "semaine": "2026-W49"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · échéance dépassée · cas 01",
+      "dossier": 4046267,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · échéance dépassée · cas 02",
+      "dossier": 4046268,
+      "afficheIds": [
+        272
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · échéance dépassée · cas 03",
+      "dossier": 4046269,
+      "afficheIds": [],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "J−3 · échéance dépassée · cas 04",
+      "dossier": 4046270,
+      "afficheIds": [
+        273
+      ],
+      "ncId": null,
+      "semaine": "2026-W48"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "JDD+ inconnue 2026-W46 Nanterre · sans BL",
+      "dossier": null,
+      "afficheIds": [
+        205
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "JDD+ inconnue 2026-W46 Nanterre · avec BL et NC",
+      "dossier": null,
+      "afficheIds": [
+        206
+      ],
+      "ncId": 81,
+      "semaine": "2026-W46"
+    },
+    {
+      "centre": "Nanterre",
+      "scenario": "JDD+ inconnue 2026-W46 Nanterre · signalée introuvable",
+      "dossier": null,
+      "afficheIds": [
+        207
+      ],
+      "ncId": null,
+      "semaine": "2026-W46"
+    }
+  ]
+}

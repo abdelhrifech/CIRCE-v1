@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Où en est un dossier ? Les tags de Circé, atelier par atelier</title>
+<style>
+  :root {
+    --navy: #1b2a44; --ink: #1f2937; --ink-2: #475467; --ink-3: #667085; --line: #d9dee5; --page: #f5f7fa;
+    --ci: #0a6f93; --ci-bg: #edf6fa;
+    --der: #6b2fc9; --der-bg: #f2eafe;
+    --fix: #0b7a55; --fix-bg: #e6f6ef;
+    --pli: #9a5b00; --pli-bg: #fff4dc;
+    --bus: #b4235e; --bus-bg: #fdebf3;
+    /* couleurs des tags, comme dans la maquette */
+    --t-wait: #5b6472; --t-wait-bg: #eceff3;
+    --t-info: #0a6f93; --t-info-bg: #e3f1f8;
+    --t-todo: #a15c00; --t-todo-bg: #fff1d6;
+    --t-serious: #c4320a; --t-serious-bg: #ffe9df;
+    --t-crit: #b42318; --t-crit-bg: #fdeceb;
+    --t-ok: #0b7a55; --t-ok-bg: #e6f6ef;
+    --t-rep: #6b2fc9; --t-rep-bg: #f2eafe;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; color: var(--ink); background: var(--page); }
+  header { background: var(--navy); color: #fff; padding: 18px 28px 16px; }
+  header h1 { margin: 0; font-size: 21px; font-weight: 650; }
+  header p { margin: 6px 0 0; color: #c8d2e1; font-size: 13px; max-width: 1200px; }
+  main { padding: 20px 28px 36px; }
+  h2 { font-size: 16px; margin: 30px 0 10px; color: var(--navy); }
+  h2 small { font-weight: 400; color: var(--ink-3); font-size: 13px; }
+
+  .top { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+  .box { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .box h2 { margin: 0 0 8px; }
+  .box ol, .box ul { margin: 0; padding-left: 20px; }
+  .box li { margin: 5px 0; }
+  .legend { display: grid; grid-template-columns: max-content 1fr; gap: 7px 12px; align-items: center; font-size: 13px; }
+
+  /* Tags */
+  .t { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 1px 9px; border-radius: 999px; white-space: nowrap; }
+  .t::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .t.wait { background: var(--t-wait-bg); color: var(--t-wait); }
+  .t.info { background: var(--t-info-bg); color: var(--t-info); }
+  .t.todo { background: var(--t-todo-bg); color: var(--t-todo); }
+  .t.serious { background: var(--t-serious-bg); color: var(--t-serious); }
+  .t.crit { background: var(--t-crit-bg); color: var(--t-crit); }
+  .t.ok { background: var(--t-ok-bg); color: var(--t-ok); }
+  .t.rep { background: var(--t-rep-bg); color: var(--t-rep); border-radius: 4px; }
+  .t.rep::before { border-radius: 2px; }
+  .t.old { background: #fff; color: var(--ink-3); border: 1px dashed #b8c0cc; font-weight: 500; }
+  .t.old::before { background: #b8c0cc; }
+  .to { color: var(--ink-3); font-size: 12px; margin: 0 1px; }
+  .chain { display: flex; flex-wrap: wrap; gap: 4px 3px; align-items: center; }
+  .or { font-size: 11px; color: var(--ink-3); margin: 0 2px; }
+
+  .ded { font-size: 10px; font-weight: 700; color: #7a5b00; background: #fff4cc; border-radius: 4px; padding: 0 5px; text-transform: uppercase; letter-spacing: .04em; }
+  .cst { font-size: 10px; font-weight: 700; color: #1d4f91; background: #e4eefb; border-radius: 4px; padding: 0 5px; text-transform: uppercase; letter-spacing: .04em; }
+  .ano { font-size: 10.5px; font-weight: 700; color: var(--t-crit); background: var(--t-crit-bg); border-radius: 4px; padding: 0 5px; }
+  code { font: 12px Consolas, "Courier New", monospace; background: #f0f3f7; padding: 0 4px; border-radius: 4px; }
+
+  /* Sites et ateliers */
+  .sites { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .site { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .site h3 { margin: 0 0 8px; font-size: 15px; color: var(--navy); display: flex; gap: 8px; align-items: baseline; }
+  .site h3 small { font-weight: 400; color: var(--ink-3); font-size: 12px; }
+  .at { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; border-top: 1px solid #eef1f5; font-size: 13px; }
+  .at:first-of-type { border-top: 0; }
+  .at .m { font-size: 11.5px; color: var(--ink-3); }
+  .fam { display: inline-block; font-size: 11px; font-weight: 650; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+  .fam.der { background: var(--der-bg); color: var(--der); }
+  .fam.fix { background: var(--fix-bg); color: var(--fix); }
+  .fam.pli { background: var(--pli-bg); color: var(--pli); }
+  .fam.bus { background: var(--bus-bg); color: var(--bus); }
+  .fam.all { background: #eceff3; color: #3f4a5a; }
+
+  /* Couloirs : ateliers × phases */
+  .scroll { overflow-x: auto; padding-bottom: 4px; }
+  .lanes { display: grid; grid-template-columns: 170px repeat(5, minmax(220px, 1fr)); gap: 8px; min-width: 1330px; }
+  .ph { background: var(--navy); color: #fff; border-radius: 8px; padding: 8px 10px; font-weight: 650; font-size: 13.5px; }
+  .ph small { display: block; font-weight: 400; font-size: 11.5px; color: #c8d2e1; }
+  .lane { border-radius: 8px; padding: 10px; font-weight: 650; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+  .lane small { font-weight: 400; font-size: 11.5px; }
+  .lane.der { background: var(--der-bg); color: var(--der); }
+  .lane.fix { background: var(--fix-bg); color: var(--fix); }
+  .lane.pli { background: var(--pli-bg); color: var(--pli); }
+  .lane.bus { background: var(--bus-bg); color: var(--bus); }
+  .cell { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; display: flex; flex-direction: column; gap: 7px; }
+  .cell .obj { font-size: 11px; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+  .cell .today { margin-top: auto; border-top: 1px dashed var(--line); padding-top: 6px; font-size: 12px; color: var(--ink-2); }
+  .cell .today b { color: var(--ink-3); font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; display: block; margin-bottom: 2px; }
+  .cell.same { background: transparent; border-style: dashed; color: var(--ink-3); font-size: 12.5px; justify-content: center; }
+  .cell.none { background: transparent; border-style: dashed; color: var(--ink-3); font-size: 12.5px; }
+  .src { font-size: 11px; color: var(--ink-3); }
+
+  /* Grains */
+  .grain { display: inline-block; align-self: flex-start; font-size: 11.5px; color: #3f4a5a; background: #f3f4f6; border: 1px solid #dfe3e8; border-radius: 6px; padding: 2px 7px; line-height: 1.4; margin: 1px 0; }
+  .grain::before { content: "▦"; font-size: 11px; color: var(--ink-3); margin-right: 5px; }
+  .grain b { color: var(--navy); }
+  .grain.old { background: #fff; border-style: dashed; color: var(--ink-3); }
+  .gchain { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 6px 0 4px; }
+  .gnode { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--navy); border-radius: 8px; padding: 8px 10px; min-width: 150px; flex: 1 1 150px; font-size: 12.5px; }
+  .gnode h4 { margin: 0 0 3px; font-size: 13.5px; color: var(--navy); }
+  .gnode .k { font-size: 11.5px; color: var(--ink-3); }
+  .gnode.aff { border-top-color: var(--ci); }
+  .garrow { display: flex; align-items: center; color: var(--ink-3); font-size: 18px; }
+  .card2 { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .card2 h3 { margin: 0 0 6px; font-size: 14px; color: var(--navy); }
+  .card2 p, .card2 li { font-size: 13px; color: var(--ink-2); }
+  .card2 ul { margin: 4px 0 0; padding-left: 18px; }
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .layers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .layer { border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+  .layer h3 { margin: 0 0 4px; font-size: 14px; }
+  .layer ul { margin: 4px 0 0; padding-left: 18px; }
+  .layer li { margin: 3px 0; }
+  .l1 { background: #eef2f7; } .l2 { background: #e8f3f8; } .l3 { background: #f2eafe; } .l4 { background: #e9f6ef; }
+  .av { font-size: 10px; font-weight: 700; color: #5b21b6; background: #ede9fe; border-radius: 4px; padding: 0 5px; text-transform: uppercase; letter-spacing: .04em; }
+  .val { font-size: 10px; font-weight: 700; color: #0b7a55; background: #e6f6ef; border-radius: 4px; padding: 0 5px; text-transform: uppercase; letter-spacing: .04em; }
+  .nn { font-size: 10.5px; font-weight: 700; color: #7a2e0e; background: #fdead7; border-radius: 4px; padding: 0 5px; }
+
+  table { border-collapse: separate; border-spacing: 0; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 13px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 11px; border-bottom: 1px solid var(--line); }
+  thead th { background: #f0f3f7; font-weight: 650; color: var(--navy); }
+  tr:last-child td, tr:last-child th { border-bottom: 0; }
+  tr.sep td { background: #f7f8fa; font-weight: 650; color: var(--navy); font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; padding: 6px 11px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  footer { font-size: 12px; color: var(--ink-3); margin-top: 26px; border-top: 1px solid var(--line); padding-top: 10px; }
+
+  @media print {
+    @page { size: A3 landscape; margin: 10mm; }
+    body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .scroll { overflow: visible; }
+    .lanes, .box, .site, table { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Où en est un dossier ? Les tags de Circé, atelier par atelier</h1>
+  <p>Pour chaque site et chaque atelier : les tags qui disent où en est un dossier, étape par étape, de la DA activée à la fin de campagne, et le <b>grain</b> de chaque étape, c'est-à-dire ce que porte le tag (un dossier, un thème, une ligne destinataire × afficheur, un train, une UM, un colis…). On compare ce que Circé montre aujourd'hui (en pointillés gris) avec la cible de la maquette (en couleur). La cible n'est pas encore validée. Sources : deck du kick-off (S…), deck Réception – Expédition du 14/10 (R…), decks du 15/10 (RP…), référentiel des besoins et code de Circé, lu sans le modifier.</p>
+</header>
+
+<main>
+
+<div class="top">
+  <section class="box">
+    <h2>Le plus gros manque de Circé, ce sont les tags ?</h2>
+    <p style="margin:0 0 8px">En grande partie oui, pour savoir où en est un dossier. Mais le vrai manque est en dessous : <b>l'état n'est pas calculé</b>. Les tags ne font que le montrer.</p>
+    <ol>
+      <li><span class="cst">constaté</span> Aujourd'hui, l'état d'un dossier est <b>éclaté en quatre objets</b>, chacun avec son statut et sa page : le dossier (Liste des instructions), la ligne de l'EDR, l'affiche (Liste des affiches), le train ou la ligne fixe. Pour savoir où en est un dossier, il faut les ouvrir un par un (S15, S32, S47, S37 à S41, S50 à S54).</li>
+      <li><span class="cst">constaté</span> Certains états <b>n'existent pas</b> : affiches reçues en partie, palette en attente de contrôle, thème modifié dans Broadcast (« rien ne compare », PP-09), correction demandée à Broadcast, preuve de livraison (« Terminé » vient de la fin de journée, <code>ListeColisBll.cs:199-223</code>).</li>
+      <li><span class="cst">constaté</span> Certains sont <b>faux ou en retard</b> : « Affiche reçue = Oui » est posé par la validation admin, pas par la réception <span class="ano">ANO-05</span>. D'où le pointage papier des manquants, le mardi et le vendredi de S-2 (S33).</li>
+      <li><span class="ded">déduit</span> Des tags cochés à la main reproduiraient ANO-05. Dans la cible, <b>Circé pose chaque tag lui-même, à chaque événement</b> : envoi de Broadcast, réception, contrôle, scan, Geodis. Personne ne les tient à jour.</li>
+    </ol>
+  </section>
+  <section class="box">
+    <h2>Légende</h2>
+    <div class="legend">
+      <span class="t wait">En attente</span><span>rien à faire tant que l'étape d'avant n'est pas faite</span>
+      <span class="t info">En cours</span><span>quelqu'un d'autre a la main, ou c'est automatique</span>
+      <span class="t todo">À faire</span><span>une action est attendue</span>
+      <span class="t serious">À traiter vite</span><span>une action est attendue, et elle bloque la suite</span>
+      <span class="t crit">Bloquant</span><span>en retard, ou le départ est menacé</span>
+      <span class="t ok">Fait</span><span>étape terminée</span>
+      <span class="t rep">Repère</span><span>information permanente sur le dossier (ce n'est pas une étape)</span>
+      <span class="t old">Aujourd'hui</span><span>statut ou valeur de Circé actuel</span>
+      <span class="grain"><b>train</b></span><span>grain : l'objet qui porte le tag (en pointillés : le grain d'aujourd'hui)</span>
+      <span class="nn">N à N</span><span>un objet de ce grain mélange plusieurs dossiers, et un dossier se répartit sur plusieurs objets</span>
+      <span class="val">validé 21/10</span><span>donné par la cheffe de projet</span>
+      <span class="av">à voir</span><span>pas encore décidé</span>
+      <span class="cst">constaté</span><span>écrit dans un deck ou lu dans le code</span>
+      <span class="ded">déduit</span><span>notre conclusion, écrite nulle part telle quelle</span>
+    </div>
+    <p style="margin:10px 0 0;font-size:13px;color:var(--ink-2)">Dans la maquette, le tag « <b>Où en est-il</b> » de chaque dossier et de chaque thème se lit dans <b>Pilotage › État des réservations vivant</b>. Les tags d'atelier se lisent dans l'onglet de l'atelier, et ceux de l'affiche dans Réception › Liste des affiches.</p>
+  </section>
+</div>
+
+<h2>Les sites et leurs ateliers</h2>
+<div class="sites">
+  <section class="site">
+    <h3>Nîmes</h3>
+    <div class="at"><span>2 m² déroulant <span class="m">· Vendôme One, CCM V2</span></span><span class="fam der">Déroulant</span></div>
+    <div class="at"><span>4 m² déroulant <span class="m">· tables de roulage</span></span><span class="fam der">Déroulant</span></div>
+    <div class="at"><span>8 m² déroulant <span class="m">· assemblage 8 m², roulage</span></span><span class="fam der">Déroulant</span></div>
+    <div class="at"><span>2 m² fixe <span class="m">· multi-rouleuse</span></span><span class="fam fix">2 m² fixe</span></div>
+  </section>
+  <section class="site">
+    <h3>Wissous</h3>
+    <div class="at"><span>2 m² déroulant / MUI <span class="m">· Vendôme One, roulage</span></span><span class="fam der">Déroulant</span></div>
+    <div class="at"><span>4 m² déroulant <span class="m">· tables de roulage</span></span><span class="fam der">Déroulant</span></div>
+    <div class="at"><span>8 m² déroulant <span class="m">· assemblage 8 m², roulage</span></span><span class="fam der">Déroulant</span></div>
+    <div class="at"><span>2 m² fixe <span class="m">· multi-rouleuse</span></span><span class="fam fix">2 m² fixe</span></div>
+    <div class="at"><span>Colle / pliage <span class="m">· 4, 8 et 12 m² collés, sans machine</span></span><span class="fam pli">Pliage</span></div>
+  </section>
+  <section class="site">
+    <h3>Nanterre <small>cible</small></h3>
+    <div class="at"><span>Bus <span class="m">· arrière et latéral, par centre bus</span></span><span class="fam bus">Bus</span></div>
+    <p class="src" style="margin:10px 0 0">Aujourd'hui, Circé ne connaît que trois types de production : 2M2FIXE, PLIAGE et DEROULANT (<code>Enums.cs:34-45</code>). Pas de flux Broadcast pour le Bus. La liste des ateliers du code (<code>Enums.cs:249-269</code>) contient aussi un « Nîmes Pliage 12M2 » et des sites « DBG », absents des decks : à confirmer.</p>
+    <div class="at" style="margin-top:8px"><span>Réception, Pré-Prod, Expédition, Stocks</span><span class="fam all">Tous les ateliers</span></div>
+  </section>
+</div>
+
+<h2>Les grains : de quoi parle chaque étape ? <small>· le dossier ne voyage pas seul : il est découpé, mélangé, puis regroupé</small></h2>
+<div class="gchain">
+  <div class="gnode"><h4>Dossier</h4>n° de dossier (contrat), DA chapeau<div class="k">annonceur × atelier (format) × semaine(s) de départ · Broadcast</div></div>
+  <div class="garrow">→</div>
+  <div class="gnode"><h4>Thème</h4>visuel × repiquage<div class="k">arrive avec la saisie des IP · un dossier en a un ou plusieurs</div></div>
+  <div class="garrow">→</div>
+  <div class="gnode"><h4>Ligne de préparation</h4>thème × destinataire × afficheur<div class="k">quantité et entretien · <code>tf_repart_calcul</code></div></div>
+  <div class="garrow">→</div>
+  <div class="gnode"><h4>Unité de production</h4>train (déroulant) · UM (fixe) · lot (pliage, bus)<div class="k">ce que l'atelier produit et scanne</div></div>
+  <div class="garrow">→</div>
+  <div class="gnode"><h4>Colis <span class="val">validé 21/10</span></h4>destinataire × affiche (emplacement) × semaine<div class="k">les unités d'un même visuel pour un destinataire ; une affiche peut servir plusieurs dossiers (S31)</div></div>
+  <div class="garrow">→</div>
+  <div class="gnode"><h4>Départ</h4>destinataire · boucle · jour et heure<div class="k">milk run, messagerie ou remise directe</div></div>
+</div>
+<div class="gchain">
+  <div class="gnode aff"><h4>Réception</h4>un BL = une réception<div class="k">une ou plusieurs palettes · <code>livraison.sql</code></div></div>
+  <div class="garrow">→</div>
+  <div class="gnode aff"><h4>Affiche</h4>n° d'affiche, en allée et rayon<div class="k">stock = somme des mouvements · <code>mouvement.sql</code></div></div>
+  <div class="garrow">↔</div>
+  <div class="gnode aff" style="flex:2 1 300px"><h4>Lien affiche ↔ thème <span class="nn">N à N</span></h4>une affiche sert souvent plusieurs dossiers (33 dans l'exemple de S31) ; un thème peut arriver en plusieurs réceptions (complément)<div class="k">Aujourd'hui : l'affiche est liée à toutes les préparations de même dossier, format, annonceur, thème, site et semaine (<code>LivraisonAfficheService.cs:434-476</code>)</div></div>
+</div>
+
+<table style="margin-top:12px">
+  <thead><tr><th style="width:170px">Étape</th><th><span class="fam der">Déroulant</span></th><th><span class="fam fix">2 m² fixe</span></th><th><span class="fam pli">Pliage</span></th><th><span class="fam bus">Bus (cible)</span></th></tr></thead>
+  <tbody>
+    <tr class="sep"><td colspan="5">Pré-Prod</td></tr>
+    <tr><td><b>Contrôle de la préparation</b></td>
+      <td><span class="grain"><b>dossier</b> (« instruction »)</span><br><span class="small src">Instruction OK par dossier ; % de répartition par thème · <code>instruction_train.sql</code></span></td>
+      <td colspan="2"><span class="grain"><b>dossier</b></span> puis <span class="grain"><b>atelier × semaine</b> (libération)</span><br><span class="src">Aujourd'hui : le bouton « Colisage » agit sur les <b>lignes filtrées</b> de la grille, pas sur une semaine (<code>PreparationController.cs:429-477</code>) <span class="cst">constaté</span></span></td>
+      <td><span class="grain"><b>dossier</b></span> · pas de flux Broadcast aujourd'hui</td></tr>
+    <tr><td><b>Entretien</b></td>
+      <td><span class="grain old">destinataire × thème × secteur × semaine × support</span><br><span class="src">Faces ajoutées avec un afficheur fictif « ENTRETIEN » : pas rattaché à un afficheur (<code>p_u_associe_train.sql:462-500</code>) <span class="cst">constaté</span></span><br><span class="grain"><b>afficheur</b></span> <span class="src">cible (REU-06)</span></td>
+      <td colspan="2"><span class="grain old">ligne destinataire × afficheur</span> <span class="src">quantité d'entretien fournie par Broadcast (<code>p_integ_preparation.sql:121,160</code>)</span><br><span class="grain"><b>afficheur</b></span> <span class="src">cible ; l'atelier peut ajuster si l'entretien reçu ne suffit pas (FIX-05)</span></td>
+      <td><span class="av">à voir</span></td></tr>
+    <tr class="sep"><td colspan="5">Affiches</td></tr>
+    <tr><td><b>Réception attendue</b><br><span class="src">cible : l'attendu de chaque plateforme vient de la DA (type de réalisation × plateforme, affiches entretien inclus), 21/10</span></td>
+      <td colspan="4"><span class="grain"><b>dossier × semaine × thème × repiquage × format</b></span> <span class="src">quantité théorique, quantité reçue, « Terminé » ou « Partiel » (<code>Partial_GridAfficheList.cshtml:8-20</code>) <span class="cst">constaté</span> ; même grain pour tous les ateliers</span></td></tr>
+    <tr><td><b>Réception, contrôle</b></td>
+      <td colspan="4"><span class="grain"><b>BL</b> (réception)</span> → <span class="grain"><b>palette</b> dans le sas</span> → <span class="grain"><b>n° d'affiche</b></span> <span class="src">Le tri des affiches se fait « par thème, pas par destinataire » (S37) : 220 à 350 thèmes par semaine à Nîmes, 150 à Wissous.</span></td></tr>
+    <tr class="sep"><td colspan="5">Production</td></tr>
+    <tr><td><b>Unité de production</b></td>
+      <td><span class="grain"><b>train</b> = afficheur × destinataire × semaine</span> <span class="nn">N à N</span><br><span class="src">Jusqu'à 6 thèmes (contrats) par train dans le code, « jusqu'à 4 affiches » dans le deck ; une face = une ligne de <code>tf_face_train</code> ; 20 tiroirs par export (<code>TrainPreparationBll.cs:22-23</code>) <span class="cst">constaté</span></span></td>
+      <td><span class="grain"><b>UM</b> = destinataire × contrat × format × type × thème × repiquage</span><br><span class="src">+ afficheur si le destinataire est en dispatch ; découpée selon une quantité maximale par support (<code>tf_UM.sql</code>, <code>sup_qte_UM</code>) <span class="cst">constaté</span>. Un seul thème par UM.</span></td>
+      <td><span class="grain old">UM</span> aujourd'hui (même code que le fixe) · <span class="grain"><b>lot</b> = ligne thème × destinataire × afficheur</span> dans la maquette</td>
+      <td><span class="av">à voir</span> <span class="src">piste : un lot par thème et par centre bus</span></td></tr>
+    <tr><td><b>Fichier machine</b></td>
+      <td><span class="grain"><b>train</b></span> <span class="src">Vendôme : une ligne par train, puis .ini par l'outil Caire, à la main (<code>PreparationDeroulantsService.cs:558-600</code>)</span></td>
+      <td><span class="grain"><b>annonceur × thème</b></span> <span class="src">multi-rouleuse : un CSV par annonceur et thème ; export de préparation : une ligne par UM (<code>PreparationService.cs:341-443</code>)</span></td>
+      <td>sans machine ni fichier</td>
+      <td>—</td></tr>
+    <tr><td><b>Bagues, dispatch</b></td>
+      <td><span class="grain"><b>train</b></span> pour la bague ; <span class="grain"><b>faces de train → rouleur</b></span> pour le dispatch (8 m², MUI) ; pré-assemblage 8 m² : aujourd'hui <span class="grain old">un client en totalité</span>, demandé <span class="grain"><b>client × destinataire</b></span> (SCR-18)</td>
+      <td colspan="2"><span class="grain"><b>UM / lot</b></span> : étiquette ; l'annonceur peut être corrigé par la plateforme (FIX-15)</td>
+      <td>—</td></tr>
+    <tr><td><b>Suivi de prod</b></td>
+      <td colspan="4"><span class="grain old">Excel par atelier, tableau 8 m²</span> (S12, S56) → <span class="grain"><b>thème</b> (reste à faire), regroupé par <b>dossier</b></span> dans l'État des réservations vivant</td></tr>
+    <tr class="sep"><td colspan="5">Expédition et fin de campagne</td></tr>
+    <tr><td><b>Colis, départ</b></td>
+      <td colspan="3"><span class="grain"><b>colis</b> = destinataire × affiche (emplacement) × semaine</span> <span class="val">validé 21/10</span> → <span class="grain"><b>départ</b> = destinataire, boucle, jour</span>. Stockage par destinataire, milk run et messagerie séparés (deck). <span class="src">La maquette regroupe encore les colis par destinataire × semaine (8 trains ou 12 UM au plus) : à aligner.</span></td>
+      <td><span class="av">à voir</span> <span class="src">piste : remise directe aux dépôts bus</span></td></tr>
+    <tr><td><b>Fin de campagne</b></td>
+      <td colspan="4"><span class="grain old">affiche</span> aujourd'hui : case « à conserver », état de destruction (affiches entrées depuis plus d'un an) → <span class="grain"><b>dossier</b></span> pour la décision, <span class="grain"><b>n° d'affiche</b></span> pour le stock qui sort (renvoi, destruction)</td></tr>
+  </tbody>
+</table>
+
+<div class="three" style="margin-top:14px">
+  <div class="card2"><h3>Déroulant : le grain le plus mélangé</h3><p>Un train porte jusqu'à 6 thèmes, souvent de dossiers différents, pour un afficheur et un destinataire. Un dossier est donc réparti sur de nombreux trains, et un train attend tant qu'un seul de ses thèmes manque. <span class="ded">déduit</span> Le tag « En attente d'affiches » d'un train touche plusieurs dossiers à la fois.</p></div>
+  <div class="card2"><h3>Fixe et pliage : un thème par unité</h3><p>Une UM ne porte qu'un thème (<code>tf_UM.sql</code>). L'état d'une UM se remonte directement à son thème, puis au dossier. Le colis garde ce grain fin : destinataire × affiche (emplacement) × semaine.</p></div>
+  <div class="card2"><h3>Affiche : le grain physique</h3><p>Le stock se compte au n° d'affiche, pas au dossier. Une même affiche sert plusieurs dossiers (S31), et un dossier peut recevoir ses affiches en plusieurs fois. Le tag « Affiches reçues en partie » se calcule donc au <b>thème</b> : attendu contre reçu.</p></div>
+</div>
+
+<h2>Le tag de chaque étape, atelier par atelier <small>· en couleur la cible, en gris ce que Circé montre aujourd'hui</small></h2>
+<div class="scroll">
+<div class="lanes">
+  <div></div>
+  <div class="ph">1 · Pré-Prod<small>Dossiers › Préparations à valider</small></div>
+  <div class="ph">2 · Affiches<small>Réception, réceptions attendues</small></div>
+  <div class="ph">3 · Production<small>onglet de l'atelier</small></div>
+  <div class="ph">4 · Expédition<small>colisage, départs, Geodis</small></div>
+  <div class="ph">5 · Fin de campagne<small>Stocks › Fin de campagne</small></div>
+
+  <!-- Déroulant -->
+  <div class="lane der">Déroulant<small>2, 4 et 8 m², MUI, Venusial · Nîmes et Wissous</small></div>
+  <div class="cell">
+    <span class="obj">Dossier</span>
+    <span class="grain"><b>dossier</b>, puis <b>dossier × thème</b> dès la saisie des IP</span>
+    <div class="chain"><span class="t todo">DA activée, IP à saisir</span><span class="to">→</span><span class="t info">IP saisies, prépa attendue</span><span class="to">→</span><span class="t serious">Prépa reçue, validation admin à faire</span></div>
+    <span class="obj">Instruction OK</span>
+    <span class="grain"><b>dossier</b> : quantités, entretien, positions de ses thèmes</span>
+    <div class="chain"><span class="t ok">Automatique</span><span class="or">ou</span><span class="t todo">À faire (commentaire)</span><span class="to">→</span><span class="t ok">Faite après contrôle</span></div>
+    <div class="chain"><span class="to">→</span><span class="t ok">Validation admin faite</span></div>
+    <div class="today"><b>Aujourd'hui</b><div class="chain"><span class="t old">À traiter</span><span class="to">→</span><span class="t old">En cours</span><span class="to">→</span><span class="t old">Instruction OK</span></div><span class="grain old">dossier</span> puis <span class="grain old">n° d'affiche</span><br>Instruction OK saisie à la main, après ressaisie du % par thème (S47, S48). Puis la case « validation admin » est cochée dans la fiche de chaque affiche et un mail de confirmation est envoyé (S29, S49). <span class="src"><code>Enums.cs:50-75</code></span></div>
+  </div>
+  <div class="cell">
+    <span class="obj">Thème du dossier</span>
+    <span class="grain"><b>dossier × thème</b> : attendu (lignes de préparation, entretien compris) contre reçu</span>
+    <div class="chain"><span class="t crit">Validé, affiches attendues</span><span class="to">→</span><span class="t serious">Affiches reçues en partie</span><span class="to">→</span><span class="t info">reçues</span></div>
+    <span class="obj">Affiche (palette)</span>
+    <span class="grain"><b>palette</b> (BL) dans le sas, puis <b>n° d'affiche</b></span>
+    <div class="chain"><span class="t todo">À contrôler</span><span class="or">plus de 24 h :</span><span class="t crit">en retard</span><span class="to">→</span><span class="t ok">contrôlée, stockée</span></div>
+    <div class="today"><b>Aujourd'hui</b><div class="chain"><span class="t old">Affiche reçue = Oui</span></div><span class="grain old">ligne de l'EDR (dossier × thème)</span> <span class="grain old">réception attendue : « Terminé » ou « Partiel »</span><br>Dans l'EDR, posé par la validation admin <span class="ano">ANO-05</span>. Pas de « partielle » ; manquants pointés sur papier (S32, S33).</div>
+  </div>
+  <div class="cell">
+    <span class="obj">Train</span>
+    <span class="grain"><b>train</b> = afficheur × destinataire × semaine, jusqu'à 6 thèmes <span class="nn">N à N</span></span>
+    <div class="chain"><span class="t crit">En attente d'affiches</span><span class="to">→</span><span class="t info">Prêt à produire</span><span class="to">→</span><span class="t info">En production</span><span class="to">→</span><span class="t ok">Produit</span></div>
+    <p class="src" style="margin:0">« En production » = fichier Vendôme envoyé ou bagues imprimées : au-delà, tout changement lève une alerte.</p>
+    <div class="today"><b>Aujourd'hui</b><div class="chain"><span class="t old">À imprimer</span><span class="to">→</span><span class="t old">Au roulage</span><span class="to">→</span><span class="t old">À expédier</span><span class="to">→</span><span class="t old">Terminé</span></div><span class="grain old">face de train</span> <span class="src">(une ligne par face, <code>tf_face_train</code>)</span><br>Go donné par un mail de la Pré-Prod (S49, S50 à S54).</div>
+  </div>
+  <div class="cell">
+    <span class="obj">Dossier, colis</span>
+    <span class="grain"><b>colis</b> = destinataire × affiche (emplacement) × semaine <span class="val">validé 21/10</span> ; le dossier prend l'étape la moins avancée de ses unités</span>
+    <div class="chain"><span class="t ok">Colisé · à expédier</span><span class="to">→</span><span class="t ok">Expédié</span><span class="to">→</span><span class="t ok">Livré (preuve reçue)</span></div>
+    <div class="today"><b>Aujourd'hui</b><div class="chain"><span class="t old">Terminé</span></div>Posé par la fin de journée, pas par la preuve de livraison (<code>ListeColisBll.cs:199-223</code>).</div>
+  </div>
+  <div class="cell">
+    <span class="obj">Dossier</span>
+    <span class="grain"><b>dossier</b> pour la décision ; <b>n° d'affiche</b> pour le stock qui sort</span>
+    <div class="chain"><span class="t todo">À décider</span><span class="to">→</span><span class="t info">À conserver</span><span class="or">ou</span><span class="t todo">À renvoyer</span><span class="or">ou</span><span class="t todo">À détruire</span></div>
+    <div class="chain"><span class="to">→</span><span class="t ok">Renvoyé</span><span class="or">ou</span><span class="t ok">Détruit</span></div>
+    <div class="today"><b>Aujourd'hui</b>Suivi › Etat de destruction : affiches entrées depuis plus d'un an ; une case « à conserver » par affiche ; pas de décision par dossier ni de « à renvoyer » (<code>p_s_destruction.sql:27-32</code>, R28 #9).</div>
+  </div>
+
+  <!-- 2 m² fixe -->
+  <div class="lane fix">2 m² fixe<small>Nîmes et Wissous</small></div>
+  <div class="cell">
+    <span class="obj">Dossier</span>
+    <span class="grain"><b>dossier</b>, puis <b>dossier × thème</b> dès la saisie des IP</span>
+    <div class="chain"><span class="t todo">DA activée, IP à saisir</span><span class="to">→</span><span class="t info">IP saisies, prépa attendue</span><span class="to">→</span><span class="t serious">Prépa reçue, validation admin à faire</span><span class="to">→</span><span class="t ok">Validation admin faite</span></div>
+    <span class="obj">Semaine de l'atelier</span>
+    <span class="grain"><b>atelier × semaine</b></span>
+    <div class="chain"><span class="t todo">pas encore libérée</span><span class="to">→</span><span class="t ok">libérée (Go atelier)</span></div>
+    <p class="src" style="margin:0">Pas d'Instruction OK au fixe. Un dossier qui arrive après la libération lève une alerte.</p>
+    <div class="today"><b>Aujourd'hui</b><div class="chain"><span class="t old">À traiter</span></div><span class="grain old">lignes filtrées de la grille</span><br>La Pré-Prod clique « Colisage », qui crée les UM (<code>PreparationController.cs:429-477</code>), puis la validation admin. Rien ne signale un dossier arrivé après la préparation (S15).</div>
+  </div>
+  <div class="cell same">Mêmes tags que le déroulant : le thème (attendu, reçu en partie) et l'affiche (à contrôler, contrôlée).</div>
+  <div class="cell">
+    <span class="obj">UM (ligne de production)</span>
+    <span class="grain"><b>UM</b> = destinataire × contrat × thème × repiquage (+ afficheur), un seul thème</span>
+    <div class="chain"><span class="t crit">En attente d'affiches</span><span class="to">→</span><span class="t info">Prêt à produire</span><span class="to">→</span><span class="t info">En production</span><span class="to">→</span><span class="t ok">Produit</span></div>
+    <p class="src" style="margin:0">« En production » = fichier multi-rouleuse envoyé.</p>
+    <div class="today"><b>Aujourd'hui</b><div class="chain"><span class="t old">À traiter</span><span class="to">→</span><span class="t old">En cours</span><span class="to">→</span><span class="t old">Préparé</span><span class="to">→</span><span class="t old">À expédier</span><span class="to">→</span><span class="t old">Terminé</span></div>(S37, S41)</div>
+  </div>
+  <div class="cell same">Comme le déroulant.</div>
+  <div class="cell same">Comme le déroulant.</div>
+
+  <!-- Pliage -->
+  <div class="lane pli">Pliage<small>Colle / pliage · Wissous</small></div>
+  <div class="cell same">Comme le 2 m² fixe : validation, puis libération de la semaine. Pas d'Instruction OK.</div>
+  <div class="cell same">Comme le déroulant.</div>
+  <div class="cell">
+    <span class="obj">Lot</span>
+    <span class="grain"><b>lot</b> = thème × destinataire × afficheur</span> <span class="grain old">UM aujourd'hui</span>
+    <div class="chain"><span class="t crit">En attente d'affiches</span><span class="to">→</span><span class="t info">Prêt à produire</span><span class="to">→</span><span class="t info">En production</span><span class="to">→</span><span class="t ok">Produit</span></div>
+    <p class="src" style="margin:0">Pas de machine ni de fichier : « En production » est posé par l'atelier.</p>
+    <div class="today"><b>Aujourd'hui</b>Même processus que le 2 m² fixe, sans machine (REU-07).</div>
+  </div>
+  <div class="cell same">Comme le déroulant.</div>
+  <div class="cell same">Comme le déroulant.</div>
+
+  <!-- Bus -->
+  <div class="lane bus">Bus<small>Nanterre · cible</small></div>
+  <div class="cell">
+    <span class="obj">Dossier</span>
+    <span class="grain"><b>dossier</b>, puis <b>dossier × thème</b></span>
+    <div class="chain"><span class="t todo">DA activée, IP à saisir</span><span class="to">→</span><span class="t info">IP saisies, prépa attendue</span><span class="to">→</span><span class="t serious">Prépa reçue, validation admin à faire</span><span class="to">→</span><span class="t ok">Validation admin faite</span></div>
+    <div class="today"><b>Aujourd'hui</b>Pas dans Circé : aucun flux Broadcast pour le Bus.</div>
+  </div>
+  <div class="cell same">Comme le déroulant.</div>
+  <div class="cell">
+    <span class="obj">Lot par centre bus</span>
+    <span class="grain">grain <span class="av">à voir</span> <span class="src">(piste : thème × centre bus)</span></span>
+    <div class="chain"><span class="t crit">En attente d'affiches</span><span class="to">→</span><span class="t info">Prêt à produire</span><span class="to">→</span><span class="t info">En production</span><span class="to">→</span><span class="t ok">Produit</span></div>
+    <div class="today"><b>Aujourd'hui</b>Pas dans Circé.</div>
+  </div>
+  <div class="cell">
+    <div class="chain"><span class="t ok">Colisé · à expédier</span><span class="to">→</span><span class="t ok">Expédié</span><span class="to">→</span><span class="t ok">Livré</span></div>
+    <p class="src" style="margin:0">Hypothèse de la maquette : remise directe aux dépôts bus, sans Geodis <span class="av">à voir</span></p>
+  </div>
+  <div class="cell same">Comme le déroulant.</div>
+</div>
+</div>
+
+<h2>Les repères : ce qu'il faut savoir sur un dossier, à toutes les étapes</h2>
+<table>
+  <thead><tr><th style="width:230px">Tag</th><th>Ce qu'il dit</th><th style="width:230px">Qui le pose dans la cible</th><th>Aujourd'hui dans Circé</th><th style="width:120px">Besoins</th></tr></thead>
+  <tbody>
+    <tr class="sep"><td colspan="5">Repris de Broadcast</td></tr>
+    <tr><td><span class="t rep">Contrôlée</span></td><td>Campagne contrôlée : 15 % d'entretien, visuel en tête de train</td><td>Broadcast, automatiquement</td><td>Colonne « Campagne contrôlée » de l'EDR (S32)</td><td>SCR-09</td></tr>
+    <tr><td><span class="t rep">Print Cityz</span></td><td>Affiche imprimée par Print Cityz</td><td>Broadcast</td><td>Colonne « Print » de l'EDR (S32)</td><td>—</td></tr>
+    <tr><td><span class="t rep">Reste en place</span> <span class="t rep">Ne pas afficher</span></td><td>Face à ne pas produire : dans Broadcast, c'est une case <b>par face</b> (« 2 faces sur 37 »). La cible les retire d'elles-mêmes des trains et de la préparation</td><td>Les IP de Broadcast</td><td>Colonne « Reste en place » de l'EDR ; la Coordination les retire à la main de la préparation (21/10)</td><td>SCR-02, FIX-14</td></tr>
+    <tr><td><span class="t rep">Multi-semaines</span></td><td>Le dossier part sur plusieurs semaines : sa quantité compte une fois</td><td>Broadcast</td><td>Quantités doublées <span class="ano">ANO-02</span></td><td>ANO-02</td></tr>
+    <tr class="sep"><td colspan="5">Calculés par Circé : un écart à regarder</td></tr>
+    <tr><td><span class="t todo">Thème proche</span></td><td>Le même visuel sous deux intitulés, par exemple « Promo » et « PROMOS »</td><td>Circé, dès la saisie des IP</td><td>Vérifié à l'œil à la préparation des trains (S49)</td><td>PP-08</td></tr>
+    <tr><td><span class="t serious">Modifié dans BC</span></td><td>Thème changé dans Broadcast après la validation ; critique si la production est lancée</td><td>Circé, à chaque mise à jour de sa copie de Broadcast</td><td>Rien ne compare <span class="cst">constaté</span> (<code>LivraisonAfficheRepository.cs:378-386</code>)</td><td>PP-09</td></tr>
+    <tr><td><span class="t crit">Écart BC / Circé</span></td><td>La quantité de Broadcast diffère de celle de Circé</td><td>Circé</td><td>Comparaison à la main de la quantité BC et du « nb d'exceptions » (S47)</td><td>BC-03</td></tr>
+    <tr><td><span class="t info">Correction demandée à Broadcast</span></td><td>Un mail est parti au gestionnaire ; le tag tombe quand Broadcast renvoie la préparation</td><td>Le bouton « Demander une correction à Broadcast » (mail)</td><td>« Déblocage préparation » dans l'administration (S45, S47)</td><td>PP-08</td></tr>
+    <tr class="sep"><td colspan="5">Calculés par Circé : un délai</td></tr>
+    <tr><td><span class="t crit">Deadline Pré-Prod dépassée</span></td><td>IP ou préparation pas reçues au jeudi de S-2, 16 h</td><td>Circé (calendrier)</td><td>— <span class="ded">déduit</span></td><td>—</td></tr>
+    <tr><td><span class="t crit">Départ menacé</span></td><td>Affiches pas reçues alors que le départ approche</td><td>Circé (calendrier et réceptions)</td><td>Pointage papier le mardi et le vendredi de S-2 (S33)</td><td>—</td></tr>
+    <tr><td><span class="t crit">Contrôle en retard</span></td><td>Palette dans le sas depuis plus de 24 h (paramétrable)</td><td>Circé</td><td>N'existe pas : pas d'étape de sas <span class="ded">déduit</span></td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h2>Les tags de l'affiche <small>· Réception › Liste des affiches</small></h2>
+<table>
+  <thead><tr><th style="width:230px">Tag</th><th>Ce qu'il dit</th><th style="width:230px">Posé par</th><th>Tombe quand</th><th>Aujourd'hui</th></tr></thead>
+  <tbody>
+    <tr><td><span class="t todo">À contrôler</span></td><td>Palette passée à l'étape 2 (sas), pas encore contrôlée</td><td>« Valider la réception » (BL photographié)</td><td>Le contrôle est fait</td><td>Contrôle fait dans la même fiche, sans sas (S20, S22)</td></tr>
+    <tr><td><span class="t serious">Réception inconnue</span> <span class="t info">Mail envoyé à la Pré-Prod</span></td><td>Aucun dossier ne correspond ; la Pré-Prod est prévenue</td><td>« Réception inconnue », puis le bouton du mail</td><td>Rattachement à un dossier</td><td>Statut « orpheline », recherche dans Broadcast à la main (S24)</td></tr>
+    <tr><td><span class="t rep">Complément</span></td><td>L'affiche est arrivée en plusieurs réceptions</td><td>Circé, à la deuxième réception</td><td>—</td><td>— <span class="ded">déduit</span></td></tr>
+    <tr><td><span class="t todo">Feuille à refaire</span></td><td>Le thème a changé : la feuille de stock porte l'ancien intitulé</td><td>Circé, au changement de thème ou de rattachement</td><td>La feuille est réimprimée</td><td>Correction à la main, avec historique (<code>HistorisationBll.cs:25-26</code>)</td></tr>
+  </tbody>
+</table>
+
+<h2>« Circé ne calcule pas l'état du dossier » : c'est-à-dire ? <small>· chaque statut est posé par un clic ou un traitement, sur un seul objet ; rien ne combine les grains</small></h2>
+<table>
+  <thead><tr><th style="width:200px">La question qu'on se pose</th><th style="width:250px">Ce qu'il faut combiner (grains)</th><th>Aujourd'hui</th><th style="width:280px">Cible : Circé le calcule</th></tr></thead>
+  <tbody>
+    <tr><td><b>Le dossier a-t-il toutes ses affiches ?</b></td><td>attendu par <b>thème</b> (lignes de préparation) contre reçu par <b>n° d'affiche</b>, à travers le lien <span class="nn">N à N</span></td><td>La réception attendue sait dire « Terminé » ou « Partiel », mais l'EDR ne dit « Affiche reçue » qu'après la validation admin (<code>SuiviEtatReservationBll.cs:177-195</code>) <span class="cst">constaté</span>. Les manquants sont pointés sur papier (S33).</td><td>Reste à recevoir par thème ; tags « reçues en partie », « départ menacé »</td></tr>
+    <tr><td><b>Peut-on produire ce train ?</b></td><td>chaque <b>thème</b> du <b>train</b> couvert par du stock <b>d'affiche</b></td><td>Statut du train changé à la main (« Changer statut : A imprimer ») ; trois onglets à ouvrir, filtre « pré-assemblé = Fait » (S50 à S52 ; <code>TrainPreparationBll.cs:248,274</code>)</td><td>« Prêt à produire » posé quand tous ses thèmes sont couverts, ou le train fractionné</td></tr>
+    <tr><td><b>Combien reste-t-il à faire ?</b></td><td><b>unités</b> (trains, UM, lots) du thème pas encore colisées</td><td>Excel de suivi de prod par atelier, tableau 8 m² (S12, S56)</td><td>Reste à faire par thème, recalculé à chaque scan</td></tr>
+    <tr><td><b>Le dossier est-il parti ? livré ?</b></td><td><b>colis</b> qui contiennent ses unités, plus le retour Geodis</td><td>« Terminé » posé par la fin de journée (<code>ListeColisBll.cs:199-223</code>) ; le batch Geodis n'écrit pas son résultat (<code>BacthCallZoomBll.cs:61</code>) <span class="cst">constaté</span></td><td>Expédié, puis livré à la preuve, par colis, remonté au dossier</td></tr>
+    <tr><td><b>Broadcast a-t-il changé quelque chose ?</b></td><td><b>thème</b> et <b>quantité</b> des deux côtés</td><td>Rien ne compare : le thème de l'affiche est copié à la réception (<code>LivraisonAfficheService.cs:451</code>)</td><td>Tags « Modifié dans BC », « Écart BC / Circé »</td></tr>
+    <tr><td><b>Où en est le dossier, en tout ?</b></td><td>tout ce qui précède</td><td>Le statut du dossier s'arrête à « Instruction OK » (<code>Enums.cs:50-75</code>) : il ne bouge plus avec la réception, la production ni l'expédition</td><td>« Où en est-il » = l'étape la moins avancée de ses thèmes (règle de la maquette, à valider)</td></tr>
+  </tbody>
+</table>
+<p class="src" style="margin:6px 2px 0">Ce que Circé calcule déjà <span class="cst">constaté</span> : le stock (somme des mouvements, <code>mouvement.sql</code>), la quantité reçue d'une réception attendue et son « Terminé / Partiel ». Le calcul existe par morceaux ; il ne remonte pas d'un grain à l'autre jusqu'au dossier.</p>
+
+<h2>Tags + état calculé : Circé devient-il la cible parfaite pour la logistique ?</h2>
+<p style="margin:0 0 10px;max-width:1150px"><b>Non, pas à eux seuls.</b> Ensemble, ils répondent à « où en est-on ? ». C'est la colonne vertébrale de la cible, mais deux autres couches restent nécessaires : des données justes et à temps en dessous, et des actions au-dessus pour faire avancer. <span class="ded">déduit</span></p>
+<div class="layers">
+  <div class="layer l1"><h3>1 · Données justes, à temps</h3>Sans elles, les tags sont faux.
+    <ul>
+      <li>Flux Broadcast : fréquence introuvable dans le code ; « annule et remplace » (BC-03)</li>
+      <li>Réception au bon grain : photo du BL, thème, quantité</li>
+      <li>Scans au colisage ; retour Geodis (aujourd'hui cassé)</li>
+      <li>Bus : aucun flux Broadcast</li>
+    </ul></div>
+  <div class="layer l2"><h3>2 · État calculé</h3>Le « cerveau ».
+    <ul>
+      <li>Règles de remontée entre grains : le train et l'affiche sont <span class="nn">N à N</span> ; le colis suit destinataire × affiche × semaine</li>
+      <li>Règles paramétrables : entretien à l'afficheur, 20 tiroirs, 6 thèmes par train, délai de contrôle</li>
+    </ul></div>
+  <div class="layer l3"><h3>3 · Tags et vues</h3>Les « yeux ».
+    <ul>
+      <li>État des réservations vivant, onglets d'atelier, Liste des affiches</li>
+      <li>Alertes et mails quand un tag passe au rouge</li>
+    </ul></div>
+  <div class="layer l4"><h3>4 · Actions</h3>Les « mains » : faire avancer.
+    <ul>
+      <li>Fichiers machines (.ini Vendôme fait à la main avec l'outil Caire)</li>
+      <li>Libération, dispatch, bagues</li>
+      <li>Sorties de stock automatiques : aucune aujourd'hui (REU-08)</li>
+      <li>Fin de campagne par dossier</li>
+    </ul></div>
+</div>
+<p class="src" style="margin:8px 2px 0">Hors de Circé, et tout aussi nécessaire : qui fait quoi (R7, Q39) ; Broadcast reste la source, et Circé n'y écrit pas (une correction = un mail) ; la remise à niveau technique et la sécurité (droits qui ne font que masquer les menus, sans contrôle côté serveur), à traiter en phase 4.</p>
+
+<div class="two">
+  <section>
+    <h2>Ce que ça change, en une phrase par rôle <span class="ded">déduit</span></h2>
+    <ul>
+      <li><b>Pré-Prod</b> : elle voit ce qui l'attend (« Prépa reçue, à valider », « Instruction OK à faire », « Thème proche ») sans filtrer quatre écrans.</li>
+      <li><b>Réception</b> : « À contrôler » et « en retard » vident le sas ; « Réception inconnue » ne se perd plus.</li>
+      <li><b>Atelier</b> : « En attente d'affiches » et « Départ menacé » remplacent le pointage papier.</li>
+      <li><b>Pilotage</b> : une seule vue, l'État des réservations vivant, dit où en est chaque dossier.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Questions ouvertes</h2>
+    <ul>
+      <li><b>27/10</b> : « Validé Pré-Prod » devient « Validation admin faite » (case par affiche gardée, faite par Circé quand tout concorde, sinon par la Coordination) ; « Prépa reçue, à valider » = au moins une affiche à vérifier. Process par jalons : <code>2. PRE-PRODUCTION/process_preprod_avant_apres.html</code>.</li>
+<li><b>Libellés des tags</b> : à valider en atelier, avec les mots de Circé (« Instruction OK », « Validation admin »).</li>
+      <li><b>Q21</b> : dossiers CP et dynamisations, encore « à creuser » ; ont-ils leurs propres étapes ?</li>
+      <li><b>Q39</b> : la vérification des thèmes est faite par les Coordinations, avec un process différent au fixe et au déroulant ; les repères « Thème proche » et « Correction demandée » valent-ils pour les deux ?</li>
+      <li><b>Bus</b> <span class="av">à voir</span> : étapes et grains à confirmer avec Nanterre (lot par thème et centre bus ? la remise aux dépôts remplace-t-elle Geodis ?).</li>
+      <li><b>Colis</b> <span class="val">validé 21/10</span> : destinataire × affiche (emplacement) × semaine. La maquette les regroupe encore par destinataire × semaine : à aligner.</li>
+    </ul>
+  </section>
+</div>
+
+<footer>
+  Sources : S = deck du kick-off du 12/10/2026 ; R = deck « Atelier Réception – Expédition » du 14/10/2026 ; RP = decks du 15/10/2026 ; ANO, PP, SCR, FIX, REU, BC, REC = référentiel des besoins (<code>00_synthese_powerpoint.md</code>). Code : dépôt GIT_circe, lu sans le modifier. Cible : maquette <code>docs/analyse-circe/maquette</code> (État des réservations vivant, Préparations à valider, Réception, onglets d'atelier, Expédition, Fin de campagne). Grains relevés dans le code (<code>2. CIRCE CIBLE/maquette/notes/releve-existant-code.md</code>, §5, §6, §7) et dans les decks. Établi le 21/10/2026, grains ajoutés le même jour ; complète <code>schema_dossier_affiche_statuts.html</code> (l'existant, objet par objet).
+</footer>
+
+</main>
+</body>
+</html>

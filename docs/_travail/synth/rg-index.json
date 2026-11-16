@@ -1,0 +1,7236 @@
+[
+{
+"id": "RG-REC-001",
+"title": "Périmètre plateforme / site de l'utilisateur",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-006"
+],
+"ecr": [],
+"src": "legacy `REPO/ReceptionListeAfficheRepository.cs:29-43`, `BLL/ReceptionListeAfficheBll.cs:41-43`, `REPO/LivraisonAfficheRepository.cs:220-235`, `CTRL/ReceptionListeAfficheController.cs:66-100` (ancien ID provisoire RG-REC-001, legacy-reception.md ; voir aussi RG-ADM-016 de legacy-admin.md) · spec `[README] §2.3, §7` (EX-TRA-006)",
+"qs": [
+"Q-001",
+"Q-137"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-002",
+"title": "Autorisation par rôle vérifiée dans le service",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-002"
+],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:20-540`, `CTRL/LivraisonAfficheController.cs:24-544`, `CTRL/DestructionController.cs:15-67` (RG-REC-121 provisoire) ; legacy-admin.md RG-ADM-015 · spec EX-TRA-002 ; CLAUDE.md §6",
+"qs": [
+"Q-003",
+"Q-136"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-003",
+"title": "Validation admin et annulation réservées à la Coordination et à l'Administrateur",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-010",
+"EX-TRA-005"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "legacy `VIEW/Shared/DetailAffiche/Partial/Partial_ModifierDetailsAffiche.cshtml:24-39`, `BLL/ReceptionListeAfficheBll.cs:867-869` (RG-REC-027 provisoire ; RG-COO-026 provisoire de legacy-coordination.md) · spec `[README] §3, H1` ; EX-COO-010 ; EX-TRA-005 · écran ECR-REC-05 (bloc Validation admin), maquette `instructions.js:16-18`, `reception.js:85-88`",
+"qs": [
+"Q-136"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-004",
+"title": "Auteur et date tracés sur chaque action de réception",
+"origine": "NOUVELLE",
+"ex": [
+"EX-ADM-502",
+"EX-COO-009",
+"EX-TRA-007",
+"EX-TRA-036"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[PP] §5`, `[RA] §4` (EX-TRA-036) ; `[DC] §2` (EX-TRA-007, EX-ADM-502) ; EX-COO-009 · écran ECR-REC-05 (Historique)",
+"qs": [
+"Q-001",
+"Q-003"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-005",
+"title": "Journal d'événements de réception",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-080",
+"EX-TRA-035"
+],
+"ecr": [
+"ECR-ADM-08",
+"ECR-REC-05"
+],
+"src": "spec `[DC] §8, §11, §13` (EX-REC-080, EX-TRA-035) · écran ECR-REC-05, ECR-ADM-08",
+"qs": [
+"Q-004"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-006",
+"title": "Historique d'une affiche : champs et actions historisés",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-024",
+"EX-REC-047"
+],
+"ecr": [
+"ECR-REC-05",
+"ECR-REC-10"
+],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:837-889 (852-869)`, `BLL/HistorisationBll.cs:16-38`, `legacy-integrations.md RG-INT-046` (RG-REC-024 provisoire) · spec `[DC] §8` (EX-REC-047), `[DC] §5, §10` (EX-REC-024) · écran ECR-REC-05 (onglet Historique), ECR-REC-10",
+"qs": [
+"Q-004"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-007",
+"title": "Changement de semaines et dissociation historisés avec la bonne action",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-035"
+],
+"ecr": [],
+"src": "legacy `BLL/HistorisationBll.cs:16-38 (ligne 22), 68-76 (ligne 70)`, `BLL/ReceptionListeAfficheBll.cs:577-586` (RG-REC-024, RG-REC-092 provisoires) · spec EX-TRA-035 (« dissociation non historisée comme une association (anomalie existante) »)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-008",
+"title": "Doubles soumissions : clé d'idempotence",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-081",
+"EX-REC-501"
+],
+"ecr": [],
+"src": "CLAUDE.md §6 · spec EX-REC-081 (ANO-01 doublons), EX-REC-501 (doublement d'affiches)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-009",
+"title": "Verrouillage optimiste des réceptions et des affiches",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [],
+"src": "CLAUDE.md §6 · maquette Q-E (« actions de masse sans notion de version »)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-010",
+"title": "Menu Réception cible et badges",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-079"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `VIEW/Shared/_MenuNew.cshtml:122-138`, `BLL/CommunBll.cs:276-303` (RG-REC-120 provisoire) · spec `[README] §3, §7` (EX-REC-079) · écran ECR-REC-01 à 04 ; `maquettes-reception-coordination.md §1.2`",
+"qs": [
+"Q-100",
+"Q-101"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-011",
+"title": "Trois façons de trouver les dossiers du BL",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-002"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §4` (EX-REC-002) ; `[PR] p.1` · écran ECR-REC-01",
+"qs": [
+"Q-112"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-012",
+"title": "Recherche à la frappe sur n° de dossier, DA, annonceur",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-506",
+"EX-REC-007"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §7, §14, §16` (EX-REC-007) ; `[DESIGN] §4.3` ; legacy `BLL/ReceptionListeAfficheBll.cs:420-435, 484-531` (RG-REC-090 provisoire) ; EX-COO-506 (Entrée ne lance pas la recherche) · écran ECR-REC-01, maquette §2.2",
+"qs": [
+"Q-165"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-013",
+"title": "Format du n° de dossier",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-REC-015"
+],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:136-173`, `TOOLS/Helper/ReggexMatchForRule.cs:12-13, 36-47`, `TOOLS/Constant/Constants.cs:31-35` (RG-REC-026 point 1) · spec `[DC] §2, §10` (EX-REC-015 pour « -W »)",
+"qs": [
+"Q-139",
+"Q-150"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-014",
+"title": "Réceptions attendues : lignes affichées",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-032",
+"EX-REC-008"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `FN/Fn_GetPrepaAffiche.sql:44-103, 106-221, 224-343`, `SP/p_GetPrepareListAffiches.sql:104-161` (RG-REC-071 provisoire ; RG-COO-013 de legacy-coordination.md) · spec `[DC] §4` (EX-REC-008, 009) ; EX-COO-032, 034 · écran ECR-REC-01 (tableau)",
+"qs": [
+"Q-135",
+"Q-138"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-015",
+"title": "Filtre Départ et période par défaut",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-038"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `BLL/LivraisonAfficheService.cs:52-83, 216-227, 247-272`, `CTRL/LivraisonAfficheController.cs:52-83, 97-128` (RG-REC-070 provisoire) · spec `[DESIGN] §4.3`, `[README] §2.3` ; EX-COO-038 (semaines ISO) · écran ECR-REC-01 (filtre Départ)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-016",
+"title": "Filtres du tableau des Réceptions attendues et valeurs par défaut",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-008"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §4` (EX-REC-008) ; `[DESIGN] §4.3` · écran ECR-REC-01 (filtres), maquette §2.2",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-017",
+"title": "Reçu, attendu et reste à recevoir",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-039",
+"EX-EXI-059",
+"EX-REC-057",
+"EX-REC-522"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §9, §13` (EX-REC-057, EX-REC-522, EX-EXI-059) ; EX-COO-039 · écran ECR-REC-01 (Reçu / attendu, Reste)",
+"qs": [
+"Q-103",
+"Q-123"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-018",
+"title": "Statut de la ligne attendue : Attendue, Partielle, Complète, Surplus",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-076",
+"EX-REC-051",
+"EX-REC-511"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `FN/Fn_GetPrepaAffiche.sql:106-221` ; `Partial_GridAfficheList.cshtml:8-20` (EX-EXI-076) · spec `[DC] §9` (EX-REC-051, EX-REC-511) · écran ECR-REC-01 (« Seuils »)",
+"qs": [
+"Q-105",
+"Q-133"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-019",
+"title": "Colonne Contrôle de la ligne attendue",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-051"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §9` (EX-REC-051) ; `[PR] p.1` · écran ECR-REC-01",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-020",
+"title": "Colonne « Livraison prévue »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-008",
+"EX-REC-516",
+"EX-REC-520"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §4` (EX-REC-008, ambiguïté) ; ateliers (EX-REC-520, EX-REC-516) · écran ECR-REC-01 (colonne Livraison prévue)",
+"qs": [
+"Q-134"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-021",
+"title": "Panier : composition et actions",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-010"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `CTRL/LivraisonAfficheController.cs:107-111, 251, 294, 459-479` (RG-REC-072 provisoire) · spec `[DC] §4` (EX-REC-010) · écran ECR-REC-01 (carte Lignes du BL)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-022",
+"title": "Un BL = une réception ; seules les lignes cochées entrent",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-011"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §1, §4, §10` (EX-REC-011) · écran ECR-REC-01",
+"qs": [
+"Q-102"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-023",
+"title": "Quantité du BL d'une ligne",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-010"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:800-835 (812-818)` (RG-REC-021 provisoire) ; `BLL/LivraisonAfficheService.cs:827-844` (RG-REC-076) · spec EX-REC-010 · écran ECR-REC-01 (carte Lignes du BL) ; Q-REC-5 de la maquette",
+"qs": [
+"Q-166"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-024",
+"title": "Un BL ne livre qu'une plateforme",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045",
+"EX-REC-015"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §2, §10` (EX-REC-015) ; EX-COO-045 · écran ECR-REC-01 (règle 3)",
+"qs": [
+"Q-139"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-025",
+"title": "Suffixe « -W » du dossier de la 2e plateforme",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-015"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §2, §10` (EX-REC-015, ambiguïté) · écran ECR-REC-01 (colonne Dossier : « suffixe `-W` pour 2e plateforme ») ; `maquettes-autres-modules.md §C`",
+"qs": [
+"Q-139"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-026",
+"title": "Photo du BL obligatoire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-003"
+],
+"ecr": [
+"ECR-REC-01",
+"ECR-REC-07",
+"ECR-REC-11"
+],
+"src": "spec `[DC] §1, §4, §10` (EX-REC-003) ; `[DESIGN] §4.8` · écran ECR-REC-01 (règle 4), ECR-REC-07, ECR-REC-11",
+"qs": [
+"Q-112",
+"Q-113"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-027",
+"title": "Photo du BL et pièces jointes : stockage, consultation, contrôles",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-003",
+"EX-REC-012"
+],
+"ecr": [
+"ECR-REC-06",
+"ECR-REC-07",
+"ECR-REC-11"
+],
+"src": "legacy `CTRL/LivraisonAfficheController.cs:482-542`, `BLL/LivraisonAfficheService.cs:959-1026`, `REPO/LivraisonAfficheRepository.cs:470-551` (RG-REC-080 provisoire) · spec `[DC] §4, §8` (EX-REC-003, EX-REC-012) ; `bdd.md §10` · écran ECR-REC-07, ECR-REC-11, ECR-REC-06",
+"qs": [
+"Q-113",
+"Q-160"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-028",
+"title": "Lecture du BL et pré-remplissage",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-004",
+"EX-REC-507"
+],
+"ecr": [
+"ECR-REC-07"
+],
+"src": "spec `[DC] §4` (EX-REC-004) ; `[DESIGN] §4.8` ; ateliers EX-REC-507 · écran ECR-REC-07 (mode BL)",
+"qs": [
+"Q-112",
+"Q-125"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-029",
+"title": "Contrat illisible : candidats",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-005"
+],
+"ecr": [
+"ECR-REC-07"
+],
+"src": "spec `[DC] §4` (EX-REC-005) · écran ECR-REC-07 (mode BL)",
+"qs": [
+"Q-125"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-030",
+"title": "Ligne cochée absente du BL photographié",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-006"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §4, §17 (scénario 3)` (EX-REC-006) · écran ECR-REC-01 (carte Bon de livraison)",
+"qs": [
+"Q-167"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-031",
+"title": "Photographier une affiche : reconnaissance du visuel",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-002"
+],
+"ecr": [
+"ECR-REC-07"
+],
+"src": "spec `[DC] §4` (EX-REC-002, 507) ; ateliers · écran ECR-REC-07 (mode affiche)",
+"qs": [
+"Q-112",
+"Q-125"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-032",
+"title": "Mode de rattachement mémorisé (BL, visuel, à la main)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-005",
+"EX-REC-004",
+"EX-REC-080"
+],
+"ecr": [
+"ECR-REC-01",
+"ECR-REC-04"
+],
+"src": "spec `[DC] §13` (EX-REC-080, EX-REC-004) ; EX-COO-005, 007 · écran ECR-REC-01/07, ECR-REC-04",
+"qs": [
+"Q-125"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-033",
+"title": "Formulaire « Bon de livraison » : champs et obligations",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-012"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `CTRL/LivraisonAfficheController.cs:396-447 (430, 440)`, `BLL/LivraisonAfficheService.cs:852-862`, `JS/LivraisonListeAffiche.js:160-168, 211-217` (RG-REC-074 provisoire) · spec `[DC] §4, §14` (EX-REC-012, 013) · écran ECR-REC-01 (carte Bon de livraison)",
+"qs": [
+"Q-116",
+"Q-121",
+"Q-163"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-034",
+"title": "Date de livraison",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-012"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `CTRL/LivraisonAfficheController.cs:396-447`, `BLL/LivraisonAfficheService.cs:852-862` (RG-REC-074 provisoire) · spec `[DC] §4` (EX-REC-012, ambiguïté) · écran ECR-REC-01 (Date de livraison : lecture = maintenant)",
+"qs": [
+"Q-121"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-035",
+"title": "Imprimeurs, transporteurs et agents : listes fermées des référentiels",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-ADM-501",
+"EX-REC-074"
+],
+"ecr": [
+"ECR-ADM-07"
+],
+"src": "legacy `BLL/LivraisonAfficheService.cs:852-862` (RG-REC-074 provisoire) · spec `[DC] §11, §15` (EX-REC-074, EX-ADM-501) · écran ECR-ADM-07",
+"qs": [
+"Q-115"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-036",
+"title": "Unicité du n° de BL",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:852-862` · `bdd.md §10` (contraintes absentes à ajouter)",
+"qs": [
+"Q-114"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-037",
+"title": "Ordre des refus à « Valider la réception »",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-013"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `CTRL/LivraisonAfficheController.cs:221-250, 285-295` (RG-REC-077 provisoire : erreur non bloquante) · spec `[DC] §4` (EX-REC-013) · écran ECR-REC-01 (règles visibles au clic, `reception.js:503-509`)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-038",
+"title": "Valider la réception : création de la réception « À contrôler »",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-014"
+],
+"ecr": [
+"ECR-REC-01",
+"ECR-REC-02"
+],
+"src": "legacy `BLL/LivraisonAfficheService.cs:399-530` (RG-REC-075 provisoire) · spec `[DC] §4, §15` (EX-REC-014, 001) · écran ECR-REC-01 (effets), ECR-REC-02",
+"qs": [
+"Q-102",
+"Q-168"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-039",
+"title": "Création des affiches à la réception",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-014"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `BLL/LivraisonAfficheService.cs:436-478, 490, 496-518` (RG-REC-075 provisoire) · spec `[DC] §4` (EX-REC-014) · écran ECR-REC-01",
+"qs": [
+"Q-168"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-040",
+"title": "Complément d'une affiche déjà reçue en partie",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-016",
+"EX-REC-511"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "legacy `BLL/LivraisonAfficheService.cs:484-485, 787` (RG-REC-075, 023 provisoires) · spec `[DC] §4, §10, §16` (EX-REC-016, REC-22) ; ateliers EX-REC-511 · écran ECR-REC-01 (colonne Livraison en deux fois)",
+"qs": [
+"Q-103"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-041",
+"title": "Mouvements de réception",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-REC-057",
+"EX-STK-501"
+],
+"ecr": [],
+"src": "legacy `CTRL/LivraisonAfficheController.cs:226-232, 257-263, 301-310`, `BLL/LivraisonAfficheService.cs:827-844`, `REPO/LivraisonAfficheRepository.cs:243-261` (RG-REC-076 provisoire) · spec `[DC] §9, §13` (EX-REC-057) ; ateliers EX-STK-501 (réception = entrée de stock des quantités saisies)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-042",
+"title": "Rattachement initial à la ligne attendue choisie",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-032",
+"EX-COO-039",
+"EX-EXI-056"
+],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:455-476, 522-527`, `REPO/LivraisonAfficheRepository.cs:392-413` (RG-REC-075 provisoire ; RG-COO-020 provisoire de legacy-coordination.md) · spec `[RA] §5` (EX-COO-039, EX-COO-032) ; EX-EXI-056",
+"qs": [
+"Q-123",
+"Q-147"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-043",
+"title": "Famille de formats 2 m² (propagation et recherche)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-033"
+],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:458-476`, `BLL/ReceptionListeAfficheBll.cs:420-435`, `FN/Fn_GetPrepaAffiche.sql` (RG-REC-075, 071, 090 provisoires) · spec `[RA] §5` (EX-COO-033)",
+"qs": [
+"Q-147"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-044",
+"title": "« Affiche reçue » = oui dès l'arrivée de la palette",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-055",
+"EX-REC-052",
+"EX-REC-503"
+],
+"ecr": [],
+"src": "legacy `BLL/SuiviEtatReservationBll.cs:172-201` (RG-COO-028 provisoire ; RG-RPR-026) · spec `[DC] §9, §17` (EX-REC-052) ; ateliers EX-REC-503 ; `[README] §6 H14` ; EX-EXI-055",
+"qs": [
+"Q-104"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-045",
+"title": "Après validation : champs vidés et champs conservés",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-014"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §4, §15` (EX-REC-014) · écran ECR-REC-01 (règles visibles : `bl`, `imprimeur`, `nbColis` remis à zéro)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-046",
+"title": "Atomicité de « Valider la réception »",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:399-530, 532-624 (« CLARK : Correction »)`, `CTRL/LivraisonAfficheController.cs:221-321` (RG-REC-075, 078 provisoires) · CLAUDE.md §6",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-047",
+"title": "Réception sans IP : intitulé saisi",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-079",
+"EX-REC-017",
+"EX-REC-506",
+"EX-THM-501"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §4, §7, §10, §11` (EX-REC-017) ; ateliers EX-REC-506, EX-THM-501 ; EX-EXI-079 · écran ECR-REC-01 (carte Lignes du BL)",
+"qs": [
+"Q-111"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-048",
+"title": "Intitulé de thème : règle du « 1er qui a parlé »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-506",
+"EX-REC-520",
+"EX-THM-501"
+],
+"ecr": [],
+"src": "spec `[DC] §4, §7` ; ateliers EX-THM-501, EX-REC-506, EX-REC-520",
+"qs": [
+"Q-143"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-049",
+"title": "Une affiche pour plusieurs dossiers (plusieurs-à-plusieurs, sans limite)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-056",
+"EX-REC-058"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "legacy `bdd.md §2.1` (« une affiche au plus par ligne ») ; EX-EXI-056, 058 · spec `[DC] §10, §13` (EX-REC-058, 048) · écran ECR-REC-05 (annotation ANO-12)",
+"qs": [
+"Q-123"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-050",
+"title": "Réception partielle",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-011",
+"EX-REC-059"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §10` (EX-REC-059) ; EX-COO-011 · écran ECR-REC-01",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-051",
+"title": "Trop reçu : Surplus au-delà de 10 %",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-060"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §10, §11` (EX-REC-060) · écran ECR-REC-01 (statut Surplus)",
+"qs": [
+"Q-105",
+"Q-141"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-052",
+"title": "Affiche livrée après purge de sa ligne attendue",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-044"
+],
+"ecr": [],
+"src": "spec `[DC] §10` (EX-REC-044)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-053",
+"title": "Sas : liste des palettes à contrôler",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-018"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5` (EX-REC-018) · écran ECR-REC-02 (tableau du sas)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-054",
+"title": "Badge du menu : nombre de palettes à contrôler",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-018"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §5` (EX-REC-018) · écran ECR-REC-01/02, `maquettes-autres-modules.md §0.1`",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-055",
+"title": "Palette en retard dans le sas",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-019"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §11` (EX-REC-019) ; `[PR] p.1` · écran ECR-REC-02 (teintes)",
+"qs": [
+"Q-105",
+"Q-157"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-056",
+"title": "Contrôle de la palette : un écran, une ligne par affiche",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-020",
+"EX-REC-027"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §16` (EX-REC-020) ; EX-REC-027 · écran ECR-REC-02 (formulaire)",
+"qs": [
+"Q-102"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-057",
+"title": "Quantité comptée : défaut et validité",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-021"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5` (EX-REC-021) · écran ECR-REC-02",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-058",
+"title": "Écart de comptage : seuil de 10 %",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-021"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §10` (EX-REC-021) · écran ECR-REC-02",
+"qs": [
+"Q-105",
+"Q-133"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-059",
+"title": "Mouvement « Contrôle (écart au BL) »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-021"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §9` (EX-REC-021, 057) · écran ECR-REC-02",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-060",
+"title": "Comptage par morceau",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-051",
+"EX-REC-022"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §11, §17` (EX-REC-022) ; EX-EXI-051 · écran ECR-REC-02",
+"qs": [
+"Q-105",
+"Q-140"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-061",
+"title": "Allée et rayon obligatoires au contrôle",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-023"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5` (EX-REC-023) ; legacy `affiche.allee`, `affiche.rayon` (RG-REC-024) · écran ECR-REC-02",
+"qs": [
+"Q-106",
+"Q-154"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-062",
+"title": "Zone tampon et sortie",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-056"
+],
+"ecr": [
+"ECR-REC-02",
+"ECR-REC-10"
+],
+"src": "spec `[DC] §9` (EX-REC-056) · écran ECR-REC-02, ECR-REC-10",
+"qs": [
+"Q-106"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-063",
+"title": "Contrôleur : agent de réception, du référentiel",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-026",
+"EX-REC-514"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §2, §5, §16` (EX-REC-026, 076) ; ateliers EX-REC-514 · écran ECR-REC-02",
+"qs": [
+"Q-145"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-064",
+"title": "Rebut au contrôle",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-024",
+"EX-STK-501"
+],
+"ecr": [
+"ECR-REC-02",
+"ECR-STK-01"
+],
+"src": "spec `[DC] §5, §10` (EX-REC-024, 061) ; EX-STK-501, 504 · écran ECR-REC-02, ECR-STK-01",
+"qs": [
+"Q-118",
+"Q-142"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-065",
+"title": "Non-conformité",
+"origine": "NOUVELLE",
+"ex": [
+"EX-QUA-501",
+"EX-REC-028"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §16` (EX-REC-028, 024) ; EX-QUA-501 · écran ECR-REC-02",
+"qs": [
+"Q-142"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-066",
+"title": "Surplus en entretien (« CG »)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-FIX-506",
+"EX-REC-025"
+],
+"ecr": [
+"ECR-REC-02",
+"ECR-REC-05"
+],
+"src": "spec `[DC] §5, §10, §13` (EX-REC-025, 060) ; ateliers EX-FIX-506 · écran ECR-REC-02, ECR-REC-05",
+"qs": [
+"Q-141"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-067",
+"title": "Contrôleur obligatoire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-026",
+"EX-REC-514"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §2, §5, §16` (EX-REC-026) ; ateliers EX-REC-514 · écran ECR-REC-02",
+"qs": [
+"Q-145"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-068",
+"title": "Imprimeur corrigé pour une réception inconnue",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-027"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §6` (EX-REC-027) · écran ECR-REC-02",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-069",
+"title": "Valider le contrôle : effets",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-027"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §6` (EX-REC-027) ; `[PR] p.2 (13-15)` · écran ECR-REC-02",
+"qs": [
+"Q-102"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-070",
+"title": "Contrôle terminé : lecture seule",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "écran ECR-REC-02 (« contrôle déjà fait = champs en lecture seule ») ; table des transitions §3.2",
+"qs": [
+"Q-121"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-071",
+"title": "Une réception « À identifier » n'est pas contrôlable",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-053"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §9` (EX-REC-053) · écran ECR-REC-02 (« A_IDENTIFIER n'entre pas dans le sas »)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-072",
+"title": "Contrôle d'une réception inconnue rattachée",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-027"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §6, §7` (EX-REC-027, 040) · écran ECR-REC-02",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-073",
+"title": "Correction a posteriori des quantités du BL",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-012"
+],
+"ecr": [
+"ECR-REC-06"
+],
+"src": "legacy `BLL/LivraisonAfficheService.cs:763-803`, `CTRL/LivraisonAfficheController.cs:253-264, 323-372` (RG-REC-079 provisoire) · spec `[DC] §4` (EX-REC-012) ; Q-REC-11, Q-REC-23 maquette · écran ECR-REC-06",
+"qs": [
+"Q-121"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-074",
+"title": "Pas de suppression ni d'annulation de réception",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-REC-081"
+],
+"ecr": [],
+"src": "legacy « Livraison — pas de statut ni de suppression » ; spec EX-REC-081 · Q-122",
+"qs": [
+"Q-122"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-076",
+"title": "Feuille de stock = étiquette rack",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-029",
+"EX-TRA-024"
+],
+"ecr": [],
+"src": "legacy `W/Reports/Rapport.cs:961-1025` (RG-REC-100 provisoire ; RG-ADM-060) · spec `[DC] §6` (EX-REC-029) ; EX-TRA-024",
+"qs": [
+"Q-002",
+"Q-129"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-077",
+"title": "Mention « FEUILLE DE STOCK DÉFINITIVE / TEMPORAIRE »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-029"
+],
+"ecr": [
+"ECR-REC-09"
+],
+"src": "spec `[DC] §6` (EX-REC-029) · écran ECR-REC-09",
+"qs": [
+"Q-126"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-078",
+"title": "Contenu de la feuille",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-REC-031"
+],
+"ecr": [
+"ECR-REC-09"
+],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:332-352`, `REPO/ReceptionListeAfficheRepository.cs:482-501`, `W/Reports/Rapport.cs:961-1025` (RG-REC-100 ; RG-ADM-062) · spec `[DC] §6` (EX-REC-031) · écran ECR-REC-09",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-079",
+"title": "Code-barres « A- » + id sur 13 caractères",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-REC-031"
+],
+"ecr": [],
+"src": "legacy `W/Reports/Rapport.cs:961-1025` (RG-ADM-062) ; `SP/p_EditionPicking.sql:22-80` · spec `[DC] §6` (EX-REC-031)",
+"qs": [
+"Q-168"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-080",
+"title": "Quantité imprimée = somme des mouvements",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-REC-057"
+],
+"ecr": [],
+"src": "legacy `W/Reports/Rapport.cs:961-1025` ; `SP/p_EditionPicking.sql` (RG-REC-023, 101) · spec `[DC] §9` (EX-REC-057)",
+"qs": [
+"Q-103"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-081",
+"title": "Premier départ en gros",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-REC-031"
+],
+"ecr": [],
+"src": "legacy `W/Reports/Rapport.cs:961-1025` (RG-ADM-062) · spec EX-REC-031",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-082",
+"title": "Fond jaune des dossiers multi-semaines",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-052",
+"EX-REC-030"
+],
+"ecr": [],
+"src": "spec `[DC] §6, §10` (EX-REC-030) ; EX-EXI-052",
+"qs": [
+"Q-127"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-083",
+"title": "Feuille temporaire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-029"
+],
+"ecr": [
+"ECR-REC-08"
+],
+"src": "spec `[DC] §6, §7` (EX-REC-029) · écran ECR-REC-08/09",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-084",
+"title": "Feuille définitive",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-027"
+],
+"ecr": [
+"ECR-REC-02"
+],
+"src": "spec `[DC] §5, §6, §9` (EX-REC-027, 056) · écran ECR-REC-02/09",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-085",
+"title": "Type de feuille noté, tag « Feuille à refaire » levé",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-033"
+],
+"ecr": [
+"ECR-REC-09"
+],
+"src": "spec `[DC] §6, §9` (EX-REC-033) · écran ECR-REC-09",
+"qs": [
+"Q-126"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-086",
+"title": "Impression en lot : exemplaires",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-032"
+],
+"ecr": [
+"ECR-REC-09"
+],
+"src": "spec `[DC] §6, §11, §17` (EX-REC-032) ; `[PR] p.1` · écran ECR-REC-09",
+"qs": [
+"Q-128"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-087",
+"title": "Réimpressions",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-034"
+],
+"ecr": [
+"ECR-REC-03"
+],
+"src": "spec `[DC] §6, §8` (EX-REC-034) · écran ECR-REC-03/05",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-088",
+"title": "« Ranger avant d'imprimer »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-045"
+],
+"ecr": [
+"ECR-REC-10"
+],
+"src": "spec `[DC] §8` (EX-REC-045) · écran ECR-REC-10",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-089",
+"title": "Étiquette rack imprimée à la validation admin",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-014"
+],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:177, 189-192, 454-465` (RG-REC-028 ; RG-COO-027) · spec EX-COO-014",
+"qs": [
+"Q-002",
+"Q-162"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-090",
+"title": "Impressions multiples en un clic",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-502",
+"EX-REC-515",
+"EX-TRA-507"
+],
+"ecr": [
+"ECR-REC-03"
+],
+"src": "ateliers EX-REC-502, EX-REC-515, EX-TRA-507 · écran ECR-REC-03",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-091",
+"title": "Imprimantes de plateforme et sortie PDF",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/AdminPlateformeBll.cs:65-69`, `W/Reports/Rapport.cs:1021-1024` (RG-ADM-041) · CLAUDE.md §3",
+"qs": [
+"Q-002",
+"Q-129"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-092",
+"title": "Échec d'impression non bloquant",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:454-465` (RG-REC-028)",
+"qs": [
+"Q-002"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-093",
+"title": "Édition picking",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-025"
+],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:678-736`, `SP/p_EditionPicking.sql:22-80` (RG-REC-101) · spec EX-TRA-025",
+"qs": [
+"Q-101"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-095",
+"title": "Création d'une réception inconnue : formulaire",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-035"
+],
+"ecr": [
+"ECR-REC-08"
+],
+"src": "legacy `BLL/LivraisonAfficheService.cs:532-624`, `CTRL/LivraisonAfficheController.cs:274-321` (RG-REC-073, 078) · spec `[DC] §7` (EX-REC-035) · écran ECR-REC-08",
+"qs": [
+"Q-163"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-096",
+"title": "Quantité comptée obligatoire (> 0)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-035"
+],
+"ecr": [
+"ECR-REC-08"
+],
+"src": "spec `[DC] §7` (EX-REC-035) · écran ECR-REC-08",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-097",
+"title": "Allée tampon et rayon obligatoires (réception inconnue)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-035"
+],
+"ecr": [
+"ECR-REC-08"
+],
+"src": "spec `[DC] §7, §11` (EX-REC-035, 073) · écran ECR-REC-08",
+"qs": [
+"Q-105",
+"Q-106"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-098",
+"title": "Photos de la réception inconnue",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-003"
+],
+"ecr": [
+"ECR-REC-08"
+],
+"src": "spec `[DC] §7` (EX-REC-003, 035) · écran ECR-REC-08",
+"qs": [
+"Q-113"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-099",
+"title": "Effets de la création d'une réception inconnue",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-036"
+],
+"ecr": [
+"ECR-REC-08"
+],
+"src": "spec `[DC] §7, §11` (EX-REC-036) · écran ECR-REC-08",
+"qs": [
+"Q-110"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-100",
+"title": "Suggestions d'intitulés de l'autre plateforme",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-506"
+],
+"ecr": [
+"ECR-REC-08"
+],
+"src": "spec `[DC] §7` ; ateliers EX-REC-506 · écran ECR-REC-08",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-101",
+"title": "Tableau « Réceptions inconnues »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-037"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7, §17` (EX-REC-037) · écran ECR-REC-04",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-102",
+"title": "Statuts et filtre par défaut des réceptions inconnues",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-055"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §9` (EX-REC-055) · écran ECR-REC-04",
+"qs": [
+"Q-109"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-103",
+"title": "« En attente depuis » d'une réception inconnue",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7, §11` ; Q-REC-17 maquette · écran ECR-REC-04",
+"qs": [
+"Q-105"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-104",
+"title": "Identifier par le visuel",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-038",
+"EX-REC-507"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7` (EX-REC-038) ; ateliers EX-REC-507 · écran ECR-REC-04",
+"qs": [
+"Q-112",
+"Q-125"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-105",
+"title": "Identifier par n° de dossier",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-038"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7` (EX-REC-038) · écran ECR-REC-04",
+"qs": [
+"Q-125"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-106",
+"title": "Pré-coche du dossier reconnu à coup sûr",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7` · écran ECR-REC-04",
+"qs": [
+"Q-125"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-107",
+"title": "« Rattacher » : refus",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-039"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7` (EX-REC-039) · écran ECR-REC-04",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-108",
+"title": "Répartition ≤ quantité reçue",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-039"
+],
+"ecr": [],
+"src": "spec `[DC] §7` (EX-REC-039) ; `[PP] §6`",
+"qs": [
+"Q-124"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-109",
+"title": "Effets de « Rattacher »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-040"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7` (EX-REC-040) · écran ECR-REC-04",
+"qs": [
+"Q-107"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-110",
+"title": "Annonceur et libellé après rattachement",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7` · écran ECR-REC-04 (règles de Rattacher)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-111",
+"title": "Validation admin au rattachement selon le rôle",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-010"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7` ; EX-COO-010, 017 · écran ECR-REC-04/05",
+"qs": [
+"Q-107"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-112",
+"title": "Signaler « Dossier introuvable »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-041"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §3, §7, §11` (EX-REC-041) · écran ECR-REC-04",
+"qs": [
+"Q-109",
+"Q-110"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-113",
+"title": "Deux cas à ne pas confondre",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-042"
+],
+"ecr": [],
+"src": "spec `[DC] §7, §10` (EX-REC-042)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-114",
+"title": "Retrait du dernier dossier",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-043"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[DC] §8, §9, §10` (EX-REC-043) · écran ECR-REC-05",
+"qs": [
+"Q-108"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-115",
+"title": "Définition d'une affiche orpheline",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SP/p_GetListeAffiche.sql:62-65`, `REPO/ReceptionListeAfficheRepository.cs:456-469, 283` (RG-REC-008)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-116",
+"title": "Création manuelle d'une affiche (mode Création) legacy",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-079"
+],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:756-798`, `CTRL/ReceptionListeAfficheController.cs:119-128, 177` (RG-REC-020) · spec EX-REC-079",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-117",
+"title": "Livraison « orpheline » legacy : affiches persistées avant contrôle",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:532-624` (RG-REC-078)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-118",
+"title": "Qui peut rattacher une réception inconnue",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-040"
+],
+"ecr": [],
+"src": "spec `[DC] §7` (EX-REC-040) ; `[README] §3`",
+"qs": [
+"Q-107"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-119",
+"title": "Boutons selon l'état de la réception inconnue",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec `[DC] §7` ; `[PR]` · écran ECR-REC-04",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-120",
+"title": "Rattachement par la réception : reste à vérifier",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [],
+"src": "spec `[DC] §7` · maquette `rattache = MAIN`",
+"qs": [
+"Q-107"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-121",
+"title": "Liste des affiches : colonnes",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-045",
+"EX-REC-509"
+],
+"ecr": [
+"ECR-REC-03"
+],
+"src": "spec `[DC] §8` (EX-REC-045) ; ateliers EX-REC-509 · écran ECR-REC-03",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-122",
+"title": "Liste des affiches : filtres",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-045"
+],
+"ecr": [
+"ECR-REC-03"
+],
+"src": "spec `[DC] §8` (EX-REC-045) · écran ECR-REC-03",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-123",
+"title": "Période par défaut et « Historique » (legacy)",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:73-76, 104-109`, `SP/p_GetListeAffiche.sql:112-122` (RG-REC-002)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-124",
+"title": "Listes legacy Tous / À traiter / Rebus / Fusionnées",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SP/p_GetListeAffiche*.sql`, `BLL/ReceptionListeAfficheBll.cs:53-54, 116-121` (RG-REC-003 à 009, 011, 013) · Q-100",
+"qs": [
+"Q-100",
+"Q-118"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-125",
+"title": "Plus de doublons dans la Liste des affiches",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-081",
+"EX-REC-501"
+],
+"ecr": [],
+"src": "ateliers EX-REC-501 ; spec EX-REC-081",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-126",
+"title": "Colonne « En stock » et rebut mis en évidence",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-513"
+],
+"ecr": [
+"ECR-REC-03"
+],
+"src": "spec `[DC] §8` ; ateliers EX-REC-513 · écran ECR-REC-03",
+"qs": [
+"Q-103"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-127",
+"title": "Tags calculés, jamais cochés",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-050"
+],
+"ecr": [
+"ECR-REC-03"
+],
+"src": "spec `[DC] §9` (EX-REC-050, 054) · écran ECR-REC-03 (définitions)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-128",
+"title": "Tag « Complément »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-016"
+],
+"ecr": [],
+"src": "spec `[DC] §4, §9` (EX-REC-016) ; Q-REC-14",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-129",
+"title": "Tag « Feuille à refaire » / « Feuille définitive à imprimer »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-054",
+"EX-THM-503"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[DC] §9, §10` (EX-REC-054, 062) ; ateliers EX-THM-503 · écran ECR-REC-05",
+"qs": [
+"Q-143"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-130",
+"title": "Fiche de l'affiche",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-047"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[DC] §8` (EX-REC-047) · écran ECR-REC-05",
+"qs": [
+"Q-120"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-131",
+"title": "Champs modifiables de la fiche",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-047"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:837-889` (RG-REC-024) · spec EX-REC-047 · écran ECR-REC-05",
+"qs": [
+"Q-143",
+"Q-150"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-132",
+"title": "Onglet Mouvements",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-509"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[DC] §8` ; ateliers EX-REC-509 · écran ECR-REC-05",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-134",
+"title": "Onglet Préparations",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-048"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[DC] §8, §10` (EX-REC-048) · écran ECR-REC-05",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-135",
+"title": "Changer de thème",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-048"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[DC] §8, §10` (EX-REC-048, 062) · écran ECR-REC-05",
+"qs": [
+"Q-143"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-136",
+"title": "« + Rattacher à un autre dossier »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-048"
+],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[DC] §8, §10` (EX-REC-048) ; legacy `BLL/ReceptionListeAfficheBll.cs:533-555` (RG-REC-091) · écran ECR-REC-05",
+"qs": [
+"Q-124"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-137",
+"title": "Retirer un rattachement",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-048"
+],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:577-586` (RG-REC-092 ; RG-COO-023) · spec EX-REC-048",
+"qs": [
+"Q-136"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-138",
+"title": "Rattachement manuel après validation ou début de production",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045"
+],
+"ecr": [],
+"src": "spec EX-COO-045",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-139",
+"title": "Recherche de lignes à rattacher (legacy)",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:420-435, 484-531`, `REPO/ReceptionListeAfficheRepository.cs:287-442` (RG-REC-090) · Q-147",
+"qs": [
+"Q-147"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-140",
+"title": "Association de lignes (legacy) : lignes sans affiche seulement",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:533-555`, `CTRL/ReceptionListeAfficheController.cs:378-388` (RG-REC-091 ; RG-COO-022)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-141",
+"title": "Dissociation (legacy)",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:577-586` (RG-REC-092)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-142",
+"title": "Auto-association à l'ouverture de la fiche (legacy)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-004"
+],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:218-257` (RG-REC-093 ; RG-COO-024) · spec EX-COO-004",
+"qs": [
+"Q-148"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-143",
+"title": "Date de dernier départ",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:557-575, 594-609, 211, 221`, `REPO/ReceptionListeAfficheRepository.cs:596-605` (RG-REC-032)",
+"qs": [
+"Q-120"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-144",
+"title": "Conservation : valeur par défaut",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:213, 942, 984`, `SP/p_s_affiche_a_fusionner.sql:42` (RG-REC-031, 010)",
+"qs": [
+"Q-120"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-145",
+"title": "« Affiche à conserver »",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-STK-504"
+],
+"ecr": [
+"ECR-REC-05",
+"ECR-STK-01"
+],
+"src": "legacy `HistorisationBll.cs:29-32` · spec EX-STK-504 · écran ECR-REC-05, ECR-STK-01",
+"qs": [
+"Q-136"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-147",
+"title": "Formats de saisie dossier/semaines (legacy)",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:136-173` (RG-REC-026 ; RG-COO-025)",
+"qs": [
+"Q-150"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-148",
+"title": "Régénération de `tf_dossier_semaine_depart` (legacy)",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:1049-1081` (RG-REC-025)",
+"qs": [
+"Q-150"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-150",
+"title": "Purge des anciens thèmes après changement de thème",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-062",
+"EX-REC-504",
+"EX-THM-504"
+],
+"ecr": [],
+"src": "ateliers EX-REC-504, EX-THM-504 ; spec EX-REC-062 (couvert en partie)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-151",
+"title": "Types de mouvement, append-only",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-057",
+"EX-TRA-037"
+],
+"ecr": [],
+"src": "legacy « Mouvement — append-only » ; spec `[DC] §9, §13` (EX-REC-057 ; EX-TRA-037)",
+"qs": [
+"Q-103"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-153",
+"title": "Stock = somme des mouvements ; reçu = somme des rattachements",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-057",
+"EX-STK-501"
+],
+"ecr": [],
+"src": "spec `[DC] §9` (EX-REC-057) ; ateliers EX-STK-501 ; `maquettes-autres-modules.md §0.6`",
+"qs": [
+"Q-103"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-154",
+"title": "Double source de quantité (legacy)",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SP/p_GetListeAffiche.sql:100-109`, `SP/p_s_destruction.sql:19`, `BLL/ReceptionListeAfficheBll.cs:311-321` (RG-REC-023)",
+"qs": [
+"Q-103"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-155",
+"title": "Ajout et sortie manuels de stock (legacy)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-REC-057"
+],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:800-835`, `22` (RG-REC-021, 022) · spec EX-REC-057 ; Q-REC-12",
+"qs": [
+"Q-117"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-156",
+"title": "Mise au rebut depuis Stocks",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-024",
+"EX-STK-504"
+],
+"ecr": [
+"ECR-STK-01"
+],
+"src": "spec `[DC] §5, §10` (EX-REC-024, 061) ; EX-STK-504 · écran ECR-STK-01",
+"qs": [
+"Q-118"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-157",
+"title": "Mise au rebus d'une affiche (legacy)",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:271-289`, `REPO/ReceptionListeAfficheRepository.cs:615-622` (RG-REC-040)",
+"qs": [
+"Q-118",
+"Q-155"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-158",
+"title": "Vidage du rebus (legacy)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-061"
+],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:297-325`, `REPO/ReceptionListeAfficheRepository.cs:220-258` (RG-REC-041) · spec EX-REC-061",
+"qs": [
+"Q-118",
+"Q-119"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-159",
+"title": "Tag « Au rebut » (proposé)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-054"
+],
+"ecr": [],
+"src": "spec `[DC] §9` (EX-REC-054)",
+"qs": [
+"Q-118"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-160",
+"title": "Etat de destruction (legacy) : déplacé dans Stocks › Fin de campagne",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-076",
+"EX-STK-502"
+],
+"ecr": [
+"ECR-STK-03"
+],
+"src": "legacy `SP/p_s_destruction.sql:12-39`, `BLL/DestructionBll.cs:16-92`, `CTRL/DestructionController.cs:37-65` (RG-REC-050, 051, 052) · spec EX-STK-502, 504 ; EX-EXI-076 · écran ECR-STK-03",
+"qs": [
+"Q-119"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-163",
+"title": "Fusion manuelle d'affiches (legacy) — non reprise",
+"origine": "SUPPRIMÉE",
+"ex": [
+"EX-REC-079"
+],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:424-452, 496-538` (RG-REC-060, 061, 014) · spec `[README] §3, §7` (EX-REC-079)",
+"qs": [
+"Q-100"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-165",
+"title": "Effets d'une fusion (legacy) — données héritées",
+"origine": "SUPPRIMÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/FusionAfficheBll.cs:61-234` (RG-REC-062 ; RG-COO-031)",
+"qs": [
+"Q-100",
+"Q-155"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-166",
+"title": "Risque legacy : chapeau inclus dans ses cibles",
+"origine": "SUPPRIMÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:435-440, 521` (RG-REC-064)",
+"qs": [
+"Q-100"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-167",
+"title": "Écran Fusion : propositions automatiques (legacy)",
+"origine": "SUPPRIMÉE",
+"ex": [
+"EX-REC-079"
+],
+"ecr": [],
+"src": "legacy `BLL/FusionAfficheBll.cs:18-59`, `SP/p_s_affiche_a_fusionner.sql` (RG-REC-063) · spec EX-REC-079",
+"qs": [
+"Q-100"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-168",
+"title": "Zone picking (legacy)",
+"origine": "SUPPRIMÉE",
+"ex": [
+"EX-REC-079"
+],
+"ecr": [],
+"src": "legacy `VIEW/Shared/DetailAffiche/Partial/Partial_ModifierDetailsAffiche.cshtml:256-265` (RG-REC-029, 009) · spec EX-REC-079",
+"qs": [
+"Q-101"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-169",
+"title": "Affiche héritée « fusionnée » : lecture seule",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:223`, `_DetailAffiche.cshtml:270-276` (RG-REC-030)",
+"qs": [
+"Q-155"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-170",
+"title": "Drill-down depuis un dossier (legacy)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-013"
+],
+"ecr": [],
+"src": "legacy `CTRL/ReceptionListeAfficheController.cs:47-111` (RG-REC-012) · spec EX-TRA-013",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-171",
+"title": "Éléments de la liste legacy sans équivalent cible",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:127-144, 954`, `Index.cshtml:152-169` (RG-REC-011, 009, 013)",
+"qs": [
+"Q-100"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-175",
+"title": "Alerte « Validation admin » : case sans contrôle serveur (legacy)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-011"
+],
+"ecr": [],
+"src": "legacy `Partial_ModifierDetailsAffiche.cshtml:24-39, 302-324` (RG-REC-027) · spec EX-COO-011",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-176",
+"title": "Ce qui se calcule ne se coche jamais",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-050"
+],
+"ecr": [],
+"src": "spec `[DC] §9` (EX-REC-050, 051)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-178",
+"title": "Paramètres « Règles métier › Réception »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-073"
+],
+"ecr": [
+"ECR-ADM-05"
+],
+"src": "spec `[DC] §11` (EX-REC-073) · écran ECR-ADM-05",
+"qs": [
+"Q-105"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-179",
+"title": "Référentiels Imprimeurs, Livreurs, Agents de réception",
+"origine": "NOUVELLE",
+"ex": [
+"EX-ADM-501",
+"EX-REC-074"
+],
+"ecr": [
+"ECR-ADM-07"
+],
+"src": "spec `[DC] §11, §15` (EX-REC-074 ; EX-ADM-501) · écran ECR-ADM-07",
+"qs": [
+"Q-115"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-180",
+"title": "Purge automatique des réceptions attendues",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-075",
+"EX-REC-512"
+],
+"ecr": [],
+"src": "spec `[DC] §11, §12` (EX-REC-075) ; ateliers EX-REC-512",
+"qs": [
+"Q-130"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-181",
+"title": "Purge sans alerte, une ligne au journal",
+"origine": "NOUVELLE",
+"ex": [
+"EX-TRA-032"
+],
+"ecr": [],
+"src": "spec `[DC] §11, §12` (EX-TRA-032)",
+"qs": [
+"Q-130"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-182",
+"title": "Alerte « Visuel non reçu / reçu en partie »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-063"
+],
+"ecr": [
+"ECR-TRA-01"
+],
+"src": "spec `[DC] §11` (EX-REC-063) · écran ECR-TRA-01",
+"qs": [
+"Q-131",
+"Q-132"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-183",
+"title": "Alerte « Écart de réception supérieur à 10 % »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-064",
+"EX-REC-519"
+],
+"ecr": [],
+"src": "spec `[DC] §11` (EX-REC-064) ; ateliers EX-REC-519",
+"qs": [
+"Q-133"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-184",
+"title": "Alerte « Réception sans instructions de pose »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-031",
+"EX-REC-065"
+],
+"ecr": [],
+"src": "spec `[DC] §11` (EX-REC-065) ; EX-COO-031",
+"qs": [
+"Q-111"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-185",
+"title": "Alerte « Réception inconnue à identifier »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-066"
+],
+"ecr": [],
+"src": "spec `[DC] §7, §11` (EX-REC-066)",
+"qs": [
+"Q-110"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-186",
+"title": "Alerte « Dossier introuvable »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-067"
+],
+"ecr": [],
+"src": "spec `[DC] §11` (EX-REC-067)",
+"qs": [
+"Q-110"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-187",
+"title": "Alerte « Feuille de stock définitive à imprimer »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-068"
+],
+"ecr": [],
+"src": "spec `[DC] §11` (EX-REC-068)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-188",
+"title": "Alerte « Feuilles de stock à refaire »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-069",
+"EX-REC-520"
+],
+"ecr": [],
+"src": "spec `[DC] §11` (EX-REC-069) ; ateliers EX-REC-520",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-189",
+"title": "Alerte « Palette à contrôler depuis plus de 24 h »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-070"
+],
+"ecr": [],
+"src": "spec `[DC] §11` (EX-REC-070)",
+"qs": [
+"Q-157"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-190",
+"title": "Alertes : canal, gravité, destinataires paramétrables",
+"origine": "NOUVELLE",
+"ex": [
+"EX-TRA-028"
+],
+"ecr": [],
+"src": "spec `[DC] §11` ; EX-TRA-028, 029",
+"qs": [
+"Q-132"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-191",
+"title": "Mails à la réception : supprimés",
+"origine": "SUPPRIMÉE",
+"ex": [
+"EX-REC-072"
+],
+"ecr": [],
+"src": "legacy `CTRL/LivraisonAfficheController.cs:221-250`, `BLL/ToolBll.cs:391-456` (RG-REC-077 ; RG-ADM-043) · spec `[DC] §1, §11` (EX-REC-072, 078)",
+"qs": [
+"Q-131"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-193",
+"title": "Colonne « Ordre », étiquette de palette, douchette : refusés",
+"origine": "SUPPRIMÉE",
+"ex": [
+"EX-REC-078",
+"EX-REC-508"
+],
+"ecr": [],
+"src": "spec `[DC] §1, §16` (EX-REC-078) ; ateliers EX-REC-508, 523 ; `[DESIGN] §8` (douchette : contradiction)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-REC-194",
+"title": "Dashboard de réception",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-516"
+],
+"ecr": [],
+"src": "ateliers EX-REC-516, 517 (POUR DISCUSSION)",
+"qs": [
+"Q-133"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-195",
+"title": "Taux d'entretien (quantités avec/sans entretien)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-075",
+"EX-REC-518"
+],
+"ecr": [],
+"src": "ateliers EX-REC-518 ; EX-EXI-075",
+"qs": [
+"Q-133"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-196",
+"title": "Alertes du dashboard (3 types)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-519"
+],
+"ecr": [],
+"src": "ateliers EX-REC-519",
+"qs": [
+"Q-133"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-197",
+"title": "Date prévisionnelle de livraison et commentaires",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-516"
+],
+"ecr": [],
+"src": "ateliers EX-REC-516, 520",
+"qs": [
+"Q-134"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-198",
+"title": "IP reçues après le 1er fichier de production",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-503",
+"EX-REC-505"
+],
+"ecr": [],
+"src": "ateliers EX-REC-505 (A revoir Bao) ; EX-COO-503",
+"qs": [
+"Q-131"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-199",
+"title": "Batch d'export des réceptions vers PEX/Broadcast (legacy)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-039"
+],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimReceptionBll.cs:30-103`, `SP/p_batch_alimentation_circe_pex_reception.sql:33-178` (RG-REC-110 ; RG-INT-020 à 022) · spec EX-TRA-039",
+"qs": [
+"Q-005",
+"Q-151"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-200",
+"title": "« EstAssociee » : rattachée ET validée",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-053",
+"EX-TRA-039"
+],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimReceptionBll.cs:89` (RG-REC-111 ; RG-COO-029) · spec EX-TRA-039, EX-EXI-053",
+"qs": [
+"Q-151"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-201",
+"title": "Synchronisation Broadcast depuis l'écran Réception (legacy)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-012"
+],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:867-926` (RG-REC-081 ; RG-INT-012) · spec EX-EXI-012",
+"qs": [
+"Q-005"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-202",
+"title": "Alimentation de `tf_prepa_affiche` (legacy) : propriété Coordination",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SP/p_Alimentation_tf_prepa_affiche.sql` (RG-REC-082) · Q-005",
+"qs": [
+"Q-005"
+],
+"file": "REC"
+},
+{
+"id": "RG-REC-203",
+"title": "Lien « visuel disponible » et modale Visuel",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-510",
+"EX-SCR-513"
+],
+"ecr": [
+"ECR-REC-12"
+],
+"src": "ateliers EX-REC-510, EX-SCR-513 · écran ECR-REC-12",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-X-001",
+"title": "Valider la réception : proposition de rattachement / validation admin",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-004",
+"EX-COO-506",
+"EX-REC-014"
+],
+"ecr": [
+"ECR-COO-01",
+"ECR-REC-01"
+],
+"src": "spec `[PP] §5`, `[RA]` (EX-COO-004, 006, 007, 008, 015) ; `[DC] §4, §15` (EX-REC-014) ; ateliers EX-COO-506/507 (3 événements : remplacés par option A) · écran ECR-REC-01 ; ECR-COO-01",
+"qs": [
+"Q-125",
+"Q-136"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-002",
+"title": "Motifs de doute posés par la Réception",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-007"
+],
+"ecr": [],
+"src": "spec `[PP] §5`, `[PC]` (EX-COO-007) ; RG-REC-032",
+"qs": [
+"Q-136"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-003",
+"title": "Réception : unités en attente → prêtes à produire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-014"
+],
+"ecr": [
+"ECR-REC-01"
+],
+"src": "spec `[DC] §4, §15` (EX-REC-014) · écran ECR-REC-01 ; `maquettes-autres-modules.md §0.1`",
+"qs": [
+"Q-102"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-004",
+"title": "Statut de la ligne attendue et n° d'affiche lus par la Coordination",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-014"
+],
+"ecr": [],
+"src": "spec `[README] §3` ; EX-COO-014, 048",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-X-005",
+"title": "« Affiche reçue » indépendant de la validation admin",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-055",
+"EX-REC-052",
+"EX-REC-503"
+],
+"ecr": [],
+"src": "legacy `BLL/SuiviEtatReservationBll.cs:183-187` (RG-COO-028) · spec EX-REC-052, EX-REC-503, EX-EXI-055",
+"qs": [
+"Q-104"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-006",
+"title": "Réception inconnue créée → alerte Coordination",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-017",
+"EX-REC-036"
+],
+"ecr": [],
+"src": "spec `[DC] §7, §11` (EX-REC-036, 066) ; EX-COO-017, 047",
+"qs": [
+"Q-110"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-007",
+"title": "Rattachement d'une inconnue : validation selon le rôle",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-010"
+],
+"ecr": [],
+"src": "spec `[DC] §7` ; EX-COO-010, 017",
+"qs": [
+"Q-107"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-008",
+"title": "« Dossier introuvable » → alerte Coordination du site",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-017",
+"EX-REC-041"
+],
+"ecr": [],
+"src": "spec `[DC] §3, §7, §11` (EX-REC-041, 067) ; EX-COO-017",
+"qs": [
+"Q-110"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-009",
+"title": "Réception sur un dossier sans IP → alerte Coordination",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-031",
+"EX-REC-065"
+],
+"ecr": [],
+"src": "spec `[PC] p.2`, `[DC] §11` (EX-COO-031, EX-REC-065)",
+"qs": [
+"Q-111"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-010",
+"title": "Affiche ou visuel arrivé après la préparation ou la libération",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-044",
+"EX-COO-503",
+"EX-REC-505"
+],
+"ecr": [],
+"src": "spec `[README] §3` (Simuler 1, 2) ; ateliers EX-COO-503, EX-REC-505 ; EX-COO-044",
+"qs": [
+"Q-131"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-011",
+"title": "Affiche reçue après l'export des trains",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-044"
+],
+"ecr": [],
+"src": "spec `[PP] §2` (EX-COO-044)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-X-012",
+"title": "Thème changé après réception → validation à refaire, feuille à refaire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-016",
+"EX-REC-062"
+],
+"ecr": [],
+"src": "spec `[RA]` (EX-COO-016) ; `[DC] §10` (EX-REC-062)",
+"qs": [
+"Q-143"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-013",
+"title": "Retrait d'un rattachement : recalculs",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-REC-05"
+],
+"src": "spec `[DC] §8` ; ECR-REC-05",
+"qs": [
+"Q-108"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-014",
+"title": "Rattachement manuel vaut validation si Coordination",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [],
+"src": "spec `[DC] §7` ; maquette reception.js",
+"qs": [
+"Q-107"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-015",
+"title": "Valider / Annuler la validation depuis la fiche affiche",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-009"
+],
+"ecr": [],
+"src": "spec EX-COO-009, 014",
+"qs": [
+"Q-162"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-016",
+"title": "Rattachement plusieurs-à-plusieurs : reçu compté une fois",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045"
+],
+"ecr": [],
+"src": "spec `[PP] §6`, `[RA]` (EX-COO-045, 039)",
+"qs": [
+"Q-123"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-017",
+"title": "Écart de contrôle → recalcul et alerte",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-011"
+],
+"ecr": [],
+"src": "spec `[DC] §5` ; EX-COO-011",
+"qs": [
+"Q-133"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-018",
+"title": "Réception partielle : reste et alerte",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-011",
+"EX-REC-059"
+],
+"ecr": [],
+"src": "spec EX-COO-011 ; EX-REC-059",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-X-019",
+"title": "Dossier livré sur deux plateformes",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045",
+"EX-REC-015"
+],
+"ecr": [],
+"src": "spec EX-COO-045 ; EX-REC-015",
+"qs": [
+"Q-139"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-020",
+"title": "Réception avant IP : ligne provisoire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-035"
+],
+"ecr": [],
+"src": "spec `[RA]` (EX-COO-035)",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-X-021",
+"title": "Compteurs des menus Coordination",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [],
+"src": "maquette `core.js:373-434`",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-X-022",
+"title": "Retour vers Broadcast : affiche reçue et associée",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-039"
+],
+"ecr": [],
+"src": "legacy `BatchAlimReceptionBll.cs:89` · spec EX-TRA-039",
+"qs": [
+"Q-151"
+],
+"file": "REC"
+},
+{
+"id": "RG-X-028",
+"title": "Circuits indépendants : réception et prépa",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-001",
+"EX-EXI-054"
+],
+"ecr": [],
+"src": "spec `[PC] p.1` (EX-COO-001, 026) ; legacy EX-EXI-054",
+"qs": [],
+"file": "REC"
+},
+{
+"id": "RG-X-030",
+"title": "Rattachement d'une inconnue à plusieurs dossiers",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-007"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec EX-COO-007 ; ECR-REC-04",
+"qs": [
+"Q-124"
+],
+"file": "REC"
+},
+{
+"id": "RG-COO-001",
+"title": "Deux circuits indépendants : validation admin et Instruction OK",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-001",
+"EX-EXI-053",
+"EX-EXI-054"
+],
+"ecr": [],
+"src": "legacy `WEB/Controllers/ReceptionListeAfficheController.cs:218-257` (liaison des lignes de prépa) · spec [PC] p.1 encadré « Indépendants » ; [PP] encadré 02/11, §3, §8 (EX-COO-001) ; EX-EXI-053, EX-EXI-054",
+"qs": [
+"Q-200"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-002",
+"title": "Circé propose, une personne confirme (option A du 02/11)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-004"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:837-889` (L.867, case libre ; ancien ID provisoire RG-COO-026) · spec [PP] encadré 02/11, §5 ; [RA] encadré, RG-VA-04 (EX-COO-004) ; écran ECR-COO-01 (« Aucune validation sans vous : Circé propose, vous confirmez »)",
+"qs": [
+"Q-200",
+"Q-234"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-003",
+"title": "Origine du n° de dossier associé à une affiche",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-005",
+"EX-EXI-052"
+],
+"ecr": [],
+"src": "legacy `WEB/Controllers/ReceptionListeAfficheController.cs:131-173` (ancien ID provisoire RG-COO-025) · spec [PC] p.1 encadré « Le n° de dossier associé » ; [PP] §5 (EX-COO-005) ; EX-EXI-052",
+"qs": [
+"Q-228",
+"Q-234"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-004",
+"title": "Proposition de rattachement à la réception d'une affiche",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-004",
+"EX-COO-006",
+"EX-COO-039",
+"EX-COO-506"
+],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:427-486,522-527` ; `REP/LivraisonAfficheRepository.cs:392-413` (ancien ID provisoire RG-COO-020) · spec [PP] §5 ; [RA] encadré, RG-AT-08 (EX-COO-004, EX-COO-039) ; ateliers (EX-COO-506, ex EX-COO-006 : « 3 événements dont la prépa », remplacé par l'option A)",
+"qs": [
+"Q-207",
+"Q-234"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-005",
+"title": "Cas sûr : conditions d'une proposition pré-cochée",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-006"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PP] §5 ; [RA] RG-VA-01, RG-VA-04 ; [DC] §15 (EX-COO-006) ; écran ECR-COO-01 (« Cas sûr : uniquement `va` et aucun doute »)",
+"qs": [
+"Q-234"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-006",
+"title": "Motifs de doute (affiche à doute)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-007"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PP] §5 ; [PC] p.1 ; [DC] encadré 02/11 ; [README] §3 (EX-COO-007) ; écran ECR-COO-01 (`M.VA_MOTIFS`, `data.js`)",
+"qs": [
+"Q-200"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-007",
+"title": "États de validation d'une affiche (calcul)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-012"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PC] p.1 ; [DC] encadré 02/11 ; [README] §5 (EX-COO-012) ; legacy `legacy-coordination.md §5.2` (cycle libre false/true, ancien ID RG-COO-026) ; écran ECR-COO-01 (`C.vaEtat`)",
+"qs": [
+"Q-200"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-008",
+"title": "Confirmation unitaire d'une affiche (fiche dossier)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-008"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:837-889` ; `BLL/HistorisationBll.cs:29-32` (ancien ID provisoire RG-COO-026) · spec [PC] p.1-2 ; [README] §3 (EX-COO-008) ; écran ECR-COO-02",
+"qs": [
+"Q-203"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-009",
+"title": "Qui peut valider, annuler la validation, passer l'Instruction OK",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-010",
+"EX-TRA-005"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "legacy `WEB/Views/Shared/DetailAffiche/Partial/Partial_ModifierDetailsAffiche.cshtml:24` ; `BLL/CommunBll.cs:276-303` (ancien ID provisoire RG-COO-026, RG-COO-090) · spec [README] §3, H1 ; [DC] §7 (EX-COO-010, EX-TRA-005) ; écran ECR-COO-01 (maquette `instructions.js:16-18`, Q-COO-5, Q-COO-6)",
+"qs": [
+"Q-003",
+"Q-201"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-010",
+"title": "Confirmation en lot « Valider la sélection »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-008"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PC] p.1-2 ; [README] §3 ; [DESIGN] §11 (EX-COO-008) ; écran ECR-COO-01 (action « Valider la sélection »)",
+"qs": [
+"Q-203"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-011",
+"title": "Pré-cochage des cas sûrs et bouton « Cocher les cas sûrs »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-008"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PC] p.1-2 ; [README] §3 (EX-COO-008) ; écran ECR-COO-01 (pré-sélection `M.navSeq`)",
+"qs": [
+"Q-203"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-012",
+"title": "Confirmation explicite des affiches à doute",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-007",
+"EX-COO-008"
+],
+"ecr": [
+"ECR-COO-03"
+],
+"src": "spec [PC] p.1-2 ; [DESIGN] §11 (EX-COO-007, EX-COO-008) ; écran ECR-COO-03",
+"qs": [
+"Q-203"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-013",
+"title": "Rien à valider : refus",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-008",
+"EX-COO-013"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PC] p.1 ; écran ECR-COO-01 (refus) (EX-COO-008, EX-COO-013)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-014",
+"title": "Annulation de la validation (« Annuler la validation »)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-009"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:837-889` ; `BLL/HistorisationBll.cs:29-32` (ancien ID provisoire RG-COO-026, 027) · spec [PP] §5 ; [RA] RG-VA-04 ; [DC] encadré 02/11 (EX-COO-009) ; écran ECR-COO-02",
+"qs": [
+"Q-202"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-015",
+"title": "Traçabilité de la validation : nom de la personne et date",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-009",
+"EX-TRA-007",
+"EX-TRA-036"
+],
+"ecr": [],
+"src": "legacy `BLL/HistorisationBll.cs:29-32` (ancien ID provisoire RG-COO-026) · spec [PP] §5 ; [RA] §4, RG-VA-04 ; [DC] encadré 02/11, §13 (EX-COO-009, EX-TRA-036) ; EX-TRA-007",
+"qs": [
+"Q-003"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-016",
+"title": "La quantité n'est pas une condition de la validation (réception partielle)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-011"
+],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:837-889` (aucun contrôle de quantité ; ancien ID provisoire RG-COO-026) · spec [PP] §5, §6 ; [RA] RG-VA-03, cas 24 (EX-COO-011)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-017",
+"title": "Le rattachement manuel d'une réception inconnue par la Coordination vaut validation",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-010",
+"EX-COO-017"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec [README] §3 (Réceptions inconnues), H1 ; [DC] §7 ; [PP] §6 (EX-COO-010, EX-COO-017) ; écran ECR-REC-04 (règles de « Rattacher ») ; legacy `BLL/ReceptionListeAfficheBll.cs:533-555` (ancien ID provisoire RG-COO-022, association libre sans validation)",
+"qs": [
+"Q-201"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-018",
+"title": "Mode de rattachement enregistré (BL, VISUEL, MAIN)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-046"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec [RA] §4 (EX-COO-046) ; maquette ECR-REC-04, `data.js` (`rattache` BL / VISUEL / MAIN)",
+"qs": [
+"Q-234"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-019",
+"title": "Pastille « Validation admin » du dossier (calculée)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-013"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PC] p.1 ; [DC] §9 ; [README] §5 ; [DESIGN] §11 (EX-COO-013) ; écran ECR-COO-01 (`C.vaResume`)",
+"qs": [
+"Q-200",
+"Q-215"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-020",
+"title": "Statut du dossier « Validation admin faite » : calcul, pas de statut persisté",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-013"
+],
+"ecr": [],
+"src": "legacy `legacy-coordination.md §5.2` (« Aucune transition liée à la présence de préparation, à la quantité, ni au statut de l'instruction ») · spec [PC] p.1 ; [DC] §9 ; [DESIGN] §11 (EX-COO-013) ; maquette `data.js` (`C.majStatutVA`, statut interne `VALIDE`)",
+"qs": [
+"Q-200",
+"Q-215"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-021",
+"title": "Effet de la validation : n° d'affiche visible au suivi de production",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-014",
+"EX-EXI-053",
+"EX-EXI-060"
+],
+"ecr": [],
+"src": "legacy `SQL/p_s_adminSuiviRead.sql:64-67,72-115,117-136` ; `BLL/SuiviSuiviProductionBll.cs:112` (ancien ID provisoire RG-COO-030) · spec [PP] §3 ; [PC] p.1-2 ; [README] §3 (EX-COO-014) ; EX-EXI-053, EX-EXI-060",
+"qs": [
+"Q-202"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-022",
+"title": "Effet de la validation : picking (verrou)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-014",
+"EX-EXI-053"
+],
+"ecr": [],
+"src": "legacy `legacy-coordination.md §8` ; `WEB/Views/ZonePicking/Index.cshtml:91` (legacy-admin.md §2) · spec [PP] §3 ; [PC] p.1-2 (EX-COO-014) ; EX-EXI-053",
+"qs": [
+"Q-202"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-023",
+"title": "Effet de la validation : étiquette rack imprimée à la plateforme",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-014",
+"EX-TRA-024"
+],
+"ecr": [],
+"src": "legacy `WEB/Controllers/ReceptionListeAfficheController.cs:177,189-192` ; `WEB/Controllers/ZonePickingController.cs:133` (ancien ID provisoire RG-COO-027) · spec [PP] §3 ; [PC] p.1-2 (EX-COO-014 ; Q62) ; EX-TRA-024",
+"qs": [
+"Q-002",
+"Q-202"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-024",
+"title": "Effet de la validation : « reçue et associée » envoyé à Broadcast",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-053",
+"EX-TRA-039"
+],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimReceptionBll.cs:41-50,65-95` (ancien ID provisoire RG-COO-029 ; RG-REC-111) · spec [DC] §12 ; EX-TRA-039 ; EX-EXI-053 (mécanisme de retour de la cible « à définir »)",
+"qs": [
+"Q-231"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-025",
+"title": "Effet de la validation : sortie de la liste « à traiter »",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-014",
+"EX-EXI-053"
+],
+"ecr": [],
+"src": "legacy legacy-reception.md §« liste à traiter » (`legacy-reception.md:77`, ancien ID RG-REC provisoire) · spec [PP] §3 ; [PC] p.1-2 (EX-COO-014) ; EX-EXI-053",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-026",
+"title": "« Affiche reçue » de l'état des réservations n'attend plus la validation admin",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-048",
+"EX-EXI-055",
+"EX-REC-503"
+],
+"ecr": [],
+"src": "legacy `BLL/SuiviEtatReservationBll.cs:172-201` (ancien ID provisoire RG-COO-028) · spec [README] §3 ; [DC] §15 (EX-COO-048) ; ateliers EX-REC-503 (S L54) ; EX-EXI-055",
+"qs": [
+"Q-231"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-027",
+"title": "Effet « UM du fixe et du pliage » : non démontré, abandonné",
+"origine": "SUPPRIMÉE",
+"ex": [
+"EX-COO-014",
+"EX-EXI-054"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "spec [PP] §3 encadré correction ; [PC] p.1-2 (EX-COO-014) ; EX-EXI-054 · maquette ECR-COO-09a (« La libération ne valide rien et ne dépend pas de la validation admin »)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-028",
+"title": "Validation automatique par Circé à l'arrivée de la prépa : abandonnée",
+"origine": "SUPPRIMÉE",
+"ex": [
+"EX-COO-004",
+"EX-COO-006"
+],
+"ecr": [],
+"src": "spec [PP] §1, §2, §5, encadré 02/11 ; [PC] p.1 (EX-COO-004, EX-COO-006) ; contradictions 1 et 10 de specs-coordination",
+"qs": [
+"Q-200"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-029",
+"title": "Fusion d'affiches : la validation admin est conservée si l'une des sources l'avait",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-005"
+],
+"ecr": [],
+"src": "legacy `BLL/FusionAfficheBll.cs:127,163` (ancien ID provisoire RG-COO-031 ; confiance PROBABLE) · spec EX-TRA-005 (droit `fusion_affiche`) ; ECR-REC (Q-REC-19 : fusion hors maquette)",
+"qs": [
+"Q-201"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-030",
+"title": "Thème de la ligne changé après la validation : validation à refaire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-016"
+],
+"ecr": [],
+"src": "spec [RA] RG-VA-02, cas 13 ; [PP] §6, §9 (EX-COO-016)",
+"qs": [
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-031",
+"title": "Quantité de la ligne changée après la validation : alerte seule",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-016"
+],
+"ecr": [],
+"src": "spec [RA] RG-VA-02, cas 13 ; [PP] §6, §9 (EX-COO-016)",
+"qs": [
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-032",
+"title": "Ligne annulée après la validation : alerte à la Coordination",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-016",
+"EX-COO-037"
+],
+"ecr": [],
+"src": "spec [RA] RG-AT-06, RG-VA-02, cas 14 ; [PP] §6 (EX-COO-016, EX-COO-037)",
+"qs": [
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-033",
+"title": "Alerte « Validation admin à confirmer »",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-015",
+"EX-COO-047",
+"EX-REC-071"
+],
+"ecr": [
+"ECR-TRA-01"
+],
+"src": "spec [PC] p.2 ; [DC] §11 ; [README] §7 (EX-COO-015, EX-COO-047) ; EX-REC-071 · écran ECR-TRA-01 (`VALIDATION_ADMIN`)",
+"qs": [
+"Q-200",
+"Q-220"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-040",
+"title": "Statuts de l'instruction (déroulant) et table de transitions",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-020",
+"EX-EXI-030",
+"EX-EXI-070"
+],
+"ecr": [],
+"src": "legacy `WEB/Controllers/Preparation/PreparationController.cs:1267-1302` ; `REP/PreparationRepository.cs:1020-1111` ; `legacy-coordination.md §5.3` (ancien ID provisoire RG-COO-060) · spec [PC] p.1 ; [PP] §3, §12 (EX-COO-020) ; EX-EXI-030, EX-EXI-070",
+"qs": [
+"Q-004",
+"Q-200",
+"Q-206"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-041",
+"title": "Création et mise à jour de l'instruction à l'intégration (statut initial, renvois ignorés)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-020",
+"EX-EXI-018"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_instructions.sql:175-259,274-284,578-590` ; `SQL/p_integ_train_affiches.sql:155-221` (ancien ID provisoire RG-COO-047, RG-COO-049) · spec [PC] p.1 ; [PP] §3 ; EX-EXI-018 (EX-COO-020)",
+"qs": [
+"Q-216"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-042",
+"title": "Instruction OK automatique (règle de Nariman)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-018",
+"EX-COO-022",
+"EX-COO-508",
+"EX-EXI-032"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "legacy `SQL/p_batch_auto_instruction_ok.sql:19-37,156-166,193-249,300-307` ; `BLL/TrainListeInstructionBll.cs:333-340` (ancien ID provisoire RG-INT-042 c) · spec [PC] p.1 ; [PP] §1, §4 ; [RA] RG-IOK-01, RG-IOK-02 (EX-COO-018, EX-COO-022) ; ateliers EX-COO-508 ; EX-EXI-032 ; écran ECR-COO-01",
+"qs": [
+"Q-006",
+"Q-204",
+"Q-205"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-043",
+"title": "Répartition des thèmes à 100 % exigée pour l'Instruction OK",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-023",
+"EX-EXI-031",
+"EX-EXI-032"
+],
+"ecr": [],
+"src": "legacy `BLL/TrainListeInstructionBll.cs:333-341,472-480` ; `WEB/Controllers/Preparation/PreparationController.cs:1262-1265,1361-1365` (ancien ID provisoire RG-COO-063) · spec [PP] §4, §10 (EX-COO-023) ; EX-EXI-031, EX-EXI-032",
+"qs": [
+"Q-205"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-044",
+"title": "Instruction OK manuelle (après contrôle) par la Coordination",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-019",
+"EX-EXI-031",
+"EX-EXI-032"
+],
+"ecr": [
+"ECR-COO-01",
+"ECR-COO-02"
+],
+"src": "legacy `BLL/TrainListeInstructionBll.cs:199-263,321-383,392-437` ; `REP/PreparationRepository.cs:1020-1111` (ancien ID provisoire RG-COO-060, 061, 064) · spec [PC] p.1-2 ; [PP] §4 (EX-COO-019) ; EX-EXI-031, EX-EXI-032 ; écran ECR-COO-01, ECR-COO-02",
+"qs": [
+"Q-206"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-045",
+"title": "Annulation d'un dossier / d'une instruction (« Annulé »)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-019",
+"EX-COO-020",
+"EX-EXI-030"
+],
+"ecr": [],
+"src": "legacy `WEB/Controllers/PreparationDeroulants/PreparationDeroulantsController.cs:1507-1542` ; `legacy-coordination.md §5.3` (ancien ID provisoire RG-COO-060) · spec [PC] p.1-2 ; [PP] §4 (EX-COO-019, EX-COO-020) ; EX-EXI-030",
+"qs": [
+"Q-004"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-046",
+"title": "Retour arrière d'une instruction : effacement du calcul des trains",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-020",
+"EX-COO-021",
+"EX-EXI-030"
+],
+"ecr": [],
+"src": "legacy `SQL/p_u_statut_preparation.sql:24-64` ; `BLL/TrainListeInstructionBll.cs:372-380,396-403` (ancien ID provisoire RG-COO-064) · spec [PP] §3, §12 ; EX-EXI-030 (EX-COO-020, EX-COO-021)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-047",
+"title": "Instruction OK fige la saisie : annonceur, entretien, position",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-021",
+"EX-EXI-031"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "legacy `WEB/Controllers/PreparationDeroulants/PreparationDeroulantsController.cs:1096` ; `REP/PreparationRepository.cs:1046-1055,1084-1103` ; `BLL/TrainListeInstructionBll.cs:405-428` (ancien ID provisoire RG-COO-062) · spec [PP] §3 ; EX-EXI-031 (EX-COO-021) ; écran ECR-COO-02 (champ Entretien)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-048",
+"title": "Entretien : repris de Broadcast, 8 % par défaut, campagne contrôlée 15 %",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-023",
+"EX-COO-501",
+"EX-COO-508",
+"EX-EXI-075"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "legacy `SQL/p_integ_instructions.sql:175-259` (entretien 8 par défaut) ; `SQL/p_integ_preparation.sql:121,160` · spec ateliers EX-COO-501, EX-COO-508 (A14 slide 32 #3) ; [PP] §4, §10 (EX-COO-023) ; EX-EXI-075 ; écran ECR-COO-02",
+"qs": [
+"Q-224"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-049",
+"title": "Répartition par thème reprise de Broadcast et position 1 d'une campagne contrôlée",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-501",
+"EX-COO-508"
+],
+"ecr": [],
+"src": "spec ateliers EX-COO-508, EX-COO-501 (A14 slide 32 #3, S L77) ; [DC] ; contradiction ateliers 6 (re-saisie « bloquante mais non nécessaire »)",
+"qs": [
+"Q-205"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-050",
+"title": "Valeurs de position d'une instruction",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-019"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "legacy `SQL/p_u_associe_train.sql:132-157` ; `Enums.cs:274-286` (ancien ID provisoire RG-COO-065) · spec [PC] p.1-2 (« positions souvent début ou fin de train ») (EX-COO-019) ; écran ECR-COO-02 (Position A-D) ; bdd.md §6",
+"qs": [
+"Q-224"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-051",
+"title": "Grain de l'Instruction OK : atelier × plateforme",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-049"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "legacy `SQL/p_integ_instructions.sql:155-158,559-562` ; `BLL/TrainListeInstructionBll.cs:526-562,266-275` (ancien ID provisoire RG-COO-046, 061 ; note `Substring(8,1)` à corriger pour les ateliers 11/12) · spec [PP] §10 (EX-COO-049) ; écran ECR-COO-01",
+"qs": [
+"Q-206"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-052",
+"title": "Pas d'Instruction OK avant la prépa",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-026"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PC] p.1 ; [PP] §2 (« Pas d'Instruction OK avant la prépa (abandonné ») (EX-COO-026) ; écran ECR-COO-01 (colonne Instruction OK)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-053",
+"title": "Renvoi de Broadcast après l'Instruction OK ou l'export : ignoré mais signalé",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-022",
+"EX-EXI-033"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_instructions.sql:578-590` ; `SQL/p_integ_train_affiches.sql:38-48,119-138` (ancien ID provisoire RG-COO-047, 049) · spec [PP] §4, §9, §10 (EX-COO-022) ; EX-EXI-033 ; maquette `app.js` `renvoiPrepa`",
+"qs": [
+"Q-204",
+"Q-216"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-054",
+"title": "Renvoi de prépa avant l'export : réouverture de l'Instruction OK",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-022",
+"EX-COO-044"
+],
+"ecr": [],
+"src": "spec [PP] §2 jalon 5, §10 (EX-COO-044, EX-COO-022) ; maquette `app.js` `renvoiPrepa` (§1.4 point 9) ; `maquettes-autres-modules.md §A`",
+"qs": [
+"Q-204"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-055",
+"title": "Écart Broadcast / Circé : calcul",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-028",
+"EX-EXI-019"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PC] p.2 ; [PP] encadré 02/11 ; [RA] RG-AT-05 (EX-COO-028) ; écran ECR-COO-01 (`qteBCInfo{bc,circe,date}`) ; EX-EXI-019 (quantité non recalculée à la bascule, écart non signalé : défaut legacy corrigé)",
+"qs": [
+"Q-206",
+"Q-209",
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-056",
+"title": "« Appliquer la version Broadcast » (annule et remplace)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-019",
+"EX-COO-028",
+"EX-TRA-514"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "spec [PC] p.2 ; [PP] encadré 02/11 (EX-COO-019, EX-COO-028) ; écran ECR-COO-02 (« Appliquer la version Broadcast ») ; ateliers EX-TRA-514 (« annule et remplace »)",
+"qs": [
+"Q-225"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-057",
+"title": "« Demander une correction à Broadcast » (mail à la Pré-Prod)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-019",
+"EX-COO-028",
+"EX-TRA-030",
+"EX-TRA-039"
+],
+"ecr": [
+"ECR-COO-04"
+],
+"src": "spec [PC] p.2 ; [PP] encadré 02/11 ; EX-TRA-030, EX-TRA-039 (EX-COO-019, EX-COO-028) ; écran ECR-COO-04",
+"qs": [
+"Q-219",
+"Q-220"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-058",
+"title": "Écart dû à « reste en place » : constat puis Instruction OK",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-019",
+"EX-COO-023",
+"EX-COO-502",
+"EX-COO-509"
+],
+"ecr": [],
+"src": "spec [PP] §4, §10 ; ateliers EX-COO-502, EX-COO-509 (A14 slide 32 #4) (EX-COO-019, EX-COO-023)",
+"qs": [
+"Q-209",
+"Q-224"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-059",
+"title": "Commentaire de prépa libre : affichage et proposition de position",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-023",
+"EX-EXI-031"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [PP] §4, §10 ; EX-EXI-031 (EX-COO-023) ; écran ECR-COO-01 (commentaires de prépa MOCK, `Visuel B en tête de train…`)",
+"qs": [
+"Q-224"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-060",
+"title": "Un seul écran de liste d'instructions, filtre « À faire (Coordination) »",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-020",
+"EX-COO-050",
+"EX-COO-504"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "legacy `BLL/TrainListeInstructionBll.cs:199-275` ; `WEB/Views/Shared/_MenuNew.cshtml:84-87` (ancien ID provisoire RG-COO-061) · spec [README] §3, [DESIGN] §11 (EX-COO-050, EX-COO-020) ; ateliers EX-COO-504 (APPFR-1143) ; écran ECR-COO-01",
+"qs": [
+"Q-200",
+"Q-206"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-061",
+"title": "Historique de tout changement de statut d'instruction / de dossier",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-034"
+],
+"ecr": [],
+"src": "legacy `BLL/HistorisationBll.cs:16-127` (ancien ID provisoire RG-INT-046) · spec [README] §2.6 ; EX-TRA-034 ; règle projet CLAUDE.md §6 ; bdd.md §5 (absence d'historique de statut pour la coordination)",
+"qs": [
+"Q-004"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-062",
+"title": "Dossier annulé : sans objet pour la validation admin et l'Instruction OK",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-013"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "maquette ECR-COO-01 (statuts affichés, dossier annulé WIS) ; [PC] p.1 (Annulé) (EX-COO-013)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-063",
+"title": "Envoi de la prépa : statut de préparation du dossier",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-026",
+"EX-EXI-016",
+"EX-EXI-070",
+"EX-EXI-072"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_preparation.sql:100-147` ; `BLL/BatchAlimBll.cs:91-124` · spec [PC] p.1 ; [PP] §1, §2 (EX-COO-026) ; EX-EXI-016, EX-EXI-070, EX-EXI-072",
+"qs": [
+"Q-200",
+"Q-215"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-064",
+"title": "La prépa n'est plus le feu vert de la validation admin",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-026",
+"EX-EXI-053"
+],
+"ecr": [],
+"src": "spec [PC] p.1 ; [PP] §1, §2 (EX-COO-026) ; EX-EXI-053",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-066",
+"title": "Alerte « Préparation non reçue » (deadline jeudi S-2 16 h)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-027",
+"EX-COO-047",
+"EX-EXI-077"
+],
+"ecr": [
+"ECR-COO-01",
+"ECR-TRA-01"
+],
+"src": "spec [PC] p.2 ; [DESIGN] §2.2 (EX-COO-027, EX-COO-047) ; EX-EXI-077 ; écran ECR-TRA-01 (`IP_MANQUANTES`), ECR-COO-01 (Deadline)",
+"qs": [
+"Q-220",
+"Q-222"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-067",
+"title": "Alerte « Écart Broadcast / Circé »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-028",
+"EX-COO-047"
+],
+"ecr": [
+"ECR-TRA-01"
+],
+"src": "spec [PC] p.2 ; [PP] encadré 02/11 ; [RA] RG-AT-05 (EX-COO-028, EX-COO-047) ; écran ECR-TRA-01 (`ECART_BC` → serious)",
+"qs": [
+"Q-220"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-068",
+"title": "Alerte « Thème modifié dans Broadcast » et « Reprendre la version Broadcast »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-029",
+"EX-COO-030",
+"EX-COO-047",
+"EX-THM-503"
+],
+"ecr": [
+"ECR-COO-02",
+"ECR-THM-03"
+],
+"src": "spec [PC] p.2 ; [README] §2.1, §3 (EX-COO-029, EX-COO-047, EX-COO-030) ; écran ECR-THM-03, ECR-COO-02 ; EX-THM-503 (ateliers)",
+"qs": [
+"Q-210",
+"Q-220"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-069",
+"title": "Vérification des thèmes proches entre dossiers",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-030",
+"EX-COO-513",
+"EX-EXI-079",
+"EX-THM-502"
+],
+"ecr": [
+"ECR-THM-01"
+],
+"src": "spec [README] §2.1, §3 (PP-08, PP-09) (EX-COO-030) ; ateliers EX-COO-513, EX-THM-502 (A14 slide 30 #2) ; écran ECR-THM-01 ; `maquettes-autres-modules.md §4` ; EX-EXI-079",
+"qs": [
+"Q-210",
+"Q-220"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-070",
+"title": "Vérification des annonceurs proches",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-030"
+],
+"ecr": [
+"ECR-ADM-05",
+"ECR-THM-02"
+],
+"src": "spec [README] §2.1, §3 (EX-COO-030) ; écran ECR-THM-02 ; ECR-ADM-05 (seuil, regroupements)",
+"qs": [
+"Q-220"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-071",
+"title": "Alerte « Réception sur un dossier sans IP »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-031",
+"EX-COO-047",
+"EX-COO-512",
+"EX-REC-042",
+"EX-REC-065",
+"EX-REC-516"
+],
+"ecr": [
+"ECR-TRA-01"
+],
+"src": "spec [PC] p.2 ; [DC] §7, §11 (EX-COO-031, EX-COO-047) ; EX-REC-042, EX-REC-065 ; ateliers EX-COO-512, EX-REC-516/519/520 (A14 slide 26, 34) ; écran ECR-TRA-01 (`SANS_IP`)",
+"qs": [
+"Q-220"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-072",
+"title": "Alertes « Réception inconnue à identifier » et « Dossier introuvable » (côté Coordination)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-017",
+"EX-COO-047",
+"EX-REC-036",
+"EX-REC-041",
+"EX-REC-066",
+"EX-REC-067"
+],
+"ecr": [
+"ECR-REC-04",
+"ECR-TRA-01"
+],
+"src": "spec [PP] §6 ; [PC] p.2 (EX-COO-017, EX-COO-047) ; EX-REC-036, EX-REC-041, EX-REC-066, EX-REC-067 ; écran ECR-REC-04, ECR-TRA-01",
+"qs": [
+"Q-220",
+"Q-221"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-073",
+"title": "Alerte « Rajout après préparation » (mail à la liste de distribution)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-ADM-504",
+"EX-COO-503",
+"EX-EXI-078",
+"EX-FIX-503",
+"EX-TRA-030"
+],
+"ecr": [
+"ECR-ADM-04",
+"ECR-TRA-01"
+],
+"src": "spec ateliers EX-COO-503, EX-ADM-504, EX-FIX-503 (A14 slide 33 #1, S L71) ; [DC] §11 (H3) ; EX-TRA-030 ; écran ECR-ADM-04, ECR-TRA-01 ; EX-EXI-078",
+"qs": [
+"Q-220",
+"Q-222"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-074",
+"title": "Alerte « Dernière minute sur fichier envoyé » (DM)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-503",
+"EX-COO-512",
+"EX-EXI-078"
+],
+"ecr": [
+"ECR-TRA-01"
+],
+"src": "spec ateliers EX-COO-503, EX-COO-512 (A14 slide 33, 34) ; EX-EXI-078 ; écran ECR-TRA-01 (`DM_FICHIER`, critical), `maquettes-autres-modules.md §A` point 3",
+"qs": [
+"Q-222"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-075",
+"title": "Menu « Alertes Pré-Prod »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-030",
+"EX-COO-512",
+"EX-COO-513",
+"EX-THM-502"
+],
+"ecr": [
+"ECR-TRA-01"
+],
+"src": "spec ateliers EX-COO-513, EX-THM-502, EX-COO-512 (A14 slides 30, 34 ; S L66) ; [README] §2.1 (EX-COO-030) ; écran ECR-TRA-01",
+"qs": [
+"Q-220"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-076",
+"title": "Calendrier du process : deadlines",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-044",
+"EX-EXI-077"
+],
+"ecr": [],
+"src": "spec [PP] §2 ; [PC] p.2 ; EX-EXI-077 ; maquette `M.deadlinePP` (EX-COO-044) ; legacy `legacy-coordination.md` RG-COO-070 (aucune restriction horaire)",
+"qs": [
+"Q-220",
+"Q-222"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-080",
+"title": "Une seule ligne attendue active par clé (RG-AT-01)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-032",
+"EX-EXI-013",
+"EX-EXI-014"
+],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:166-167,178-179,184-188,239-263,273-289` (ancien ID provisoire RG-COO-005, 006, 008) · spec [RA] §5 RG-AT-01 ; [DC] §12 ; [PP] §7 R1 (EX-COO-032) ; bdd.md §2.3, §7.5 ; EX-EXI-013, EX-EXI-014",
+"qs": [
+"Q-207",
+"Q-208",
+"Q-226"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-081",
+"title": "Rapprochement par identifiants, jamais par texte (RG-AT-02)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-033",
+"EX-EXI-013"
+],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:134-136,187` ; `BLL/BatchAlimGetInstructionBc.cs:96-117` (ancien ID provisoire RG-COO-004) · spec [RA] §5 RG-AT-02 ; [DC] §12 (EX-COO-033) ; EX-EXI-013",
+"qs": [
+"Q-208",
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-082",
+"title": "Ligne « Broadcast » : créée ou mise à jour à chaque lecture (RG-AT-03)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-034",
+"EX-EXI-013"
+],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:126-130,157-188,194-235` (ancien ID provisoire RG-COO-003) · spec [RA] §5 RG-AT-03 (EX-COO-034) ; EX-EXI-013",
+"qs": [
+"Q-207",
+"Q-209"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-083",
+"title": "Semaines ISO partout, fenêtre S à S+8 en dates",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-038",
+"EX-COO-042",
+"EX-EXI-013"
+],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:23-25,85-105,153-237` ; `SQL/Functions/Fn_GetPrepaAffiche.sql:42,277,315` ; `BLL/BatchAlimGetInstructionBc.cs:22-34,43-90` (ancien ID provisoire RG-COO-002, RG-INT-010) · spec [RA] §5 RG-AT-07 (EX-COO-038, EX-COO-042) ; EX-EXI-013",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-084",
+"title": "Visuel provisoire avant les IP (RG-AT-04)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-035",
+"EX-EXI-014",
+"EX-EXI-057",
+"EX-REC-506",
+"EX-THM-501"
+],
+"ecr": [],
+"src": "spec [RA] §5 RG-AT-04, cas 1-3 ; [PP] §7 R3 (EX-COO-035) ; EX-EXI-014, EX-EXI-057 ; ateliers EX-REC-506 (A14 slide 24 #2) ; EX-THM-501",
+"qs": [
+"Q-208"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-085",
+"title": "Saisie des IP : fermeture du provisoire et déplacement de l'affiche rattachée",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-035",
+"EX-REC-504",
+"EX-THM-504"
+],
+"ecr": [],
+"src": "spec [RA] §5 RG-AT-04, cas 1-3 ; [PP] §7 R3, R5 (EX-COO-035) ; ateliers EX-REC-504 (A14 slide 31 #5) ; EX-THM-504",
+"qs": [
+"Q-208"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-086",
+"title": "Arrivée de la prépa : la ligne bascule en source PREPA, les liens ne bougent pas (RG-AT-05)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-036",
+"EX-EXI-019"
+],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:291-354` (ancien ID provisoire RG-COO-009) · spec [RA] §5 RG-AT-05 ; [PP] §7 R4 (EX-COO-036) ; EX-EXI-019",
+"qs": [
+"Q-207",
+"Q-212"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-087",
+"title": "Disparition ou annulation d'une ligne : ANNULEE, jamais supprimée (RG-AT-06)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-037",
+"EX-TRA-032"
+],
+"ecr": [],
+"src": "legacy `legacy-coordination.md §5.1` (« Annulée / supprimée : aucune transition ») · spec [RA] §5 RG-AT-06, cas 14 ; [PP] §6, §7 R2 (EX-COO-037) ; EX-TRA-032",
+"qs": [
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-088",
+"title": "Lien affiche ↔ ligne : plusieurs-à-plusieurs avec quantité, retiré et recréé avec qui/quand (RG-AT-08)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-039",
+"EX-EXI-056",
+"EX-REC-039"
+],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:533-555,577-586` ; `BLL/HistorisationBll.cs:68-76` ; `BLL/LivraisonAfficheService.cs:427-486` (ancien ID provisoire RG-COO-020, 022, 023 ; RG-REC-091, 092) · spec [RA] §4, §5 RG-AT-08 ; [PP] §7 ; [DC] §13 (EX-COO-039) ; EX-EXI-056 ; EX-REC-039",
+"qs": [
+"Q-202",
+"Q-213"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-089",
+"title": "Une ligne attendue n'est jamais supprimée, elle est fermée avec une date (R2)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-037",
+"EX-TRA-032",
+"EX-TRA-042"
+],
+"ecr": [],
+"src": "spec [PP] §7 R2 ; [RA] §5 (EX-COO-037) ; EX-TRA-032, EX-TRA-042",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-090",
+"title": "Dédoublonnage initial des lignes attendues (reprise)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-041"
+],
+"ecr": [],
+"src": "spec [RA] §2, §4 (EX-COO-041) ; legacy RG-COO-004, 005, 006, 008 (causes) ; bdd.md §10 (données legacy probablement incohérentes)",
+"qs": [
+"Q-213",
+"Q-226"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-091",
+"title": "Copie de l'état des réservations Broadcast : image par dossier, lignes plus vues fermées",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-043",
+"EX-COO-046",
+"EX-EXI-012"
+],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimGetInstructionBc.cs:47-65,92-129` ; `REP/LivraisonAfficheRepository.cs:328-361,364-369` (ancien ID provisoire RG-COO-001 ; RG-INT-011) · spec [RA] §4 ; [PP] §11 (EX-COO-043, EX-COO-046) ; EX-EXI-012",
+"qs": [
+"Q-005",
+"Q-211"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-092",
+"title": "Colonnes de Broadcast conservées dans la copie",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-046",
+"EX-EXI-012"
+],
+"ecr": [],
+"src": "spec [RA] §4 ; bdd.md §7.5 (EX-COO-046) ; EX-EXI-012 ; legacy `BLL/BatchAlimGetInstructionBc.cs:96-117`",
+"qs": [
+"Q-208"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-093",
+"title": "Exclusions de l'alimentation : statut « Envoyé », plateformes Derichebourg, supports",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:126-130,157-188` (ancien ID provisoire RG-COO-003) · spec [RA] §5 ; bdd.md §2.3",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-094",
+"title": "Trois sources de lignes attendues : répartition fixe/pliage, faces du déroulant, copie Broadcast",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-013",
+"EX-EXI-019"
+],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:157-188,194-235` (ancien ID provisoire RG-COO-003) · spec [RA] §5 RG-AT-03/05 ; EX-EXI-013, EX-EXI-019",
+"qs": [
+"Q-212"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-095",
+"title": "Lignes « bandeau » dédiées (supports 100, 102, 105, 107)",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:356-546` (ancien ID provisoire RG-COO-010) · spec [RA] §5 RG-AT-01 (bandeau dans la clé)",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-096",
+"title": "Renseignement de la DA chapeau des lignes attendues",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:548-562` (ancien ID provisoire RG-COO-011) · spec [RA] §5 RG-AT-01",
+"qs": [
+"Q-207"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-097",
+"title": "Plus de drapeau « ARecevoir » à réarmer : le reçu est calculé",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-REC-050",
+"EX-REC-051",
+"EX-REC-052"
+],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:139-149,267-271` ; `SQL/Functions/Fn_GetPrepaAffiche.sql:44-103,106-221,224-343` (ancien ID provisoire RG-COO-007, 013, 023) · spec [DC] §9 (« ce qui se calcule ne se coche jamais ») ; EX-REC-050, EX-REC-051, EX-REC-052 ; bdd.md §4.3",
+"qs": [
+"Q-213"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-098",
+"title": "Même thème sur plusieurs dossiers : une ligne par dossier",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045",
+"EX-EXI-058",
+"EX-REC-048"
+],
+"ecr": [],
+"src": "spec [PP] §6 ; [RA] cas 21-25 (EX-COO-045) ; EX-EXI-058 (3) ; EX-REC-048",
+"qs": [
+"Q-208"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-099",
+"title": "Affiches en plus pour un autre dossier : rattachement manuel du seul surplus",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045",
+"EX-EXI-058"
+],
+"ecr": [],
+"src": "spec [PP] §6 ; [RA] cas 21-25 (EX-COO-045) ; EX-EXI-058",
+"qs": [
+"Q-202"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-100",
+"title": "Dossier sur deux plateformes : une ligne par plateforme",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045"
+],
+"ecr": [
+"ECR-PIL-03"
+],
+"src": "spec [PP] §6 ; [RA] cas 21-25 (EX-COO-045) ; écran ECR-PIL-03 (données MOCK)",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-101",
+"title": "Dossier multi-semaines : quantité comptée une fois",
+"origine": "NOUVELLE",
+"ex": [
+"EX-TRA-515"
+],
+"ecr": [
+"ECR-PIL-03"
+],
+"src": "ateliers EX-TRA-515 (S L31, ANO-02) ; maquette ECR-PIL-03 (données MOCK, « quantité d'un dossier sur 2 semaines comptée une fois ») ; bdd.md §2.4",
+"qs": [
+"Q-207"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-102",
+"title": "Atomicité et idempotence de l'alimentation",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_Alimentation_tf_prepa_affiche.sql:151,566-588` ; `BLL/BatchAlimGetInstructionBc.cs` (ancien ID provisoire RG-COO-012 ; confiance INCERTAINE) · règle projet CLAUDE.md §6 (atomicité) ; spec [RA] §5",
+"qs": [
+"Q-005",
+"Q-211"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-103",
+"title": "Planification de l'interrogation de Broadcast",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-043",
+"EX-EXI-012",
+"EX-TRA-039"
+],
+"ecr": [],
+"src": "spec [PP] §11 ; [DC] §12 ; EX-TRA-039 (EX-COO-043) ; EX-EXI-012 (« 2 màj/jour » atelier 14 vs toutes les 2 h) ; legacy RG-INT-013 (aucun appelant dans le dépôt)",
+"qs": [
+"Q-005",
+"Q-211"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-104",
+"title": "Données reçues de Broadcast (cinq flux)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-043",
+"EX-TRA-039"
+],
+"ecr": [],
+"src": "spec [PP] §11 ; [DC] §12 ; relevé §12 (EX-COO-043) ; EX-TRA-039 ; legacy RG-INT-006, 007",
+"qs": [
+"Q-005",
+"Q-211"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-105",
+"title": "Ligne de production du suivi de prod : n'existe qu'avec la prépa (RG-SP-01)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-040",
+"EX-EXI-060"
+],
+"ecr": [],
+"src": "spec [RA] §5 RG-SP-01 (EX-COO-040) ; EX-EXI-060 ; legacy `SQL/p_s_adminSuiviRead.sql:64-67`",
+"qs": [
+"Q-208",
+"Q-212"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-106",
+"title": "Suivi de production : affiches reçues, répartitions, faces, limité aux ateliers de l'utilisateur",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-060"
+],
+"ecr": [],
+"src": "legacy `SQL/p_s_adminSuiviRead.sql:64-67,72-115,117-136` ; `BLL/SuiviSuiviProductionBll.cs:112` (ancien ID provisoire RG-COO-030) · spec EX-EXI-060 ; [PP] §3",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-107",
+"title": "État des réservations vivant : N° d'affiche ✓ / •, « Où en est-il » et grain",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-048",
+"EX-EXI-010",
+"EX-EXI-011"
+],
+"ecr": [
+"ECR-PIL-03"
+],
+"src": "spec [README] §3 ; [DC] §15 (EX-COO-048) ; écran ECR-PIL-03 ; legacy `BLL/SuiviEtatReservationBll.cs:72-104,172-201` ; EX-EXI-010, EX-EXI-011",
+"qs": [
+"Q-200",
+"Q-231"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-108",
+"title": "État des réservations : sites autorisés et plateformes gérées",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-003",
+"EX-EXI-010",
+"EX-TRA-006"
+],
+"ecr": [],
+"src": "legacy `BLL/SuiviEtatReservationBll.cs:72-104` ; `REP/SuiviEtatReservationRepository.cs:22-36` (ancien ID provisoire RG-COO-032) · spec EX-TRA-006 ; EX-EXI-003, EX-EXI-010",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-109",
+"title": "Variante interactive : lecture Broadcast déclenchée depuis l'écran Réception (API PrepaAfficheBC)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-012"
+],
+"ecr": [],
+"src": "legacy `BLL/LivraisonAfficheService.cs:864-926` ; `WEB/Web.config:52` (ancien ID provisoire RG-INT-012, RG-REC-081) · spec EX-EXI-012",
+"qs": [
+"Q-228"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-115",
+"title": "Prérequis des flux Broadcast → Circé et ordre fixe",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-039"
+],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimBll.cs:34-50,91-124,129-163` ; `REP/BatchAlimRepository.cs:46-57` (ancien ID provisoire RG-COO-040 ; RG-INT-001, RG-INT-002) · spec EX-TRA-039",
+"qs": [
+"Q-005"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-116",
+"title": "Journal de chargement par flux et échec : état partiel assumé et rejouable",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimBll.cs:47-49,55-86` ; `REP/BatchAlimRepository.cs:29-30,63-70,89-97` (ancien ID provisoire RG-INT-002) · règle projet CLAUDE.md §6",
+"qs": [
+"Q-005"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-117",
+"title": "Délai d'attente, journalisation et secrets des traitements d'échange",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-038"
+],
+"ecr": [],
+"src": "legacy `REP/BatchAlimRepository.cs:38` (`Int32.MaxValue`) ; `ToolBll.cs:57-87` (ancien ID provisoire RG-INT-008) · spec EX-TRA-038 ; Q-010",
+"qs": [
+"Q-010"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-118",
+"title": "Flux destinataires : seules les adresses de livraison actuelles ou futures",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-015",
+"EX-TRA-512",
+"EX-TRA-514"
+],
+"ecr": [],
+"src": "legacy `REP/BatchAlimRepository.cs:102-110,116-156` ; `BLL/BatchAlimBll.cs:60-74` (ancien ID provisoire RG-INT-003) · spec ateliers EX-TRA-512, EX-TRA-514 (A15 slide 15 #2, S L59, L69) ; EX-EXI-015",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-119",
+"title": "Intégration des destinataires par type de destination : création et mise à jour, jamais de suppression",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-015"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_destinataire.sql:31-86,152-206,273-327,394-448,514-568` ; `circe-develop/docs/REVIEW_Database_proc.md:161-163` (ancien ID provisoire RG-INT-004) · spec EX-EXI-015",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-120",
+"title": "Transporteur et tarif par défaut pour chaque couple destinataire × atelier",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_integ_destinataire.sql:644-700` (ancien ID provisoire RG-INT-005) · bdd.md §6",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-121",
+"title": "Routage d'une prépa fixe/pliage vers un atelier et création des lignes à traiter",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-046",
+"EX-EXI-017"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_preparation.sql:100-147,239-249,260-264` (ancien ID provisoire RG-COO-041) · spec EX-EXI-017 (EX-COO-046)",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-122",
+"title": "Une prépa fixe/pliage renvoyée n'est intégrée que si la précédente est annulée",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-043",
+"EX-EXI-016",
+"EX-EXI-020"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_preparation.sql:31-54,236-247` (ancien ID provisoire RG-COO-042) · spec EX-EXI-016, EX-EXI-020 ; [PP] §11 (EX-COO-043)",
+"qs": [
+"Q-216"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-123",
+"title": "Suivi d'intégration par groupe de préparation",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_integ_preparation.sql:251-291` (ancien ID provisoire RG-COO-043) · bdd.md §5",
+"qs": [
+"Q-228"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-124",
+"title": "Quantités d'entretien des lignes fixe/pliage réalignées selon le jour de la semaine",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-501",
+"EX-EXI-075"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_preparation.sql:15-24,296-331` (ancien ID provisoire RG-COO-044) · spec ateliers EX-COO-501 ; EX-EXI-075",
+"qs": [
+"Q-224"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-125",
+"title": "Accusé d'intégration vers Broadcast après la prépa",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-016"
+],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimBll.cs:91-124` ; `REP/BatchAlimRepository.cs:162-266` (ancien ID provisoire RG-COO-040 ; RG-INT-006) · spec EX-EXI-016",
+"qs": [
+"Q-005"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-126",
+"title": "Atelier déroulant déduit de la surface et du site, sinon 0",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-018"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_instructions.sql:122-131,506-515` ; `SQL/p_integ_train_affiches.sql:68-76` (ancien ID provisoire RG-COO-045) · spec EX-EXI-018",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-127",
+"title": "Code d'instruction : année + semaine + « C0 » + atelier + dossier",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_integ_instructions.sql:155-158,559-562` ; `SQL/p_integ_train_affiches.sql:104-109` ; `BLL/TrainListeInstructionBll.cs:526-562` (ancien ID provisoire RG-COO-046) · bdd.md §3",
+"qs": [
+"Q-206"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-128",
+"title": "Type de préparation des visuels d'instruction forcé",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_integ_instructions.sql:142-153,543-554` (ancien ID provisoire RG-COO-048 ; confiance INCERTAINE)",
+"qs": [
+"Q-228"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-129",
+"title": "Intégration des faces de trains : ne touche pas aux faces/instructions déjà préparées",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-021",
+"EX-EXI-018"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_train_affiches.sql:38-48,119-138,155-221,225-267,278-289` (ancien ID provisoire RG-COO-049) · spec [PP] §3 (EX-COO-021) ; EX-EXI-018",
+"qs": [
+"Q-216"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-130",
+"title": "Reprise de l'afficheur des faces « dernière minute » pour un même panel",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_integ_train_affiches.sql:111-117,141-151,270-274,314-339` (ancien ID provisoire RG-COO-050)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-131",
+"title": "Flux trains/instructions : verrou de lot, copie, intégration, purge côté PEX",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimBll.cs:129-163` ; `REP/BatchAlimRepository.cs:271-333,432-448,600-672,698-714` ; `SQL/p_integ_deroulants.sql:21-30` (ancien ID provisoire RG-INT-007)",
+"qs": [
+"Q-005"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-132",
+"title": "« Rafraîchir un dossier » : relance manuelle de l'export Broadcast des instructions",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-020"
+],
+"ecr": [],
+"src": "legacy `REP/AdminContratRepository.cs:21-37` ; `WEB/Views/Shared/_MenuNew.cshtml:176-179` (ancien ID provisoire RG-COO-051 ; RG-ADM-051) · spec EX-EXI-020",
+"qs": [
+"Q-201",
+"Q-228"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-133",
+"title": "Instruction OK automatique du legacy : détail des règles du batch (RG1 à RG6)",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_batch_auto_instruction_ok.sql:19-37,156-166,193-249,300-307` (ancien ID provisoire RG-INT-042 c) ; bdd.md §8 (RG1–RG6)",
+"qs": [
+"Q-006",
+"Q-205"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-134",
+"title": "Retour vers Broadcast : population exportée, filtre et séquence (« reçue et associée »)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-053",
+"EX-TRA-039"
+],
+"ecr": [],
+"src": "legacy `BLL/BatchAlimReceptionBll.cs:30-57,59-103` ; `REP/BatchAlimReceptionRepository.cs:27-135` ; `SQL/p_batch_alimentation_circe_pex_reception.sql:33-178` (ancien ID provisoire RG-INT-020, 021, 022 ; RG-REC-110, 111) · spec EX-TRA-039 ; EX-EXI-053",
+"qs": [
+"Q-005",
+"Q-227",
+"Q-231"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-140",
+"title": "Déblocage : la recherche exige un n° de préparation ou un n° de dossier",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/AdminPreparationDeblocageBll.cs:86-89` ; `WEB/Views/Shared/_MenuNew.cshtml:166-169` (ancien ID provisoire RG-COO-080)",
+"qs": [
+"Q-217"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-141",
+"title": "Préparations débloquables filtrées par les règles d'inclusion/exclusion de l'atelier de l'utilisateur",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/AdminPreparationDeblocageBll.cs:91-149,338-351` ; `REP/AdminPreparationDeblocageRepository.cs:115-126` ; `circe-develop/docs/regles-inclusion-exclusion-deblocage.md:53-85` (ancien ID provisoire RG-COO-081) · bdd.md §6",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-142",
+"title": "Statut d'avancement de la préparation (`StatutPrepa`) : UM ou TRAIN",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-032"
+],
+"ecr": [],
+"src": "legacy `BLL/AdminPreparationDeblocageBll.cs:154-250` ; `REP/AdminPreparationDeblocageRepository.cs:148-184` ; `WEB/Views/AdminPreparationDeblocage/Index.cshtml:35,37` (ancien ID provisoire RG-COO-082) · spec EX-EXI-032",
+"qs": [
+"Q-218"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-143",
+"title": "Blocage du déblocage côté serveur : une UM au statut ≥ 6 (Préparé) bloque",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/AdminPreparationDeblocageBll.cs:263-267` ; `SQL/p_s_controle_rendumain.sql:9-21` ; `WEB/Controllers/AdminPreparationDeblocageController.cs:75-96` (ancien ID provisoire RG-COO-083)",
+"qs": [
+"Q-217"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-144",
+"title": "Blocage du déblocage côté serveur pour un groupe TRAIN (contrôle des faces)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-032",
+"EX-EXI-045"
+],
+"ecr": [],
+"src": "legacy `BLL/AdminPreparationDeblocageBll.cs:263-267` (aucun contrôle) · spec EX-EXI-032 (« uniquement si la prod n'est pas lancée »), EX-EXI-045",
+"qs": [
+"Q-217",
+"Q-218"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-145",
+"title": "Effet du déblocage : annulation côté Broadcast et Circé, atomicité côté Circé",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-020"
+],
+"ecr": [],
+"src": "legacy `BLL/AdminPreparationDeblocageBll.cs:252-333` ; `REP/AdminPreparationDeblocageRepository.cs:63-107` ; `SQL/p_u_statut_repart_deblocage.sql:30-87` ; `BLL/HistorisationBll.cs:118-127` (ancien ID provisoire RG-COO-084 ; RG-INT-044) · spec EX-EXI-020",
+"qs": [
+"Q-217",
+"Q-218"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-146",
+"title": "Trace du déblocage : qui, quand, quoi",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `SQL/p_i_th_repart_annule` ; `BLL/HistorisationBll.cs:118-127` (ancien ID provisoire RG-COO-084) · bdd.md §5",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-147",
+"title": "Mail de déblocage : destinataires de la plateforme, envoi non bloquant",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-030"
+],
+"ecr": [],
+"src": "legacy `BLL/AdminPreparationDeblocageBll.cs:252-333` (ancien ID provisoire RG-COO-084 ; RG-ADM-042) · spec EX-TRA-030 (« Déblocages » mail existant)",
+"qs": [
+"Q-219"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-148",
+"title": "Prépa renvoyée après déblocage : intégrée normalement",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-016",
+"EX-EXI-020",
+"EX-EXI-045"
+],
+"ecr": [],
+"src": "legacy `SQL/p_integ_preparation.sql:31-54,236-247` ; spec EX-EXI-016, EX-EXI-020 ; EX-EXI-045",
+"qs": [
+"Q-216"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-149",
+"title": "Suivi des déblocages : période et libellés",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `BLL/AdminSuiviDeblocageBll.cs:25-65,76-100` ; `WEB/Views/Shared/_MenuNew.cshtml:171-174` (ancien ID provisoire RG-COO-086)",
+"qs": [
+"Q-227"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-150",
+"title": "Ancien écran « Répartitions déblocables » (Sybase AMT) : ne pas reproduire le déblocage des lignes non cochées",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `WEB/Controllers/Repartition/RepartitionController.cs:218-242,253-326,328-351` ; `BLL/RepartitionService.cs:35-53` ; `REP/RepartitionRepository.cs:87-136` (ancien ID provisoire RG-COO-085 ; confiance PROBABLE)",
+"qs": [
+"Q-228"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-151",
+"title": "« Rendre la main à la Pré-Prod » (fixe) et déblocage : consignes de cohérence",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-045"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "maquette ECR-COO-09b ; spec EX-EXI-045 ; ateliers contradiction 1 ; `maquettes-reception-coordination.md` (Q-COO-18)",
+"qs": [
+"Q-217"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-152",
+"title": "Droits du déblocage et de son suivi",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `WEB/Views/Shared/_MenuNew.cshtml:155-179` ; `BLL/CommunBll.cs:31-40` ; `legacy-admin.md §B` (ancien ID provisoire RG-COO-091, 090)",
+"qs": [
+"Q-003",
+"Q-201",
+"Q-217"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-160",
+"title": "Historique des actions de coordination",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-034",
+"EX-TRA-036"
+],
+"ecr": [],
+"src": "legacy `BLL/HistorisationBll.cs:16-127` (ancien ID provisoire RG-INT-046) ; bdd.md §5 · spec EX-TRA-034, EX-TRA-036",
+"qs": [
+"Q-004"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-165",
+"title": "Droits contrôlés côté service (plus seulement masqués)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-001",
+"EX-TRA-002"
+],
+"ecr": [],
+"src": "legacy `BLL/CommunBll.cs:276-303` ; recherche `[Authorize]`/`EstAutorise(` dans `WEB/Controllers` : 0 occurrence (ancien ID provisoire RG-COO-090 ; RG-ADM-015) · spec EX-TRA-002 ; EX-TRA-001",
+"qs": [
+"Q-001",
+"Q-003"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-166",
+"title": "Correspondance droits legacy ↔ rôles de la cible pour les écrans de coordination",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "legacy `WEB/Views/Shared/_MenuNew.cshtml:84-107,140-152,166-183` ; `BLL/CommunBll.cs:31-40` (ancien ID provisoire RG-COO-091) ; `legacy-admin.md §2, §4` · maquette ECR-COO-01 (`roles` : coord, admin)",
+"qs": [
+"Q-003",
+"Q-201"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-167",
+"title": "Périmètre par atelier / site de l'utilisateur",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-003",
+"EX-TRA-006"
+],
+"ecr": [],
+"src": "legacy `BLL/TrainListeInstructionBll.cs:31-108,117-168` ; `BLL/TrainSuiviThemeBll.cs:31-98` ; `SQL/p_s_adminSuiviRead.sql:91-94,111-113` ; `BLL/SuiviEtatReservationBll.cs:75-98` (ancien ID provisoire RG-COO-092 ; RG-ADM-016) · spec EX-TRA-006 (EX-TRA-003)",
+"qs": [
+"Q-003"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-168",
+"title": "Rôle Commerce : lecture seule",
+"origine": "NOUVELLE",
+"ex": [
+"EX-REC-072",
+"EX-REC-523",
+"EX-TRA-004"
+],
+"ecr": [],
+"src": "spec [README] H10 ; [DESIGN] §8 ; [DC] §2 (EX-TRA-004) ; EX-REC-072 ; ateliers EX-REC-523 (« Besoin Refusé »)",
+"qs": [
+"Q-003"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-169",
+"title": "La Pré-Prod n'est pas utilisatrice de Circé",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-003"
+],
+"ecr": [],
+"src": "spec [PP] §1, §2 (EX-COO-003) ; maquettes-autres-modules.md §0.6 point 1 (rôle Pré-Prod supprimé le 27/10)",
+"qs": [
+"Q-221"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-200",
+"title": "Identifiant et version d'un train",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-021"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "legacy `p_u_associe_train.sql:159-179,366-374` (ancien ID provisoire RG-COO-067, legacy-coordination.md) ; spec `specs-coordination.md §C` (EX-COO-021) ; écran `ECR-COO-05`",
+"qs": [
+"Q-250"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-201",
+"title": "Position dans le train (début, fin, fin-1, milieu)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-019",
+"EX-COO-021",
+"EX-COO-023"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "legacy `p_u_associe_train.sql:132-157`, `Enums.cs:274-286` (ancien ID provisoire RG-COO-065) ; spec `specs-coordination.md §C` (EX-COO-019, EX-COO-021, EX-COO-023) ; écran `ECR-COO-02`",
+"qs": [
+"Q-261"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-202",
+"title": "Répartition des thèmes sur les faces d'un train",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-031"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "legacy `p_u_associe_train.sql:81-111,181-345,347-363,377-394` (ancien ID provisoire RG-COO-066) ; spec `specs-existant-process.md §C` (EX-EXI-031) ; écran `ECR-COO-02`",
+"qs": [
+"Q-257"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-203",
+"title": "Faces d'entretien d'un train (pourcentage, afficheur « ENTRETIEN »)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-075",
+"EX-FIX-508"
+],
+"ecr": [
+"ECR-ADM-05",
+"ECR-COO-02"
+],
+"src": "legacy `p_u_associe_train.sql:401-439,578-583,555-699` (anciens ID provisoires RG-COO-068 et RG-RPR-027) ; spec `specs-existant-process.md §F` (EX-EXI-075), `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-508) ; écran `ECR-COO-02`, `ECR-ADM-05`",
+"qs": [
+"Q-255",
+"Q-256"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-204",
+"title": "Campagne contrôlée : 15 % d'entretien et visuel en tête de train",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-508",
+"EX-EXI-075"
+],
+"ecr": [
+"ECR-ADM-05",
+"ECR-COO-01"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-508), `specs-existant-process.md §F` (EX-EXI-075) ; écran `ECR-COO-01` (données MOCK), `ECR-ADM-05` (« Campagne contrôlée (15 % et visuel en début de train) »)",
+"qs": [
+"Q-257"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-205",
+"title": "Garde-fous anti-doublons sur les faces et les afficheurs d'un train",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_u_associe_train.sql:703-838` (ancien ID provisoire RG-COO-069)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-206",
+"title": "Retour arrière de l'instruction : effacement du calcul des trains sauf « A imprimer »",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-020",
+"EX-EXI-030"
+],
+"ecr": [],
+"src": "legacy `p_u_statut_preparation.sql:24-64`, `TrainListeInstructionBll.cs:372-380,396-403` (ancien ID provisoire RG-COO-064) ; spec `specs-coordination.md §C` (EX-COO-020) ; `specs-existant-process.md §C` (EX-EXI-030)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-207",
+"title": "Reprise de l'afficheur d'un panneau pour les faces « dernière minute »",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_integ_train_affiches.sql:111-117,141-151,270-274,314-339` (ancien ID provisoire RG-COO-050)",
+"qs": [
+"Q-282"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-208",
+"title": "Couverture des visuels et passage automatique EN_ATTENTE → PRET d'une unité",
+"origine": "NOUVELLE",
+"ex": [
+"EX-PIL-501"
+],
+"ecr": [
+"ECR-COO-05",
+"ECR-PIL-03"
+],
+"src": "écran `ECR-COO-05` (« règle d'unité : EN_ATTENTE → PRET automatique ») ; spec `specs-ateliers-besoins.md PARTIE 6` (EX-PIL-501 : B = trains à 100 % de visuels reçus) ; `maquettes-autres-modules.md ECR-PIL-03` (Q41, couverture « départ le plus proche servi d'abord »)",
+"qs": [
+"Q-251",
+"Q-280"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-209",
+"title": "Positions d'un train : fractionnée, couverte, limite par train",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-033"
+],
+"ecr": [
+"ECR-ADM-05",
+"ECR-COO-05",
+"ECR-COO-10"
+],
+"src": "écran `ECR-COO-05`, `ECR-COO-05d`, `ECR-COO-10`, `ECR-ADM-05` ; legacy `TrainExportPrepaBll` (constante `NbMaxThemeParTrain = 6`, RG-COO-077) ; spec `specs-existant-process.md §C` (EX-EXI-033 : « jusqu'à 4 affiches » contre 6 thèmes)",
+"qs": [
+"Q-253"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-210",
+"title": "Export des trains : seules les faces « Instruction ok » partent et passent à « A imprimer / Prêt à produire »",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-024",
+"EX-EXI-033"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "legacy `PreparationDeroulantsController.cs:71-134`, `PreparationDeroulantsService.cs:109-223`, `PreparationRepository.cs:1287-1440` (ancien ID provisoire RG-COO-070) ; spec `specs-coordination.md §C` (EX-COO-024), `specs-existant-process.md §C` (EX-EXI-033) ; écran `ECR-COO-05b`",
+"qs": [
+"Q-251",
+"Q-252"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-211",
+"title": "Export des trains : dossiers exportables et décompte affiché",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-001",
+"EX-COO-024"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "écran `ECR-COO-05b` ; spec `specs-coordination.md §A` (EX-COO-001), `§C` (EX-COO-024)",
+"qs": [
+"Q-252"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-212",
+"title": "Export des trains : jalon du jeudi 14 h, réservé à la Coordination",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-024",
+"EX-COO-044",
+"EX-EXI-077"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "legacy `PreparationDeroulantsController.cs:71-134` (aucun contrôle horaire, ancien ID provisoire RG-COO-070) ; spec `specs-coordination.md §C` (EX-COO-024), `§D` (EX-COO-044 jalons 6 et 7), `specs-existant-process.md §F` (EX-EXI-077) ; écran `ECR-COO-05b` (« Jeudi 14 h, par la Coordination »)",
+"qs": [
+"Q-252",
+"Q-286"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-213",
+"title": "Export des trains : fichier, `tf_train_export`, simulation, historique, erreurs visibles",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-034"
+],
+"ecr": [],
+"src": "legacy `PreparationRepository.cs:1218-1261,1251-1260`, `PreparationDeroulantsService.cs:513-580` (anciens ID provisoires RG-COO-070, RG-INT-045) ; CLAUDE.md §6 (atomicité) ; spec `specs-transverse.md §G` (EX-TRA-034)",
+"qs": [
+"Q-253"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-214",
+"title": "Export : ordonnancement « Paris » par alternance ville / commercial",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `PreparationDeroulantsService.cs:136-171,175-206,1068-1246`, `PreparationDeroulantsRepository.cs:1670-1695` (anciens ID provisoires RG-COO-071, RG-RPR-028)",
+"qs": [
+"Q-255"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-215",
+"title": "Export préparation (2 m² déroulants) : ateliers 5 et 6, statut 9 « Export prépa »",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-035"
+],
+"ecr": [
+"ECR-COO-07"
+],
+"src": "legacy `TrainPreparationBll.cs:22-23,90-99,257-291`, `TrainPreparationRepository.cs:253-269`, `TrainExportPrepaRepository.cs:43-67,124-151`, `PreparationDeroulantsService.cs:225-304` (anciens ID provisoires RG-COO-077, RG-COO-078) ; spec `specs-existant-process.md §C` (EX-EXI-035) ; écran `ECR-COO-07`",
+"qs": [
+"Q-254"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-216",
+"title": "Export préparation : plafond de 20 thèmes (couples thème / repiquage)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-024",
+"EX-EXI-033",
+"EX-EXI-035",
+"EX-SCR-518"
+],
+"ecr": [
+"ECR-GEN-01"
+],
+"src": "legacy `TrainPreparationBll.cs:22-23,257-291`, `p_u_exportTheme`, `p_s_face_train_export_caire` (anciens ID provisoires RG-COO-077, bdd.md §8) ; spec `specs-coordination.md §C` (EX-COO-024), `specs-existant-process.md §C` (EX-EXI-033, EX-EXI-035), `specs-ateliers-besoins.md PARTIE 5` (EX-SCR-518 : limite saisie à la main) ; écran `ECR-GEN-01` (bloquant à 20 tiroirs, module GEN)",
+"qs": [
+"Q-254"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-217",
+"title": "« Au roulage » : affectation du rouleur, point de passage 9 → 10, suppression d'un thème",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [
+"ECR-COO-07",
+"ECR-COO-11",
+"ECR-GEN-03"
+],
+"src": "legacy `TrainPreparationRepository.cs`, `TrainExportPrepaRepository.cs` (ancien ID provisoire RG-COO-077) ; écran `ECR-COO-07`, `ECR-COO-11a`, `ECR-GEN-03`",
+"qs": [
+"Q-250"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-218",
+"title": "« Changer statut » des faces : transitions autorisées contrôlées côté serveur",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-ADM-503"
+],
+"ecr": [],
+"src": "legacy `PreparationDeroulantsController.cs:1417-1431,1544-1556`, `TrainPreparationBll.cs:234-255`, `TrainPreparationRepository.cs:99-115` (ancien ID provisoire RG-COO-072) ; CLAUDE.md §6 ; spec `specs-ateliers-besoins.md PARTIE 10` (EX-ADM-503)",
+"qs": [
+"Q-277",
+"Q-286"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-219",
+"title": "Annulation d'un thème de train : uniquement à « A imprimer »",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `TrainSuiviThemeBll.cs:181-202`, `TrainSuiviThemeRepository.cs:97-114`, `TrainSuiviThemeController.cs:90-110` (ancien ID provisoire RG-COO-073)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-220",
+"title": "« Débloquer semaine » : trains « A imprimer » d'un atelier repassent à « Instruction ok »",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-030"
+],
+"ecr": [],
+"src": "legacy `TrainSuiviThemeBll.cs:496-522`, `TrainSuiviThemeRepository.cs:257-323`, `TrainSuiviTheme/Index.cshtml:105-114` (ancien ID provisoire RG-COO-074) ; spec `specs-existant-process.md §C` (EX-EXI-030 : retour 5 → 2)",
+"qs": [
+"Q-250"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-221",
+"title": "Fractionner un train",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-503",
+"EX-EXI-036",
+"EX-EXI-078"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "legacy `TrainSuiviThemeBll.cs:214-262,531-665` (ancien ID provisoire RG-COO-075) ; spec `specs-existant-process.md §C` (EX-EXI-036, EX-EXI-078), `specs-ateliers-besoins.md PARTIE 2` (EX-COO-503) ; écran `ECR-COO-05`",
+"qs": [
+"Q-261"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-222",
+"title": "Raccrocher un visuel à un ou plusieurs trains",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-503",
+"EX-EXI-036",
+"EX-SCR-506"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "legacy `TrainSuiviThemeBll.cs:214-262,531-665` (ancien ID provisoire RG-COO-075) ; spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-503), `PARTIE 5` (EX-SCR-506), `specs-existant-process.md §C` (EX-EXI-036) ; écran `ECR-COO-05d`",
+"qs": [
+"Q-253",
+"Q-261"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-223",
+"title": "Point de non-retour : un train EN_PROD ne se modifie, ne se supprime pas",
+"origine": "NOUVELLE",
+"ex": [
+"EX-FIX-509"
+],
+"ecr": [
+"ECR-COO-05",
+"ECR-COO-09",
+"ECR-GEN-03"
+],
+"src": "écran `ECR-COO-05`, `ECR-COO-05e`, `ECR-COO-09b`, `ECR-GEN-03` ; `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-509 : exception demandée pour fixe et colle)",
+"qs": [
+"Q-268"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-224",
+"title": "Créer un train de pré-test ou d'entretien",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-505"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-505 : « Aujourd'hui les pré-tests sont gérés hors process ») ; écran `ECR-COO-05c`",
+"qs": [
+"Q-258"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-225",
+"title": "Supprimer un train avec motif",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-505"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-505 : « Ville de Paris : affiches à ne pas mettre, parfois seule affiche du train ») ; écran `ECR-COO-05a`, `ECR-COO-05e`",
+"qs": [
+"Q-259"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-226",
+"title": "Duplication d'un train (administration)",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `DuplicationTrainController.cs:22-34`, `DuplicationTrainBll.cs:12-17`, `p_u_duplication_train.sql:13-19,94,100-110` (ancien ID provisoire RG-COO-079) ; legacy-admin.md RG-ADM-013",
+"qs": [
+"Q-260"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-227",
+"title": "Sélection d'un nombre donné de trains (« les N premiers »)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-SCR-510"
+],
+"ecr": [
+"ECR-COO-05",
+"ECR-COO-07"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 5` (EX-SCR-510) ; écran `ECR-COO-05`, `ECR-COO-07`",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-228",
+"title": "Filtres de la liste des trains : thèmes, nombre de visuels, 20 tiroirs, atelier",
+"origine": "NOUVELLE",
+"ex": [
+"EX-SCR-509"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 5` (EX-SCR-509) ; écran `ECR-COO-05` ; legacy `TrainSuiviThemeBll.cs:31-98` (périmètre, ancien ID provisoire RG-COO-092)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-229",
+"title": "Visibilité du n° de panneau Broadcast pour chefs d'équipe et coordinateurs",
+"origine": "NOUVELLE",
+"ex": [
+"EX-SCR-512"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 5` (EX-SCR-512) ; écran `ECR-COO-05`",
+"qs": [
+"Q-286"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-230",
+"title": "Suivi par thème (vue besoin) : calcul du besoin, du couvert et du pré-assemblage",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-509",
+"EX-EXI-034",
+"EX-EXI-035"
+],
+"ecr": [
+"ECR-COO-06"
+],
+"src": "écran `ECR-COO-06` ; spec `specs-existant-process.md §C` (EX-EXI-034, EX-EXI-035), `specs-ateliers-besoins.md PARTIE 2` (EX-COO-509) ; legacy `TrainSuiviThemeBll.cs:31-98`",
+"qs": [
+"Q-263",
+"Q-280"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-231",
+"title": "Exclusion automatique des thèmes « ne pas afficher » et « reste en place »",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-034",
+"EX-COO-046",
+"EX-COO-502",
+"EX-COO-509",
+"EX-EXI-034"
+],
+"ecr": [
+"ECR-COO-02",
+"ECR-COO-09"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-502, EX-COO-509) ; `specs-coordination.md §E` (EX-COO-034, EX-COO-046) ; `specs-existant-process.md §C` (EX-EXI-034) ; écran `ECR-COO-02`, `ECR-COO-09`",
+"qs": [
+"Q-263"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-232",
+"title": "Suivi par thème réservé aux dossiers avec commentaire de préparation (cible)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-509",
+"EX-REC-524"
+],
+"ecr": [
+"ECR-COO-06"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-509, EX-REC-524) ; écran `ECR-COO-06`",
+"qs": [
+"Q-263"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-233",
+"title": "Pré-assemblage : marquer / désassembler par thème",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-035",
+"EX-EXI-037"
+],
+"ecr": [
+"ECR-COO-06",
+"ECR-COO-07"
+],
+"src": "legacy `TrainSuiviThemeBll.cs:442-485` (ancien ID provisoire RG-COO-076) ; écran `ECR-COO-06`, `ECR-COO-07` ; spec `specs-existant-process.md §C` (EX-EXI-035, EX-EXI-037)",
+"qs": [
+"Q-262"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-234",
+"title": "Pré-assemblage 8 m² par client ou par destinataire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-037",
+"EX-SCR-507"
+],
+"ecr": [],
+"src": "spec `specs-ateliers-besoins.md PARTIE 5` (EX-SCR-507) ; `specs-existant-process.md §C` (EX-EXI-037 : pré-assemblage par client en totalité, pas partiel)",
+"qs": [
+"Q-262"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-235",
+"title": "Préparation (vue prepa) : colonnes, teinte, filtre par statut A imprimer",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-035",
+"EX-SCR-508"
+],
+"ecr": [
+"ECR-COO-07"
+],
+"src": "écran `ECR-COO-07` ; legacy `TrainPreparationBll.cs:31-109` ; spec `specs-existant-process.md §C` (EX-EXI-035), `specs-ateliers-besoins.md PARTIE 5` (EX-SCR-508)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-236",
+"title": "Choisir le rouleur d'une ou plusieurs lignes de trains",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-037"
+],
+"ecr": [
+"ECR-COO-07"
+],
+"src": "écran `ECR-COO-07` ; legacy `TrainPreparationRepository.cs` (ancien ID provisoire RG-COO-077) ; spec `specs-existant-process.md §C` (EX-EXI-037 : choix du nom du rouleur)",
+"qs": [
+"Q-276"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-237",
+"title": "Suivi 8 m² (demies) : saisie en ligne et reste à faire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-037",
+"EX-PIL-502"
+],
+"ecr": [
+"ECR-COO-08"
+],
+"src": "écran `ECR-COO-08` ; spec `specs-ateliers-besoins.md PARTIE 6` (EX-PIL-502) ; `specs-existant-process.md §C` (EX-EXI-037)",
+"qs": [
+"Q-264"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-238",
+"title": "Entretien calculé à l'afficheur (fixe, pliage, bus, trains)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-501",
+"EX-EXI-075",
+"EX-FIX-505",
+"EX-FIX-508"
+],
+"ecr": [
+"ECR-ADM-05",
+"ECR-COO-02",
+"ECR-COO-09"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-501), `PARTIE 4` (EX-FIX-505, EX-FIX-508), `specs-existant-process.md §F` (EX-EXI-075) ; écran `ECR-COO-09`, `ECR-COO-02`, `ECR-ADM-05` ; legacy `p_integ_preparation.sql:121,160` (ancien ID provisoire RG-COO-044 pour les mises à jour de quantité)",
+"qs": [
+"Q-256"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-239",
+"title": "Modifier la quantité à produire par afficheur si l'entretien reçu est insuffisant",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-075",
+"EX-FIX-505",
+"EX-FIX-506",
+"EX-FIX-508"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-505, EX-FIX-508, EX-FIX-506) ; `specs-existant-process.md §F` (EX-EXI-075) ; écran `ECR-COO-09`",
+"qs": [
+"Q-269"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-240",
+"title": "Libération de la semaine (fixe, pliage, bus) : action sans confirmation, sans lien avec la validation admin",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-025",
+"EX-EXI-041",
+"EX-EXI-043",
+"EX-FIX-510"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "écran `ECR-COO-09`, `ECR-COO-09a` ; spec `specs-coordination.md §C` (EX-COO-025), `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-510), `specs-existant-process.md §D` (EX-EXI-041, EX-EXI-043) ; legacy `PreparationService.cs:81-107` (ancien ID provisoire RG-RPR-011)",
+"qs": [
+"Q-265"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-241",
+"title": "Ligne fixe / pliage « à libérer » tant que la semaine n'est pas libérée",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-025",
+"EX-EXI-040",
+"EX-EXI-042",
+"EX-EXI-071"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "écran `ECR-COO-09` ; spec `specs-coordination.md §C` (EX-COO-025), `specs-existant-process.md §D` (EX-EXI-040, EX-EXI-042, EX-EXI-071) ; legacy `p_s_listeprepa2m2.sql:71-74`, `p_integ_preparation.sql:100-147` (ancien ID provisoire RG-COO-041)",
+"qs": [
+"Q-250",
+"Q-265"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-242",
+"title": "Repère « Arrivé après libération » : tag, callout, filtre",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-503",
+"EX-FIX-503"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "écran `ECR-COO-09` ; spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-503), `PARTIE 4` (EX-FIX-503) ; `maquettes-reception-coordination.md §1.4` (événement 1)",
+"qs": [
+"Q-266"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-243",
+"title": "Rendre la main à la Pré-Prod",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-020",
+"EX-EXI-045"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "écran `ECR-COO-09b` ; spec `specs-existant-process.md §D` (EX-EXI-045), `§B` (EX-EXI-020) ; legacy `AdminPreparationDeblocageBll.cs:252-333` (RG-COO-084 legacy, coo1)",
+"qs": [
+"Q-267"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-244",
+"title": "Corriger l'intitulé (annonceur imprimé, thème) par la plateforme",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-079",
+"EX-FIX-509"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "écran `ECR-COO-09c` ; spec `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-509), `specs-existant-process.md §F` (EX-EXI-079)",
+"qs": [
+"Q-268"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-245",
+"title": "Jours d'affichage dans la préparation",
+"origine": "NOUVELLE",
+"ex": [
+"EX-FIX-504"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-504) ; écran `ECR-COO-09`",
+"qs": [
+"Q-270"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-246",
+"title": "Fiche de synthèse de préparation (groupée par destinataire)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-043",
+"EX-TRA-025"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "écran `ECR-COO-09d` ; legacy `Rapport.cs:105-172` (état `PreparationSyntheseUm.rdlc`), `ReportController.cs:14-40,44` (anciens ID provisoires RG-ADM-060, RG-ADM-063) ; spec `specs-existant-process.md §D` (EX-EXI-043), `specs-transverse.md §D` (EX-TRA-025)",
+"qs": [
+"Q-287"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-247",
+"title": "Pliage : saisie du comptage et passage à PRODUIT",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-042"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "écran `ECR-COO-09` (« Comptage pliage ») ; spec `specs-existant-process.md §D` (EX-EXI-042 : « Pliage : même processus sans machine »)",
+"qs": [
+"Q-250"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-248",
+"title": "2 m² fixe unique (suppression de la distinction Vrac / Roulée)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-FIX-501"
+],
+"ecr": [],
+"src": "spec `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-501) ; legacy `p_integ_preparation.sql:100-147,239-249` (ancien ID provisoire RG-COO-041)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-COO-249",
+"title": "« Retirer » une préparation : suppression des UM et retour des répartitions à « A traiter »",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-042",
+"EX-EXI-045"
+],
+"ecr": [],
+"src": "legacy `PreparationService.cs:275-288`, `PreparationRepository.cs:336-387`, `tf_UM_colis.sql:10` (ancien ID provisoire RG-RPR-013) ; spec `specs-existant-process.md §D` (EX-EXI-042 : retour à 0 si l'UM est supprimée, EX-EXI-045)",
+"qs": [
+"Q-271"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-250",
+"title": "« Préparer » : l'UM et ses répartitions passent à « Préparé »",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-042"
+],
+"ecr": [],
+"src": "legacy `PreparationService.cs:294-299`, `PreparationRepository.cs:435-470` (ancien ID provisoire RG-RPR-014) ; spec `specs-existant-process.md §D` (EX-EXI-042) ; maquette `maquettes-autres-modules.md §0.6 point 6`",
+"qs": [
+"Q-250",
+"Q-271"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-251",
+"title": "Pas de déplacement (drag and drop) après l'envoi d'une préparation",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-050",
+"EX-COO-511"
+],
+"ecr": [],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-511 : ligne isolée, statut « A revoir Bao »), `specs-coordination.md §C` (EX-COO-050 : Q46 sur l'ordre des trains)",
+"qs": [
+"Q-261"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-260",
+"title": "Construction des UM (agrégation et découpage par quantité d'UM du support)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-041",
+"EX-EXI-073"
+],
+"ecr": [],
+"src": "legacy `PreparationService.cs:81-107,113-269` (ancien ID provisoire RG-RPR-011) ; spec `specs-existant-process.md §D` (EX-EXI-041, EX-EXI-073)",
+"qs": [
+"Q-265",
+"Q-271"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-261",
+"title": "Création d'une UM : statut 1, code barre, code synthèse, poids, date d'affichage minimale",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXI-041"
+],
+"ecr": [],
+"src": "legacy `PreparationRepository.cs:190-303,309-330`, `p_u_DateAffMinUM.sql:19-41` (ancien ID provisoire RG-RPR-012) ; spec `specs-existant-process.md §D` (EX-EXI-041)",
+"qs": [
+"Q-271"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-262",
+"title": "Statuts d'origine admis pour l'entrée d'une répartition dans une UM",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `PreparationRepository.cs:190-303` (ancien ID provisoire RG-RPR-012, tableau §7.1 de legacy-repartition-production.md) ; CLAUDE.md §6",
+"qs": [
+"Q-271"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-263",
+"title": "Poids d'une UM / d'un colis : minimum 1 kg, +3 kg pour les ateliers 7 et 8",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [
+"ECR-ADM-06"
+],
+"src": "legacy `p_u_poidsColis.sql:18-61` (ancien ID provisoire RG-RPR-022) ; écran `ECR-ADM-06`",
+"qs": [
+"Q-271"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-264",
+"title": "Fractionnement d'une UM sur plusieurs colis (`uc_qte`)",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `tf_UM_colis.sql:1-11`, `PreparationColisageService.cs:128-135`, `p_s_UM_from_code.sql:39`, `PreparationColisageRepository.cs:356-383` (ancien ID provisoire RG-RPR-023)",
+"qs": [
+"Q-272"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-265",
+"title": "Rattachement d'une UM à un colis : statuts 1 ou 6, même destinataire",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [
+"ECR-EXP-01"
+],
+"src": "legacy `PreparationColisageService.cs:76-148`, `PreparationColisBll.cs:270-324`, `PreparationColisRepository.cs:311-334`, `p_s_UM_from_code.sql` (ancien ID provisoire RG-RPR-016) ; écran `ECR-EXP-01`",
+"qs": [
+"Q-272"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-266",
+"title": "Création, ouverture et suppression d'un colis",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-085",
+"EX-EXP-506"
+],
+"ecr": [
+"ECR-EXP-01"
+],
+"src": "legacy `PreparationColisageService.cs:35-54,227-238,329-345`, `PreparationColisBll.cs:139-158`, `p_u_detail_colis.sql:17-41`, `p_u_statut_colis_UM.sql:22-42` (ancien ID provisoire RG-RPR-017) ; spec `specs-ateliers-besoins.md PARTIE 7` (EX-EXP-506), `specs-existant-process.md §G` (EX-EXI-085) ; écran `ECR-EXP-01`",
+"qs": [
+"Q-272"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-267",
+"title": "Retrait d'une UM d'un colis : retour de l'UM à « En cours » si elle n'est plus dans aucun colis",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXP-503"
+],
+"ecr": [],
+"src": "legacy `PreparationColisageService.cs:240-322`, `PreparationColisBll.cs:327-371`, `PreparationRepository.cs:409,418` (ancien ID provisoire RG-RPR-018) ; spec `specs-ateliers-besoins.md PARTIE 7` (EX-EXP-503)",
+"qs": [
+"Q-272",
+"Q-273"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-268",
+"title": "Expédition d'un colis : colis, UM (ateliers 1 à 4) ou trains → « A expédier »",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [
+"ECR-EXP-02"
+],
+"src": "legacy `PreparationColisBll.cs:497-560`, `PreparationColisRepository.cs:482-569`, `p_u_expedie_Colis.sql:34-73`, `PreparationColisageService.cs:211-220` (ancien ID provisoire RG-RPR-019) ; écran `ECR-EXP-02`",
+"qs": [
+"Q-272",
+"Q-284"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-269",
+"title": "Fin de journée : colis « A expédier » → « Terminé » (batch ou unitaire)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-072"
+],
+"ecr": [
+"ECR-EXP-02"
+],
+"src": "legacy `p_batch_fin_journee_colis.sql:23-67`, `PreparationExpeditionService.cs:267-276`, `ListeColisBll.cs:199-223` (anciens ID provisoires RG-RPR-020, RG-INT-030) ; écran `ECR-EXP-02` ; spec `specs-existant-process.md §F` (EX-EXI-072)",
+"qs": [
+"Q-272",
+"Q-281"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-270",
+"title": "Train ajouté à un colis : face à « A expédier » immédiatement",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-EXP-501",
+"EX-EXP-503"
+],
+"ecr": [],
+"src": "legacy `PreparationColisageService.cs:154-209`, `PreparationColisTrainBll.cs:160` (ancien ID provisoire RG-RPR-021) ; spec `specs-ateliers-besoins.md PARTIE 7` (EX-EXP-501, EX-EXP-503)",
+"qs": [
+"Q-272",
+"Q-273"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-271",
+"title": "Mail « Un colis d'affiches vient de vous être expédié » (batch)",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-TRA-030"
+],
+"ecr": [
+"ECR-ADM-04"
+],
+"src": "legacy `P_GetGlobalColisForSend.sql:3-56`, `BatchEnvoieMailColisBll.cs:33-267`, `P_MajParametre_Package.sql:1-7` (anciens ID provisoires RG-INT-033, RG-INT-034, RG-INT-035) ; spec `specs-transverse.md §E` (EX-TRA-030) ; écran `ECR-ADM-04` (« Mails existants dans le code »)",
+"qs": [
+"Q-285"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-272",
+"title": "Intégration AMT : une répartition déjà active n'est pas réintégrée",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_integ_ptf_reparts.sql:72-90` (ancien ID provisoire RG-RPR-001)",
+"qs": [
+"Q-274"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-273",
+"title": "Intégration AMT : transcodage du type de préparation et regroupement par afficheur",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-038"
+],
+"ecr": [],
+"src": "legacy `p_integ_ptf_reparts.sql:167-236,240-253,351-401` (ancien ID provisoire RG-RPR-002) ; spec `specs-coordination.md §E` (EX-COO-038)",
+"qs": [
+"Q-274"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-274",
+"title": "Intégration AMT : contrôles d'anomalie 903 / 905 / 906 / 907 et lignes en erreur « E »",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_integ_ptf_reparts.sql:269-347,403-473,488-499` (anciens ID provisoires RG-RPR-003, RG-RPR-004)",
+"qs": [
+"Q-274"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-275",
+"title": "Purge des tables de travail AMT et correction `UM_qte = 0`",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_integ_ptf_purge.sql:14-31`, `p_valid_amt_reparts.sql:28-95,102-223` (anciens ID provisoires RG-RPR-005, RG-RPR-007)",
+"qs": [
+"Q-271",
+"Q-274"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-276",
+"title": "Intégration des statuts de répartition AMT : désactivée",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_integ_ptf_statut_repart.sql:30-31` (code mort 47-141) (ancien ID provisoire RG-RPR-006) ; bdd.md §4.2",
+"qs": [
+"Q-274"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-277",
+"title": "Déblocage de répartition : une UM au statut ≥ 6 empêche le déblocage",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_s_controle_rendumain.sql:15-21`, `RepartitionRepository.cs:138-153`, `RepartitionService.cs:55-60` (ancien ID provisoire RG-RPR-008)",
+"qs": [
+"Q-275"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-278",
+"title": "Déblocage de répartition : annulation des répartitions et des UM, colis non touchés",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_u_statut_repart_deblocage.sql:34-73`, `RepartitionRepository.cs:121-136` (ancien ID provisoire RG-RPR-009) ; legacy `AdminPreparationDeblocageBll.cs:252-333` (RG-COO-084, coo1)",
+"qs": [
+"Q-275"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-279",
+"title": "Ancien déblocage AMT puis Circé : non atomique, retour 0 indifférencié",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `RepartitionService.cs:35-53`, `RepartitionRepository.cs:87-136`, `RepartitionController.cs:218-351` (anciens ID provisoires RG-RPR-010, RG-COO-085)",
+"qs": [
+"Q-274",
+"Q-275"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-280",
+"title": "Le statut de l'UM prime sur celui de la répartition dans le suivi",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [],
+"src": "legacy `p_s_adminSuiviRead.sql:70-79`, `PreparationRepository.cs:393-429,435-470` (ancien ID provisoire RG-RPR-015)",
+"qs": [
+"Q-273"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-290",
+"title": "Liste des UM 2 m² / pliage : périmètre, exclusions, adresse principale, affiche reçue indicative",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-001",
+"EX-COO-014"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "legacy `p_s_listeUM_2m2.sql:36-62,113-142`, `p_s_listeUM_pliage.sql:43-50`, `PreparationController.cs:764-765` (ancien ID provisoire RG-RPR-024) ; spec `specs-coordination.md §A` (EX-COO-001, EX-COO-014) ; écran `ECR-COO-09`",
+"qs": [
+"Q-273"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-291",
+"title": "Dispatch du roulage : périmètre des trains et filtres",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-035"
+],
+"ecr": [
+"ECR-COO-10"
+],
+"src": "écran `ECR-COO-10` ; spec `specs-existant-process.md §C` (EX-EXI-035 : « transmettre au dispatcheur »)",
+"qs": [
+"Q-276"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-292",
+"title": "Dispatch : nombre de faces et charge par rouleur",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-COO-10"
+],
+"src": "écran `ECR-COO-10`",
+"qs": [
+"Q-276"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-293",
+"title": "Dispatch : « Proposer une répartition » (règle simulée en attente du moteur cible)",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-COO-10"
+],
+"src": "écran `ECR-COO-10` (« Règle simulée »)",
+"qs": [
+"Q-276"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-294",
+"title": "Dispatch : affectation manuelle d'un rouleur et « Tout désaffecter »",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-COO-10"
+],
+"src": "écran `ECR-COO-10`",
+"qs": [
+"Q-276"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-295",
+"title": "Dispatch : alertes de départ proche et de surcharge",
+"origine": "NOUVELLE",
+"ex": [
+"EX-TRA-031"
+],
+"ecr": [
+"ECR-COO-10",
+"ECR-TRA-01"
+],
+"src": "écran `ECR-COO-10`, `ECR-TRA-01` ; spec `specs-transverse.md §E` (EX-TRA-031 : « surcharge / départ proche (dispatch) »)",
+"qs": [
+"Q-276"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-296",
+"title": "Liste de picking d'un rouleur (« Liste des affaires à collecter »)",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-SCR-511"
+],
+"ecr": [
+"ECR-COO-10"
+],
+"src": "écran `ECR-COO-10` ; legacy `Rapport.cs` (`EditionPicking`, `EditionFicheActivite`, ancien ID provisoire RG-ADM-060) ; spec `specs-ateliers-besoins.md PARTIE 5` (EX-SCR-511)",
+"qs": [
+"Q-287"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-297",
+"title": "Rouleurs : référentiel d'opérateurs rattachés à un site et un poste",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [
+"ECR-ADM-07",
+"ECR-COO-07"
+],
+"src": "écran `ECR-ADM-07`, `ECR-COO-07` ; legacy-admin.md matrice droit × page (« Liste des rouleurs ») et RG-ADM-046",
+"qs": [
+"Q-276"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-298",
+"title": "Bagues et étiquettes : périmètre de la liste et filtre « À imprimer »",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-COO-11"
+],
+"src": "écran `ECR-COO-11`",
+"qs": [
+"Q-277"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-299",
+"title": "Impression des bagues : rouleur obligatoire, passage automatique à « En production »",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-035"
+],
+"ecr": [
+"ECR-COO-11"
+],
+"src": "écran `ECR-COO-11a` ; legacy `Rapport.cs:463-479,486-508` (ancien ID provisoire RG-ADM-060, RG-ADM-061) ; spec `specs-existant-process.md §C` (EX-EXI-035)",
+"qs": [
+"Q-002",
+"Q-277"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-300",
+"title": "Textes imprimés sur la bague : modification et réimpression automatique",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [
+"ECR-COO-09",
+"ECR-COO-11"
+],
+"src": "écran `ECR-COO-11b`, `ECR-COO-09`",
+"qs": [
+"Q-277"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-301",
+"title": "Réimprimer une bague : motif obligatoire, même numéro, statut inchangé",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-ADM-503"
+],
+"ecr": [
+"ECR-COO-05",
+"ECR-COO-11"
+],
+"src": "écran `ECR-COO-11c`, `ECR-COO-05a` ; spec `specs-ateliers-besoins.md PARTIE 10` (EX-ADM-503)",
+"qs": [
+"Q-277",
+"Q-286"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-302",
+"title": "Contenu de l'étiquette bague",
+"origine": "MODIFIÉE",
+"ex": [],
+"ecr": [
+"ECR-COO-11"
+],
+"src": "écran `ECR-COO-11` (« Aperçu bague ») ; legacy `Rapport.cs:463-479` (ancien ID provisoire RG-ADM-060)",
+"qs": [
+"Q-277"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-303",
+"title": "Tableau de roulage alimenté par la bague",
+"origine": "NOUVELLE",
+"ex": [
+"EX-SCR-501",
+"EX-SCR-502",
+"EX-SCR-515",
+"EX-SCR-516"
+],
+"ecr": [],
+"src": "spec `specs-ateliers-besoins.md PARTIE 5` (EX-SCR-501, EX-SCR-502, EX-SCR-515, EX-SCR-516)",
+"qs": [
+"Q-278"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-304",
+"title": "Bus : quantités à encoller (calcul Broadcast, ajustements global et par centre)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-BUS-503"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 11` (EX-BUS-503) ; écran `ECR-COO-09e`",
+"qs": [
+"Q-279"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-305",
+"title": "Bus : préparation par centre (onglet Bus, lots `BU-nnnn`)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-BUS-501",
+"EX-BUS-502",
+"EX-BUS-504"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 11` (EX-BUS-502, EX-BUS-501, EX-BUS-504) ; écran `ECR-COO-09` ; legacy-admin.md RG-ADM-022 (drapeau `busv3`)",
+"qs": [
+"Q-279"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-306",
+"title": "Impressions du bloc : PDF généré côté navigateur",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-024",
+"EX-TRA-025",
+"EX-TRA-026"
+],
+"ecr": [],
+"src": "legacy `Rapport.cs:48-1025` (anciens ID provisoires RG-ADM-060, RG-ADM-061, RG-ADM-063) ; spec `specs-transverse.md §D` (EX-TRA-024, EX-TRA-025, EX-TRA-026) ; CLAUDE.md §3",
+"qs": [
+"Q-002",
+"Q-287"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-307",
+"title": "Historisation de chaque changement de statut et action du bloc",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-TRA-034"
+],
+"ecr": [
+"ECR-ADM-08",
+"ECR-COO-05"
+],
+"src": "legacy `HistorisationBll.cs:16-127` (ancien ID provisoire RG-INT-046), bdd.md §5 ; spec `specs-transverse.md §G` (EX-TRA-034) ; écran `ECR-COO-05a` (frise « Modifications tracées »), `ECR-ADM-08` ; CLAUDE.md §6",
+"qs": [
+"Q-250"
+],
+"file": "COO"
+},
+{
+"id": "RG-COO-308",
+"title": "Actions de masse : verrou de version et idempotence",
+"origine": "NOUVELLE",
+"ex": [],
+"ecr": [],
+"src": "CLAUDE.md §6 ; `maquettes-reception-coordination.md §5` (Q-E)",
+"qs": [],
+"file": "COO"
+},
+{
+"id": "RG-X-050",
+"title": "Annulation d'une validation admin : conséquences côté Réception",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-009",
+"EX-COO-014"
+],
+"ecr": [
+"ECR-COO-02"
+],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:837-889` ; `BLL/SuiviEtatReservationBll.cs:172-201` · spec [PP] §5 ; [DC] encadré 02/11 (EX-COO-009, EX-COO-014) ; écran ECR-COO-02",
+"qs": [
+"Q-202"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-051",
+"title": "Rattachement d'une réception inconnue par la Coordination : validation et entrée de la palette dans le sas",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-010",
+"EX-COO-017",
+"EX-REC-039",
+"EX-REC-040"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec [PP] §6 ; [DC] §7 ; [README] §3, H1 (EX-COO-010, EX-COO-017) ; EX-REC-039, EX-REC-040 ; écran ECR-REC-04 (« Règles de Rattacher »)",
+"qs": [
+"Q-201"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-052",
+"title": "Rattachement manuel du surplus à un autre dossier (même après validation ou début de production)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045",
+"EX-EXI-058",
+"EX-REC-048",
+"EX-REC-062"
+],
+"ecr": [],
+"src": "spec [PP] §6 ; [RA] cas 21-25 (EX-COO-045) ; EX-REC-048, EX-REC-062 ; EX-EXI-058",
+"qs": [
+"Q-202"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-053",
+"title": "Affiche à doute : tant que non confirmée, ses effets de validation ne sont pas produits",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-014",
+"EX-REC-052"
+],
+"ecr": [],
+"src": "spec [PP] §3, §5 ; [README] §3 (EX-COO-014) ; EX-REC-052 ; legacy `BLL/BatchAlimReceptionBll.cs:89`",
+"qs": [
+"Q-231"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-054",
+"title": "Réception inconnue traitée par la Coordination : « Signaler » et dossier introuvable",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-017",
+"EX-REC-041",
+"EX-REC-042"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec [DC] §3, §7, §10, §11 ; [PR] p.1 ; [PP] §6 (EX-COO-017) ; EX-REC-041, EX-REC-042 ; écran ECR-REC-04",
+"qs": [
+"Q-221",
+"Q-234"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-055",
+"title": "Ligne fermée ou annulée : le lien de l'affiche est déplacé, jamais perdu",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-035",
+"EX-COO-037",
+"EX-COO-039"
+],
+"ecr": [],
+"src": "spec [RA] §5 RG-AT-04, 06, 08 ; [PP] §6, §7 R5 (EX-COO-035, EX-COO-037, EX-COO-039)",
+"qs": [
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-056",
+"title": "Saisie des IP : déplacement automatique des affiches du provisoire vers le thème",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-035",
+"EX-REC-062",
+"EX-THM-501",
+"EX-THM-503"
+],
+"ecr": [],
+"src": "spec [RA] §5 RG-AT-04 ; [PP] §7 R3, R5 (EX-COO-035) ; ateliers EX-THM-501, EX-THM-503 (A14 slide 30 #1, #3) ; EX-REC-062",
+"qs": [
+"Q-208"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-057",
+"title": "Thème modifié dans Broadcast après la validation : validation à refaire et feuille de stock à refaire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-016",
+"EX-COO-029",
+"EX-THM-503"
+],
+"ecr": [
+"ECR-THM-03"
+],
+"src": "spec [README] §3 ; [PP] §6, §9 (EX-COO-016, EX-COO-029) ; ateliers EX-THM-503 ; écran ECR-THM-03 ; `maquettes-autres-modules.md §0.1` (écriture de THM vers Réception : `noterThemeModifie`)",
+"qs": [
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-058",
+"title": "Retrait ou dissociation du dernier dossier par la Coordination : l'affiche redevient réception inconnue",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-039",
+"EX-REC-043"
+],
+"ecr": [],
+"src": "legacy `BLL/ReceptionListeAfficheBll.cs:577-586` ; `BLL/HistorisationBll.cs:68-76` · spec [DC] §8, §9, §10 (EX-COO-039) ; EX-REC-043",
+"qs": [
+"Q-213"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-059",
+"title": "Déblocage / « Rendre la main » : validation admin et affiches reçues inchangées",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-044"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "maquette `app.js` `renvoiPrepa` (maquettes-autres-modules.md §A) ; ECR-COO-09b ; spec [PP] §2 jalon 5 (EX-COO-044)",
+"qs": [
+"Q-217"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-060",
+"title": "Thème partagé par plusieurs dossiers : le reçu est compté une seule fois",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-045",
+"EX-REC-058",
+"EX-TRA-515"
+],
+"ecr": [
+"ECR-PIL-03"
+],
+"src": "spec [PP] §6 ; [RA] cas 21-25 (EX-COO-045) ; EX-REC-058 ; écran ECR-PIL-03 (« Totaux en pied (reçu et reste comptés une fois par thème) ») ; ateliers EX-TRA-515",
+"qs": [
+"Q-208"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-061",
+"title": "Réception partielle : validation de ce qui est reçu, complément proposé puis confirmé",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-011",
+"EX-REC-054",
+"EX-REC-059"
+],
+"ecr": [],
+"src": "spec [PP] §5, §6 ; [RA] RG-VA-03, cas 24 (EX-COO-011) ; EX-REC-054, EX-REC-059",
+"qs": [
+"Q-203"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-062",
+"title": "Aucune écriture en lecture : supprimer l'auto-rattachement à l'ouverture d'une fiche",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-004"
+],
+"ecr": [],
+"src": "legacy `WEB/Controllers/ReceptionListeAfficheController.cs:218-257` (ancien ID provisoire RG-COO-024 ; RG-REC-093) · spec [PP] §5 ; [RA] RG-AT-08 (EX-COO-004)",
+"qs": [
+"Q-214"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-063",
+"title": "Rattachement par la Réception ne vaut pas validation ; validation possible à tout moment du process",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-010",
+"EX-COO-044",
+"EX-EXI-053"
+],
+"ecr": [
+"ECR-REC-04"
+],
+"src": "spec [README] §3, H1 ; [PP] §2 jalon 7 ; [DC] §7 (EX-COO-010, EX-COO-044) ; EX-EXI-053 ; écran ECR-REC-04 (Q-REC-18)",
+"qs": [
+"Q-201"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-064",
+"title": "Quantité Broadcast modifiée après réception : l'attendu se recalcule, les liens et le stock restent",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-016",
+"EX-COO-028",
+"EX-REC-051"
+],
+"ecr": [],
+"src": "spec [RA] RG-AT-05, RG-VA-02 ; [PP] §6 (EX-COO-016, EX-COO-028) ; EX-REC-051",
+"qs": [
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-065",
+"title": "Dossier ou DA annulé après réception : affiches conservées en stock, alerte à la Coordination",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-037"
+],
+"ecr": [
+"ECR-COO-01"
+],
+"src": "spec [RA] RG-AT-06, cas 14 ; [PP] §6 (EX-COO-037) ; maquette ECR-COO-01 (dossier annulé)",
+"qs": [
+"Q-210"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-075",
+"title": "Visuel arrivé après la préparation des trains (déroulant)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-503",
+"EX-EXI-078",
+"EX-TRA-031"
+],
+"ecr": [
+"ECR-ADM-04",
+"ECR-TRA-01"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-503), `specs-transverse.md §E` (EX-TRA-031 : alerte « Visuel arrivé après la préparation des trains »), `specs-existant-process.md §F` (EX-EXI-078) ; maquette `maquettes-reception-coordination.md §1.4` (événement 2, RP34) ; écran `ECR-TRA-01`, `ECR-ADM-04`",
+"qs": [
+"Q-266"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-076",
+"title": "Dossier fixe / pliage / bus arrivé après la libération de la semaine",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-503",
+"EX-EXI-078",
+"EX-FIX-503"
+],
+"ecr": [
+"ECR-COO-09",
+"ECR-TRA-01"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-503), `PARTIE 2` (EX-COO-503), `specs-existant-process.md §F` (EX-EXI-078) ; maquette `maquettes-reception-coordination.md §1.4` (événement 1) ; écran `ECR-COO-09`, `ECR-TRA-01`",
+"qs": [
+"Q-265",
+"Q-266"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-077",
+"title": "Dernière minute sur un train déjà en production",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-503",
+"EX-COO-512",
+"EX-EXI-078"
+],
+"ecr": [
+"ECR-COO-05",
+"ECR-GEN-03",
+"ECR-TRA-01"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 2` (EX-COO-503, EX-COO-512), `specs-existant-process.md §F` (EX-EXI-078) ; maquette `maquettes-reception-coordination.md §1.4` (événement 3) ; écran `ECR-COO-05`, `ECR-GEN-03`, `ECR-TRA-01`",
+"qs": [
+"Q-282"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-078",
+"title": "Préparation renvoyée par Broadcast avant ou après l'export des trains",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-COO-022",
+"EX-COO-044",
+"EX-EXI-016",
+"EX-EXI-018"
+],
+"ecr": [],
+"src": "spec `specs-coordination.md §C` (EX-COO-022, EX-COO-044 jalon 5), `specs-existant-process.md §B` (EX-EXI-016, EX-EXI-018) ; maquette `maquettes-autres-modules.md §A` (règle `renvoiPrepa`) ; legacy `p_integ_instructions.sql:175-259`, `p_integ_train_affiches.sql:38-48` (RG-COO-047, RG-COO-049 legacy)",
+"qs": [
+"Q-251",
+"Q-266"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-079",
+"title": "Disponibilité physique des affiches pour la préparation (reçu, contrôle, couverture)",
+"origine": "NOUVELLE",
+"ex": [
+"EX-PIL-501"
+],
+"ecr": [
+"ECR-COO-05",
+"ECR-COO-06"
+],
+"src": "maquette `maquettes-reception-coordination.md §1.4` (événement 5), `maquettes-autres-modules.md §0.1` (`C.recu`, `C.etatTheme`, unités EN_ATTENTE → PRET) ; spec `specs-ateliers-besoins.md PARTIE 6` (EX-PIL-501) ; écran `ECR-COO-05`, `ECR-COO-06`",
+"qs": [
+"Q-280"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-080",
+"title": "Le reçu se rattache au visuel, jamais au destinataire",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-073",
+"EX-TRA-015"
+],
+"ecr": [
+"ECR-PIL-03",
+"ECR-PIL-04"
+],
+"src": "maquette `maquettes-autres-modules.md ECR-PIL-03` (Q41, ANO-02), `ECR-PIL-04` ; spec `specs-existant-process.md §F` (EX-EXI-073), `specs-ateliers-besoins.md PARTIE 3` (EX-TRA-015 : quantités doublées sur 2 semaines de départ)",
+"qs": [
+"Q-280"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-081",
+"title": "« Rendre la main » : conséquences sur le dossier, les affiches reçues et la validation admin",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-001",
+"EX-EXI-045"
+],
+"ecr": [
+"ECR-COO-09"
+],
+"src": "écran `ECR-COO-09b` ; spec `specs-existant-process.md §D` (EX-EXI-045), `specs-coordination.md §A` (EX-COO-001) ; maquette `maquettes-autres-modules.md §A`",
+"qs": [
+"Q-267"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-082",
+"title": "Correction d'intitulé par la plateforme : feuille de stock à refaire et alerte Broadcast ≠ Circé",
+"origine": "NOUVELLE",
+"ex": [
+"EX-FIX-509",
+"EX-REC-506"
+],
+"ecr": [
+"ECR-COO-09",
+"ECR-TRA-01"
+],
+"src": "écran `ECR-COO-09c`, `ECR-TRA-01` (`THEME_MODIF`) ; spec `specs-ateliers-besoins.md PARTIE 4` (EX-FIX-509), `PARTIE 1` (EX-REC-506) ; `maquettes-autres-modules.md §0.1`",
+"qs": [
+"Q-268"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-083",
+"title": "L'export des trains ne dépend ni de la validation admin ni de la réception complète",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-001",
+"EX-COO-024",
+"EX-COO-044",
+"EX-EXI-054"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "spec `specs-coordination.md §A` (EX-COO-001), `§C` (EX-COO-024), `§D` (EX-COO-044 jalon 7) ; `specs-existant-process.md §E` (EX-EXI-054) ; écran `ECR-COO-05b`",
+"qs": [
+"Q-251"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-084",
+"title": "Création des UM, libération et préparation de l'unitaire indépendantes de la réception et de la validation admin",
+"origine": "CONSERVÉE",
+"ex": [
+"EX-COO-001",
+"EX-COO-014",
+"EX-EXI-054"
+],
+"ecr": [],
+"src": "legacy `p_s_listeUM_2m2.sql:36-62,113-142` (RG-RPR-024 : « la réception ne conditionne PAS la création d'UM ni le passage 1 → 6 ») ; spec `specs-coordination.md §B` (EX-COO-014), `§A` (EX-COO-001), `specs-existant-process.md §E` (EX-EXI-054)",
+"qs": [
+"Q-265"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-085",
+"title": "Affiche arrivée après l'export ou le début de production : rattachement manuel du seul surplus",
+"origine": "NOUVELLE",
+"ex": [
+"EX-COO-044",
+"EX-COO-045"
+],
+"ecr": [],
+"src": "spec `specs-coordination.md §D` (EX-COO-044 jalon 7), `§E` (EX-COO-045)",
+"qs": [
+"Q-280"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-086",
+"title": "Visuel arrivé après le fractionnement : production à part",
+"origine": "NOUVELLE",
+"ex": [
+"EX-EXI-036"
+],
+"ecr": [
+"ECR-COO-05"
+],
+"src": "écran `ECR-COO-05`, `ECR-COO-05d` ; spec `specs-existant-process.md §C` (EX-EXI-036)",
+"qs": [
+"Q-261"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-087",
+"title": "Sorties de stock déclenchées par l'expédition des unités",
+"origine": "MODIFIÉE",
+"ex": [
+"EX-EXI-076",
+"EX-SCR-517",
+"EX-STK-001",
+"EX-STK-005",
+"EX-TRA-037"
+],
+"ecr": [
+"ECR-EXP-02"
+],
+"src": "spec `specs-ateliers-besoins.md PARTIE 8` (EX-STK-001, EX-STK-005), `PARTIE 5` (EX-SCR-517), `specs-transverse.md §G` (EX-TRA-037), `specs-existant-process.md §F` (EX-EXI-076) ; écran `ECR-EXP-02`",
+"qs": [
+"Q-281"
+],
+"file": "COO"
+},
+{
+"id": "RG-X-088",
+"title": "Emplacement des affiches (allée, rayon) saisi à la réception et utilisé par les trains et le picking",
+"origine": "CONSERVÉE",
+"ex": [],
+"ecr": [
+"ECR-COO-05",
+"ECR-COO-06",
+"ECR-COO-10"
+],
+"src": "écran `ECR-COO-05a`, `ECR-COO-06`, `ECR-COO-10` ; legacy `Rapport.cs:961-1025` (RG-ADM-062) ; maquette `maquettes-reception-coordination.md §1.4` (événement 4)",
+"qs": [],
+"file": "COO"
+}
+]

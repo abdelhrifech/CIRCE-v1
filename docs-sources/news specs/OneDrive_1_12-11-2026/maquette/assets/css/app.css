@@ -1,0 +1,592 @@
+/* ==========================================================================
+   Circé — maquette cible : surcouche Cityz de Tabler 1.6
+   Règles : voir DESIGN.md. Chargée APRÈS tabler.min.css et tabulator_bootstrap5.min.css.
+   Aucune ressource externe.
+   ========================================================================== */
+
+:root {
+  /* Couleur d'action (Tabler « primary ») : cyan foncé Cityz, 5,7:1 sur blanc */
+  --tblr-primary: #0a6f93;
+  --tblr-primary-rgb: 10, 111, 147;
+  --tblr-link-color: #0a6f93;
+  --tblr-link-color-rgb: 10, 111, 147;
+  --tblr-link-hover-color: #085a77;
+  /* Structure Cityz */
+  --cz-navy: #1b2a44;
+  --cz-navy-2: #24375a;
+  --cz-navy-3: #2f4570;
+  --cz-cyan: #1fb3d8;
+  --cz-ink: #16191d;
+  --cz-ink-2: #4b5260;
+  --cz-ink-3: #6f7683;
+  --cz-annot: #46307f;
+  --cz-annot-bg: #f4f0fc;
+  /* Rampe ordinale (étapes de production) : plus de bleu depuis le 09/11 (un collègue est daltonien) ; dégradé multicolore
+     jaune → orange → rose → violet → presque noir, lisible par la seule différence de clarté */
+  --cz-ord-0: #9aa1ab;
+  --cz-ord-1: #f9db7c;
+  --cz-ord-2: #f7a35a;
+  --cz-ord-3: #e0607e;
+  --cz-ord-4: #9c3f8f;
+  --cz-ord-5: #3b1a47;
+  /* Gravités */
+  --cz-critical: #d63939;
+  --cz-serious: #f76707;
+  --cz-warning: #f59f00;
+  --cz-good: #2fb344;
+  --cz-info: #6f7683; /* gris : plus de bleu pour l'information (09/11) */
+  /* Alias conservés pour les styles en ligne des écrans */
+  --border: var(--tblr-border-color);
+  --border-strong: #c3c9d1;
+  --surface-2: var(--tblr-bg-surface-secondary);
+  --ink-2: var(--cz-ink-2);
+  --ink-3: var(--cz-ink-3);
+  --series-1: #e0607e;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --topbar-h: 56px;
+  --menubar-h: 50px;
+}
+
+html, body { height: 100%; }
+body { background: var(--tblr-bg-surface-secondary); color: var(--cz-ink); }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--tblr-primary); outline-offset: 2px; }
+
+/* --- Neutralise la grille Bootstrap : « row » est ici un simple alignement horizontal --- */
+.row { --tblr-gutter-x: 0; --tblr-gutter-y: 0; margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+/* Pas de padding ici : la gouttière à 0 l'annule déjà, et .btn ou .badge (déclarés après la grille) gardent le leur. */
+.row > * { width: auto; max-width: none; margin-top: 0; flex-shrink: 1; }
+
+/* ==========================================================================
+   Mise en page : deux bandeaux en haut (DESIGN.md §5)
+   1. bandeau bleu nuit : logo, périmètre (site, départ, rôle), horloge, actions
+   2. bandeau blanc : un onglet par processus, chacun avec la liste de ses pages
+   ========================================================================== */
+#app {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: var(--topbar-h) var(--menubar-h) minmax(0, 1fr);
+  grid-template-areas: "top" "menu" "main";
+  height: 100vh;
+}
+#topbar { grid-area: top; }
+#menubar { grid-area: menu; position: relative; z-index: 5; }
+#main { grid-area: main; overflow-y: auto; padding: 24px 28px 56px; min-width: 0; }
+
+/* Bandeau 1 : logo et périmètre commun */
+.cz-top { display: flex; align-items: center; gap: 18px; height: var(--topbar-h); padding: 0 20px; background: var(--cz-navy); color: #c9d3e3; }
+.cz-brand { display: flex; align-items: baseline; gap: 10px; padding-right: 18px; border-right: 1px solid rgba(255, 255, 255, .12); text-decoration: none; white-space: nowrap; }
+.cz-brand:hover { text-decoration: none; }
+.cz-brand-name { font-size: 22px; font-weight: 800; letter-spacing: .3px; color: #fff; }
+.cz-brand-name span { color: var(--cz-cyan); }
+.cz-brand-tag { font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: #8a9ab5; }
+.cz-top-filters { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+.cz-top-field { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: #8a9ab5; white-space: nowrap; }
+.cz-top-field .form-select { min-width: 140px; }
+.cz-top-actions { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.cz-top-sep { width: 1px; height: 24px; background: rgba(255, 255, 255, .16); }
+.cz-icon-btn { position: relative; display: inline-flex; align-items: center; padding: 6px 8px; color: #dbe3ef; background: transparent; border: 0; border-radius: 6px; }
+.cz-icon-btn:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+.cz-icon-btn .icon { width: 20px; height: 20px; margin: 0; }
+.cz-icon-btn .badge { position: absolute; top: -2px; right: -6px; font-size: 10px; padding: 2px 5px; }
+.cz-top-tool { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 4px 10px; color: #dbe3ef; background: transparent; border: 1px solid rgba(255, 255, 255, .24); border-radius: 6px; }
+.cz-top-tool:hover { color: #fff; border-color: rgba(255, 255, 255, .45); }
+.cz-top-tool .icon { width: 16px; height: 16px; margin: 0; }
+.cz-top-tool-icon { padding: 4px 6px; gap: 2px; }
+.cz-top-tool .cz-chev { width: 14px; height: 14px; }
+.cz-top .form-switch { margin: 0; white-space: nowrap; font-size: 13px; }
+.cz-top .form-switch .form-check-label { color: #dbe3ef; }
+
+/* Bandeau 2 : un onglet par processus */
+.cz-menubar { display: flex; align-items: stretch; height: var(--menubar-h); padding: 0 12px; background: #fff; border-bottom: 1px solid var(--tblr-border-color); box-shadow: 0 1px 2px rgba(16, 24, 40, .05); overflow-x: auto; overflow-y: hidden; }
+.cz-tab { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; font-size: 14px; color: var(--cz-ink-2); background: none; border: 0; border-bottom: 3px solid transparent; white-space: nowrap; text-decoration: none; cursor: pointer; }
+.cz-tab:hover { color: var(--cz-ink); background: var(--tblr-bg-surface-secondary); text-decoration: none; }
+.cz-tab .icon { width: 18px; height: 18px; color: var(--cz-ink-3); margin: 0; }
+.cz-tab .cz-chev { width: 14px; height: 14px; margin-left: -2px; }
+.cz-tab.active { color: var(--cz-ink); font-weight: 600; border-bottom-color: var(--tblr-primary); }
+.cz-tab.active > .icon:first-child { color: var(--tblr-primary); }
+.cz-tab.open { background: var(--tblr-bg-surface-secondary); color: var(--cz-ink); }
+.cz-tab .badge { font-size: 10.5px; padding: 2px 6px; }
+.cz-tab.icon-only { padding: 0 14px; }
+/* Neuf onglets : sous 1 480 px, onglets resserrés et sans icône (la maison reste), pour tenir sur un écran de 1 366 px */
+/* Sous 1300 px, un peu moins de marge par onglet : les dix onglets et leurs compteurs tiennent jusqu'à 1280 px */
+@media (max-width: 1300px) {
+  .cz-tab:not(.icon-only) { padding: 0 9px; }
+}
+@media (max-width: 1480px) {
+  .cz-tab { gap: 6px; padding: 0 11px; }
+  .cz-tab:not(.icon-only) > .icon:first-child { display: none; }
+}
+
+/* Liste d'un onglet : les pages, et leurs onglets internes en retrait */
+.dropdown-menu.cz-menu.cz-tabmenu { min-width: 340px; max-height: calc(100vh - 140px); padding: 6px 0; border-top-left-radius: 0; border-top-right-radius: 0; box-shadow: 0 18px 36px rgba(16, 24, 40, .2); }
+.cz-tabmenu .cz-menu-page { display: flex; align-items: center; gap: 10px; padding: 8px 16px; font-size: 13.5px; color: var(--cz-ink); text-decoration: none; }
+.cz-tabmenu .cz-menu-page .icon { width: 18px; height: 18px; color: var(--cz-ink-3); margin: 0; flex: none; }
+.cz-tabmenu .cz-menu-page > span:first-of-type { flex: 1; }
+.cz-tabmenu .cz-menu-page .badge { font-size: 10.5px; }
+.cz-tabmenu .cz-menu-sub { display: flex; align-items: center; gap: 8px; padding: 5px 16px 5px 44px; font-size: 12.5px; color: var(--cz-ink-2); text-decoration: none; }
+.cz-tabmenu .cz-menu-sub > span:first-child { flex: 1; }
+.cz-tabmenu .cz-menu-sub .badge { font-size: 10.5px; }
+.cz-tabmenu a:hover { background: var(--tblr-bg-surface-secondary); color: var(--cz-ink); text-decoration: none; }
+.cz-tabmenu .current { background: #e7f2f7; font-weight: 600; color: var(--cz-ink); }
+.cz-tabmenu .dim { opacity: .55; }
+.cz-tabmenu .cz-menu-sep { height: 1px; margin: 6px 0; background: var(--tblr-border-color); }
+
+/* ==========================================================================
+   En-tête de page
+   ========================================================================== */
+.cz-page-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+.cz-page-head .page-pretitle { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--cz-ink-3); }
+.cz-page-head .page-title { font-size: 20px; font-weight: 600; margin: 2px 0 0; color: var(--cz-ink); }
+.cz-page-head .cz-page-sub { margin: 4px 0 0; color: var(--cz-ink-2); max-width: 880px; }
+.cz-page-head > div:first-child { flex: 1 1 auto; min-width: 0; }
+.cz-page-head .btn-list { margin-left: auto; display: flex; gap: 8px; flex-wrap: nowrap; flex-shrink: 0; justify-content: flex-end; }
+/* Réception sur une seule page (21/10) : l'étape 2 (sas et contrôle) sous le panier et le bon de livraison, séparée par un trait.
+   09/11 : plus de repères « 1 » / « 2 » (styles retirés) */
+.cz-page-head .cz-page-intro { margin-top: 8px; }
+.cz-etape2 { margin-top: 22px; padding-top: 16px; border-top: 2px solid var(--border-strong); }
+/* Contrôle de la palette ouverte (09/11) : un encadré de couleur bien visible mais doux (bleu-vert clair, liseré à gauche),
+   pour qu'on voie tout de suite quelle palette on contrôle ; les tableaux restent sur fond blanc */
+.cz-controle { margin-top: 16px; scroll-margin-top: 12px; padding: 14px 16px 16px; background: #eaf4f8; border: 1px solid #b9dbe8; border-left: 6px solid var(--tblr-primary); border-radius: 10px; box-shadow: 0 1px 3px rgba(16, 24, 40, .06); }
+.cz-controle > .card { background: #fff; }
+.cz-controle-titre { font-size: 17px; font-weight: 700; margin: 0 0 10px; color: #0a5a78; }
+/* Retour (19/10) : au-dessus du fil d'Ariane, quand la page a été ouverte par un lien d'une autre page */
+.cz-retour { display: inline-flex; align-items: center; gap: 4px; margin: 0 0 6px; padding: 2px 10px 2px 8px; font-size: 13px; color: var(--tblr-primary); background: #eef7fb; border: 1px solid #cfe6ef; border-radius: 6px; cursor: pointer; }
+.cz-retour:hover { background: #e2f1f7; border-color: #9cc9da; }
+/* Barre « Trouver les dossiers du BL » (réception, étape 1 ; repensée le 09/11) : en tête de la carte « Réceptions attendues »,
+   sous son titre. Une ligne : la recherche en grand (le geste le plus fréquent), « ou », les deux photos, puis à droite, séparé,
+   le recours « Réception inconnue » ; dessous, une ligne d'aide. Hauteur 40 px (tablette d'atelier, DESIGN.md §8). */
+.cz-finder { display: flex; flex-direction: column; gap: 6px; padding: 12px 16px 10px; background: #f4f8fb; border-bottom: 1px solid var(--tblr-border-color); }
+.cz-finder-main { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cz-finder-main > .cz-dfield { flex: 1 1 360px; height: 40px; min-width: 260px; max-width: none; padding-left: 10px; font-size: 14px; border-color: #b9c6d2; }
+.cz-finder-main > .cz-dfield input { font-size: 14px; }
+.cz-finder-main > .cz-dfield .cz-dfield-label { font-weight: 600; color: var(--tblr-primary); }
+.cz-finder-main > .cz-dfield .cz-dfield-label .icon { width: 17px; height: 17px; }
+.cz-finder-main > .btn { height: 40px; padding: 0 14px; background: #fff; border: 1px solid #b9c6d2; color: var(--cz-ink, #1f2937); font-weight: 600; }
+.cz-finder-main > .btn:hover { border-color: var(--tblr-primary); color: var(--tblr-primary); background: #fff; }
+.cz-finder-main > .btn .icon { color: var(--tblr-primary); }
+.cz-finder-ou { font-size: 13px; color: var(--cz-ink-3); }
+.cz-finder-sep { width: 1px; height: 26px; margin: 0 4px; background: var(--tblr-border-color); }
+.cz-finder-recours { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.cz-finder-recours .btn { height: 40px; }
+.cz-finder-aide { font-size: 12.5px; color: var(--cz-ink-3); }
+@media (max-width: 1100px) { .cz-finder-sep { display: none; } .cz-finder-recours { margin-left: 0; } }
+/* Sélection en glissant dans les tableaux à cases (09/11) : pas de texte surligné pendant le glissé */
+.is-dragsel, .is-dragsel * { user-select: none; cursor: row-resize; }
+.cz-panier tbody tr { user-select: none; }
+.cz-bl-vide { display: flex; align-items: center; gap: 10px; padding: 6px 2px; font-size: 13px; color: var(--cz-ink-3); } /* bon de livraison sans ligne cochée */
+.cz-bl-vide .icon { width: 22px; height: 22px; margin: 0; color: #9aa6b2; flex: none; } /* panier « Lignes du BL » : on coche en glissant */
+/* Bon de livraison (09/11) : ce qu'il manque pour valider, sous le bouton, mis à jour en direct */
+.cz-manque { font-size: 12.5px; color: #8a5a00; background: #fff8e6; border: 1px solid #f1d9a6; border-radius: 6px; padding: 6px 10px; }
+.cz-manque ul { margin: 2px 0 0; padding-left: 18px; }
+.cz-manque.is-ok { color: #0b7a55; background: #e6f6ef; border-color: #b7e2cf; }
+.cz-rattacher { padding: 10px 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; } /* fiche affiche : rattacher à un autre dossier */
+.needs-btn { border: 1px dashed #9a86d6 !important; color: var(--cz-annot) !important; background: var(--cz-annot-bg) !important; }
+
+/* ==========================================================================
+   Briques génériques
+   ========================================================================== */
+.grid { display: grid; gap: 16px; grid-template-rows: none; grid-template-columns: minmax(0, 1fr); }
+.grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid.side { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+.grid > * { min-width: 0; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.spacer { flex: 1; }
+.muted { color: var(--cz-ink-3); }
+.small { font-size: 12px; }
+.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; }
+.mono.wrap { word-break: break-all; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.nowrap { white-space: nowrap; }
+.mt { margin-top: 16px; }
+.linkish { background: none; border: 0; color: var(--tblr-primary); cursor: pointer; padding: 0; text-decoration: underline; font-size: inherit; }
+/* Un bouton sur plusieurs lignes dans une liste : le numéro reste aligné sur la première ligne */
+li > .linkish { vertical-align: top; text-align: left; }
+.icon { width: 18px; height: 18px; stroke-width: 1.75; vertical-align: -3px; }
+.btn .icon { margin-inline-end: 6px; width: 16px; height: 16px; }
+.btn-sm .icon { width: 14px; height: 14px; margin-inline-end: 4px; }
+.btn.cz-icon-only .icon { margin: 0; }
+
+/* Cartes */
+.card { box-shadow: 0 1px 2px rgba(16, 24, 40, .04); }
+.card > .card-header { min-height: 52px; padding: 12px 16px; gap: 10px; }
+.card > .card-header .card-title { font-size: 15px; font-weight: 600; margin: 0; }
+.card > .card-header .cz-card-sub { color: var(--cz-ink-3); font-size: 12.5px; }
+.card > .card-header .card-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+.card > .card-body { padding: 14px 16px; }
+.card > .card-body.p-0 { padding: 0; }
+
+/* Barre de filtres */
+.cz-filterbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; padding: 12px 14px; margin-bottom: 16px; background: #fff; border: 1px solid var(--tblr-border-color); border-radius: var(--tblr-border-radius); }
+/* Filtres à choix multiples, cumulés (DESIGN.md §4.3) */
+.cz-filterbar.cz-filters { align-items: center; gap: 8px; padding: 10px 14px; }
+.cz-filters-title { display: inline-flex; align-items: center; gap: 6px; margin-right: 4px; font-size: 12px; font-weight: 600; color: var(--cz-ink-3); }
+.cz-filters-title .icon { width: 16px; height: 16px; margin: 0; }
+.cz-fbtn { display: inline-flex; align-items: center; gap: 6px; height: 34px; max-width: 340px; padding: 0 10px; font-size: 13px; color: var(--cz-ink); background: #fff; border: 1px solid var(--tblr-border-color); border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.cz-fbtn:hover { border-color: #aab4c0; }
+.cz-fbtn .cz-fbtn-label { color: var(--cz-ink-3); }
+.cz-fbtn .cz-fbtn-value { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+.cz-fbtn .cz-chev { width: 14px; height: 14px; margin: 0; color: var(--cz-ink-3); }
+.cz-fbtn.is-on { background: #e7f2f7; border-color: #9cc9da; }
+.cz-fbtn.is-on .cz-fbtn-value { color: #064b63; }
+.cz-fbtn.open { border-color: var(--tblr-primary); box-shadow: 0 0 0 2px rgba(10, 111, 147, .15); }
+.cz-fbtn-add { color: var(--tblr-primary); border-style: dashed; }
+.cz-fbtn-add .icon { width: 14px; height: 14px; margin: 0; }
+/* Filtres dans le tableau (19/10, tous les tableaux) : la barre passe dans la ligne d'outils, juste au-dessus des colonnes ;
+   le champ « Dossier » y remplace la recherche du tableau */
+.cz-table-toolbar > .cz-filters { flex: 1 1 auto; min-width: 0; margin: 0; padding: 0; background: none; border: 0; border-radius: 0; gap: 8px; }
+.cz-table-toolbar > .cz-filters > .cz-filters-title, .cz-table-toolbar > .cz-filters > .spacer { display: none; }
+.cz-table-toolbar .cz-dfield, .cz-table-toolbar .cz-fbtn { height: 30px; font-size: 13px; }
+.cz-table-toolbar .cz-dfield { min-width: 260px; }
+.dropdown-menu.cz-menu.cz-fmenu { max-height: none; padding: 10px; }
+.cz-fmenu-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; font-size: 12px; color: var(--cz-ink-3); }
+.cz-fmenu-head b { font-size: 13px; color: var(--cz-ink); }
+.cz-fmenu-search { margin-bottom: 6px; }
+.cz-fopts { max-height: 280px; overflow: auto; margin: 0 -4px; }
+.cz-fopt { display: flex; align-items: center; gap: 8px; margin: 0; padding: 5px 6px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+.cz-fopt:hover { background: var(--tblr-bg-surface-secondary); }
+.cz-fopt-label { flex: 1; }
+.cz-fopt-count { font-size: 12px; color: var(--cz-ink-3); font-variant-numeric: tabular-nums; }
+.cz-fopt.is-zero { color: var(--cz-ink-3); }
+.cz-fmenu-foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--tblr-border-color); }
+.cz-fmenu-more { display: block; margin: 6px 2px 0; font-size: 12px; }
+/* Champ « N° de dossier » : saisie, puces des dossiers choisis, propositions smart */
+.cz-dfield { display: inline-flex; align-items: center; gap: 4px; height: 34px; min-width: 300px; max-width: 520px; padding: 0 4px 0 8px; background: #fff; border: 1px solid var(--tblr-border-color); border-radius: 6px; cursor: text; }
+.cz-dfield:hover { border-color: #aab4c0; }
+.cz-dfield:focus-within { border-color: var(--tblr-primary); box-shadow: 0 0 0 2px rgba(10, 111, 147, .15); }
+.cz-dfield.is-on { background: #e7f2f7; border-color: #9cc9da; }
+.cz-dfield-label { display: inline-flex; align-items: center; gap: 4px; margin-right: 2px; font-size: 13px; color: var(--cz-ink-3); white-space: nowrap; }
+.cz-dfield-label .icon { width: 15px; height: 15px; margin: 0; }
+.cz-dchip { display: inline-flex; align-items: center; gap: 1px; height: 24px; padding: 0 2px 0 8px; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: #064b63; background: #fff; border: 1px solid #9cc9da; border-radius: 12px; white-space: nowrap; }
+.cz-dchip.more { padding: 0 8px; cursor: pointer; }
+.cz-dchip-x, .cz-dclear { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; color: var(--cz-ink-3); background: none; border: 0; border-radius: 50%; cursor: pointer; }
+.cz-dchip-x:hover, .cz-dclear:hover { color: var(--cz-ink); background: rgba(16, 24, 40, .08); }
+.cz-dchip-x .icon, .cz-dclear .icon { width: 13px; height: 13px; margin: 0; }
+.cz-dinput { flex: 1; min-width: 120px; height: 30px; padding: 0 2px; font-size: 13px; color: var(--cz-ink); background: transparent; border: 0; outline: 0; }
+.dropdown-menu.cz-menu.cz-dmenu { max-height: 380px; overflow: auto; padding: 6px; }
+.cz-dgroup { padding: 6px 8px 2px; font-size: 11px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; color: var(--cz-ink-3); }
+.cz-dopt { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; font-size: 13px; color: var(--cz-ink); text-align: left; background: none; border: 0; border-radius: 4px; cursor: pointer; }
+.cz-dopt:hover, .cz-dopt.active { background: var(--tblr-bg-surface-secondary); }
+.cz-dopt.active { box-shadow: inset 2px 0 0 var(--tblr-primary); }
+.cz-dopt.primary { font-weight: 600; color: var(--tblr-primary); }
+.cz-dopt .icon, .cz-dopt-ico { flex: none; width: 15px; height: 15px; margin: 0; }
+.cz-dopt.is-sel .icon { color: var(--tblr-primary); }
+.cz-dopt-num { flex: none; min-width: 58px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cz-dopt-sub { flex: 1; min-width: 0; overflow: hidden; color: var(--cz-ink-3); text-overflow: ellipsis; white-space: nowrap; }
+.cz-dopt.primary .cz-dopt-sub { color: inherit; white-space: normal; }
+.cz-dopt-count { flex: none; font-size: 12px; color: var(--cz-ink-3); font-variant-numeric: tabular-nums; }
+.cz-dopt-act { flex: none; font-size: 12px; color: var(--tblr-primary); }
+.cz-dhint { padding: 6px 8px; font-size: 12px; color: var(--cz-ink-3); }
+.cz-dhint.warn { color: #8a5a00; }
+.field { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+.field > .form-label { margin: 0; font-size: 12px; font-weight: 600; color: var(--cz-ink-3); }
+.field .form-select, .field .form-control { min-width: 140px; }
+.field.wide .form-select, .field.wide .form-control { min-width: 280px; }
+.field textarea.form-control { min-height: 70px; }
+.form-check { margin-bottom: 0; }
+
+/* Indicateurs */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.stat.card { margin: 0; }
+.stat .card-body { padding: 14px 16px; }
+.stat .subheader, .stat .stat-label { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--cz-ink-3); line-height: 1.3; }
+.stat .stat-value { font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 4px; color: var(--cz-ink); }
+.stat .stat-sub { font-size: 12px; color: var(--cz-ink-3); margin-top: 2px; }
+.stat.clickable { cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.stat.clickable:hover { border-color: var(--cz-ink-2); box-shadow: 0 2px 8px rgba(22, 25, 29, .12); }
+.cz-kpi-hero { grid-template-columns: minmax(260px, 1.3fr) repeat(4, minmax(0, 1fr)); gap: 12px; }
+.cz-hero-card .hero { justify-content: space-between; align-items: flex-start; margin: 6px 0 10px; }
+.cz-check-field { display: flex; align-items: center; min-height: 38px; }
+.cz-check-field .form-check { margin: 0; }
+.cz-scroll { overflow-y: auto; }
+.cz-chipbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.cz-chipbar .btn:disabled { opacity: .45; }
+.hero { display: flex; align-items: center; gap: 18px; }
+.hero .hero-value { font-size: 48px; font-weight: 600; line-height: 1; color: var(--cz-ink); }
+.hero .hero-label { font-size: 13px; color: var(--cz-ink-2); }
+
+/* Jauge (piste = niveau plus clair de la même rampe) */
+.cz-meter { display: flex; align-items: center; gap: 8px; }
+.cz-meter .progress { flex: 1; min-width: 80px; height: 6px; background: #f6e1e8; }
+.cz-meter .progress-bar { background: var(--cz-ord-3); }
+
+/* Onglets */
+.cz-tabs { margin-bottom: 16px; }
+.cz-tabs .nav-link { cursor: pointer; font-weight: 600; color: var(--cz-ink-2); }
+.cz-tabs .nav-link.active { color: var(--tblr-primary); }
+.cz-tabs .badge { margin-inline-start: 6px; }
+
+/* Étapes (Tabler) */
+.steps { margin: 4px 0 18px; }
+
+/* ==========================================================================
+   Statuts, gravités, étiquettes, annotations
+   ========================================================================== */
+.cz-status { display: inline-flex; align-items: center; gap: 7px; padding: 2px 10px 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; background: var(--tblr-bg-surface-secondary); color: var(--cz-ink); border: 1px solid var(--tblr-border-color); }
+.cz-status .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--cz-ord-0); }
+.cz-status.s-1 .dot { background: var(--cz-ord-1); } .cz-status.s-2 .dot { background: var(--cz-ord-2); }
+.cz-status.s-3 .dot { background: var(--cz-ord-3); } .cz-status.s-4 .dot { background: var(--cz-ord-4); }
+.cz-status.s-5 .dot { background: var(--cz-ord-5); }
+/* Textures des pastilles (09/11, daltonisme) : les mêmes que les barres des graphiques, un motif par étape */
+.cz-status .dot { width: 12px; height: 12px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .3); }
+.cz-status.s-2 .dot { background-image: repeating-linear-gradient(-45deg, rgba(0, 0, 0, .45) 0 1.5px, transparent 1.5px 4px); }
+.cz-status.s-3 .dot { background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, .85) 0 1.5px, transparent 1.5px 4px); }
+.cz-status.s-4 .dot { background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, .8) 0 1.5px, transparent 1.5px 4px); }
+.cz-status.s-5 .dot { background-image: repeating-linear-gradient(0deg, rgba(255, 255, 255, .75) 0 1.5px, transparent 1.5px 4px); }
+.cz-status.s-x { color: var(--cz-ink-3); text-decoration: line-through; }
+.cz-sev { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.cz-sev .icon { width: 14px; height: 14px; margin: 0; stroke-width: 2; }
+.badge { font-weight: 600; }
+.need-chip { display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: #ece5fb; color: var(--cz-annot); cursor: help; white-space: nowrap; letter-spacing: .02em; }
+.cz-chips { display: inline-flex; gap: 4px; flex-wrap: wrap; vertical-align: middle; }
+.annot { font-size: 12px; color: var(--cz-annot); background: var(--cz-annot-bg); border-left: 3px solid #9a86d6; padding: 7px 12px; border-radius: 0 6px 6px 0; margin: 0 0 12px; }
+body.no-annot .need-chip, body.no-annot .needs-btn, body.no-annot .annot, body.no-annot .cz-chips { display: none !important; }
+
+/* Encadrés (alertes Tabler) */
+.alert { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+.alert .alert-icon { margin: 1px 0 0; }
+.alert .alert-icon .icon { width: 20px; height: 20px; margin: 0; }
+.alert .alert-heading { font-size: 14px; margin: 0 0 2px; }
+.alert .alert-description { color: inherit; opacity: .92; }
+.alert .cz-alert-actions { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+.alert.alert-cible { --tblr-alert-variant-color: #6741d9; }
+
+/* ==========================================================================
+   Tableaux Tabulator (surcouche du thème Bootstrap 5)
+   ========================================================================== */
+.cz-table { background: #fff; }
+.cz-table-toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--tblr-border-color); flex-wrap: wrap; }
+.cz-table-search { position: relative; min-width: 240px; }
+.cz-table-outils { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+/* « Afficher par » (État des réservations vivant, 21/10) : le grain de la ligne, à côté des filtres */
+.cz-par { display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 2px 4px 2px 10px; border: 1px solid var(--cz-accent, #206bc4); border-radius: 6px; background: #f3f8fe; }
+.cz-par-label { font-size: 12px; font-weight: 600; color: var(--cz-ink-2, #475467); white-space: nowrap; }
+.cz-par .form-select { width: auto; min-width: 200px; height: 28px; padding: 2px 28px 2px 8px; font-size: 12.5px; border: 0; background-color: transparent; }
+.cz-table-search .icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--cz-ink-3); pointer-events: none; }
+.cz-table-search .form-control { padding-left: 30px; }
+.cz-table-bulk { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px 3px 10px; border-radius: 6px; background: #e7f2f7; }
+.cz-table-bulk:empty { display: none; }
+.cz-table-bulk > b { font-size: 12px; color: #064b63; }
+.cz-table-info { color: var(--cz-ink-3); font-size: 12px; white-space: nowrap; }
+.cz-table .tabulator { border: 0; border-radius: 0; font-size: 13px; background: #fff; margin: 0; }
+.cz-table .tabulator .tabulator-header { background: var(--tblr-bg-surface-secondary); border-bottom: 1px solid var(--tblr-border-color); color: var(--cz-ink-3); font-weight: 600; }
+.cz-table .tabulator .tabulator-header .tabulator-col { background: var(--tblr-bg-surface-secondary); border-right: 0; }
+.cz-table .tabulator .tabulator-header .tabulator-col .tabulator-col-content { padding: 8px 10px; }
+.cz-table .tabulator .tabulator-header .tabulator-col .tabulator-col-title { font-size: 11px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.cz-table .tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover { background: #eef1f5; }
+/* Filtres d'en-tête (21/10) : un champ sous le titre de chaque colonne */
+.cz-table .tabulator .tabulator-header .tabulator-col .tabulator-header-filter { margin-top: 5px; }
+.cz-table .tabulator .tabulator-header .tabulator-col .tabulator-header-filter input { height: 26px; padding: 2px 7px !important; font-size: 12px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--cz-ink); background: #fff; border: 1px solid var(--tblr-border-color); border-radius: 4px; }
+.cz-table .tabulator .tabulator-header .tabulator-col .tabulator-header-filter input::placeholder { color: var(--cz-ink-3); opacity: .8; }
+.cz-table .tabulator .tabulator-header .tabulator-col .tabulator-header-filter input:focus { outline: 0; border-color: var(--tblr-primary); box-shadow: 0 0 0 2px rgba(32, 107, 196, .18); }
+.cz-table .tabulator .tabulator-header .tabulator-col .tabulator-header-filter input:not(:placeholder-shown) { border-color: var(--tblr-primary); background: #eef7fb; }
+/* Flèche de tri : seulement sur la colonne triée, discrète au survol ailleurs */
+.cz-table .tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-title { padding-right: 16px; }
+.cz-table .tabulator .tabulator-header .tabulator-col[aria-sort="none"] .tabulator-col-sorter { opacity: 0; transition: opacity .12s; }
+.cz-table .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="none"]:hover .tabulator-col-sorter { opacity: .45; }
+.cz-table .tabulator .tabulator-header .tabulator-col[aria-sort="ascending"], .cz-table .tabulator .tabulator-header .tabulator-col[aria-sort="descending"] { color: var(--cz-ink); }
+.cz-col-count { margin-left: 4px; color: var(--cz-ink-3); font-weight: 500; font-variant-numeric: tabular-nums; }
+.cz-visuel .cz-visuel-t { color: var(--cz-ink-2); }
+.cz-visuel .badge { margin-left: 6px; }
+.cz-status-stack { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.cz-table .tabulator-row { border-bottom: 1px solid #edf0f3; min-height: 40px; }
+.cz-table .tabulator-row .tabulator-cell { padding: 9px 10px; border-right: 0; vertical-align: middle; }
+.cz-table .tabulator-row.tabulator-row-even { background: #fff; }
+.cz-table .tabulator-row.tabulator-selectable:hover { background: #f5f9fb; cursor: default; }
+.cz-table.is-clickable .tabulator-row:hover { cursor: pointer; }
+.cz-table .tabulator-row.tabulator-selected { background: #e7f2f7 !important; }
+.cz-table .tabulator-row .tabulator-cell.cz-wrap { white-space: normal; }
+.cz-table .tabulator-row .tabulator-cell.cz-num { font-variant-numeric: tabular-nums; }
+.cz-table .tabulator-row .tabulator-cell.cz-actions { overflow: visible; }
+.cz-table .tabulator-row .tabulator-cell .form-select, .cz-table .tabulator-row .tabulator-cell .form-control { padding-top: 2px; padding-bottom: 2px; min-height: 28px; font-size: 12.5px; }
+.cz-table .tabulator .tabulator-calcs-holder { background: #f8fafc !important; border-top: 1px solid var(--tblr-border-color); }
+.cz-table .tabulator .tabulator-calcs-holder .tabulator-row { background: #f8fafc !important; font-weight: 700; }
+.cz-table .tabulator .tabulator-tableholder .tabulator-placeholder .tabulator-placeholder-contents { color: var(--cz-ink-3); font-weight: 500; font-size: 13px; padding: 28px; }
+.cz-table .tabulator-row-header input[type="checkbox"], .cz-table .tabulator-col-row-handle input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
+.cz-table .tabulator-row .tabulator-cell.tabulator-row-header, .cz-table .tabulator .tabulator-header .tabulator-col.tabulator-row-header { border-right: 0; }
+/* liseré d'exception à gauche */
+/* Liseré d'exception : sur la première cellule (sinon la case à cocher figée le recouvre) */
+.cz-table .tabulator-row.cz-tone-critical > .tabulator-cell:first-child { box-shadow: inset 4px 0 0 var(--cz-critical); }
+.cz-table .tabulator-row.cz-tone-serious > .tabulator-cell:first-child { box-shadow: inset 4px 0 0 var(--cz-serious); }
+.cz-table .tabulator-row.cz-tone-warning > .tabulator-cell:first-child { box-shadow: inset 4px 0 0 var(--cz-warning); }
+.cz-table .tabulator-row.cz-tone-good > .tabulator-cell:first-child { box-shadow: inset 4px 0 0 var(--cz-good); }
+.cz-table .tabulator-row.cz-tone-info > .tabulator-cell:first-child { box-shadow: inset 4px 0 0 var(--cz-info); }
+/* Actions de ligne figées à droite */
+.cz-row-actions { display: inline-flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
+.cz-row-actions > * { flex-shrink: 0; }
+.cz-table .tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right, .cz-table .tabulator .tabulator-header .tabulator-col.tabulator-frozen.tabulator-frozen-right { border-left: 0; }
+.cz-table.is-overflow .tabulator-frozen-right { box-shadow: -10px 0 10px -10px rgba(16, 24, 40, .3); }
+/* En-têtes numériques alignés sur les chiffres : flèche de tri à gauche */
+.cz-table .tabulator .tabulator-header .tabulator-col.cz-num.tabulator-sortable .tabulator-col-title { padding-right: 0; padding-left: 16px; }
+.cz-table .tabulator .tabulator-header .tabulator-col.cz-num .tabulator-col-sorter { right: auto; left: 0; }
+.cz-table .tabulator-row.cz-tone-muted { color: var(--cz-ink-3); }
+/* densité compacte */
+.cz-table.is-dense .tabulator-row { min-height: 32px; }
+.cz-table.is-dense .tabulator-row .tabulator-cell { padding-top: 5px; padding-bottom: 5px; }
+.cz-table .tabulator .tabulator-col.tabulator-moving { background: #e7f2f7; border: 1px dashed var(--tblr-primary); }
+
+/* Petits tableaux simples (fiches, fenêtres) */
+.table-wrap { overflow: auto; max-height: 560px; }
+.table-wrap.tall { max-height: none; }
+table.dt { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; background: #fff; }
+table.dt th { position: sticky; top: 0; z-index: 1; background: var(--tblr-bg-surface-secondary); text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--cz-ink-3); padding: 8px 10px; border-bottom: 1px solid var(--tblr-border-color); white-space: nowrap; }
+table.dt td { padding: 8px 10px; border-bottom: 1px solid #edf0f3; vertical-align: middle; }
+table.dt td.num, table.dt th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.dt tbody tr:hover td { background: #f8fafc; }
+table.dt tbody tr.is-sel td { background: #e7f2f7; } /* ligne cochée (panier de la réception), comme une ligne sélectionnée */
+.dt-empty, .cz-empty { padding: 28px; text-align: center; color: var(--cz-ink-3); }
+
+/* Menus flottants (Tabler dropdown) */
+.dropdown-menu.cz-menu { position: fixed; display: block; z-index: 1080; max-height: 420px; overflow: auto; min-width: 240px; padding: 8px; }
+.cz-menu .col-item { display: flex; align-items: center; gap: 8px; padding: 4px 6px; font-size: 13px; border-radius: 4px; cursor: pointer; }
+.cz-menu .col-item:hover { background: var(--tblr-bg-surface-secondary); }
+/* Menu « Colonnes » : case à cocher et libellé, puis flèches monter / descendre */
+.cz-menu .col-item > label { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; margin: 0; cursor: pointer; }
+.cz-menu .col-item .btn-icon { padding: 2px; min-height: 0; line-height: 1; }
+.cz-menu .col-item .btn-icon .icon { width: 14px; height: 14px; margin: 0; }
+.cz-menu .cz-menu-help { font-size: 12px; color: var(--cz-ink-3); padding: 0 6px 8px; }
+.cz-menu .dropdown-item { white-space: normal; border-radius: 6px; padding: 8px 10px; }
+
+/* Infobulle */
+#tooltip { position: fixed; z-index: 2000; pointer-events: none; background: #fff; border: 1px solid var(--tblr-border-color); border-radius: 8px; box-shadow: 0 12px 32px rgba(16, 24, 40, .18); padding: 8px 10px; font-size: 12px; min-width: 140px; max-width: 360px; }
+#tooltip .tt-title { font-weight: 700; margin-bottom: 4px; color: var(--cz-ink); }
+#tooltip .tt-row { display: flex; align-items: center; gap: 8px; color: var(--cz-ink-2); }
+#tooltip .tt-row b { color: var(--cz-ink); font-variant-numeric: tabular-nums; }
+#tooltip .tt-key { width: 12px; height: 3px; border-radius: 2px; }
+
+/* Fenêtres et panneaux (Tabler modal / offcanvas affichés par le script) */
+.cz-modal { display: block; }
+.cz-modal .modal-dialog { margin-top: 6vh; }
+.cz-modal .modal-body { max-height: 68vh; overflow: auto; }
+.cz-offcanvas.offcanvas-end { width: min(580px, 94vw); visibility: visible; }
+.cz-offcanvas .offcanvas-body { overflow: auto; }
+
+/* Notifications */
+.cz-toasts { position: fixed; bottom: 18px; right: 18px; z-index: 2100; display: flex; flex-direction: column; gap: 8px; }
+.cz-toast { display: flex; gap: 10px; align-items: flex-start; max-width: 440px; padding: 10px 14px; border-radius: 8px; color: #fff; background: var(--cz-navy); box-shadow: 0 12px 32px rgba(16, 24, 40, .25); font-size: 13px; }
+.cz-toast .icon { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+.cz-toast.good { background: #1d6f35; } .cz-toast.critical { background: #a12828; } .cz-toast.mail { background: var(--cz-navy-2); }
+
+/* Graphiques ECharts */
+.cz-chart { margin: 0; }
+.cz-chart-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+.cz-chart-head figcaption { flex: 1; font-size: 12px; color: var(--cz-ink-3); }
+.cz-chart-canvas { width: 100%; }
+
+/* ==========================================================================
+   Composants métier
+   ========================================================================== */
+.need-list { list-style: none; padding: 0; margin: 0; }
+.need-list li { padding: 9px 0; border-bottom: 1px solid var(--tblr-border-color); display: grid; grid-template-columns: 76px 1fr; gap: 10px; }
+.need-list .src { font-size: 11.5px; color: var(--cz-ink-3); }
+.cz-timeline { list-style: none; padding: 0; margin: 0; }
+.cz-timeline li { display: grid; grid-template-columns: 118px 1fr; gap: 10px; padding: 7px 0; border-bottom: 1px dashed #e3e6ea; font-size: 13px; }
+.cz-timeline li:last-child { border-bottom: 0; }
+.cz-timeline .when { color: var(--cz-ink-3); font-variant-numeric: tabular-nums; }
+.cz-action-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--tblr-border-color); border-radius: 8px; text-decoration: none; color: inherit; background: #fff; }
+.cz-action-row:hover { border-color: var(--tblr-primary); text-decoration: none; color: inherit; }
+.cz-action-row .cz-action-n { font-size: 22px; font-weight: 600; min-width: 52px; text-align: right; color: var(--cz-ink); }
+.cz-action-row.is-zero { background: var(--tblr-bg-surface-secondary); }
+.cz-action-row.is-zero .cz-action-n { color: var(--cz-ink-3); }
+.cz-alert-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 16px; border-bottom: 1px solid var(--tblr-border-color); }
+.cz-alert-row:last-child { border-bottom: 0; }
+
+.train-pos { display: inline-flex; gap: 3px; }
+.train-pos .pos { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 4px; border-radius: 4px; font-size: 11px; font-weight: 700; border: 1px solid var(--border-strong); background: #fff; color: var(--cz-ink-2); }
+.train-pos .pos.ok { background: #e3f0fc; border-color: #9ec5f4; color: #18457d; }
+.train-pos .pos.ko { background: repeating-linear-gradient(135deg, #fbe9e9 0 4px, #fff 4px 8px); border-color: #e3a3a3; color: #7e1d1d; }
+.train-pos .pos.fr { border-style: dashed; color: var(--cz-ink-3); }
+.legend-inline { display: inline-flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--cz-ink-2); }
+.poster { width: 120px; height: 170px; border-radius: 6px; flex: none; display: flex; flex-direction: column; justify-content: flex-end; padding: 8px; color: #fff; font-weight: 800; font-size: 13px; line-height: 1.15; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
+.poster.sm { width: 64px; height: 90px; font-size: 9px; padding: 5px; }
+.poster.lg { width: 220px; height: 312px; font-size: 20px; padding: 14px; border-radius: 8px; }
+/* Bouton « voir le visuel » devant un intitulé, et fenêtre « Visuel » */
+.cz-btn-visuel { padding: 0 2px; margin: -2px 4px 0 0; min-height: 0; line-height: 1; vertical-align: middle; }
+.cz-btn-visuel .icon { width: 15px; height: 15px; margin: 0; color: var(--cz-ink-3); }
+.cz-btn-visuel:hover .icon { color: var(--tblr-primary); }
+.cz-visuel-modal { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 12px; }
+.cz-visuel-info { flex: 1; min-width: 260px; display: grid; gap: 8px; font-size: 13.5px; }
+.cz-visuel-row { display: grid; grid-template-columns: 170px 1fr; gap: 12px; align-items: baseline; }
+.score { font-weight: 700; font-variant-numeric: tabular-nums; }
+.kbd { font-family: Consolas, monospace; font-size: 12px; border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: #fff; }
+.file-card { border: 1px solid var(--tblr-border-color); border-radius: 8px; padding: 10px 12px; background: #fff; display: grid; gap: 4px; }
+button.file-card { width: 100%; }
+.file-card.sel { border-color: var(--tblr-primary); box-shadow: 0 0 0 2px rgba(10, 111, 147, .18); }
+.file-name { font-family: Consolas, monospace; font-size: 12.5px; font-weight: 700; color: var(--cz-navy); word-break: break-all; }
+.preview { font-family: Consolas, monospace; font-size: 12px; background: #0f172a; color: #e2e8f0; padding: 10px 12px; border-radius: 6px; overflow: auto; max-height: 260px; white-space: pre; }
+.scan-box { display: flex; gap: 10px; align-items: center; padding: 12px 14px; background: var(--cz-navy); border-radius: 8px; color: #dbe3ef; }
+.scan-box input { flex: 1; background: var(--cz-navy-2); color: #fff; border: 1px solid var(--cz-navy-3); border-radius: 6px; padding: 9px 12px; font-family: Consolas, monospace; font-size: 15px; }
+.scan-box input::placeholder { color: #8a9ab5; }
+.bague { width: 300px; border: 1px solid #333; border-radius: 4px; padding: 8px 10px; font-size: 11px; background: #fff; color: #111; font-family: Arial, sans-serif; }
+.bague .bc { height: 26px; background: repeating-linear-gradient(90deg, #111 0 2px, #fff 2px 3px, #111 3px 4px, #fff 4px 7px, #111 7px 8px, #fff 8px 10px); margin: 4px 0; }
+.bague .big { font-size: 15px; font-weight: 800; }
+/* Feuille de stock (21/10) : le modèle de Circé (EtiquetteRackAffiche.rdlc), page A4 en cm et pt, réduite à l'aperçu */
+.fsa-liste { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.fsa-wrap { width: calc(21cm * .6); height: calc(29.7cm * .6); overflow: hidden; flex: none; box-shadow: 0 1px 4px rgba(16, 24, 40, .18); }
+.fsa-page { position: relative; width: 21cm; height: 29.7cm; transform: scale(.6); transform-origin: top left; background: #fff; color: #111; font-family: "Times New Roman", Times, serif; }
+.fsa-page.is-multi { background: #fff59d; }
+.fsa-sect { position: absolute; width: 20.65cm; }
+.fsa-z { position: absolute; font-weight: 700; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fsa-ligne { position: absolute; border-top: 1pt solid #111; }
+.fsa-cadre { position: absolute; border: 1.25pt solid #111; }
+/* Visuel sur le côté de la feuille de stock (09/11) ; sans visuel, un cadre vide */
+.fsa-visuel { position: absolute; border: 1.25pt solid #111; overflow: hidden; background: #fff; }
+.fsa-visuel > .poster { width: 100%; height: 100%; border-radius: 0; font-family: Arial, sans-serif; font-size: 18pt; padding: .4cm; }
+.fsa-visuel.is-vide { border-style: dashed; }
+.fsa-barres { position: absolute; background: repeating-linear-gradient(90deg, #111 0 3px, transparent 3px 5px, #111 5px 6px, transparent 6px 10px, #111 10px 14px, transparent 14px 16px); }
+.fsa-table { position: absolute; border-collapse: collapse; font-size: 10pt; }
+.fsa-table th, .fsa-table td { border: 1pt solid #111; height: .6cm; padding: 1px 3px; text-align: center; vertical-align: middle; }
+.fsa-table th { font-size: 12pt; font-weight: 700; }
+.fsa-mention { position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: .25cm; text-align: center; padding: .3cm .6cm; }
+.fsa-mention-t { font-size: 26pt; font-weight: 700; letter-spacing: .02em; white-space: nowrap; line-height: 1.1; }
+.fsa-mention-s { font-size: 11pt; font-weight: 400; max-width: 17.5cm; line-height: 1.25; }
+.fsa-page.is-temp .fsa-mention { border: 3pt dashed #b42318; color: #b42318; background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .9) 0 14px, rgba(253, 232, 230, .9) 14px 28px); }
+.fsa-page.is-def .fsa-mention { border: 2pt solid #111; }
+.mail { border: 1px solid var(--tblr-border-color); border-radius: 8px; margin-bottom: 10px; background: #fff; }
+.mail-head { padding: 9px 12px; border-bottom: 1px solid var(--tblr-border-color); font-size: 12.5px; display: grid; gap: 2px; background: var(--tblr-bg-surface-secondary); border-radius: 8px 8px 0 0; }
+.mail-body { padding: 10px 12px; font-size: 13px; white-space: pre-wrap; }
+.pp-flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+.pp-flow .arr { color: var(--cz-ink-3); }
+
+@media (max-width: 1200px) {
+  .grid.cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid.cols-3, .grid.side { grid-template-columns: minmax(0, 1fr); }
+  .grid.cz-kpi-hero { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cz-kpi-hero > .cz-hero-card { grid-column: 1 / -1; }
+  .cz-top-field > span { display: none; }
+}
+/* Bandeau 1 sur écran plus étroit : sans le sous-titre du logo */
+@media (max-width: 1280px) { .cz-brand-tag { display: none; } .cz-top-field .form-select { min-width: 120px; } }
+@media print {
+  #topbar, #menubar, .btn-list, .cz-filterbar, .needs-btn, .cz-table-toolbar, .cz-retour { display: none !important; }
+  #app { display: block; height: auto; } #main { overflow: visible; padding: 0; }
+}
+
+/* Paramétrage › Statuts (22/10) : origine d'un statut ou d'un tag (calculé, existe dans Circé, Broadcast, à ajouter en V2) */
+.cz-orig { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 650; padding: 1px 9px; border-radius: 999px; white-space: nowrap; }
+.cz-orig::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.cz-orig.o-C { color: #0b7a55; background: #e6f6ef; }
+.cz-orig.o-E { color: #0a6f93; background: #e3f1f8; }
+.cz-orig.o-B { color: #6b2fc9; background: #f2eafe; }
+.cz-orig.o-N { color: #c4320a; background: #ffe9df; }
+/* Tableau de bord pré-production (04/11) : carrés choisis et rangés par l'utilisateur, sur le modèle d'un « H-Board » */
+.cz-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; align-items: start; }
+.cz-board-card { margin: 0; }
+.cz-board-card.large { grid-column: span 2; }
+.alert-neutre { background: #f1f1ef; border-color: #d4d4cf; color: var(--cz-ink); } /* encadré d'information, gris */
+.alert-neutre .alert-icon { color: var(--cz-ink-2); }
+.cz-board-card.cz-drop { outline: 2px dashed var(--cz-ink-2); outline-offset: 2px; }
+.cz-board-head { display: flex; align-items: center; gap: 8px; cursor: grab; }
+.cz-board-head .card-title { flex: 1; margin: 0; }
+.cz-board-compteurs { border-top: 3px solid #e8590c; }
+.cz-board-counts { display: flex; flex-direction: column; gap: 8px; }
+.cz-board-count { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cz-board-val { min-width: 112px; padding: 6px 12px; border: 0; border-radius: 4px; background: #3d3a36; color: #fff; font-size: 20px; font-variant-numeric: tabular-nums; cursor: pointer; }
+.cz-board-val:hover { background: #16191d; }
+.cz-board-list { max-height: 260px; overflow: auto; margin-top: 8px; border-top: 1px solid var(--border); }
+.cz-board-list tr.cz-click { cursor: pointer; }
+.cz-board-notes .card-body, .cz-board-card.cz-board-notes { background: #fdf0b0; }
+textarea.cz-board-notes { width: 100%; min-height: 220px; border: 0; background: transparent; resize: vertical; font-size: 16px; font-style: italic; color: #5c5338; outline: none; }

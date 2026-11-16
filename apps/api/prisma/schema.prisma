@@ -1,0 +1,1995 @@
+// Modèle de données CIRCE V2 — étape 3.
+// Base SQLite (Q-343). Noms métier français conservés avec @@map/@map vers le schéma réel (Q-341).
+// Décisions : Q-300 (statut persisté), Q-306 (lien n–n avec quantité), Q-307 (entité Réception),
+// Q-004/Q-319 (seed minimal), Q-301 (un enum par entité), Q-308 (journal + historique de statut).
+// Conventions : onDelete Restrict par défaut ; entités modifiables = version, createdAt, updatedAt,
+// createdById, updatedById (auteurs = id Utilisateur, vérifiés par le service, sans FK : voir
+// ANALYSE_MODELE_DONNEES.md §4). Les enums sont du TEXT en SQLite (pas de CHECK en base).
+// Index unique partiel de la ligne attendue : SQL brut dans la migration (Q-305).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ───────────────────────────── Enums ─────────────────────────────
+
+/// Réception (palette) : EX-REC-053. « Introuvable » = A_IDENTIFIER + signaleLe (Q-109).
+enum StatutReception {
+  A_IDENTIFIER
+  A_CONTROLER
+  CONTROLEE
+}
+
+/// Affiche : EX-REC-054 (les tags sont calculés, Q-300).
+enum StatutAffiche {
+  IDENTIFIEE
+  ORPHELINE
+}
+
+enum TypeFeuille {
+  TEMPORAIRE
+  DEFINITIVE
+}
+
+enum ModeRattachement {
+  BL
+  VISUEL
+  MAIN
+}
+
+enum SourceLigne {
+  BC
+  PREPA
+}
+
+enum EtatLigne {
+  ACTIVE
+  ANNULEE
+}
+
+/// Statut de la ligne attendue (RG-REC-018) : recalculé dans la transaction qui modifie les liens.
+enum StatutLigneAttendue {
+  ATTENDUE
+  PARTIELLE
+  COMPLETE
+  SURPLUS
+}
+
+/// Types de mouvement (RG-REC-151) ; quantité signée, append-only.
+enum TypeMouvement {
+  RECEPTION
+  COMPLEMENT
+  ECART_CONTROLE
+  MISE_AU_REBUT
+  AJOUT_MANUEL
+  SORTIE_MANUELLE
+  EXPEDITION
+  FUSION
+  RENVOI
+  DESTRUCTION
+}
+
+/// Préparation du dossier (RG-COO-063). La validation admin du dossier est calculée (RG-COO-020).
+enum StatutDossier {
+  A_TRAITER
+  PREPARATION_RECUE
+  ANNULE
+}
+
+/// Instruction (RG-COO-040) ; codes legacy rpc_statut 0 à 5 (3 = ERREUR hérité).
+enum StatutInstruction {
+  A_TRAITER
+  EN_COURS
+  INSTRUCTION_OK
+  ERREUR
+  ANNULE
+  PRET_A_PRODUIRE
+}
+
+/// Face, répartition, UM : codes legacy rpc_statut 0 à 10 (Q-250, Q-301).
+enum StatutProduction {
+  A_TRAITER
+  EN_COURS
+  INSTRUCTION_OK
+  ERREUR
+  ANNULE
+  A_IMPRIMER
+  PREPARE
+  A_EXPEDIER
+  TERMINE
+  EXPORT_PREPA
+  AU_ROULAGE
+}
+
+/// ate_type legacy : 1 Fixe, 2 Scroll.
+enum TypeAtelier {
+  FIXE
+  SCROLL
+}
+
+enum TypeEntite {
+  NON_CONFORMITE
+  SUIVI_J3
+  TABLEAU_PERSONNEL
+  LIGNE_BUS
+  RECEPTION
+  AFFICHE
+  LIGNE_ATTENDUE
+  RATTACHEMENT
+  DOSSIER
+  INSTRUCTION
+  FACE_TRAIN
+  TRAIN
+  EXPORT_TRAINS
+  GENERATION_FICHIERS
+  REPARTITION
+  UNITE_MANUTENTION
+  PARAMETRE
+  REFERENTIEL
+  ALERTE
+  VERIFICATION_THEME
+  BAGUE
+  SUIVI_8M2
+  ENCOLLAGE_BUS
+  COLIS
+  LIBERATION_SEMAINE
+  UTILISATEUR
+  PLATEFORME
+  REGLE_ALERTE
+  MAIL
+  TACHE
+}
+
+/// Actions du journal d'audit (Q-308) : 16 actions legacy + actions V2 (extensible par migration).
+enum ActionAudit {
+  CREATION_AFFICHE
+  MODIFICATION_DOSSIER
+  MODIFICATION_SEMAINE
+  MODIFICATION_ANNONCEUR
+  MODIFICATION_THEME
+  MODIFICATION_FORMAT
+  MODIFICATION_VALIDATION_ADMIN
+  MODIFICATION_A_CONSERVER
+  AFFICHE_MISE_EN_REBUS
+  AFFICHE_ASSOCIER
+  AFFICHE_DISSOCIER
+  VIDER_REBUS
+  CHANGEMENT_STATUT_INSTRUCTION
+  INTEGRATION_INSTRUCTION
+  INTEGRATION_PREPARATION
+  RENVOI_BROADCAST_IGNORE
+  ANNULATION_DOSSIER
+  INSTRUCTION_OK_AUTOMATIQUE
+  REOUVERTURE_INSTRUCTION_OK
+  APPLICATION_VERSION_BROADCAST
+  DEMANDE_CORRECTION_BROADCAST
+  MODIFICATION_INSTRUCTION_PLUS
+  EXPORTER_TRAINS
+  DEBLOQUER_PREPARATION
+  CREATION_RECEPTION
+  CONTROLE_RECEPTION
+  SIGNALEMENT_INTROUVABLE
+  MOUVEMENT_STOCK
+  VALIDATION_ADMIN
+  ANNULATION_VALIDATION_ADMIN
+  RATTACHEMENT_AFFICHE
+  RETRAIT_RATTACHEMENT
+  INSTRUCTION_OK
+  PURGE_ATTENDUES
+  IMPRESSION_FEUILLE
+  IMPRESSION_ETIQUETTE_RACK
+  MODIFICATION_EMPLACEMENT
+  MODIFICATION_IMPRIMEUR
+  MODIFICATION_COMMENTAIRE
+  NON_CONFORMITE
+  SURPLUS_ENTRETIEN
+  CREATION_RECEPTION_INCONNUE
+  MODIFICATION_PARAMETRE
+  MODIFICATION_REFERENTIEL
+  ALIMENTATION_LIGNE
+  FERMETURE_LIGNE
+  DEPLACEMENT_RATTACHEMENT
+  DONNEE_REFERENCE_MANQUANTE
+  ALERTE_ALIMENTATION
+  INTEGRATION_FLUX
+  INTEGRATION_ECHEC
+  ALERTE_INTEGRATION
+  INTEGRATION_DESTINATAIRE
+  INTEGRATION_GROUPE_PREPARATION
+  PREPA_RENVOYEE_NON_INTEGREE
+  INTEGRATION_FACES
+  RAFRAICHIR_DOSSIER
+  RETOUR_BROADCAST
+  CREATION_DOSSIER
+  ACQUITTEMENT_ALERTE
+  CREATION_UTILISATEUR
+  MODIFICATION_UTILISATEUR
+  MODIFICATION_PLATEFORME
+  CREATION_MAIL_PLATEFORME
+  SUPPRESSION_MAIL_PLATEFORME
+  CREATION_IMPRIMANTE
+  MODIFICATION_IMPRIMANTE
+  MODIFICATION_REGLE_ALERTE
+  DEMANDE_CORRECTION_THEME
+  VERDICT_VERIFICATION_THEME
+  REPRISE_THEME_BROADCAST
+  CALCUL_TRAINS
+  ANNULATION_FACE_DOUBLON
+  FRACTIONNEMENT_TRAIN
+  RACCROCHAGE_VISUEL
+  CREATION_TRAIN
+  SUPPRESSION_TRAIN
+  CHANGEMENT_STATUT_FACE
+  ANNULATION_THEME_TRAIN
+  DEBLOCAGE_SEMAINE_TRAINS
+  DUPLICATION_TRAIN
+  SIMULATION_EXPORT_TRAINS
+  EXPORT_PREPARATION
+  AU_ROULAGE
+  SUPPRESSION_THEME_EXPORT
+  AFFECTATION_ROULEUR
+  PRE_ASSEMBLAGE
+  GENERATION_FICHIERS
+  ENVOI_MACHINE
+  IMPRESSION_BAGUE
+  MODIFICATION_BAGUE
+  REIMPRESSION_BAGUE
+  AFFECTATION_DISPATCH
+  PROPOSITION_REPARTITION
+  DESAFFECTATION_DISPATCH
+  SUIVI_8M2
+  CREATION_ROULEUR
+  MODIFICATION_ROULEUR
+  CORRECTION_INTITULE
+  RENDU_MAIN_UNITE
+  MODIFICATION_QUANTITE_UNITE
+  RETRAIT_UNITE
+  PREPARATION_UNITE
+  COMPTAGE_PLIAGE
+  QUANTITES_ENCOLLER
+  CREATION_COLIS
+  AJOUT_UM_COLIS
+  AJOUT_TRAIN_COLIS
+  RETRAIT_COLIS
+  SUPPRESSION_COLIS
+  EXPEDITION_COLIS
+  FIN_JOURNEE_COLIS
+  MAIL_COLIS
+  SORTIE_STOCK_EXPEDITION
+  LIBERATION_SEMAINE
+  CREATION_UNITE
+  CREATION_DESTINATAIRE
+  MODIFICATION_DESTINATAIRE
+  CREATION_MAIL
+  ENVOI_MAIL
+  ECHEC_MAIL
+  RELANCE_MAIL
+  EXECUTION_TACHE
+}
+
+// ──────────────────── Utilisateurs, rôles, permissions ────────────────────
+
+/// Ex tr_utilisateur. L'identité réelle dépend de Q-001 : identifiantExterne est neutre (ex loginWindows).
+model Utilisateur {
+  id                 Int      @id @default(autoincrement())
+  identifiantExterne String   @unique @map("identifiant_externe")
+  nom                String?
+  actif              Boolean  @default(true)
+  version            Int      @default(1)
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  roles        UtilisateurRole[]
+  perimetres   UtilisateurPerimetre[]
+  idempotences CleIdempotence[]
+  journal      JournalAudit[]
+  historiques  StatutHistorique[]
+
+  @@map("utilisateur")
+}
+
+/// Q-003 : 6 rôles provisoires (coord, cheq, recep, expe, admin, com).
+model Role {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  libelle   String
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  utilisateurs UtilisateurRole[]
+  permissions  RolePermission[]
+
+  @@map("role")
+}
+
+model UtilisateurRole {
+  utilisateurId Int      @map("utilisateur_id")
+  roleId        Int      @map("role_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Restrict)
+  role        Role        @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@id([utilisateurId, roleId])
+  @@map("utilisateur_role")
+}
+
+/// Alimentée à l'étape 4 depuis la matrice profils × actions (RG-REC-002/003, RG-COO-009/165-169).
+model Permission {
+  id      Int    @id @default(autoincrement())
+  code    String @unique
+  libelle String
+
+  roles RolePermission[]
+
+  @@map("permission")
+}
+
+model RolePermission {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  @@id([roleId, permissionId])
+  @@map("role_permission")
+}
+
+/// Ex tr_utilisateur_data : périmètre plateforme (+ atelier) d'un utilisateur (RG-REC-001).
+model UtilisateurPerimetre {
+  id            Int  @id @default(autoincrement())
+  utilisateurId Int  @map("utilisateur_id")
+  plateformeId  Int  @map("plateforme_id")
+  atelierId     Int? @map("atelier_id")
+
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Restrict)
+  plateforme  Plateforme  @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+  atelier     Atelier?    @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+
+  @@unique([utilisateurId, plateformeId, atelierId])
+  @@index([plateformeId])
+  @@map("utilisateur_perimetre")
+}
+
+// ───────────────────────────── Référentiels ─────────────────────────────
+
+/// Ex tr_plateforme. Site ≡ plateforme (Q-335).
+model Plateforme {
+  id         Int      @id @default(autoincrement())
+  nom        String
+  adresse1   String?  @map("plt_adr_1")
+  adresse2   String?  @map("plt_adr_2")
+  codePostal String?  @map("plt_postal")
+  localite   String?  @map("plt_localite")
+  telephone  String?  @map("plt_tel")
+  mail       String?  @map("plt_mail")
+  idSiteCcf  Int?     @map("id_site_ccf")
+  version    Int      @default(1)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  ateliers            Atelier[]
+  perimetres          UtilisateurPerimetre[]
+  receptions          Reception[]
+  affiches            Affiche[]
+  receptionsAttendues ReceptionAttendue[]
+  parametres          Parametre[]
+  colis               Colis[]
+  mailsReception      PlateformeMail[]
+  imprimantes         PlateformeImprimante[]
+
+  @@map("tr_plateforme")
+}
+
+model Atelier {
+  id           Int         @id @default(autoincrement())
+  plateformeId Int         @map("plt_id")
+  libelle      String      @map("ate_lib")
+  codeAmt      Int?        @map("ate_code_amt")
+  type         TypeAtelier @map("ate_type")
+  version      Int         @default(1)
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  plateforme          Plateforme              @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+  perimetres          UtilisateurPerimetre[]
+  droitsPrepa         AtelierDroitPrepa[]
+  rouleurs            Rouleur[]
+  receptionsAttendues ReceptionAttendue[]
+  instructions        Instruction[]
+  faces               FaceTrain[]
+  repartitions        Repartition[]
+  unites              UniteManutention[]
+  colis               Colis[]
+  transports          TransportDestinataire[]
+  liberations         LiberationSemaine[]
+
+  @@index([plateformeId])
+  @@map("tr_atelier")
+}
+
+/// Ex tr_categorie_support (format / support). est_deroulant remplace la vue v_support_scrolling (Q-315).
+model CategorieSupport {
+  id           Int      @id @default(autoincrement())
+  nom          String   @map("sup_nom")
+  bandeaux     Int      @default(0) @map("sup_bandeaux")
+  poids        Decimal? @map("sup_poids")
+  qteUm        Int?     @map("sup_qte_UM")
+  reception    Boolean  @default(false)
+  estDeroulant Boolean  @default(false) @map("est_deroulant")
+  version      Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  affiches            Affiche[]
+  receptionsAttendues ReceptionAttendue[]
+  detailsInstruction  InstructionDetail[]
+  visuels             InstructionVisuel[]
+  faces               FaceTrain[]
+  repartitions        Repartition[]
+  unites              UniteManutention[]
+  correspondances     CorrespondanceSupport[]
+
+  @@map("tr_categorie_support")
+}
+
+model Surface {
+  id        Int      @id @default(autoincrement())
+  libelle   String
+  valeur    Int
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  droitsPrepa AtelierDroitPrepa[]
+
+  @@map("surface")
+}
+
+/// Fusion de tr_type_preparation et TypePreparation (Q-318).
+model TypePreparation {
+  id                     Int      @id @default(autoincrement())
+  libelle                String
+  idCategoriePreparation Int      @default(1) @map("id_categorie_preparation")
+  version                Int      @default(1)
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  droitsPrepa        AtelierDroitPrepa[]
+  detailsInstruction InstructionDetail[]
+  visuels            InstructionVisuel[]
+  repartitions       Repartition[]
+  unites             UniteManutention[]
+
+  @@map("type_preparation")
+}
+
+model AtelierDroitPrepa {
+  id                Int      @id @default(autoincrement())
+  atelierId         Int      @map("ate_id")
+  typePreparationId Int?     @map("tpr_id")
+  surfaceId         Int?     @map("id_surface")
+  exclusion         Boolean
+  version           Int      @default(1)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  atelier         Atelier          @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+  typePreparation TypePreparation? @relation(fields: [typePreparationId], references: [id], onDelete: Restrict)
+  surface         Surface?         @relation(fields: [surfaceId], references: [id], onDelete: Restrict)
+
+  @@unique([atelierId, typePreparationId, surfaceId])
+  @@map("tr_atelier_droit_prepa")
+}
+
+/// Ex tr_instruction_plus : 0 Standard, 1 début, 2 fin, 3 fin-1, 4 milieu de train.
+model InstructionPlus {
+  code      Int      @id @map("tip_ins_code")
+  libelle   String   @map("tip_ins_lib")
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  instructions Instruction[]
+
+  @@map("tr_instruction_plus")
+}
+
+model JourDepart {
+  id        Int      @id @default(autoincrement())
+  libelle   String
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  faces FaceTrain[]
+
+  @@map("tr_jour_depart")
+}
+
+model ParametreAlternance {
+  id          Int      @id @default(autoincrement())
+  code        String
+  valeur      String
+  description String?
+  estInclus   Boolean  @map("est_inclus")
+  estActif    Boolean  @map("est_actif")
+  version     Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("tr_parametre_alternance")
+}
+
+/// Listes fermées de la saisie d'un BL (Q-115, D-04).
+model Imprimeur {
+  id        Int      @id @default(autoincrement())
+  libelle   String
+  actif     Boolean  @default(true)
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  livraisons Livraison[]
+
+  affiches Affiche[]
+
+  @@map("tr_imprimeur")
+}
+
+/// Ex tr_transposteur_reception.
+model Livreur {
+  id        Int      @id @default(autoincrement())
+  libelle   String
+  actif     Boolean  @default(true)
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  livraisons Livraison[]
+
+  @@map("tr_transposteur_reception")
+}
+
+model Rouleur {
+  id        Int       @id @default(autoincrement())
+  atelierId Int?      @map("ate_id")
+  nom       String
+  /// COO-P11 (RG-COO-297) : poste de l'opérateur (« Table 1 »).
+  poste     String?
+  dateFin   DateTime? @map("date_fin")
+  version   Int       @default(1)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  atelier Atelier?    @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+  faces   FaceTrain[]
+  bagues  Bague[]
+
+  @@map("tr_rouleur")
+}
+
+model Destinataire {
+  id         Int      @id @default(autoincrement())
+  nomOrigine String   @map("dest_nom_ori")
+  nom        String?  @map("dest_nom")
+  actif      Boolean  @default(true) @map("dest_actif")
+  dispatch   String?  @map("dest_dispatch")
+  desId      BigInt?  @map("des_id")
+  desType    Int?     @map("des_type")
+  mail       String?  @map("des_mail")
+  telephone  String?  @map("des_NumTel")
+  pexId      Int?     @map("des_PexId")
+  /// Q-414 : mail / téléphone édités à la main (D-05) : le flux Broadcast (RG-COO-119) ne les écrase plus.
+  contactModifie Boolean @default(false) @map("dest_contact_modifie")
+  version    Int      @default(1)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  faces        FaceTrain[]
+  repartitions Repartition[]
+  unites       UniteManutention[]
+  colis        Colis[]
+  adresses     DestinataireAdresse[]
+  transports   TransportDestinataire[]
+
+  @@index([desType, desId])
+  @@map("tr_destinataire")
+}
+
+/// Q-337 : paramètres métier (valeurs par défaut issues des RG, jamais des MOCK). plateformeId nul = global.
+model Parametre {
+  id           Int      @id @default(autoincrement())
+  cle          String
+  plateformeId Int?     @map("plateforme_id")
+  valeur       String
+  description  String?
+  version      Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  plateforme Plateforme? @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+
+  @@unique([cle, plateformeId])
+  @@map("parametre")
+}
+
+// ───────────────────────────── Transverse : audit, historique, idempotence ─────────────────────────────
+
+/// Journal d'audit générique (ex histo_historique_entite, Q-308). Append-only.
+model JournalAudit {
+  id             Int         @id @default(autoincrement())
+  le             DateTime    @default(now())
+  parId          Int?        @map("par_id")
+  typeEntite     TypeEntite  @map("type_entite")
+  entiteId       String      @map("entite_id")
+  action         ActionAudit
+  ancienneValeur String?     @map("ancienne_valeur")
+  nouvelleValeur String?     @map("nouvelle_valeur")
+  complement     String?
+  donnees        String?
+
+  par Utilisateur? @relation(fields: [parId], references: [id], onDelete: Restrict)
+
+  @@index([typeEntite, entiteId])
+  @@index([le])
+  @@map("journal_audit")
+}
+
+/// Historique de chaque changement de statut (CLAUDE.md §6, RG-COO-061/307). Append-only.
+model StatutHistorique {
+  id         Int        @id @default(autoincrement())
+  typeEntite TypeEntite @map("type_entite")
+  entiteId   String     @map("entite_id")
+  ancien     String?
+  nouveau    String
+  parId      Int?       @map("par_id")
+  le         DateTime   @default(now())
+  motif      String?
+  regle      String?
+
+  par Utilisateur? @relation(fields: [parId], references: [id], onDelete: Restrict)
+
+  @@index([typeEntite, entiteId])
+  @@map("statut_historique")
+}
+
+/// Idempotence des POST de création / transition (CLAUDE.md §6). Rétention à fixer à l'étape 4.
+model CleIdempotence {
+  id            Int      @id @default(autoincrement())
+  cle           String
+  utilisateurId Int      @map("utilisateur_id")
+  methode       String
+  chemin        String
+  empreinte     String
+  statutHttp    Int?     @map("statut_http")
+  reponse       String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  expireLe      DateTime @map("expire_le")
+
+  utilisateur Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Restrict)
+
+  @@unique([utilisateurId, cle])
+  @@index([expireLe])
+  @@map("cle_idempotence")
+}
+
+// ───────────────────────────── Réception ─────────────────────────────
+
+/// Photo (BL ou affiche). Q-311 : octets en base (limite de taille imposée par l'API), à revoir selon volume.
+model Photo {
+  id          Int      @id @default(autoincrement())
+  mimeType    String?  @map("image_mime_type")
+  fichier     Bytes?   @map("image_file")
+  intitule    String?
+  taille      Int?     @map("size")
+  extension   String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  createdById Int?     @map("created_by_id")
+
+  affiches   Affiche[]
+  receptions Reception[]
+  livraisons LivraisonPhoto[]
+
+  @@map("photo")
+}
+
+/// Bon de livraison (BL). Q-102 : un BL = une réception. Ex livraison (texte libre → listes fermées).
+model Livraison {
+  id            Int       @id @default(autoincrement())
+  dateLivraison DateTime? @map("DateLivraison")
+  imprimeurId   Int?      @map("imprimeur_id")
+  livreurId     Int?      @map("livreur_id")
+  reference     String?   @map("Reference")
+  nbreColis     Int?      @map("Nbre_colis")
+  refDossier    String?   @map("Ref_dossier")
+  refDa         String?   @map("Ref_DA")
+  dechargePar   String?   @map("Decharge_par")
+  /// RG-REC-033 / RG-REC-035 : « Déchargé par » choisi dans la liste des agents (Q-177).
+  dechargeParId Int?      @map("decharge_par_id")
+  commentaire   String?
+  version       Int       @default(1)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  createdById   Int?      @map("created_by_id")
+  updatedById   Int?      @map("updated_by_id")
+
+  imprimeur  Imprimeur?         @relation(fields: [imprimeurId], references: [id], onDelete: Restrict)
+  livreur    Livreur?           @relation(fields: [livreurId], references: [id], onDelete: Restrict)
+  reception  Reception?
+  affiches   LivraisonAffiche[]
+  photos     LivraisonPhoto[]
+  mouvements Mouvement[]
+
+  @@index([reference])
+  @@map("livraison")
+}
+
+/// Q-307 (b) : palette reçue en deux étapes (arrivée puis contrôle). Aucune suppression (Q-122).
+model Reception {
+  id               Int             @id @default(autoincrement())
+  plateformeId     Int             @map("plateforme_id")
+  livraisonId      Int?            @unique @map("livraison_id")
+  statut           StatutReception
+  dateArrivee      DateTime        @default(now()) @map("date_arrivee")
+  controleLe       DateTime?       @map("controle_le")
+  controleurNom    String?         @map("controleur_nom")
+  signaleLe        DateTime?       @map("signale_le")
+  /// RG-REC-095 : réception inconnue (palette sans dossier identifié, tag « réception inconnue »).
+  estInconnue      Boolean         @default(false) @map("est_inconnue")
+  /// RG-REC-038 / RG-REC-109 : entrée dans le sas (délai de contrôle RG-REC-055).
+  aControlerDepuis DateTime?       @map("a_controler_depuis")
+  /// RG-REC-063 : contrôleur = agent de réception (utilisateur, Q-177).
+  controleurId     Int?            @map("controleur_id")
+  photoBlId        Int?            @map("photo_bl_id")
+  commentaire      String?
+  version          Int             @default(1)
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  createdById      Int?            @map("created_by_id")
+  updatedById      Int?            @map("updated_by_id")
+
+  plateforme Plateforme  @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+  livraison  Livraison?  @relation(fields: [livraisonId], references: [id], onDelete: Restrict)
+  photoBl    Photo?      @relation(fields: [photoBlId], references: [id], onDelete: Restrict)
+  affiches   Affiche[]
+  mouvements Mouvement[]
+
+  @@index([plateformeId, statut])
+  @@index([dateArrivee])
+  @@map("reception")
+}
+
+/// Affiche reçue. Q-300 (a) : statut persisté. Q-313 : drapeaux NOT NULL DEFAULT false.
+/// Q-103/Q-322 : quantite est un cache (stock = somme des mouvements, maintenu dans la même transaction).
+/// rebus, zonePicking, estFusionne, envoye : colonnes HÉRITÉES (reprise Q-155), non pilotées en V2.
+model Affiche {
+  id                     Int               @id @default(autoincrement()) @map("affiche_id")
+  plateformeId           Int               @map("plt_id")
+  supportId              Int               @map("sup_id")
+  receptionId            Int?              @map("reception_id")
+  photoId                Int?              @map("photo_id")
+  statut                 StatutAffiche
+  dateEntree             DateTime          @map("date_entree")
+  commentaire            String?
+  contNum                Int?              @map("cont_num")
+  contAnnonc             String?           @map("cont_annonc")
+  theme                  String?
+  repiquage              String?
+  conservation           Int
+  quantite               Int
+  dateDernierDepart      DateTime?         @map("date_dernier_depart")
+  dateDerniereSortie     DateTime?         @map("date_derniere_sortie")
+  allee                  String?
+  rayon                  String?
+  aConserver             Boolean           @default(false) @map("a_conserver")
+  typeFeuille            TypeFeuille?      @map("type_feuille")
+  feuilleARefaire        Boolean           @default(false) @map("feuille_a_refaire")
+  /// RG-REC-066 : surplus noté en entretien au contrôle.
+  surplusEntretien       Int?              @map("surplus_entretien")
+  /// RG-REC-131 : imprimeur de l'affiche (modifiable sur la fiche).
+  imprimeurId            Int?              @map("imprimeur_id")
+  validationAdmin        Boolean           @default(false) @map("validation_admin")
+  validationAdminParId   Int?              @map("validation_admin_par_id")
+  validationAdminLe      DateTime?         @map("validation_admin_le")
+  /// RG-COO-006 / RG-COO-014 : validation annulée par une personne → motif ANNULEE jusqu'à la reconfirmation.
+  validationAnnulee      Boolean           @default(false) @map("validation_annulee")
+  /// RG-COO-030 (HYPOTHÈSE Q-210) : thème de la ligne changé après la validation → motif THEME jusqu'à la reconfirmation.
+  themeModifie           Boolean           @default(false) @map("theme_modifie")
+  /// RG-COO-023 : étiquette rack à imprimer à la plateforme (posée au passage non validée → validée, levée à l'impression).
+  etiquetteRackAImprimer Boolean           @default(false) @map("etiquette_rack_a_imprimer")
+  modeRattachement       ModeRattachement? @map("mode_rattachement")
+  rebus                  Boolean           @default(false)
+  dateRebus              DateTime?         @map("date_rebus")
+  zonePicking            Boolean           @default(false) @map("zone_Picking")
+  estFusionne            Boolean           @default(false) @map("est_fusionne")
+  envoye                 Boolean           @default(false)
+  version                Int               @default(1)
+  createdAt              DateTime          @default(now()) @map("date_creation")
+  updatedAt              DateTime          @updatedAt @map("date_maj")
+  createdById            Int?              @map("created_by_id")
+  updatedById            Int?              @map("updated_by_id")
+
+  plateforme          Plateforme             @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+  support             CategorieSupport       @relation(fields: [supportId], references: [id], onDelete: Restrict)
+  reception           Reception?             @relation(fields: [receptionId], references: [id], onDelete: Restrict)
+  photo               Photo?                 @relation(fields: [photoId], references: [id], onDelete: Restrict)
+  imprimeur           Imprimeur?             @relation(fields: [imprimeurId], references: [id], onDelete: Restrict)
+  mouvements          Mouvement[]            @relation("MouvementAffiche")
+  mouvementsInitiaux  Mouvement[]            @relation("MouvementAfficheInitiale")
+  livraisons          LivraisonAffiche[]     @relation("LivraisonAfficheRecue")
+  livraisonsInitiales LivraisonAffiche[]     @relation("LivraisonAfficheInitiale")
+  rattachements       AfficheAttendue[]
+  semainesDepart      AfficheSemaineDepart[]
+  fusionsChapeau      FusionAffiche[]        @relation("FusionChapeau")
+  fusionsFille        FusionAffiche[]        @relation("FusionFille")
+
+  @@index([plateformeId, statut])
+  @@index([plateformeId, supportId])
+  @@index([contNum])
+  @@index([receptionId])
+  @@map("affiche")
+}
+
+model LivraisonAffiche {
+  id                Int  @id @default(autoincrement())
+  livraisonId       Int  @map("Id_livraison")
+  afficheId         Int  @map("Id_affiche_livraison")
+  afficheInitialeId Int? @map("id_affiche_initial_livraison")
+  numeroLivraison   Int? @map("NumeroLivraison")
+
+  livraison       Livraison @relation(fields: [livraisonId], references: [id], onDelete: Restrict)
+  affiche         Affiche   @relation("LivraisonAfficheRecue", fields: [afficheId], references: [id], onDelete: Restrict)
+  afficheInitiale Affiche?  @relation("LivraisonAfficheInitiale", fields: [afficheInitialeId], references: [id], onDelete: Restrict)
+
+  @@unique([livraisonId, afficheId])
+  @@map("asso_livraison_affiche")
+}
+
+model LivraisonPhoto {
+  id          Int     @id @default(autoincrement())
+  photoId     Int     @map("photo_id")
+  livraisonId Int     @map("livraison_Id")
+  intitule    String?
+
+  photo     Photo     @relation(fields: [photoId], references: [id], onDelete: Restrict)
+  livraison Livraison @relation(fields: [livraisonId], references: [id], onDelete: Restrict)
+
+  @@unique([livraisonId, photoId])
+  @@map("asso_livraison_photo")
+}
+
+/// Mouvement de stock : append-only (pas de version ni de mise à jour). quantite signée (RG-REC-151).
+/// activiteId : lien logique vers la production legacy (table Activite non reprise, Q-309).
+model Mouvement {
+  id                Int           @id @default(autoincrement()) @map("mouvement_id")
+  afficheId         Int           @map("affiche_id")
+  type              TypeMouvement
+  date              DateTime
+  quantite          Int
+  recepisse         String?
+  expediteur        String?
+  comptee           Boolean       @default(false)
+  auto              Boolean       @default(false)
+  motif             String?
+  livraisonId       Int?          @map("livraison_id")
+  receptionId       Int?          @map("reception_id")
+  afficheInitialeId Int?          @map("id_affiche_initial")
+  activiteId        Int?          @map("IdActivite")
+  createdAt         DateTime      @default(now()) @map("date_creation")
+  createdById       Int?          @map("created_by_id")
+
+  affiche         Affiche    @relation("MouvementAffiche", fields: [afficheId], references: [id], onDelete: Restrict)
+  afficheInitiale Affiche?   @relation("MouvementAfficheInitiale", fields: [afficheInitialeId], references: [id], onDelete: Restrict)
+  livraison       Livraison? @relation(fields: [livraisonId], references: [id], onDelete: Restrict)
+  reception       Reception? @relation(fields: [receptionId], references: [id], onDelete: Restrict)
+
+  @@index([afficheId, date])
+  @@index([receptionId])
+  @@map("mouvement")
+}
+
+/// Fusion héritée : lecture seule en V2 (Q-100, RG-REC-169).
+model FusionAffiche {
+  id               Int       @id @default(autoincrement()) @map("id_fusion_affiche")
+  afficheChapeauId Int       @map("id_affiche_chapeau")
+  afficheId        Int       @map("id_affiche")
+  quiCreation      String?   @map("qui_creation")
+  dateCreation     DateTime? @map("date_creation")
+
+  chapeau Affiche @relation("FusionChapeau", fields: [afficheChapeauId], references: [id], onDelete: Restrict)
+  fille   Affiche @relation("FusionFille", fields: [afficheId], references: [id], onDelete: Restrict)
+
+  @@unique([afficheChapeauId, afficheId])
+  @@map("fusion_affiche")
+}
+
+/// Remplace affiche.semaines / nombre_semaine (Q-150, Q-314 : semaines ISO).
+model AfficheSemaineDepart {
+  id        Int  @id @default(autoincrement())
+  afficheId Int  @map("IdAffiche")
+  dossier   Int? @map("Dossier")
+  semaine   Int  @map("Semaine")
+  annee     Int  @map("Annee")
+
+  affiche Affiche @relation(fields: [afficheId], references: [id], onDelete: Restrict)
+
+  @@unique([afficheId, dossier, annee, semaine])
+  @@map("tf_dossier_semaine_depart")
+}
+
+// ───────────────────────────── Lignes attendues (Réception ↔ Coordination) ─────────────────────────────
+
+/// Ex tf_prepa_affiche. Une seule ligne ACTIVE par clé (Q-305) : index unique partiel en SQL brut
+/// (plateforme, dossier, support, thème normalisé, bandeau, année, semaine). ANNULEE n'est jamais supprimée.
+model ReceptionAttendue {
+  id             Int                 @id @default(autoincrement())
+  plateformeId   Int                 @map("plt_id")
+  supportId      Int                 @map("sup_id")
+  atelierId      Int?                @map("ate_id")
+  contNum        Int?                @map("cont_num")
+  format         String?             @map("Format")
+  description    String?             @map("Description")
+  annonceur      String?             @map("rpc_annonceur")
+  numAfficheAmt  Int?                @map("rpc_num_aff_amt")
+  theme          String?             @map("rpc_theme")
+  themeCle       String?             @map("theme_cle")
+  repiquage      String?
+  idDaChapeau    Int?                @map("IdDAChapeau")
+  idThemeBandeau Int?                @map("IdThemeBandeau")
+  semNum         Int                 @map("sem_num")
+  semAnnee       Int                 @map("sem_annee")
+  source         SourceLigne
+  etatLigne      EtatLigne           @default(ACTIVE) @map("etat_ligne")
+  statut         StatutLigneAttendue @default(ATTENDUE)
+  qteBc          Int?                @map("qte_bc")
+  qtePrepa       Int?                @map("qte_prepa")
+  dateVueBc      DateTime?           @map("date_vue_bc")
+  /// RG-REC-014 / Q-135 (HYPOTHÈSE) : thème exclu par Broadcast (« ne pas afficher », « reste en place »).
+  themeExclu     Boolean             @default(false) @map("theme_exclu")
+  /// RG-REC-180 / Q-130 (HYPOTHÈSE) : ligne gardée hors purge (« conservation à l'année »).
+  conserverAnnee Boolean             @default(false) @map("conserver_annee")
+  /// RG-REC-180 / RG-COO-089 : une ligne purgée est fermée (ANNULEE) avec une date, jamais supprimée.
+  purgeeLe       DateTime?           @map("purgee_le")
+  /// RG-COO-081 / Q-208 : n° de thème Broadcast quand il est fourni (rapprochement par identifiant).
+  idTheme        Int?                @map("IdTheme")
+  /// RG-COO-084 : ligne au visuel provisoire (avant la saisie des IP, thème nul).
+  provisoire     Boolean             @default(false)
+  /// RG-COO-087 / 089 : date de fermeture (ANNULEE), jamais de suppression.
+  fermeeLe       DateTime?           @map("fermee_le")
+  /// RG-COO-087 : première lecture Broadcast où la ligne BC n'a plus été vue (fermée à la lecture suivante).
+  nonVueLe       DateTime?           @map("non_vue_le")
+  version        Int                 @default(1)
+  createdAt      DateTime            @default(now()) @map("dateCreated")
+  updatedAt      DateTime            @updatedAt @map("dateModified")
+  createdById    Int?                @map("created_by_id")
+  updatedById    Int?                @map("updated_by_id")
+
+  plateforme    Plateforme        @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+  support       CategorieSupport  @relation(fields: [supportId], references: [id], onDelete: Restrict)
+  atelier       Atelier?          @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+  rattachements AfficheAttendue[]
+
+  @@index([plateformeId, semAnnee, semNum])
+  @@index([contNum])
+  @@index([etatLigne, statut])
+  @@map("tf_prepa_affiche")
+}
+
+/// Q-306 (a) : lien affiche ↔ ligne attendue avec quantité. Un lien retiré n'est jamais réactivé (RG-REC-137).
+/// Unicité (afficheId, ligneAttendueId) pour les liens actifs : index unique partiel en SQL brut.
+model AfficheAttendue {
+  id              Int              @id @default(autoincrement())
+  afficheId       Int              @map("affiche_id")
+  ligneAttendueId Int              @map("ligne_attendue_id")
+  quantite        Int
+  actif           Boolean          @default(true)
+  mode            ModeRattachement
+  creePar         Int?             @map("cree_par_id")
+  creeLe          DateTime         @default(now()) @map("cree_le")
+  retirePar       Int?             @map("retire_par_id")
+  retireLe        DateTime?        @map("retire_le")
+  version         Int              @default(1)
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  affiche       Affiche           @relation(fields: [afficheId], references: [id], onDelete: Restrict)
+  ligneAttendue ReceptionAttendue @relation(fields: [ligneAttendueId], references: [id], onDelete: Restrict)
+
+  @@index([afficheId, actif])
+  @@index([ligneAttendueId, actif])
+  @@map("asso_affiche_visuel")
+}
+
+/// RG-COO-081 : correspondance Broadcast surface × format → support Circé (ex Transaco_Surface_Format, Q-227).
+model CorrespondanceSupport {
+  id        Int      @id @default(autoincrement())
+  idSurface Int      @map("IdSurface")
+  idFormat  Int      @map("IdFormat")
+  supportId Int      @map("sup_id")
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  support CategorieSupport @relation(fields: [supportId], references: [id], onDelete: Restrict)
+
+  @@unique([idSurface, idFormat])
+  @@map("transaco_surface_format")
+}
+
+/// Copie de l'état des réservations Broadcast (Q-325). Remplacée par dossier dans une transaction.
+model PrepaBroadcast {
+  id                      Int       @id @default(autoincrement())
+  idSiteCcf               Int?      @map("IdSiteCCF")
+  destinataireEffectif    String?   @map("DestinataireEffectif")
+  idDossierDeVenteChapeau Int?      @map("IdDossierDeVenteChapeau")
+  idDaChapeau             Int?      @map("IdDAChapeau")
+  idPreparationChapeau    Int?      @map("IdPreparationChapeau")
+  idSurface               Int?      @map("IdSurface")
+  idFormat                Int?      @map("IdFormat")
+  idTypePreparation       Int?      @map("IdTypePreparation")
+  annonceur               String?   @map("Annonceur")
+  surface                 String?   @map("Surface")
+  format                  String?   @map("Format")
+  assistantCommercial     String?   @map("AssistantCommercial")
+  assistantLogistique     String?   @map("AssistantLogistique")
+  theme                   String?   @map("Theme")
+  idTheme                 Int?      @map("IdTheme")
+  bandeau                 String?   @map("Bandeau")
+  idThemeBandeau          Int?      @map("IdThemeBandeau")
+  quantite                Int?
+  estResteEnPlace         Boolean   @default(false) @map("EstResteEnPlace")
+  statutPreparation       String?   @map("StatutPreparation")
+  repiquage               String?
+  semNum                  Int?      @map("sem_num")
+  semAnnee                Int?      @map("sem_annee")
+  supportId               Int?      @map("sup_id")
+  dateVue                 DateTime? @map("date_vue")
+  createdAt               DateTime  @default(now()) @map("dateCreated")
+  updatedAt               DateTime  @updatedAt @map("dateModified")
+
+  @@index([idDossierDeVenteChapeau])
+  @@index([semAnnee, semNum])
+  @@map("tf_prepa_Broadcast")
+}
+
+// ───────────────────────────── Coordination ─────────────────────────────
+
+/// Q-336 (hypothèse minimale) : seul le statut de préparation est persisté (RG-COO-063) ;
+/// la validation admin du dossier est calculée (RG-COO-020, Q-215). Pas de table dossier legacy.
+model Dossier {
+  id          Int           @id @default(autoincrement())
+  contNum     Int           @unique @map("cont_num")
+  annonceur   String?
+  statut      StatutDossier @default(A_TRAITER)
+  version     Int           @default(1)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  createdById Int?          @map("created_by_id")
+  updatedById Int?          @map("updated_by_id")
+
+  instructions Instruction[]
+  corrections  DemandeCorrection[]
+
+  @@index([statut])
+  @@map("dossier")
+}
+
+/// Ex instruction_train. Q-303 : PK instr_code (varchar 18, année+semaine+C0+atelier+dossier, RG-COO-046).
+/// Grain dossier × semaine × atelier (Q-206). AMT (tsr_repart_code) non repris (RG-COO-276).
+model Instruction {
+  code            String            @id @map("instr_code")
+  dossierId       Int?              @map("dossier_id")
+  atelierId       Int?              @map("ate_id")
+  statut          StatutInstruction
+  tipInsCode      Int?              @map("tip_ins_code")
+  typeInstruction String?           @map("instr_type_instruction")
+  reseIdent       Int?              @map("rese_ident")
+  contNum         Int?              @map("cont_num")
+  annonceur       String?           @map("instr_annonceur")
+  contAnbas       Int?              @map("cont_anbas")
+  contSembas      Int?              @map("cont_sembas")
+  commentaire     String?           @map("instr_commentaire")
+  entretien       Int?              @map("instr_entretien")
+  commentExtPlay  String?           @map("instr_CommentExtPlay")
+  /// RG-COO-042 / 044 : mode de l'Instruction OK (AUTO = règle automatique, MANUEL = après contrôle).
+  iokMode         String?           @map("iok_mode")
+  iokParId        Int?              @map("iok_par_id")
+  iokLe           DateTime?         @map("iok_le")
+  /// RG-COO-211 : marquage « exporté » posé par l'export des trains du jeudi (date, utilisateur).
+  exporteLe       DateTime?         @map("exporte_le")
+  exporteParId    Int?              @map("exporte_par_id")
+  conservation    Int?              @map("Conservation")
+  coteCote        Int?              @map("CoteCote")
+  version         Int               @default(1)
+  createdAt       DateTime          @default(now()) @map("instr_dat_cre")
+  updatedAt       DateTime          @updatedAt @map("instr_dat_maj")
+  createdById     Int?              @map("created_by_id")
+  updatedById     Int?              @map("updated_by_id")
+
+  dossier         Dossier?            @relation(fields: [dossierId], references: [id], onDelete: Restrict)
+  atelier         Atelier?            @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+  instructionPlus InstructionPlus?    @relation(fields: [tipInsCode], references: [code], onDelete: Restrict)
+  details         InstructionDetail[]
+  visuels         InstructionVisuel[]
+  faces           FaceTrain[]
+
+  @@index([statut])
+  @@index([contNum, contSembas, contAnbas])
+  @@index([atelierId, statut])
+  @@map("instruction_train")
+}
+
+/// FK instr_code ajoutée (Q-317).
+model InstructionDetail {
+  id                Int      @id @default(autoincrement()) @map("insd_id")
+  instructionCode   String   @map("instr_code")
+  cadrIdent         Int?     @map("insd_cadr_ident")
+  cadreLib          String?  @map("insd_cadre_lib")
+  supportId         Int?     @map("sup_id")
+  typePreparationId Int?     @map("tpr_id")
+  afchIdent         Int?     @map("insd_afch_ident")
+  theme             String?  @map("insd_theme")
+  repiquageIdent    Int?     @map("insd_repiquage_ident")
+  repiquage         String?  @map("insd_repiquage")
+  type              String?  @map("insd_type")
+  createdAt         DateTime @default(now()) @map("insd_dat_cre")
+  updatedAt         DateTime @updatedAt @map("ins_dat_maj")
+
+  instruction     Instruction       @relation(fields: [instructionCode], references: [code], onDelete: Restrict)
+  support         CategorieSupport? @relation(fields: [supportId], references: [id], onDelete: Restrict)
+  typePreparation TypePreparation?  @relation(fields: [typePreparationId], references: [id], onDelete: Restrict)
+
+  @@index([instructionCode])
+  @@map("instruction_detail")
+}
+
+model InstructionVisuel {
+  id                Int               @id @default(autoincrement()) @map("insv_id")
+  instructionCode   String            @map("instr_code")
+  supportId         Int?              @map("sup_id")
+  typePreparationId Int?              @map("tpr_id")
+  statut            StatutInstruction @default(A_TRAITER)
+  afchIdent         Int?              @map("insv_afch_ident")
+  theme             String?           @map("insv_theme")
+  themeOri          String?           @map("insv_theme_ori")
+  pourcentage       Decimal?          @map("insv_pourcentage")
+  pourcentageOri    Decimal?          @map("insv_pourcentage_ori")
+  createdAt         DateTime          @default(now()) @map("insv_dat_cre")
+  updatedAt         DateTime          @updatedAt @map("insv_dat_maj")
+
+  instruction     Instruction       @relation(fields: [instructionCode], references: [code], onDelete: Restrict)
+  support         CategorieSupport? @relation(fields: [supportId], references: [id], onDelete: Restrict)
+  typePreparation TypePreparation?  @relation(fields: [typePreparationId], references: [id], onDelete: Restrict)
+  faces           FaceTrain[]
+
+  @@index([instructionCode])
+  @@map("instruction_visuels")
+}
+
+/// Ex tf_face_train, reprise PARTIELLE (Q-324) : seules les colonnes utiles aux RG sourcées de l'étape 3.
+/// Les autres (adresses, panneau, référentiel d'emplacement…) sont listées dans ECARTS et ajoutées par
+/// migration avec le parcours qui en a besoin (COO-P09/P10). `versionTrain` = version du train (RG-COO-067).
+model FaceTrain {
+  id               Int              @id @default(autoincrement()) @map("ft_id")
+  instructionCode  String           @map("instr_code")
+  visuelId         Int?             @map("insv_id")
+  destinataireId   Int?             @map("dest_id")
+  statut           StatutProduction
+  atelierId        Int?             @map("ate_id")
+  supportId        Int?             @map("sup_id")
+  rouleurId        Int?             @map("rouleur_id")
+  jourDepartId     Int?             @map("IdJourDepart")
+  cadrIdent        Int              @map("cadr_ident")
+  cadreLib         String?          @map("cadre_lib")
+  dateDepart       DateTime         @map("rdep_datdep")
+  contNum          Int?             @map("cont_num")
+  contAnnonc       String?          @map("cont_annonc")
+  contSembas       Int?             @map("cont_sembas")
+  contAnbas        Int?             @map("cont_anbas")
+  depSembas        Int?             @map("dep_sembas")
+  depAnbas         Int?             @map("dep_anbas")
+  trainId          String?          @map("train_id")
+  train            Int?
+  rang             Int?
+  ordrePropose     Int?             @map("ordre_propose")
+  ordreReel        Int?             @map("ordre_reel")
+  ordreCalcule     Int?             @map("ordre_calcule")
+  ordreReelInitial Int?             @map("ordre_reel_initial")
+  theme            String?
+  themeId          Int?             @map("theme_id")
+  repiquage        String?
+  repiquageId      Int?             @map("repiquage_id")
+  ftType           String?          @map("ft_type")
+  versionTrain     Int?             @map("version_train")
+  preAssemblage    Boolean          @default(false) @map("pre_assemblage")
+  conservation     Int?             @map("Conservation")
+  coteCote         Int?             @map("CoteCote")
+  colisId          Int?             @map("colis_id")
+  /// RG-COO-130 : panel Broadcast et afficheur (ressource) repris par panel / semaine.
+  refPanel         String?          @map("ref_panel")
+  afficheurId      Int?             @map("pers_ident")
+  afficheurNom     String?          @map("pers_nom")
+  /// RG-COO-200 / 202 (COO-P09) : emplacement du legacy (identifiant de train, ordre de parcours des faces).
+  emplSectCode     Int?             @map("empl_sect_code")
+  emplDepaCode     String?          @map("empl_depa_code")
+  commNumord       Int?             @map("comm_numord")
+  emplNumord       Int?             @map("empl_numord")
+  emplAdresse1     String?          @map("empl_addresse1")
+  /// RG-COO-209 / 221 : position produite à part (fractionnée) : hors besoin, hors couverture.
+  fractionnee      Boolean          @default(false)
+  /// RG-COO-224 : train créé par la Coordination (PRE_TEST / ENTRETIEN) ; null = train calculé.
+  origineTrain     String?          @map("origine_train")
+  /// RG-COO-225 : motif de suppression d'un train (suppression logique : faces ANNULE).
+  motifSuppression String?          @map("motif_suppression")
+  version          Int              @default(1)
+  createdAt        DateTime         @default(now()) @map("ft_dat_cre")
+  updatedAt        DateTime         @updatedAt @map("ft_dat_maj")
+  createdById      Int?             @map("created_by_id")
+  updatedById      Int?             @map("updated_by_id")
+
+  instruction  Instruction        @relation(fields: [instructionCode], references: [code], onDelete: Restrict)
+  visuel       InstructionVisuel? @relation(fields: [visuelId], references: [id], onDelete: Restrict)
+  destinataire Destinataire?      @relation(fields: [destinataireId], references: [id], onDelete: Restrict)
+  atelier      Atelier?           @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+  support      CategorieSupport?  @relation(fields: [supportId], references: [id], onDelete: Restrict)
+  rouleur      Rouleur?           @relation(fields: [rouleurId], references: [id], onDelete: Restrict)
+  jourDepart   JourDepart?        @relation(fields: [jourDepartId], references: [id], onDelete: Restrict)
+
+  @@index([instructionCode])
+  @@index([statut, atelierId])
+  @@index([trainId])
+  @@index([contNum])
+  @@map("tf_face_train")
+}
+
+/// Ex tf_repart_calcul, reprise partielle (Q-324). des_id/des_type/des_type_adr : liens logiques vers
+/// tr_destination (non reprise). rpc_tms non repris : verrou = version.
+model Repartition {
+  id                  Int              @id @default(autoincrement()) @map("rpc_id")
+  supportId           Int?             @map("sup_id")
+  atelierId           Int?             @map("ate_id")
+  typePreparationId   Int?             @map("tpr_id")
+  destinataireId      Int?             @map("dest_id")
+  uniteId             Int?             @map("UM_id")
+  statut              StatutProduction
+  semNum              Int?             @map("sem_num")
+  semAnnee            Int?             @map("sem_annee")
+  desId               BigInt?          @map("des_id")
+  desType             Int?             @map("des_type")
+  desTypeAdr          Int?             @map("des_type_adr")
+  type                Int?             @map("rpc_type")
+  repartition         BigInt?          @map("rpc_repartition")
+  annonceur           String?          @map("rpc_annonceur")
+  theme               String?          @map("rpc_theme")
+  repiquage           String?          @map("rpc_repiquage")
+  repiquageId         Int?             @map("rpc_repiquageId")
+  numAfficheAmt       BigInt?          @map("rpc_num_aff_amt")
+  qte                 Int?             @map("rpc_qte")
+  dateAffichage       DateTime?        @map("rpc_dat_aff")
+  contNum             Int?             @map("cont_num")
+  numeroReception     String?
+  retire              Boolean          @default(false) @map("rpc_retire")
+  /// RG-COO-244 : annonceur / thème corrigés par la plateforme (n'alerte pas « Broadcast ≠ Circé »).
+  corrigeePlateforme  Boolean          @default(false) @map("corrigee_plateforme")
+  /// RG-COO-243 : repère « main rendue à la Pré-Prod » (unité non lancée rendue).
+  rendueLe            DateTime?        @map("rendue_le")
+  idPreparationDetail Int?             @map("IdPreparationDetail")
+  /// RG-COO-122 / 123 / 125 : groupe de préparation Broadcast (accusé d'intégration).
+  idGroupePreparation Int?             @map("IdGroupePreparation")
+  version             Int              @default(1)
+  createdAt           DateTime         @default(now()) @map("rpc_dat_cre")
+  updatedAt           DateTime         @updatedAt @map("rpc_dat_maj")
+  createdById         Int?             @map("created_by_id")
+  updatedById         Int?             @map("updated_by_id")
+
+  support         CategorieSupport? @relation(fields: [supportId], references: [id], onDelete: Restrict)
+  atelier         Atelier?          @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+  typePreparation TypePreparation?  @relation(fields: [typePreparationId], references: [id], onDelete: Restrict)
+  destinataire    Destinataire?     @relation(fields: [destinataireId], references: [id], onDelete: Restrict)
+  unite           UniteManutention? @relation(fields: [uniteId], references: [id], onDelete: Restrict)
+
+  @@index([statut, atelierId])
+  @@index([semAnnee, semNum])
+  @@index([contNum])
+  @@index([idPreparationDetail])
+  @@map("tf_repart_calcul")
+}
+
+/// Ex tf_UM : statut lu par le déblocage (RG-COO-143 : statut ≥ PREPARE bloque). Colis : étape 8 (Q-310).
+model UniteManutention {
+  id                Int              @id @default(autoincrement()) @map("UM_id")
+  typePreparationId Int?             @map("tpr_id")
+  atelierId         Int?             @map("ate_id")
+  supportId         Int?             @map("sup_id")
+  destinataireId    Int?             @map("dest_id")
+  statut            StatutProduction
+  semNum            Int?             @map("sem_num")
+  semAnnee          Int?             @map("sem_annee")
+  repartition       BigInt?          @map("UM_repartition")
+  annonceur         String?          @map("UM_annonceur")
+  theme             String?          @map("UM_theme")
+  repiquage         String?          @map("UM_Repiquage")
+  numAfficheAmt     BigInt?          @map("UM_num_aff_amt")
+  qte               Int?             @map("UM_qte")
+  contNum           Int?             @map("cont_num")
+  poids             Decimal?         @map("UM_poids")
+  codeBarre         String?          @unique @map("UM_code_barre")
+  codeSynthese      String?          @map("UM_code_synthese")
+  commentaire       String?          @map("UM_comment")
+  dateAffichage     DateTime?        @map("UM_date_aff")
+  version           Int              @default(1)
+  createdAt         DateTime         @default(now()) @map("UM_dat_cre")
+  updatedAt         DateTime         @updatedAt @map("UM_dat_maj")
+  createdById       Int?             @map("created_by_id")
+  updatedById       Int?             @map("updated_by_id")
+
+  typePreparation TypePreparation?  @relation(fields: [typePreparationId], references: [id], onDelete: Restrict)
+  atelier         Atelier?          @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+  support         CategorieSupport? @relation(fields: [supportId], references: [id], onDelete: Restrict)
+  destinataire    Destinataire?     @relation(fields: [destinataireId], references: [id], onDelete: Restrict)
+  repartitions    Repartition[]
+  colis           UniteColis[]
+
+  @@index([statut, atelierId])
+  @@map("tf_UM")
+}
+
+/// Ex tf_colis (RG-COO-263 à 271, ECR-EXP-01/02, COO-P13). Statut = rpc_statut legacy : 1 En cours (cible « Colis
+/// ouvert »), 7 A expédier (« Clos · à expédier »), 8 Terminé (« Expédié »). `colis_id` de tf_face_train reste un lien
+/// logique (pas de clé étrangère : SQLite ne l'ajoute pas par ALTER, Q-310).
+model Colis {
+  id             Int              @id @default(autoincrement()) @map("colis_id")
+  plateformeId   Int              @map("plt_id")
+  atelierId      Int              @map("ate_id")
+  destinataireId Int              @map("dest_id")
+  statut         StatutProduction @default(EN_COURS)
+  /// « À définir » (5) tant que le format n'est pas choisi (RG-COO-266).
+  formatCode     Int              @default(5) @map("colis_format")
+  /// `C-` + colis_id sur 18 chiffres, posé à la création (RG-COO-266).
+  codeColis      String?          @unique @map("colis_code")
+  poids          Decimal?         @map("colis_poids")
+  transporteur   Int?             @map("tsp_id")
+  tarif          String?          @map("tsp_id_tarif_code")
+  codeExterne    String?          @map("colis_code_externe")
+  commentaire    String?          @map("colis_comment")
+  dateExpedition DateTime?        @map("colis_dat_expe")
+  /// RG-COO-271 : mail « colis expédié » non envoyé tant que Q-375 n'est pas tranchée (reste à faux : retentative).
+  mailEnvoye     Boolean          @default(false) @map("mailcolis_envoye")
+  version        Int              @default(1)
+  createdAt      DateTime         @default(now()) @map("colis_dat_cre")
+  updatedAt      DateTime         @updatedAt @map("colis_dat_maj")
+  createdById    Int?             @map("created_by_id")
+  updatedById    Int?             @map("updated_by_id")
+
+  plateforme   Plateforme   @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+  atelier      Atelier      @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+  destinataire Destinataire @relation(fields: [destinataireId], references: [id], onDelete: Restrict)
+  unites       UniteColis[]
+
+  @@index([plateformeId, statut])
+  @@index([destinataireId])
+  @@map("tf_colis")
+}
+
+/// Ex tf_UM_colis (RG-COO-264) : une UM peut être fractionnée sur plusieurs colis ; `quantite` = uc_qte.
+model UniteColis {
+  id          Int      @id @default(autoincrement())
+  uniteId     Int      @map("UM_id")
+  colisId     Int      @map("colis_id")
+  quantite    Int      @map("uc_qte")
+  createdAt   DateTime @default(now()) @map("created_at")
+  createdById Int?     @map("created_by_id")
+
+  colis Colis            @relation(fields: [colisId], references: [id], onDelete: Restrict)
+  unite UniteManutention @relation(fields: [uniteId], references: [id], onDelete: Restrict)
+
+  @@unique([uniteId, colisId])
+  @@index([colisId])
+  @@map("tf_UM_colis")
+}
+
+/// RG-COO-057 : demande de correction à Broadcast (ENVOYEE → FAITE), tracée ; mail : Q-375.
+model DemandeCorrection {
+  id         Int       @id @default(autoincrement())
+  dossierId  Int       @map("dossier_id")
+  note       String?
+  statut     String    @default("ENVOYEE")
+  mailEnvoye Boolean   @default(false) @map("mail_envoye")
+  parId      Int       @map("par_id")
+  le         DateTime  @default(now())
+  faiteLe    DateTime? @map("faite_le")
+
+  dossier Dossier @relation(fields: [dossierId], references: [id], onDelete: Restrict)
+
+  @@index([dossierId])
+  @@map("demande_correction")
+}
+
+// ───────────────────────────── Intégration Broadcast (COO-P06) ─────────────────────────────
+
+/// RG-COO-102 / 103 / 116 : un passage d'intégration (planifié ou manuel). `verrou` = 'ACTIF' tant que le
+/// passage tourne : l'unicité garantit « un seul passage à la fois » (409).
+model PassageIntegration {
+  id          Int       @id @default(autoincrement())
+  declencheur String
+  parId       Int?      @map("par_id")
+  statut      String
+  verrou      String?   @unique
+  debut       DateTime  @default(now())
+  fin         DateTime?
+  message     String?
+
+  flux FluxChargement[]
+
+  @@index([debut])
+  @@map("passage_integration")
+}
+
+/// Ex FluxChargement (RG-COO-116) : statut 1 = en cours, 0 = succès, 2 = échec. Append-only.
+model FluxChargement {
+  id         Int       @id @default(autoincrement())
+  passageId  Int       @map("passage_id")
+  flux       String
+  ordre      Int
+  statut     Int
+  debut      DateTime  @default(now())
+  fin        DateTime?
+  lues       Int       @default(0)
+  creees     Int       @default(0)
+  misesAJour Int       @default(0) @map("mises_a_jour")
+  ignorees   Int       @default(0)
+  erreurs    Int       @default(0)
+  message    String?
+  details    String?
+
+  passage PassageIntegration @relation(fields: [passageId], references: [id], onDelete: Restrict)
+
+  @@index([passageId])
+  @@map("flux_chargement")
+}
+
+/// RG-COO-119 : adresse principale d'un destinataire (insérée seulement s'il n'en a aucune).
+model DestinataireAdresse {
+  id             Int      @id @default(autoincrement())
+  destinataireId Int      @map("dest_id")
+  adresse1       String?  @map("adr_1")
+  adresse2       String?  @map("adr_2")
+  codePostal     String?  @map("adr_postal")
+  localite       String?  @map("adr_localite")
+  lieuDit        String?  @map("lieu_dit")
+  version        Int      @default(1)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  destinataire Destinataire @relation(fields: [destinataireId], references: [id], onDelete: Restrict)
+
+  @@index([destinataireId])
+  @@map("tr_destinataire_adresse")
+}
+
+/// Ex tr_ate_dest_trans (RG-COO-120) : transporteur et tarif par défaut d'un couple destinataire × atelier.
+model TransportDestinataire {
+  id             Int      @id @default(autoincrement())
+  destinataireId Int      @map("dest_id")
+  atelierId      Int      @map("ate_id")
+  transporteur   Int      @map("trans_id")
+  tarif          String
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  destinataire Destinataire @relation(fields: [destinataireId], references: [id], onDelete: Restrict)
+  atelier      Atelier      @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+
+  @@unique([destinataireId, atelierId])
+  @@map("tr_ate_dest_trans")
+}
+
+/// RG-COO-125 / 131 / 132 / 134 : messages à envoyer à Broadcast (accusé de prépa, purge du lot côté
+/// INTERFACE, rafraîchir un dossier, retour « reçue et associée »). Envoi réel : Q-005 (BLOQUÉ) ; un message
+/// non envoyé reste A_ENVOYER et est rejoué au passage suivant.
+model EnvoiBroadcast {
+  id         Int       @id @default(autoincrement())
+  type       String
+  cle        String
+  donnees    String
+  statut     String    @default("A_ENVOYER")
+  tentatives Int       @default(0)
+  message    String?
+  parId      Int?      @map("par_id")
+  creeLe     DateTime  @default(now()) @map("cree_le")
+  envoyeLe   DateTime? @map("envoye_le")
+
+  @@index([type, cle])
+  @@index([statut])
+  @@map("envoi_broadcast")
+}
+
+// ───────────────────────────── Alertes Pré-Prod et vérification des thèmes (COO-P07) ─────────────────────────────
+
+/// ECR-TRA-01 (HYPOTHÈSE Q-371 / Q-190 (2)) : les alertes sont CALCULÉES à la lecture ; seul l'acquittement est
+/// persisté (global, auteur et date). `signature` = gravité + message au moment de l'acquittement : si l'alerte
+/// change (gravité aggravée, autre message), elle redevient ouverte.
+model AlerteAcquittement {
+  id        Int      @id @default(autoincrement())
+  cle       String   @unique
+  signature String
+  parId     Int      @map("par_id")
+  le        DateTime @default(now())
+
+  @@map("alerte_acquittement")
+}
+
+/// RG-COO-069 / 070 (ECR-THM-01 / 02) : verdict d'un groupe de thèmes ou d'annonceurs proches (« Visuels /
+/// Annonceurs différents »), rouvrable (suppression logique : `actif = false`). Clé = clé déterministe du groupe.
+model VerificationTheme {
+  id      Int      @id @default(autoincrement())
+  type    String
+  cle     String
+  verdict String
+  actif   Boolean  @default(true)
+  parId   Int      @map("par_id")
+  le      DateTime @default(now())
+  version Int      @default(1)
+
+  @@index([type, cle, actif])
+  @@map("verification_theme")
+}
+
+/// RG-COO-069 / 070 : demande de correction d'un intitulé (ou d'un nom d'annonceur) envoyée à Broadcast, par
+/// dossier ; l'état du dossier ne change pas. Mail au gestionnaire du pôle : Q-375 (`mailEnvoye = false`).
+model DemandeTheme {
+  id         Int      @id @default(autoincrement())
+  type       String
+  cle        String
+  contNum    Int      @map("cont_num")
+  ancien     String
+  nouveau    String
+  note       String?
+  statut     String   @default("ENVOYEE")
+  mailEnvoye Boolean  @default(false) @map("mail_envoye")
+  parId      Int      @map("par_id")
+  le         DateTime @default(now())
+
+  @@index([type, contNum, statut])
+  @@map("demande_theme")
+}
+
+// ───────────────────────────── Déblocage des préparations (COO-P08) ─────────────────────────────
+
+/// RG-COO-146 / 149 / 278 : trace d'un déblocage (« Rendre la main à la Pré-Prod ») d'un groupe de préparation,
+/// équivalent V2 de `th_repart_annule` + historique `DebloquerPreparation`. Append-only (jamais modifié).
+/// `cle` = clé du groupe (UM : groupe Broadcast ; TRAIN : prépa chapeau × dossier × semaine × surface × type ×
+/// site, HYPOTHÈSE Q-191 (1)). `repartitions` / `unites` : ids annulés (JSON). Mail : Q-375 (`mailStatut`).
+model DeblocagePreparation {
+  id                   Int      @id @default(autoincrement())
+  cle                  String
+  type                 String
+  idGroupePreparation  Int?     @map("IdGroupePreparation")
+  idPreparationChapeau Int?     @map("IdPreparationChapeau")
+  contNum              Int      @map("cont_num")
+  semAnnee             Int      @map("sem_annee")
+  semNum               Int      @map("sem_num")
+  idSiteCcf            Int?     @map("IdSiteCCF")
+  plateformeId         Int?     @map("plt_id")
+  idSurface            Int?     @map("IdSurface")
+  idTypePreparation    Int?     @map("IdTypePreparation")
+  libelleType          String?  @map("libelle_type")
+  annonceur            String?
+  quantite             Int?
+  motif                String
+  repartitions         String
+  unites               String
+  mailStatut           String   @map("mail_statut")
+  mailDestinataires    String?  @map("mail_destinataires")
+  parId                Int      @map("par_id")
+  le                   DateTime @default(now())
+
+  @@index([cle])
+  @@index([le])
+  @@index([contNum])
+  @@map("deblocage_preparation")
+}
+
+/// RG-COO-213 : lot d'export des trains du jeudi (fichier ExportTrainsCIRCEversSurf<horodatage>.csv). La
+/// simulation écrit le lot et le fichier mais aucune ligne tf_train_export et aucun statut (Q-193).
+model ExportTrains {
+  id            Int      @id @default(autoincrement())
+  depAnnee      Int      @map("dep_annee")
+  depSemaine    Int      @map("dep_semaine")
+  /// EXPORT_TRAINS (jeudi, 2 → 5) ou EXPORT_PREPARATION (5 → 9, ateliers 5 et 6, RG-COO-215).
+  nature        String
+  simulation    Boolean
+  nomFichier    String   @map("nom_fichier")
+  /// Contenu CSV du fichier (HYPOTHÈSE Q-193 : colonnes du legacy disponibles en V2 ; D-15 pour le format réel).
+  contenu       String
+  nbDossiers    Int      @map("nb_dossiers")
+  nbTrains      Int      @map("nb_trains")
+  nbFaces       Int      @map("nb_faces")
+  parId         Int      @map("par_id")
+  le            DateTime @default(now())
+  /// RG-COO-167 : ateliers des trains du lot (JSON) ; un lot n'est visible que si tous sont dans le périmètre.
+  ateIds        String   @default("[]") @map("ate_ids")
+  /// COO-P10 (audit B1, Q-193 (1)) : le fichier est SIMULÉ (D-15) : jamais déposé ni transmis à Surf.
+  fichierSimule Boolean  @default(true) @map("fichier_simule")
+
+  lignes ExportTrainLigne[]
+
+  @@index([depAnnee, depSemaine])
+  @@map("export_trains")
+}
+
+/// Ex tf_train_export : un enregistrement par train, 6 contrats au maximum (RG-COO-213, Q-253).
+model ExportTrainLigne {
+  id           Int     @id @default(autoincrement())
+  exportId     Int     @map("export_id")
+  trainId      String  @map("train_id")
+  atelierId    Int?    @map("ate_id")
+  afficheur    String?
+  destinataire String?
+  nbContrats   Int     @map("nb_contrats")
+  /// Liste JSON des contrats (contrat, annonceur, thème, repiquage, rouleur, lettre), 6 au maximum.
+  contrats     String
+
+  export ExportTrains @relation(fields: [exportId], references: [id], onDelete: Restrict)
+
+  @@index([exportId])
+  @@index([trainId])
+  @@map("tf_train_export")
+}
+
+/// ECR-GEN-01 / GEN-03 : lot de génération de fichiers de production (Vendôme), versionné (RG-COO-307).
+/// SIMULÉ (D-15, Q-193) : le format .ini réel n'est pas repris ; le contenu est un fichier de simulation marqué.
+model GenerationFichiers {
+  id             Int       @id @default(autoincrement())
+  /// Identifiant affiché « G-0412 ».
+  lot            String    @unique
+  atelierId      Int?      @map("ate_id")
+  depAnnee       Int       @map("dep_annee")
+  depSemaine     Int       @map("dep_semaine")
+  /// Identifiants des trains du lot (JSON).
+  trains         String
+  nbTrains       Int       @map("nb_trains")
+  nbTiroirs      Int       @map("nb_tiroirs")
+  nomFichier     String    @map("nom_fichier")
+  contenu        String
+  /// PREPARE → ENVOYE (envoi à la machine par le port simulé).
+  statut         String
+  version        Int       @default(1)
+  parId          Int       @map("par_id")
+  le             DateTime  @default(now())
+  envoyeLe       DateTime? @map("envoye_le")
+  envoyeParId    Int?      @map("envoye_par_id")
+  /// RG-COO-167 : ateliers des trains du lot (JSON) ; un lot n'est visible que si tous sont dans le périmètre.
+  ateIds         String    @default("[]") @map("ate_ids")
+  /// COO-P10 (audit B3, RG-COO-308) : version de chaque train au « Préparer » (JSON { trainId: version }), revérifiée
+  /// à l'envoi à la machine.
+  versionsTrains String    @default("{}") @map("versions_trains")
+  /// COO-P10 (audit m5) : adaptateur machine de l'envoi (« simulee » en développement).
+  machineEnvoi   String?   @map("machine_envoi")
+  /// D-15 (ECR-GEN-03, RG-COO-074, Q-411) : lot d'origine d'un « complément » (lien logique sans clé étrangère, Q-310).
+  complementDeId Int?      @map("complement_de_id")
+
+  @@index([depAnnee, depSemaine])
+  @@map("generation_fichiers")
+}
+
+/// COO-P11 (RG-COO-299 à 302) : bague d'un train (unité de production du déroulant). Une bague par train ; le numéro
+/// affiché est `id` (« même numéro » à la réimpression, RG-COO-301). Les textes sont ceux imprimés (RG-COO-300).
+model Bague {
+  id            Int      @id @default(autoincrement())
+  trainId       String   @unique @map("train_id")
+  atelierId     Int?     @map("ate_id")
+  rouleurId     Int?     @map("rouleur_id")
+  /// JSON [{ lettre, annonceur, theme, modifie }] par position non fractionnée.
+  textes        String
+  modifiee      Boolean  @default(false)
+  reimpressions Int      @default(0)
+  imprimeeLe    DateTime @map("imprimee_le")
+  imprimeeParId Int      @map("imprimee_par_id")
+  version       Int      @default(1)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  rouleur Rouleur? @relation(fields: [rouleurId], references: [id], onDelete: Restrict)
+
+  @@index([atelierId])
+  @@map("bague")
+}
+
+/// COO-P11 (RG-COO-237) : suivi 8 m² (demies haut / bas, 8 m² finales) par thème de dossier et par site.
+model Suivi8m2 {
+  id           Int      @id @default(autoincrement())
+  plateformeId Int      @map("plateforme_id")
+  contNum      Int      @map("cont_num")
+  themeCle     String   @map("theme_cle")
+  theme        String
+  demiesHaut   Int      @default(0) @map("demies_haut")
+  demiesBas    Int      @default(0) @map("demies_bas")
+  finales      Int      @default(0)
+  version      Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  createdById  Int?     @map("created_by_id")
+  updatedById  Int?     @map("updated_by_id")
+
+  @@unique([plateformeId, contNum, themeCle])
+  @@map("suivi_8m2")
+}
+
+/// RG-COO-243 (COO-P12) : « Rendre la main à la Pré-Prod » depuis l'écran unitaire : motif, unités rendues et
+/// nombre d'unités déjà en production (non retirées, point de non-retour RG-COO-223). Append-only.
+model RenduMain {
+  id             Int      @id @default(autoincrement())
+  atelierId      Int?     @map("ate_id")
+  motif          String
+  nbEnProduction Int      @map("nb_en_production")
+  repartitions   String
+  dossiers       String
+  parId          Int      @map("par_id")
+  le             DateTime @default(now())
+
+  @@index([atelierId])
+  @@map("rendu_main")
+}
+
+/// RG-COO-304 (COO-P12, HYPOTHÈSE Q-196) : quantités à encoller du Bus par plateforme × semaine : ajustement global
+/// et par centre bus (en %), avec les quantités calculées au moment de l'enregistrement.
+model EncollageBus {
+  id               Int      @id @default(autoincrement())
+  plateformeId     Int      @map("plateforme_id")
+  semAnnee         Int      @map("sem_annee")
+  semNum           Int      @map("sem_num")
+  ajustementGlobal Float    @default(0) @map("ajustement_global")
+  centres          String   @default("[]")
+  parId            Int      @map("par_id")
+  version          Int      @default(1)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([plateformeId, semAnnee, semNum])
+  @@map("encollage_bus")
+}
+
+/// Étape 8 (Q-265, option (c) : « Libérer » ne crée pas les UM ; « Colisage » les crée) : libération de la semaine de
+/// départ d'un atelier fixe / pliage / bus (RG-COO-240). Une seule par (atelier, semaine) ; sans annulation.
+model LiberationSemaine {
+  id          Int      @id @default(autoincrement())
+  atelierId   Int      @map("ate_id")
+  semAnnee    Int      @map("sem_annee")
+  semNum      Int      @map("sem_num")
+  libereeLe   DateTime @default(now()) @map("liberee_le")
+  parId       Int?     @map("par_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  atelier Atelier @relation(fields: [atelierId], references: [id], onDelete: Restrict)
+
+  @@unique([atelierId, semAnnee, semNum])
+  @@map("tf_liberation_semaine")
+}
+
+/// D-03 (RG-ADM-042, ex tr_adresseMail_plateforme) : adresses de notification de réception d'une plateforme.
+/// Adresse normalisée (minuscules) ; unique par plateforme ; suppression physique (comme l'existant), journalisée.
+model PlateformeMail {
+  id           Int      @id @default(autoincrement())
+  plateformeId Int      @map("plt_id")
+  adresse      String   @map("adresseMail")
+  createdById  Int?     @map("user_creation")
+  createdAt    DateTime @default(now()) @map("date_creation")
+
+  plateforme Plateforme @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+
+  @@unique([plateformeId, adresse])
+  @@map("tr_adresseMail_plateforme")
+}
+
+/// D-03 (RG-ADM-040 / 041, ex tr_atelier_imprimante) : imprimantes cibles d'une plateforme. Jamais supprimées
+/// (existant : pas de suppression) ; désactivables (HYPOTHÈSE Q-407).
+model PlateformeImprimante {
+  id           Int      @id @default(autoincrement())
+  plateformeId Int      @map("plt_id")
+  nom          String
+  actif        Boolean  @default(true)
+  version      Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  plateforme Plateforme @relation(fields: [plateformeId], references: [id], onDelete: Restrict)
+
+  @@unique([plateformeId, nom])
+  @@map("tr_atelier_imprimante")
+}
+
+/// D-08 (ECR-ADM-04, RG-REC-190) : configuration d'un type d'alerte (canal, destinataires). Ligne créée à la
+/// première modification : sans ligne, valeurs par défaut (canal Bandeau, destinataires calculés). Q-408.
+model RegleAlerte {
+  id           Int      @id @default(autoincrement())
+  type         String   @unique
+  canal        String
+  /// Rôles destinataires (codes séparés par « ; ») ; vide = destinataires calculés par défaut.
+  destinataires String  @default("")
+  version      Int      @default(1)
+  updatedById  Int?     @map("updated_by_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("regle_alerte")
+}
+
+// ───────────────────────────── Mails et traitements planifiés (étape 8, lot 4 : D-19, D-20) ─────────────────────────────
+
+/// D-19 (Q-409) : file d'envoi des mails. Une ligne par fait métier (`cle` unique : idempotence), écrite dans la
+/// transaction du fait ; l'envoi (jamais dans la transaction) est fait par le traitement `ENVOI_MAILS` ou
+/// `POST /admin/file-envoi/traiter`. Statuts : EN_ATTENTE, EN_COURS (réservé par un traitement), ENVOYE, ECHEC.
+/// `canal` : SIMULE (boîte d'envoi de développement : aucun mail réel) ou SMTP.
+model MailFile {
+  id             Int       @id @default(autoincrement())
+  type           String
+  cle            String    @unique
+  sourceType     String?   @map("source_type")
+  sourceId       Int?      @map("source_id")
+  destinataires  String
+  sujet          String
+  corps          String
+  statut         String    @default("EN_ATTENTE")
+  tentatives     Int       @default(0)
+  derniereErreur String?   @map("derniere_erreur")
+  canal          String?
+  parId          Int?      @map("par_id")
+  version        Int       @default(1)
+  creeLe         DateTime  @default(now()) @map("cree_le")
+  tentativeLe    DateTime? @map("tentative_le")
+  envoyeLe       DateTime? @map("envoye_le")
+
+  @@index([statut, id])
+  @@map("mail_file")
+}
+
+/// D-20 (Q-410) : journal d'exécution des traitements planifiés. `verrou` = nom de la tâche tant qu'elle s'exécute
+/// (unicité : une seule exécution à la fois, comme `passage_integration`). Append-only.
+model TacheExecution {
+  id          Int       @id @default(autoincrement())
+  tache       String
+  declencheur String
+  parId       Int?      @map("par_id")
+  statut      String
+  verrou      String?   @unique
+  debut       DateTime  @default(now())
+  fin         DateTime?
+  message     String?
+  resultat    String?
+
+  @@index([tache, debut])
+  @@map("tache_execution")
+}
+
+
+/// EX-NEW-NC-001 / RG-NEW-NC-002. Le payload est validé par NcDonneesSchema, versionné et audité.
+model NonConformite {
+  id Int @id @default(autoincrement())
+  plateformeId Int
+  type String
+  origine String
+  receptionId Int?
+  afficheIds String @default("[]")
+  bloquante Boolean?
+  donnees String
+  decisions String @default("[]")
+  commentaireDecision String @default("")
+  version Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdById Int
+  updatedById Int?
+  fichiers NonConformiteFichier[]
+  @@index([plateformeId, type])
+  @@map("non_conformite")
+}
+
+model NonConformiteFichier {
+  id Int @id @default(autoincrement())
+  nonConformiteId Int
+  nom String
+  mimeType String
+  taille Int
+  contenu Bytes
+  nonConformite NonConformite @relation(fields: [nonConformiteId], references: [id], onDelete: Restrict)
+  @@map("non_conformite_fichier")
+}
+
+/// Liste administrative versionnée. Source : parametrage.js, référentiel déclarants.
+model DeclarantsNc {
+  id Int @id @default(1)
+  noms String @default("[]")
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+  updatedById Int?
+  @@map("declarants_nc")
+}
+
+model J3Feuille {
+  id Int @id @default(autoincrement())
+  plateformeId Int
+  section String
+  semaine String
+  updatedAt DateTime @updatedAt
+  lignes J3Ligne[]
+  @@unique([plateformeId, section, semaine])
+  @@map("j3_feuille")
+}
+model J3Ligne {
+  id Int @id @default(autoincrement())
+  feuilleId Int
+  dossierId Int
+  donnees String
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+  updatedById Int
+  feuille J3Feuille @relation(fields: [feuilleId], references: [id], onDelete: Restrict)
+  @@unique([feuilleId, dossierId])
+  @@map("j3_ligne")
+}
+model TableauPersonnel {
+  userId Int @id
+  carres String
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+  @@map("tableau_personnel")
+}
+
+/// BUS-02/03/21 : codes de patrimoine stables ; sous-traitant = plateformeId nul.
+model BusReferentiel {
+  id Int @id @default(1)
+  donnees String
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+  updatedById Int
+  @@map("bus_referentiel")
+}
+model BusLigne {
+  id Int @id @default(autoincrement())
+  idExterne String @unique
+  plateformeId Int
+  dossierId Int
+  ligneAttendueId Int
+  centreCode String
+  parc String
+  formatCode String
+  semaine String
+  finPose String
+  vendu Int
+  quantiteBroadcast Int
+  attendu Int
+  entretienPourcent Float
+  quantiteAjustee Int?
+  ajusteParId Int?
+  ajusteLe DateTime?
+  resteEnPlace Boolean @default(false)
+  version Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([plateformeId, semaine])
+  @@index([ligneAttendueId])
+  @@map("bus_ligne")
+}
+model BusControleReception {
+  id Int @id @default(autoincrement())
+  receptionId Int @unique
+  ligneAttendueId Int
+  entretien Boolean
+  themeConforme Boolean
+  photoId Int
+  tenue String @default("")
+  allongement String @default("")
+  massicotage String @default("")
+  nc String @default("")
+  commentaire String @default("")
+  createdById Int
+  createdAt DateTime @default(now())
+  @@map("bus_controle_reception")
+}

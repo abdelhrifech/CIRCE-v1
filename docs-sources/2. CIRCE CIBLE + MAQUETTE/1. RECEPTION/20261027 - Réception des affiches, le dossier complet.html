@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Réception des affiches : le dossier complet (lot 1)</title>
+<style>
+  /* Même palette que « process_reception_statuts_actions.html », « 2. PRE-PRODUCTION/process_preprod_avant_apres.html » et la
+     maquette. Page à lire de haut en bas, avec un sommaire ; imprimable en A4 paysage (une section par page quand c'est possible). */
+  :root {
+    --navy: #1b2a44; --ink: #1f2937; --ink-2: #475467; --ink-3: #667085; --line: #d9dee5; --page: #e9edf2;
+    --rec: #0a6f93; --rec-bg: #e3f1f8;       /* Réception (agent au quai) */
+    --ctl: #0f5f80; --ctl-bg: #e1eef4;       /* Contrôleur (sas) */
+    --pp: #6b2fc9; --pp-bg: #f2eafe;         /* Coordination */
+    --bc: #8a5a00; --bc-bg: #fff3cd;         /* Broadcast, Pré-Prod */
+    --auto: #475467; --auto-bg: #eef1f5;     /* Circé, automatique */
+    --cheq: #0b7a55; --cheq-bg: #e6f6ef;     /* Chef d'équipe, plateformes */
+    --good: #0b7a55; --good-bg: #e6f6ef;
+    --warn: #8a5a00; --warn-bg: #fff3cd;
+    --ser: #b42318; --ser-bg: #fde8e6;
+    --new: #c4320a; --new-bg: #fff1e8;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body { margin: 0; }
+  body { font: 15px/1.45 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; color: var(--ink); background: var(--page); padding: 24px 12px 48px; }
+  .doc { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+  section { background: #fff; border-radius: 10px; box-shadow: 0 4px 18px rgba(16, 24, 40, .10); padding: 22px 28px 24px; scroll-margin-top: 12px; }
+  header.top { background: #fff; border-radius: 10px; box-shadow: 0 4px 18px rgba(16, 24, 40, .10); padding: 22px 28px; border-top: 6px solid var(--navy); }
+  .kick { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
+  h1 { margin: 4px 0 6px; font-size: 28px; font-weight: 650; color: var(--navy); letter-spacing: -.01em; }
+  h2 { margin: 0 0 4px; font-size: 21px; font-weight: 650; color: var(--navy); display: flex; align-items: center; gap: 10px; }
+  h2 .num { width: 30px; height: 30px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  h3 { margin: 0; font-size: 16px; font-weight: 650; color: var(--navy); line-height: 1.25; }
+  h4.tt { margin: 20px 0 0; font-size: 16px; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  h4.tt svg { width: 20px; height: 20px; color: var(--rec); }
+  .lead { margin: 0; color: var(--ink-2); }
+  .sub { margin: 2px 0 14px; color: var(--ink-3); font-size: 14px; }
+  p { margin: 6px 0; }
+  ul, ol { margin: 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  b, strong { font-weight: 650; }
+  .muted { color: var(--ink-3); }
+  .small { font-size: 13px; }
+  .bt { font-weight: 650; color: var(--navy); white-space: nowrap; }
+
+  /* Sommaire */
+  .toc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 22px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 14px; }
+  .toc a { color: var(--navy); text-decoration: none; display: flex; gap: 8px; align-items: baseline; padding: 2px 0; }
+  .toc a:hover { text-decoration: underline; }
+  .toc a span { color: var(--ink-3); font-weight: 700; min-width: 20px; }
+
+  /* Pastilles : qui fait l'action */
+  .who { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .who::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .who.rec { color: var(--rec); background: var(--rec-bg); }
+  .who.ctl { color: var(--ctl); background: var(--ctl-bg); }
+  .who.pp { color: var(--pp); background: var(--pp-bg); }
+  .who.bc { color: var(--bc); background: var(--bc-bg); }
+  .who.auto { color: var(--auto); background: var(--auto-bg); }
+  .who.cheq { color: var(--cheq); background: var(--cheq-bg); }
+  .legend { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; font-size: 13px; color: var(--ink-2); }
+
+  /* Statuts et verdicts */
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 650; padding: 2px 9px; border-radius: 6px; white-space: nowrap; }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .chip.good { color: var(--good); background: var(--good-bg); }
+  .chip.warn { color: var(--warn); background: var(--warn-bg); }
+  .chip.ser { color: var(--ser); background: var(--ser-bg); }
+  .chip.neu { color: var(--ink-2); background: var(--auto-bg); }
+  .chip.new { color: var(--new); background: var(--new-bg); }
+  .chip.info { color: var(--rec); background: var(--rec-bg); }
+
+  /* Cartes de l'essentiel */
+  .advice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .adv { border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: var(--rec-bg); border-left: 6px solid var(--rec); }
+  .adv .k { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--rec); }
+  .adv p { margin: 0; font-size: 14px; color: var(--ink-2); }
+  .adv.ctl { background: var(--ctl-bg); border-left-color: var(--ctl); } .adv.ctl .k { color: var(--ctl); }
+  .adv.pp { background: var(--pp-bg); border-left-color: var(--pp); } .adv.pp .k { color: var(--pp); }
+  .adv.auto { background: var(--auto-bg); border-left-color: var(--auto); } .adv.auto .k { color: var(--auto); }
+
+  /* Schéma : couloirs horizontaux, une case par étape */
+  .flow { margin-top: 14px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .lane { display: grid; grid-template-columns: 150px 1fr; border-top: 1px solid var(--line); }
+  .lane:first-child { border-top: 0; }
+  .lane .lab { padding: 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px; background: #f6f8fa; border-right: 1px solid var(--line); }
+  .lane .lab b { font-size: 14.5px; color: var(--navy); }
+  .lane .lab span { font-size: 12.5px; color: var(--ink-3); }
+  .lane.inc .lab { background: #fbf0ee; border-left: 5px solid var(--ser); }
+  .lane .row { display: flex; align-items: stretch; padding: 14px 12px 12px; }
+  .st { position: relative; flex: 1 1 0; min-width: 0; border: 1px solid var(--line); border-radius: 9px; padding: 9px 11px; background: #fff; display: flex; flex-direction: column; gap: 5px; border-top: 5px solid var(--auto); }
+  .st.rec { border-top-color: var(--rec); }
+  .st.ctl { border-top-color: var(--ctl); }
+  .st.pp { border-top-color: var(--pp); }
+  .st.auto { background: #fafbfc; }
+  .st .t { display: flex; align-items: flex-start; gap: 7px; }
+  .st .n { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; flex: none; margin-top: 1px; }
+  .st h4 { margin: 0; font-size: 14.5px; font-weight: 650; color: var(--navy); line-height: 1.25; }
+  .st p { margin: 0; font-size: 13px; color: var(--ink-2); }
+  .st .o { margin-top: auto; padding-top: 5px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .ar { flex: 0 0 26px; display: flex; align-items: center; justify-content: center; color: var(--ink-3); }
+  .ar svg { width: 22px; height: 16px; }
+  .flow .note { padding: 9px 14px; font-size: 13.5px; border-top: 1px solid var(--line); display: flex; gap: 8px; align-items: flex-start; }
+  .flow .note.bad { background: var(--ser-bg); color: #7a1a12; }
+  .flow .note.ok { background: var(--good-bg); color: #0a5a40; }
+  .flow .note svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+
+  /* Deux colonnes */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 10px; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+  .box h3 { margin-bottom: 4px; }
+  .box .where { font-size: 12.5px; color: var(--ink-3); margin-bottom: 6px; }
+
+  /* Feuille de stock miniature */
+  .fs { display: inline-flex; align-items: center; gap: 8px; vertical-align: middle; }
+  .fs i { font-style: normal; display: inline-block; width: 30px; height: 40px; border: 1.5px solid var(--ink-3); border-radius: 2px; position: relative; background: #fff; flex: none; }
+  .fs i::before { content: ""; position: absolute; left: 3px; right: 3px; top: 3px; height: 8px; border-radius: 1px; }
+  .fs i::after { content: ""; position: absolute; left: 5px; right: 5px; top: 15px; height: 19px; background: repeating-linear-gradient(#cfd5dd 0 2px, transparent 2px 6px); }
+  .fs.def i::before { background: var(--good); }
+  .fs.temp i { border: 1.5px dashed var(--ser); }
+  .fs.temp i::before { background: repeating-linear-gradient(45deg, var(--ser) 0 3px, #fff 3px 6px); }
+  .fs.jaune i { background: #fff6bf; }
+  .fs b { font-size: 12px; letter-spacing: .03em; }
+  .fs.def b { color: var(--good); }
+  .fs.temp b { color: var(--ser); }
+
+  /* Tableaux */
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); font-weight: 700; padding: 8px 10px; border-bottom: 2px solid var(--line); background: #f6f8fa; }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.before { background: #fcf5f4; }
+  td.after { background: #f3faf6; }
+  td.k { font-weight: 650; color: var(--navy); }
+  td.id { font-weight: 700; color: var(--navy); white-space: nowrap; font-size: 13px; }
+  tr.grp td { background: #f6f8fa; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); padding: 6px 10px; }
+
+  /* Encadrés */
+  .callout { border-radius: 10px; padding: 12px 16px; margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; }
+  .callout svg { width: 20px; height: 20px; flex: none; margin-top: 2px; }
+  .callout.info { background: var(--rec-bg); color: #0b4a63; }
+  .callout.warn { background: var(--warn-bg); color: #5c3c00; }
+  .callout.good { background: var(--good-bg); color: #0a5a40; }
+  .callout.bad { background: var(--ser-bg); color: #7a1a12; }
+  .callout.new { background: var(--new-bg); color: #6b2a07; }
+  .callout b { color: inherit; }
+  .q { border: 1.5px solid #e3b341; background: #fff8e1; border-radius: 10px; padding: 11px 15px; margin-top: 10px; }
+  .q h3 { display: flex; align-items: center; gap: 8px; }
+  .q h3::before { content: ""; width: 12px; height: 12px; background: #e3b341; transform: rotate(45deg); border-radius: 2px; flex: none; }
+  .q p { font-size: 14px; color: var(--ink-2); }
+  .q.done { border-color: var(--good); background: var(--good-bg); }
+  .q.done h3::before { background: var(--good); }
+  .q.key { border-width: 2px; border-color: var(--new); background: var(--new-bg); }
+  .q.key h3::before { background: var(--new); }
+  .qs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+
+  /* Liste de vérification */
+  .check { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 8px; }
+  .check li { border: 1px solid var(--line); border-radius: 9px; padding: 10px 14px; display: grid; grid-template-columns: 24px 1fr; gap: 10px; align-items: start; margin: 0; }
+  .check input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--good); }
+  .check li:has(input:checked) { background: var(--good-bg); border-color: #b7e2cd; }
+  .check .sc { display: flex; flex-direction: column; gap: 3px; }
+  .check .sc b { color: var(--navy); }
+  .check .sc span { font-size: 13.5px; color: var(--ink-2); }
+  .check .sc .exp { color: #0a5a40; }
+
+  .src { font-size: 13px; }
+  .src td { padding: 6px 10px; }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; background: #f2f4f7; padding: 1px 5px; border-radius: 4px; }
+  footer { text-align: center; font-size: 12.5px; color: var(--ink-3); }
+  #print { position: fixed; top: 10px; right: 12px; z-index: 2; background: var(--navy); color: #fff; border: 0; border-radius: 6px; padding: 6px 12px; font: inherit; font-size: 12.5px; cursor: pointer; opacity: .85; }
+  #print:hover { opacity: 1; }
+
+  @media (max-width: 980px) { .advice, .two, .qs, .toc { grid-template-columns: 1fr; } .lane .row { flex-wrap: wrap; row-gap: 14px; } }
+  @media print {
+    @page { size: A4 landscape; margin: 10mm; }
+    body { background: #fff; padding: 0; font-size: 12.5px; }
+    #print { display: none; }
+    section, header.top { box-shadow: none; border: 1px solid var(--line); break-inside: avoid; page-break-inside: avoid; }
+    .doc { gap: 10px; max-width: none; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<button id="print" onclick="window.print()">Imprimer</button>
+
+<!-- Icônes réutilisées -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-arrow" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8h20M15 2l6 6-6 6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  </defs>
+</svg>
+
+<div class="doc">
+
+<header class="top">
+  <div class="kick">Refonte Circé · Réception · 27/10/2026 · lot 1 « Réception et affiches » : process et maquette faits en S43, vérification cette semaine, échéance 30/10 · mis à jour le 02/11 (validation admin : option A)</div>
+  <h1>La réception des affiches : le dossier complet</h1>
+  <p class="lead">La réception se fait en deux temps, sur une seule page de Circé. L'agent de réception enregistre l'arrivée de la palette à partir de la photo du BL ; le contrôleur compte, range et imprime les feuilles de stock dans le sas. Ce qu'on ne sait pas rattacher part en zone tampon, avec une feuille temporaire et une alerte à la Coordination. Tout ce que Circé peut déduire, il le fait seul : « affiche reçue », alertes ; <s>validation admin quand tout concorde</s> <i>(02/11 : la validation admin est proposée par Circé et confirmée par la Coordination)</i>.</p>
+  <div class="legend">
+    Qui agit : <span class="who rec">Agent de réception</span> <span class="who ctl">Contrôleur</span> <span class="who auto">Circé (automatique)</span> <span class="who pp">Coordination</span> <span class="who bc">Broadcast · Pré-Prod</span> <span class="who cheq">Chef d'équipe</span>
+    <span class="muted">· En gras : les boutons de la maquette.</span>
+  </div>
+  <nav class="toc" aria-label="Sommaire">
+    <a href="#s1"><span>1</span>L'essentiel</a>
+    <a href="#s2"><span>2</span>Qui fait quoi, et les différences entre sites</a>
+    <a href="#s3"><span>3</span>Le process en un schéma</a>
+    <a href="#s4"><span>4</span>Étape 1 : arrivée de la palette</a>
+    <a href="#s5"><span>5</span>Étape 2 : contrôle dans le sas</a>
+    <a href="#s6"><span>6</span>La feuille de stock et l'étiquette rack</a>
+    <a href="#s7"><span>7</span>La réception inconnue</a>
+    <a href="#s8"><span>8</span>Liste des affiches et fiche de l'affiche</a>
+    <a href="#s9"><span>9</span>Statuts et tags</a>
+    <a href="#s10"><span>10</span>Les cas particuliers</a>
+    <a href="#s11"><span>11</span>Alertes, paramètres et référentiels</a>
+    <a href="#s12"><span>12</span>Les réceptions attendues</a>
+    <a href="#s13"><span>13</span>Les données (pour l'architecte)</a>
+    <a href="#s14"><span>14</span>Aujourd'hui / cible, point par point</a>
+    <a href="#s15"><span>15</span>Le lien avec les autres lots</a>
+    <a href="#s16"><span>16</span>Les 28 besoins du lot</a>
+    <a href="#s17"><span>17</span>À vérifier cette semaine, et les questions</a>
+    <a href="#s18"><span>18</span>Sources</a>
+  </nav>
+</header>
+
+<!-- ============ Mise à jour du 02/11 : option A ============ -->
+<section>
+  <h2>Mise à jour du 02/11 : option A pour la validation admin</h2>
+  <p class="sub">La règle du 27/10 « Circé fait la validation admin quand tout concorde, au dernier des deux jalons (réception, prépa) » est <b>remplacée</b>. Les passages concernés sont <s>barrés</s> ou complétés plus bas ; le reste du dossier est inchangé.</p>
+  <ul>
+    <li><b>Circé propose, une personne confirme.</b> À la réception, Circé propose le rattachement de l'affiche à la ligne attendue de l'état des réservations, aidé du BL (n° de dossier ou de DA, format, plateforme, semaine, visuel) : <b>hypothèse retenue le 02/11 (accord de la cheffe de projet)</b>. La Coordination confirme <b>en lot</b> (cas sûrs pré-cochés, un clic), les doutes un par un. Rien n'est validé sans une personne.</li>
+    <li><b>Ni la prépa ni l'Instruction OK n'interviennent</b>, au fixe comme au scro. Le n° d'affiche se voit dans l'état des réservations dès la réception (• à confirmer, ✓ validée).</li>
+    <li><b>Constat du 02/11 sur Circé aujourd'hui</b> (avec un retour terrain d'une plateforme) : la validation admin est possible au fixe dès la prépa envoyée, impossible au scro avant l'Instruction OK : elle passe par la liaison des lignes de prépa du dossier (<code>ReceptionListeAfficheController.cs:218-254</code>), qui n'existent au scro qu'après l'Instruction OK.</li>
+  </ul>
+  <table>
+    <thead><tr><th style="width:24%">État de la validation admin d'une affiche (cible)</th><th>Sens</th></tr></thead>
+    <tbody>
+      <tr><td><span class="chip good">Validée</span></td><td>Confirmée par une personne (nom et date tracés) ; elle se décoche toujours.</td></tr>
+      <tr><td><span class="chip info">Proposée par Circé</span></td><td>Cas sûr, sans doute : <b>pré-cochée</b> dans la liste « à confirmer », confirmée en un clic.</td></tr>
+      <tr><td><span class="chip warn">À vérifier</span></td><td>Doute (BL sans n° de dossier, format différent, plusieurs thèmes possibles, même visuel pour plusieurs dossiers, validation annulée) : traité un par un par la Coordination.</td></tr>
+      <tr><td><span class="chip ser">Réception inconnue</span></td><td>Aucune ligne rattachée : alerte à la Coordination, dont le rattachement vaut confirmation.</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">Détail : <code>00_synthese_powerpoint.md</code> §19.37 ; <code>2. PRE-PRODUCTION/process_preprod_avant_apres.html</code>, encadré du 02/11 ; <code>20261102 - Process de bout en bout, pages et tables (diagrammes).html</code>, section 11.</p>
+</section>
+
+<!-- ============ 1. L'essentiel ============ -->
+<section id="s1">
+  <h2><span class="num">1</span>L'essentiel</h2>
+  <p class="sub">Les décisions de la cheffe de projet du 14 au 27/10. On garde la base de Circé, pour ne pas perdre les agents, et on améliore leur process.</p>
+  <div class="advice">
+    <div class="adv"><div class="k">Deux temps, une page</div><h3>Arrivée de la palette, puis contrôle</h3><p>Étape 1 au quai, par l'agent de réception ; étape 2 dans le sas, par le contrôleur. Les deux sont sur « Réception › Réception des affiches » (21/10).</p></div>
+    <div class="adv"><div class="k">Le BL fait le travail</div><h3>La photo du BL, toujours</h3><p>Trois façons de trouver le dossier : photo du BL, photo d'une affiche, n° de dossier. La photo du BL est obligatoire dans tous les cas ; elle coche les lignes et pré-remplit le bon de livraison. L'agent vérifie et valide.</p></div>
+    <div class="adv"><div class="k">Un BL = une réception</div><h3>Le panier coché</h3><p>Seules les lignes cochées entrent dans la réception ; les autres restent au panier pour le BL suivant. Plus de n° d'affiche recopié à la main sur le BL.</p></div>
+    <div class="adv ctl"><div class="k">Le sas</div><h3>Toute la palette dans un écran</h3><p>La palette la plus ancienne en tête. Comptage, allée et rayon, rebut, contrôleur obligatoire ; feuilles de stock et étiquettes rack en lot. Pas d'étiquette de palette ni de douchette. Alerte au-delà de 24 h.</p></div>
+    <div class="adv pp"><div class="k">Rien ne correspond ?</div><h3>La réception inconnue</h3><p>Zone tampon (allée X), feuille de stock temporaire, alerte à la Coordination, pas de mail. Une fois rattachée, la palette entre dans le sas et reçoit sa feuille définitive.</p></div>
+    <div class="adv auto"><div class="k">Circé déduit, <s>personne ne coche</s> une personne confirme</div><h3>Reçue, <s>validée</s> proposée, visible</h3><p>« Affiche reçue » est posée par la réception, plus par la validation admin. <s>Circé fait la validation admin quand tout concorde.</s> <i>02/11 : Circé propose la validation admin, la Coordination la confirme en lot.</i> Le n° d'affiche se voit dans l'état des réservations dès la réception.</p></div>
+  </div>
+  <div class="callout bad"><svg><use href="#i-x"/></svg><div><b>Refusé, à ne pas refaire :</b> la colonne « Ordre » du panier (REC-01, 19/10) ; l'étiquette de palette et la douchette (REC-26, 19/10) ; le mail au commercial et à l'assistante à la réception (REC-15, 14/10) ; le mail à la Pré-Prod pour une réception inconnue, remplacé par une alerte (21/10).</div></div>
+  <div class="callout info"><svg><use href="#i-info"/></svg><div><b>Pourquoi c'est important :</b> d'après les decks, 62 % des réceptions de 2024 arrivent sans n° de DA ni de contrat sur le BL, 70 % des livraisons sans référence, et 20 % des affiches en retard ; les orphelines font environ 20 % des réceptions à Nîmes (environ 60 par semaine). Ces taux ne se recoupent pas entre eux (INC-09) : ce sont des ordres de grandeur.</div></div>
+</section>
+
+<!-- ============ 2. Qui fait quoi ============ -->
+<section id="s2">
+  <h2><span class="num">2</span>Qui fait quoi, et les différences entre sites</h2>
+  <p class="sub">Depuis le 26/10 : la Pré-Prod ne travaille que dans Broadcast ; dans Circé, c'est la Coordination qui identifie, rattache et valide.</p>
+  <table>
+    <thead><tr><th style="width:20%">Qui</th><th style="width:20%">Où</th><th>Ce qu'il fait</th></tr></thead>
+    <tbody>
+      <tr><td><span class="who rec">Agent de réception</span></td><td>Au quai, étape 1</td><td>Trouve les dossiers du BL, photographie le BL, vérifie le panier et le bon de livraison, <span class="bt">Valider la réception</span>. Crée les réceptions inconnues et les range en zone tampon. Réimprime les feuilles à refaire.</td></tr>
+      <tr><td><span class="who ctl">Contrôleur</span><br><span class="small muted">un agent de réception</span></td><td>Dans le sas, étape 2</td><td>Ouvre la palette la plus ancienne, compte, range (allée, rayon), note le rebut et la non-conformité, <span class="bt">Valider le contrôle et imprimer</span>. Son nom est obligatoire (REC-12).</td></tr>
+      <tr><td><span class="who auto">Circé</span></td><td>Automatique</td><td>Lit le BL et reconnaît les visuels ; crée le n° de réception et les n° d'affiche ; pose « affiche reçue » ; <s>fait la validation admin quand tout concorde</s> <i>(02/11 : propose la validation admin, pré-cochée quand tout concorde)</i> ; lève les alertes ; purge les réceptions attendues anciennes ; fait passer « prêt à produire » ce qui attendait ses affiches.</td></tr>
+      <tr><td><span class="who pp">Coordination</span></td><td>Nîmes : la « Pré-Prod Nîmes » des decks (Q61)<br>Wissous : l'équipe Coord. Réception de Boulogne</td><td>Identifie et rattache les réceptions inconnues (son rattachement vaut validation admin) ; <s>fait la validation admin des cas à doute</s> <i>(02/11 : confirme en lot les propositions de Circé, les doutes un par un)</i> ; prévient la Pré-Prod d'une réception sans IP ; traite l'alerte « Dossier introuvable ».</td></tr>
+      <tr><td><span class="who bc">Pré-Prod</span><br><span class="small muted">gestionnaires</span></td><td>Broadcast seulement</td><td>Saisit les IP et les intitulés ; corrige dans Broadcast quand la Coordination le demande. Ne travaille pas dans Circé.</td></tr>
+      <tr><td><span class="who cheq">Chefs d'équipe</span></td><td>Plateformes</td><td>Reçoivent les alertes de visuels non reçus et de palettes en retard dans le sas ; consultent la réception.</td></tr>
+      <tr><td><span class="who auto">Commerce</span></td><td>Lecture seule</td><td>Consulte. Plus de mail à la réception d'un dossier (refusé le 14/10).</td></tr>
+    </tbody>
+  </table>
+
+  <h4 class="tt"><svg><use href="#i-info"/></svg>Nîmes et Wissous : ce qui diffère</h4>
+  <table>
+    <thead><tr><th style="width:24%">Sujet</th><th style="width:38%">Nîmes</th><th>Wissous</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Identifier les réceptions inconnues</td><td>La « Pré-Prod Nîmes » des decks, c'est-à-dire la Coordination de Nîmes (déduit de S17, Q61 à confirmer)</td><td>L'équipe Coord. Réception de Boulogne, avec les référent·es 8 m² et MUI ; d'après R7, aussi la Pré-Prod Coordination</td></tr>
+      <tr><td class="k">Saisir les informations liées au n° d'affiche</td><td>L'agent de réception</td><td>Les référent·es 8 m² et MUI (S17)</td></tr>
+      <tr><td class="k">Temps pour reconstituer une orpheline</td><td>« 2 × 10 min »</td><td>« à évaluer »</td></tr>
+      <tr><td class="k">Gestion des manquants</td><td>Pointage coloré le mardi et le vendredi de S-2, fichier des manquants</td><td>Une équipe Pré-Prod relance les gestionnaires (R21)</td></tr>
+      <tr><td class="k">Tri fixe / scro après la réception</td><td>Avec l'état des réservations coloré ; 220 à 350 thèmes par semaine</td><td>Avec le suivi de prod ; environ 150 thèmes par semaine</td></tr>
+      <tr><td class="k">Comptes</td><td>Adresses génériques partagées (ADM-01)</td><td>Pas d'adresses génériques partagées</td></tr>
+      <tr><td class="k">Allée de la zone tampon</td><td colspan="2">« X » par défaut dans la maquette ; <b>à fixer par site</b></td></tr>
+      <tr><td class="k">Dossier livré sur les deux plateformes</td><td colspan="2">La part de la 2e plateforme garde le n° de dossier et la DA, avec le suffixe « -W »</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 3. Le schéma ============ -->
+<section id="s3">
+  <h2><span class="num">3</span>Le process en un schéma</h2>
+  <p class="sub">Trois couloirs : l'arrivée de la palette, le contrôle dans le sas, et le circuit à part de la réception inconnue, qui rejoint le sas une fois rattachée.</p>
+  <div class="flow">
+    <div class="lane">
+      <div class="lab"><b>Étape 1</b><span>Arrivée de la palette · au quai</span></div>
+      <div class="row">
+        <div class="st rec"><div class="t"><span class="n">1</span><h4>Trouver les dossiers du BL</h4></div><p><b>Photo du BL</b>, <b>Photo d'une affiche</b> ou <b>Par n° de dossier</b> (ou DA, annonceur)</p><div class="o"><span class="who rec">Agent</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st auto"><div class="t"><span class="n">2</span><h4>Circé propose les lignes</h4></div><p>Lit le BL, reconnaît le visuel, propose les réceptions attendues ; contrat illisible : des candidats</p><div class="o"><span class="who auto">Circé</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st rec"><div class="t"><span class="n">3</span><h4>Le panier</h4></div><p>Lignes cochées d'office, quantité du BL modifiable, complément, intitulé sans IP</p><div class="o"><span class="who rec">Agent</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st rec"><div class="t"><span class="n">4</span><h4>Bon de livraison</h4></div><p>Photo du BL obligatoire ; n° de BL, transporteur, imprimeur ; <b>Valider la réception</b></p><div class="o"><span class="who rec">Agent</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st auto"><div class="t"><span class="n">5</span><h4>Réception créée</h4></div><p>N° de réception et n° d'affiche ; « affiche reçue » = oui ; <s>validation admin si tout concorde</s> <i>02/11 : validation admin proposée</i></p><div class="o"><span class="chip warn">À contrôler</span> dans le sas</div></div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lab"><b>Étape 2</b><span>Contrôle des affiches · le sas</span></div>
+      <div class="row">
+        <div class="st ctl"><div class="t"><span class="n">6</span><h4>Ouvrir la palette</h4></div><p>La plus ancienne en tête ; retrouvée par son n° de BL ou son imprimeur</p><div class="o"><span class="who ctl">Contrôleur</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st ctl"><div class="t"><span class="n">7</span><h4>Compter et ranger</h4></div><p>Quantité du BL par défaut, par morceau sous le seuil ; allée, rayon ; rebut, non-conformité ; surplus en entretien</p><div class="o"><span class="who ctl">Contrôleur</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st ctl"><div class="t"><span class="n">8</span><h4>Valider et imprimer</h4></div><p>Contrôleur choisi dans la liste ; <b>Valider le contrôle et imprimer</b></p><div class="o"><span class="who ctl">Contrôleur</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st auto"><div class="t"><span class="n">9</span><h4>Feuilles définitives</h4></div><p><span class="fs def"><i></i><b>DÉFINITIVE</b></span> 2 exemplaires et étiquettes rack, en lot</p><div class="o"><span class="chip good">Contrôlée</span> affiche en stock</div></div>
+      </div>
+    </div>
+    <div class="lane inc">
+      <div class="lab"><b>Réception inconnue</b><span>ni le BL, ni l'affiche, ni le n° ne donnent le dossier</span></div>
+      <div class="row">
+        <div class="st rec"><div class="t"><span class="n">a</span><h4>Saisir ce qu'on connaît</h4></div><p><b>Réception inconnue…</b> : annonceur lu, thème, imprimeur, quantité, format, photos</p><div class="o"><span class="who rec">Agent</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st rec"><div class="t"><span class="n">b</span><h4>Ranger en zone tampon</h4></div><p>Allée X, rayon obligatoire ; <span class="fs temp"><i></i><b>TEMPORAIRE</b></span></p><div class="o"><span class="chip warn">À identifier</span> hors du sas</div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st pp"><div class="t"><span class="n">c</span><h4>Identifier et rattacher</h4></div><p>D'abord par le visuel, sinon par n° de dossier ; <b>Rattacher</b> (vaut validation admin)</p><div class="o"><span class="who pp">Coordination</span></div></div>
+        <div class="ar"><svg><use href="#i-arrow"/></svg></div>
+        <div class="st auto"><div class="t"><span class="n">d</span><h4>Entre dans le sas</h4></div><p>La suite est l'étape 2 : contrôle, emplacement définitif, feuille définitive</p><div class="o"><span class="chip warn">Rattachée, à contrôler</span></div></div>
+      </div>
+    </div>
+    <div class="note bad"><svg><use href="#i-alert"/></svg><div>Personne ne retrouve le dossier ? <b>Signaler à la Coordination (alerte)</b> lève l'alerte « Dossier introuvable », avec ce que la plateforme a lu. Pas de mail.</div></div>
+  </div>
+</section>
+
+<!-- ============ 4. Étape 1 ============ -->
+<section id="s4">
+  <h2><span class="num">4</span>Étape 1 : arrivée de la palette</h2>
+  <p class="sub">Écran « Réception › Réception des affiches », en haut de la page. Le repère « 1 · Arrivée de la palette » est dans l'introduction.</p>
+  <table>
+    <thead><tr><th style="width:20%">Partie de l'écran</th><th>Ce qu'on y trouve</th></tr></thead>
+    <tbody>
+      <tr><td class="k">« Trouver les dossiers du BL »</td><td>Trois cadres côte à côte, au choix : <b>Photographier le BL</b> ; <b>Photographier une affiche</b> (Circé reconnaît le visuel et propose les dossiers les plus proches) ; un champ « n° de dossier, de DA, annonceur… » qui filtre les réceptions attendues. À la ligne : « Rien ne correspond ? » et le bouton <b>Réception inconnue…</b></td></tr>
+      <tr><td class="k">« Réceptions attendues »</td><td>« Ce qu'on attend, issu de Broadcast dès la DA activée ».
+        <ul>
+          <li>Colonnes : Site, Dossier, Visuel, Départ, « Reçu / attendu » (avec le n° de l'affiche déjà reçue, cliquable), Reste, Statut, Contrôle, Livraison prévue. Masquées : DA, Annonceur, Thème, Format, Attendu, Reçu, N° d'affiche.</li>
+          <li>Filtres dans le tableau, en listes à cocher : Statut (« Attendue » et « Partielle » par défaut), Départ, Format ; Contrôle et Annonceur par « + Filtre ».</li>
+          <li>Par ligne : <b>Au panier</b>, et <b>Feuille de stock</b> pour réimprimer une affiche déjà contrôlée. En masse : <b>Ajouter au panier (n)</b>. Export Excel.</li>
+          <li>Ne sont pas montrés : les dossiers annulés et les thèmes exclus.</li>
+        </ul></td></tr>
+      <tr><td class="k">« Lignes du BL (panier) »</td><td>Une case par ligne, cochée d'office, et une case « tout ». Colonnes : Dossier, « Annonceur · thème », Reste attendu, Qté du BL (modifiable), Livraison en deux fois.
+        <ul>
+          <li>Case « Complément de l'affiche N » : le visuel déjà reçu en partie garde son n° d'affiche (REC-22).</li>
+          <li>Si les IP ne sont pas saisies : champ « Intitulé saisi (sans IP) », pré-rempli avec l'intitulé de l'autre plateforme ; « le 1er qui a parlé a raison » (REC-18).</li>
+          <li><b>Retirer</b>, <b>Vider le panier</b>. Le panier peut réunir plusieurs BL : seules les lignes cochées entrent dans la réception, les autres restent pour le BL suivant.</li>
+        </ul></td></tr>
+      <tr><td class="k">« Bon de livraison »</td><td>Encadré « BL lu par Circé » (bouton <b>Reprendre la photo</b>) ou « BL à photographier » (bouton <b>Photographier le BL</b>). Champs : Lignes de ce BL, Date de livraison, N° de BL (BL imprimeur = BL transporteur), Transporteur, Imprimeur, Nombre de colis / palettes, « Déchargé par » (liste des agents, au lieu du champ libre de Circé). Bouton <b>Valider la réception (n lignes)</b>.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="two">
+    <div class="box">
+      <h3>La photo du BL</h3>
+      <div class="where">Décidé le 19/10 : « il faut que le BL soit scanné, même si on cherche à partir du n° de dossier »</div>
+      <ul>
+        <li>Circé lit le n° de contrat, l'annonceur, la semaine, le format, la quantité et la vignette du visuel ; il propose les réceptions attendues et <b>pré-remplit le bon de livraison</b> (n° de BL, imprimeur, transporteur, colis). L'agent ne fait que vérifier.</li>
+        <li>Les lignes lues sont cochées, les autres lignes du panier décochées.</li>
+        <li>Contrat illisible : Circé propose des candidats (même annonceur, même semaine, même format, vignette ressemblante). « Aucun : réception inconnue » ouvre le formulaire de réception inconnue.</li>
+        <li>Lignes trouvées par la recherche : la photo reste obligatoire (« Joindre le BL ») ; une ligne cochée absente du BL est signalée.</li>
+        <li>Circé retient comment le dossier a été trouvé (n° du BL ou visuel) : cela sert à la <s>validation admin automatique (27/10)</s> <i>proposition de validation admin (02/11 : cas sûr ou doute)</i>.</li>
+        <li>La photo se revoit au contrôle (<b>Voir le BL</b>) ; la fiche de la réception porte « Photo du BL jointe ».</li>
+      </ul>
+      <p class="small muted">Dans la maquette, la lecture du BL et la reconnaissance des visuels sont simulées.</p>
+    </div>
+    <div class="box">
+      <h3>La validation</h3>
+      <div class="where">Refus, dans cet ordre</div>
+      <ul>
+        <li>« Le panier est vide. »</li>
+        <li>« Cochez dans le panier les lignes de ce BL. »</li>
+        <li>« Les lignes cochées sont sur deux plateformes : un BL ne livre qu'une plateforme. »</li>
+        <li>« Photographiez le BL avant de valider… »</li>
+        <li>« N° de BL, transporteur et imprimeur sont obligatoires, comme dans Circé. »</li>
+      </ul>
+      <div class="where" style="margin-top:10px">Ce que fait <span class="bt">Valider la réception</span></div>
+      <ul>
+        <li>Crée la réception <span class="chip warn">À contrôler</span> et, pour chaque ligne cochée, une affiche avec la quantité du BL, rangée en zone tampon, avec un mouvement « Réception » (« Réception (complément) » pour un complément).</li>
+        <li>Pose « affiche reçue » = oui dès l'arrivée (Q31 à confirmer) ; fait passer « prêt à produire » ce qui attendait ces affiches.</li>
+        <li><s>Fait la validation admin si tout concorde (section 15).</s> <i>02/11 : propose la validation admin ; la Coordination confirme en lot (section 15).</i></li>
+        <li>La palette passe à l'étape 2 <b>sans étiquette</b>. N° de BL, imprimeur et nombre de colis se vident ; transporteur et « Déchargé par » restent pour le BL suivant.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. Étape 2 ============ -->
+<section id="s5">
+  <h2><span class="num">5</span>Étape 2 : contrôle dans le sas</h2>
+  <p class="sub">Même page, sous le panier et le bon de livraison : repère « 2 · Contrôle des affiches ». « Dans le 2, pas de concept de douchette prévu » ; « un sas qui se remplit mais qui doit être contrôlé assez rapidement » (19/10).</p>
+  <div class="two">
+    <div class="box">
+      <h3>« Palettes à contrôler (sas) »</h3>
+      <div class="where">La plus ancienne en tête, avec son temps d'attente</div>
+      <ul>
+        <li>Colonnes : En attente depuis, Réception (tag « réception inconnue »), Arrivée, Site, BL, Imprimeur, Affiches, Qté du BL, Déchargé par. Bouton <b>Contrôler</b>.</li>
+        <li>Au-delà de 24 h (paramétrable, Q33) : encadré « N palette(s) dans le sas depuis plus de 24 h », compteur « en retard », alerte « Palette à contrôler en retard » ; ligne rouge au double du délai.</li>
+        <li>On retrouve une palette par son n° de BL ou son imprimeur. Le badge du menu compte les palettes à contrôler.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>« Contrôle de la palette »</h3>
+      <div class="where">Toute la palette dans un seul écran (REC-27), une ligne par affiche</div>
+      <ul>
+        <li>N° affiche (tag « complément »), Visuel, Qté du BL (« Qté saisie » pour une réception inconnue).</li>
+        <li><b>Qté comptée</b> : la quantité du BL par défaut ; écart affiché « ±N par rapport au BL », ligne rouge au-delà de 10 %.</li>
+        <li>« Comptage par morceau » sous le seuil de 30 (Q30), avec « 4 morceaux par affiche » au 8 m².</li>
+        <li><b>Allée</b> et <b>Rayon</b> (obligatoires).</li>
+        <li>Rebut (quantité) et non-conformité : Conforme, Visuel non conforme, Quantité, Affiche abîmée, Bandeau manquant, Autre.</li>
+        <li>Surplus : case « +N en entretien », le cas des « CG » (FIX-09).</li>
+        <li><b>Contrôleur (obligatoire)</b>, choisi dans la liste des agents de réception, puis <span class="bt">Valider le contrôle et imprimer</span>.</li>
+      </ul>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th style="width:32%">Refus</th><th>Ce que fait la validation du contrôle</th></tr></thead>
+    <tbody>
+      <tr><td>« Le nom du contrôleur est obligatoire (REC-12). »<br>« Allée et rayon sont obligatoires pour chaque affiche. »</td>
+        <td><ul>
+          <li>Mouvements « Contrôle (écart au BL) » s'il y a un écart, « Mise au rebut » (quantité négative) pour le rebut ; la non-conformité va dans l'historique ; le surplus est noté en entretien.</li>
+          <li>Le contrôleur est enregistré ; la palette passe <span class="chip good">Contrôlée</span> ; les affiches quittent la zone tampon pour leur emplacement.</li>
+          <li>Les feuilles de stock définitives s'impriment en lot, avec les étiquettes rack. Ensuite : <b>Imprimer la feuille définitive</b> ou <b>Réimprimer les feuilles de stock</b>.</li>
+          <li>Réception inconnue rattachée : on corrige la quantité et l'imprimeur, on range hors de la zone tampon, puis <b>Valider le contrôle et imprimer la feuille définitive</b>.</li>
+        </ul></td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn"><svg><use href="#i-alert"/></svg><div><b>Non-conformité :</b> dans Circé, elle s'ouvre par un lien vers l'application Process Métier. Le lien reste à cadrer ; le suivi des non-conformités dans Circé n'est pas fait (QUA-03, seul besoin du lot non couvert par la maquette).</div></div>
+</section>
+
+<!-- ============ 6. Feuille de stock ============ -->
+<section id="s6">
+  <h2><span class="num">6</span>La feuille de stock et l'étiquette rack</h2>
+  <p class="sub">La « feuille de stock » des decks est l'étiquette rack de Circé (modèle <code>Reports/EtiquetteRackAffiche.rdlc</code>, A4). Décidé le 21/10 : « le modèle actuel de Circé, avec la mention "définitive" ou "temporaire" ».</p>
+  <table>
+    <thead><tr><th style="width:24%">Feuille</th><th style="width:32%">Quand</th><th>Particularités</th></tr></thead>
+    <tbody>
+      <tr><td><span class="fs def"><i></i><b>DÉFINITIVE</b></span></td><td>Au contrôle d'une palette dont le dossier est connu, ou d'une réception inconnue rattachée</td><td>Remplace la temporaire. Fond <b>jaune</b> si le dossier est multi-semaines (REC-13).</td></tr>
+      <tr><td><span class="fs temp"><i></i><b>TEMPORAIRE</b></span></td><td>À la création d'une réception inconnue, en zone tampon</td><td>Porte l'allée et le rayon de la zone tampon, d'où leur saisie obligatoire.</td></tr>
+      <tr><td><span class="fs def jaune"><i></i><b>MULTI-SEMAINES</b></span></td><td>Dossier qui part sur plusieurs semaines</td><td>Aujourd'hui réimprimée sur papier jaune avec une synthèse manuscrite (S30) ; dans la cible, le fond jaune est imprimé.</td></tr>
+    </tbody>
+  </table>
+  <ul style="margin-top:12px">
+    <li><b>Champs</b>, aux mêmes places que dans Circé : n° d'affiche en très gros, format, date de réception, adressage (allée - rayon), quantité, code-barres, dossier, semaines, annonceur, thème, repiquage, commentaire, « affiche à conserver », le 1er départ en gros ; un tableau Dossier, Thème, Annonceur, Format, Départ, Qté prépa., numéro de demande.</li>
+    <li><b>Impression en lot</b> : 2 exemplaires (palette et Coordination, S20 ; 3 cités le 19/10, Q32), paramétrable de 1 à 5 ; avec ou sans les étiquettes rack. Aujourd'hui : 3 clics par feuille.</li>
+    <li>Circé <b>note le type de feuille posée</b> (temporaire ou définitive). L'impression lève le tag « Feuille à refaire ».</li>
+    <li><b>Réimpressions</b> : Liste des affiches (<b>Réimprimer les feuilles à refaire (n)</b>, <b>Imprimer les feuilles de stock</b>, <b>Étiquettes rack</b>) ; ligne d'une réception attendue contrôlée (<b>Feuille de stock</b>) ; fiche de l'affiche.</li>
+  </ul>
+  <div class="callout info"><svg><use href="#i-info"/></svg><div><b>À valider :</b> la place de la mention « définitive » / « temporaire » sur la feuille ; où garder le type de feuille posée en V2 (il n'a pas de place dans la base aujourd'hui).</div></div>
+</section>
+
+<!-- ============ 7. Réception inconnue ============ -->
+<section id="s7">
+  <h2><span class="num">7</span>La réception inconnue</h2>
+  <p class="sub">« Réception orpheline » dans Circé, renommée le 19/10. Circuit à part décidé le 21/10 : « la production doit continuer ».</p>
+  <div class="two">
+    <div class="box">
+      <h3>À la réception : <span class="bt">Réception inconnue…</span></h3>
+      <div class="where">Agent de réception, depuis l'étape 1</div>
+      <ul>
+        <li>Champs : Site, Format, Annonceur lu sur l'affiche, Thème ou description (avec les propositions de l'autre plateforme), Imprimeur, Quantité comptée, Allée (zone tampon, X par défaut), Rayon (obligatoire), Photo de l'affiche, Photo du BL (« à joindre dans tous les cas, sauf palette arrivée sans BL »).</li>
+        <li><b>Créer, ranger et imprimer la feuille temporaire</b>.</li>
+        <li>Refus : « Allée et rayon sont obligatoires : ils sont imprimés sur la feuille temporaire. » ; « Indiquez la quantité comptée. »</li>
+        <li>Effet : réception <span class="chip warn">À identifier</span>, hors du sas ; affiche « Orpheline » ; feuille temporaire ; alerte immédiate à la Coordination.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>À la Coordination : « Réceptions inconnues »</h3>
+      <div class="where">Menu Réception, badge rouge s'il y en a</div>
+      <ul>
+        <li>Tableau : N° affiche, Lu sur l'affiche, Site, Qté, Reçue le, En attente depuis (rouge au-delà de 24 h), Statut, Dossier(s), Emplacement ; bouton <b>Fiche</b>.</li>
+        <li>Sous le tableau, l'affiche choisie : photo, annonceur lu, description, quantité et format, imprimeur et emplacement.</li>
+        <li>« Trouver le dossier » : <b>d'abord par le visuel</b> (<b>Voir les visuels proposés (n)</b>, dossier pré-coché si le visuel est reconnu à coup sûr), <b>sinon par n° de dossier</b> (la recherche se lance à la frappe, REC-10).</li>
+        <li>Cocher un ou plusieurs dossiers avec leur quantité, puis <b>Rattacher</b>. Refus : « Choisissez au moins un dossier et une quantité. » ; « La répartition (x) dépasse la quantité reçue (y). »</li>
+        <li>Personne ne trouve : <b>Signaler à la Coordination (alerte)</b>, sans mail ; alerte « Dossier introuvable ».</li>
+      </ul>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th style="width:30%">Après <span class="bt">Rattacher</span></th><th>Ce qui se passe</th></tr></thead>
+    <tbody>
+      <tr><td class="k">L'affiche</td><td>Passe « Identifiée » ; la réception passe <span class="chip warn">À contrôler</span> et entre dans le sas.</td></tr>
+      <tr><td class="k">La validation admin</td><td>Rattachée par la Coordination : elle vaut validation admin (27/10). Rattachée par la réception : elle reste à vérifier.</td></tr>
+      <tr><td class="k">La réception</td><td>Alerte « Feuille de stock définitive à imprimer » à la réception de la plateforme, ouverte tant que la feuille n'est pas imprimée. Boutons selon l'état : <b>Valider et imprimer dans Réception des affiches</b>, <b>Imprimer dans Réception des affiches</b>, <b>Réimprimer la feuille définitive</b>.</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn"><svg><use href="#i-alert"/></svg><div><b>Deux cas à ne pas confondre</b> (decks) :
+    <ul style="margin:4px 0 0">
+      <li><b>DA activée, IP pas saisies</b> : ce n'est pas une réception inconnue. La plateforme reçoit sur le dossier et donne l'intitulé ; l'alerte « Réception sans IP » va à la Coordination, qui prévient la Pré-Prod.</li>
+      <li><b>Affiche introuvable alors qu'elle est dans Broadcast</b> : c'est une réception inconnue. On la reconnaît par la photo ; pas de thème à changer dans Broadcast.</li>
+    </ul></div></div>
+</section>
+
+<!-- ============ 8. Liste des affiches ============ -->
+<section id="s8">
+  <h2><span class="num">8</span>Liste des affiches et fiche de l'affiche</h2>
+  <p class="sub">Deux listes reliées plutôt qu'un écran fusionné (REC-03, revu le 21/10) : les réceptions attendues, c'est ce qu'on attend ; la Liste des affiches, c'est ce qu'on a reçu.</p>
+  <div class="two">
+    <div class="box">
+      <h3>La Liste des affiches</h3>
+      <ul>
+        <li>Colonnes : N° affiche, Reçue le, Visuel, Dossier(s) (tag « N dossiers »), Départ (tag « multi-semaines »), En stock (rebut mis en évidence, REC-08), Emplacement, Statut et tags. Masquées : Réception (cliquable), Site, Annonceur, Thème, Format, <b>Imprimeur</b> (REC-07), Reçu, Rebut, Contrôleur, Feuille de stock.</li>
+        <li>Filtres : n° de dossier, Départ (une affiche sans semaine reste visible), Tag, Format ; Imprimeur par « + Filtre ».</li>
+        <li>En masse : <b>Réimprimer les feuilles à refaire (n)</b>, <b>Imprimer les feuilles de stock</b>, <b>Étiquettes rack</b>. <b>Ranger avant d'imprimer</b> sort les affiches de la zone tampon avant la feuille définitive.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>La fiche de l'affiche</h3>
+      <div class="where">Onglets Détail, Mouvements, Préparations, Historique</div>
+      <ul>
+        <li><b>Détail</b> : réception(s) (« livraison en N fois »), annonceur et thème saisis, imprimeur, allée, rayon, quantité reçue, stock disponible, feuille de stock, entretien reçu en plus, « affiche à conserver », encadré « Palette à contrôler » avec <b>Contrôler la palette</b>, validation admin avec <b>Validation admin</b> et <b>Annuler la validation</b>.</li>
+        <li><b>Préparations</b> : <b>Changer de thème…</b> (parmi les thèmes du même dossier), <b>Retirer</b>, <b>+ Rattacher à un autre dossier</b>, sans limite de dossiers (ANO-12). Chaque changement pose « Feuille à refaire ». Retirer le dernier dossier renvoie l'affiche dans les réceptions inconnues.</li>
+        <li><b>Mouvements</b> et <b>Historique</b> : tout ce qui s'est passé, avec qui et quand.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top:10px">La fiche de la réception montre son état (« Palette à contrôler », « À identifier par la Coordination (zone tampon) » ou « Contrôlée »), la date, le BL, le transporteur, l'imprimeur, les colis, « Déchargé par », « Contrôlé par », et ses lignes avec la quantité du BL et la quantité reçue.</p>
+</section>
+
+<!-- ============ 9. Statuts et tags ============ -->
+<section id="s9">
+  <h2><span class="num">9</span>Statuts et tags</h2>
+  <p class="sub">Principe : « ce qui se calcule ne se coche jamais à la main ». Circé pose chaque statut et chaque tag lui-même, à chaque événement ; des tags cochés à la main reproduiraient ANO-05.</p>
+  <table>
+    <thead><tr><th style="width:18%">Objet</th><th style="width:44%">Statuts, dans l'ordre</th><th>Quand ça change</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Ligne attendue</td><td><span class="chip neu">Attendue</span> <span class="chip ser">Partielle</span> <span class="chip good">Complète</span> <span class="chip warn">Surplus</span><br><span class="small muted">Contrôle : À contrôler, Contrôlée, Rien reçu</span></td><td>Calculé une fois et lu par tous les écrans (21/10). Surplus au-delà de 10 %. Aujourd'hui, Circé ne connaît que « Partiel » et « Terminé ».</td></tr>
+      <tr><td class="k">Palette (réception)</td><td><span class="chip warn">À contrôler</span> <span class="chip good">Contrôlée</span><br><span class="chip warn">À identifier</span> <span class="small muted">réception inconnue, hors du sas</span></td><td>À contrôler à « Valider la réception » ; Contrôlée à « Valider le contrôle ». À identifier devient À contrôler au rattachement, et le redevient si on retire le dernier dossier. Calculés en plus : « Contrôle en retard » (24 h), « Écart de comptage » (10 %), « Complément », « Photo du BL jointe ».</td></tr>
+      <tr><td class="k">Affiche</td><td><span class="chip good">Identifiée</span> <span class="chip warn">Orpheline</span><br>Tags : <span class="chip warn">À contrôler</span> <span class="chip warn">Réception inconnue</span> <span class="chip neu">Complément</span> <span class="chip warn">Feuille à refaire</span></td><td>« À contrôler » de la réception jusqu'au contrôle ; « Complément » dès deux réceptions ; « Feuille à refaire » quand le thème ou le rattachement change, levé par la réimpression (affiché « Feuille définitive à imprimer » tant qu'une temporaire est posée). Proposé : tag « Au rebut ».</td></tr>
+      <tr><td class="k">Réception inconnue</td><td><span class="chip warn">À identifier</span> <span class="chip ser">Introuvable : alerte à la Coordination</span> <span class="chip warn">Rattachée, à contrôler</span> <span class="chip warn">Contrôlée, feuille définitive à imprimer</span> <span class="chip good">Rattachée, feuille définitive</span></td><td>Suit le circuit de la section 7.</td></tr>
+      <tr><td class="k">« Affiche reçue »</td><td><span class="chip good">Oui</span> dès l'arrivée de la palette, sur la quantité du BL</td><td>Posée par la réception (PP-02), indépendamment de la validation admin ; le contrôle corrige ensuite (Q31). Aujourd'hui posée par la validation admin (ANO-05). En V2 : « un mouvement de réception existe ».</td></tr>
+      <tr><td class="k">Validation admin</td><td><s><span class="chip good">Faite par Circé</span> <span class="chip neu">Validée à l'arrivée de la préparation si tout concorde</span></s> <span class="chip good">Validée</span> <span class="chip info">Proposée par Circé</span> <span class="chip warn">À vérifier</span> <span class="chip warn">Orpheline</span> <i>(02/11)</i></td><td><s>Au dernier des deux jalons, réception ou prépa (27/10).</s> <i>02/11 : dès la réception ; Circé propose, la Coordination confirme en lot (cas sûrs pré-cochés), sans attendre la prépa ni l'Instruction OK.</i> Statut du dossier : « Validation admin faite » (ex « Validé Pré-Prod ») <i>= toutes les affiches reçues confirmées par une personne</i>.</td></tr>
+      <tr><td class="k">Emplacement et feuille</td><td>Zone tampon → emplacement définitif ; allée X pour une réception inconnue<br>Feuille <span class="chip ser">Temporaire</span> → <span class="chip good">Définitive</span></td><td>L'emplacement définitif est saisi au contrôle ; la feuille devient définitive dès qu'il y a un dossier.</td></tr>
+      <tr><td class="k">Mouvements</td><td>Réception · Réception (complément) · Contrôle (écart au BL) · Mise au rebut</td><td>Le stock est la somme des mouvements. Le reçu d'un visuel est la somme des quantités rattachées, pas des mouvements (21/10).</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 10. Cas particuliers ============ -->
+<section id="s10">
+  <h2><span class="num">10</span>Les cas particuliers</h2>
+  <table>
+    <thead><tr><th style="width:28%">Cas</th><th>Ce qui se passe</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Livraison en deux fois (complément)</td><td>Le visuel déjà reçu en partie garde son n° d'affiche ; les deux réceptions sont gardées pour la traçabilité (REC-22) ; tag « Complément ». Aujourd'hui, la « Fusion des affiches » ne marche pas et un premier BL complet fait disparaître la ligne attendue que le complément ne retrouve plus (ANO-15).</td></tr>
+      <tr><td class="k">Une affiche pour plusieurs dossiers</td><td>Un visuel peut servir à plusieurs dossiers (jusqu'à 33 dans un cas cité, S31). Rattachement à plusieurs dossiers avec une quantité chacun, sans limite (ANO-12) ; en V2, lien plusieurs-à-plusieurs avec quantité.</td></tr>
+      <tr><td class="k">Une palette, deux BL</td><td>Deux réceptions (un BL = une réception).</td></tr>
+      <tr><td class="k">Un BL sur deux plateformes</td><td>Refusé à la validation : un BL ne livre qu'une plateforme.</td></tr>
+      <tr><td class="k">Réception partielle</td><td>On valide ce qui est reçu ; la ligne passe « Partielle » et le reste à recevoir garde son alerte (« Visuel reçu en partie »). La quantité n'est pas une condition de la validation admin.</td></tr>
+      <tr><td class="k">Trop reçu</td><td>« Surplus » au-delà de 10 % ; alerte « Écart de réception supérieur à 10 % ». Au contrôle, le surplus des « CG » se compte en entretien (FIX-09).</td></tr>
+      <tr><td class="k">Écart au comptage</td><td>La quantité du BL est proposée, l'écart affiché ; ligne rouge au-delà de 10 % ; mouvement « Contrôle (écart au BL) ».</td></tr>
+      <tr><td class="k">Rebut</td><td>Saisi au contrôle avec son motif (mouvement « Mise au rebut ») ou plus tard dans Stocks (affiche déchirée, mauvais visuel, erreur de quantité, autre). Rebut = sortie de stock ; le vidage du rebut est à rapprocher de la destruction.</td></tr>
+      <tr><td class="k">Thème changé après la réception</td><td>Tag « Feuille à refaire » et alerte « Feuilles de stock à refaire » ; réimpression en lot depuis la Liste des affiches (REC-06).</td></tr>
+      <tr><td class="k">Rattachée au mauvais thème</td><td><b>Changer de thème…</b> dans la fiche de l'affiche, onglet Préparations (décidé le 19/10). Aujourd'hui, le 2e thème n'est plus proposé et on crée une fausse orpheline (ANO-08).</td></tr>
+      <tr><td class="k">Dernier dossier retiré</td><td>L'affiche retourne dans les réceptions inconnues ; la réception redevient « À identifier ».</td></tr>
+      <tr><td class="k">Réception sans IP</td><td>Ce n'est pas une réception inconnue : on reçoit sur le dossier, avec l'intitulé de l'autre plateforme proposé ; alerte « Réception sans IP » (section 7).</td></tr>
+      <tr><td class="k">Affiche livrée après la purge de sa ligne attendue</td><td>Elle passe par <b>Réception inconnue…</b></td></tr>
+      <tr><td class="k">Palette arrivée sans BL</td><td>Seul cas où la photo du BL n'est pas demandée (réception inconnue).</td></tr>
+      <tr><td class="k">Dossier multi-semaines</td><td>Feuille de stock à fond jaune (REC-13 ; Q18 : remplacé ou non par le scan de BL multiples ?).</td></tr>
+      <tr><td class="k">Dossier sur les deux plateformes</td><td>La part de la 2e plateforme garde le n° de dossier et la DA, avec « -W ». Une affiche et sa réception attendue sont toujours sur la même plateforme.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 11. Alertes et paramètres ============ -->
+<section id="s11">
+  <h2><span class="num">11</span>Alertes, paramètres et référentiels</h2>
+  <p class="sub">Les alertes remplacent les mails et les pointages Excel ; chacune ouvre l'écran où agir (Pilotage › Alertes). Le canal de chaque alerte se règle dans Administration › Paramétrage › Alertes et mails.</p>
+  <table>
+    <thead><tr><th style="width:30%">Alerte</th><th style="width:30%">Quand, et sa gravité</th><th>Pour qui</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Visuel non reçu / reçu en partie</td><td>Départ en S : critique si rien reçu, grave si partiel ; S+1 : à surveiller</td><td><span class="who cheq">Chefs d'équipe</span> <span class="who pp">Coordination</span> <span class="who rec">Réception</span> · bandeau et résumé à 7 h</td></tr>
+      <tr><td class="k">Écart de réception supérieur à 10 %</td><td>À surveiller</td><td><span class="who rec">Réception</span> <span class="who pp">Coordination</span></td></tr>
+      <tr><td class="k">Réception sans instructions de pose</td><td>Grave</td><td><span class="who pp">Coordination</span>, qui prévient la Pré-Prod · bandeau et mail</td></tr>
+      <tr><td class="k">Réception inconnue à identifier</td><td>Dès la création ; importante après 24 h</td><td><span class="who pp">Coordination</span> <span class="who rec">Réception</span></td></tr>
+      <tr><td class="k">Dossier introuvable</td><td>Grave dès le signalement</td><td><span class="who pp">Coordination du site</span> (Q61) ; à Wissous, l'équipe Coord. Réception de Boulogne · plus de mail</td></tr>
+      <tr><td class="k">Feuille de stock définitive à imprimer</td><td>Après le rattachement d'une réception inconnue, tant que la feuille n'est pas imprimée</td><td><span class="who rec">Réception de la plateforme</span></td></tr>
+      <tr><td class="k">Feuilles de stock à refaire</td><td>Thème ou rattachement changé ; à surveiller</td><td><span class="who rec">Réception</span> <span class="who pp">Coordination</span></td></tr>
+      <tr><td class="k">Palette à contrôler depuis plus de 24 h</td><td>Grave au double du délai</td><td><span class="who rec">Réception</span> <span class="who cheq">Chefs d'équipe</span></td></tr>
+      <tr><td class="k">Validation admin à faire</td><td>Grave pour un départ en S ou S+1</td><td><span class="who pp">Coordination</span></td></tr>
+      <tr><td class="k muted">Mail au commercial à la réception</td><td class="muted">Désactivée (refusé le 14/10)</td><td class="muted">—</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">La purge des réceptions attendues ne lève pas d'alerte. Le mail actuel « Réception affiche » aux chefs d'équipe est remplacé par le dashboard ; un résumé reste possible.</p>
+  <div class="two">
+    <div class="box">
+      <h3>Paramètres (Règles métier › Réception)</h3>
+      <table style="margin-top:6px">
+        <tbody>
+          <tr><td>Écart signalé au-delà de</td><td class="k">10 %</td></tr>
+          <tr><td>Purge automatique des réceptions attendues après (sauf conservation à l'année)</td><td class="k">4 semaines</td></tr>
+          <tr><td>Délai de contrôle des palettes du sas (Q33)</td><td class="k">24 h</td></tr>
+          <tr><td>Comptage manuel par morceau si quantité inférieure à (Q30)</td><td class="k">30</td></tr>
+          <tr><td>Exemplaires de la feuille de stock (Q32)</td><td class="k">2 (de 1 à 5)</td></tr>
+          <tr><td>Allée des réceptions inconnues (zone tampon)</td><td class="k">X (à fixer par site)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box">
+      <h3>Référentiels (Administration, REC-14)</h3>
+      <ul>
+        <li><b>Imprimeurs</b></li>
+        <li><b>Livreurs</b> (les transporteurs de la réception)</li>
+        <li><b>Agents de réception</b> : proposés dans la liste « Contrôleur » et dans « Déchargé par »</li>
+      </ul>
+      <p class="small muted">Ces trois référentiels font partie du lot 0 (socle). Aujourd'hui, un transporteur inconnu n'est jamais créé et « Déchargé par » est un champ libre.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12. Réceptions attendues ============ -->
+<section id="s12">
+  <h2><span class="num">12</span>Les réceptions attendues</h2>
+  <p class="sub">Le point le plus fragile : tout le rattachement repose sur elles. C'est pourquoi le lot 0 commence par les fiabiliser.</p>
+  <div class="two">
+    <div class="box">
+      <h3>D'où elles viennent</h3>
+      <ul>
+        <li>Circé ne réagit à aucun événement « DA activée » : il interroge Broadcast à intervalles réguliers (d'après l'équipe : 8 h, 10 h, 12 h, 14 h, 16 h, 18 h ; la planification n'est pas dans le code).</li>
+        <li>Il copie l'état des réservations de Broadcast (semaine en cours à +8), puis crée des lignes « venues de Broadcast » pour les prépas pas encore envoyées.</li>
+        <li>À l'arrivée de la prépa, il les bascule en lignes de prépa si dossier, format, annonceur, <b>thème écrit</b> et semaine correspondent.</li>
+        <li>Grain : dossier × thème × repiquage × format × support × semaine, sans destinataire. « Circé réceptionne déjà avant la prépa » (26/10) : on garde cette voie.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Les doublons : quatre causes probables</h3>
+      <ol>
+        <li>Le correctif « Doublon CIRCE Réception » rapproche sans le thème : deux lignes identiques, et le 2e thème n'est jamais recréé (la plus probable).</li>
+        <li>La bascule rate quand les textes diffèrent : une ligne de prépa s'ajoute à côté, l'affiche reste orpheline.</li>
+        <li>Les lignes sont découpées par un champ invisible à l'écran (DA, atelier, n° de thème, bandeau, quantité).</li>
+        <li>La plateforme est cherchée par le nom : sans correspondance, la ligne est recréée à chaque passage.</li>
+      </ol>
+      <p class="small muted">Pas de clé métier ni d'index unique ; rattachement au texte, sensible à la casse. À mesurer avec les requêtes de la DSI.</p>
+    </div>
+  </div>
+  <h4 class="tt"><svg><use href="#i-check"/></svg>Les règles cibles (RG-AT)</h4>
+  <table>
+    <tbody>
+      <tr><td class="id">RG-AT-01</td><td>Une seule ligne active par plateforme × dossier × support × thème × bandeau × semaine ISO ; la DA et l'atelier sont hors clé, leurs quantités s'additionnent.</td></tr>
+      <tr><td class="id">RG-AT-02</td><td>Rapprochement par les identifiants de Broadcast (plateforme, surface et format, thème) ; les textes ne servent qu'à l'affichage. Sans le n° de thème (Q56), thème écrit mis en forme, avec une alerte.</td></tr>
+      <tr><td class="id">RG-AT-03</td><td>La ligne Broadcast est créée ou mise à jour à chaque lecture, hors « reste en place ».</td></tr>
+      <tr><td class="id">RG-AT-04</td><td>Avant les IP, une ligne au visuel « provisoire ». Aux IP, l'affiche est déplacée seule s'il n'y a qu'un candidat ; sinon la Coordination choisit.</td></tr>
+      <tr><td class="id">RG-AT-05</td><td>À l'arrivée de la prépa, la ligne passe en source « prépa », avec une alerte en cas d'écart DA / prépa.</td></tr>
+      <tr><td class="id">RG-AT-06</td><td>Une ligne qui n'est plus vue dans Broadcast passe « annulée » (elle ne se supprime pas, elle se ferme), avec une alerte si une affiche y est rattachée. Aujourd'hui, une DA annulée laisse une ligne fantôme.</td></tr>
+      <tr><td class="id">RG-AT-07</td><td>Semaines ISO, fenêtre de +8 semaines calculée en dates.</td></tr>
+      <tr><td class="id">RG-AT-08</td><td>Le lien affiche ↔ ligne porte une quantité, en plusieurs-à-plusieurs ; il est déplacé, jamais perdu.</td></tr>
+    </tbody>
+  </table>
+  <div class="two">
+    <div class="callout good" style="margin-top:14px"><svg><use href="#i-check"/></svg><div><b>Purge (décidé le 19/10) :</b> automatique au-delà de 4 semaines, sauf conservation à l'année ; ni alerte ni validation, une ligne au journal. Les lignes « venues de Broadcast » ne sont jamais purgées aujourd'hui. Reste à faire : purger les anciens thèmes des réceptions attendues après un changement de thème (REC-23, en partie).</div></div>
+    <div class="callout bad" style="margin-top:14px"><svg><use href="#i-alert"/></svg><div><b>Urgent, hors lots :</b> dans le dépôt, la branche de fin d'année de la procédure des réceptions attendues est invalide (une colonne écrite deux fois) et les semaines ne sont pas ISO. Elle échouerait à partir de la mi-novembre : <b>la DSI vérifie la version en production avant la mi-novembre</b>.</div></div>
+  </div>
+  <p class="small muted" style="margin-top:10px">Détail, 25 cas vérifiés et questions Q55 à Q64 : <code>2. PRE-PRODUCTION/receptions_attendues_doublons_tables_regles.html</code>. Questions de grain encore ouvertes : deux DA pour le même dossier, format, plateforme et semaine, une ligne ou deux (Q57, proposé : une) ; même thème pour deux ateliers (Q58, proposé : une ligne, même stock) ; retirer le « reste en place » de l'attendu (Q59, proposé : oui).</p>
+</section>
+
+<!-- ============ 13. Les données ============ -->
+<section id="s13">
+  <h2><span class="num">13</span>Les données (pour l'architecte)</h2>
+  <p class="sub">Version V2 : on garde les tables de Circé et on ajoute le strict nécessaire. Détail complet dans le dictionnaire et le MCD / MLD de l'EDR vivant.</p>
+  <table>
+    <thead><tr><th style="width:24%">Table</th><th style="width:12%"></th><th>Rôle, et ce qui change</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="3">Existe dans Circé</td></tr>
+      <tr><td><code>livraison</code></td><td><span class="chip neu">Existe</span></td><td>La réception (un BL) : date, expéditeur, imprimeur, n° de BL, colis, dossier et DA saisis (affichés, pas utilisés pour rattacher), « Déchargé par ». <b>V2</b> : <code>controle_statut</code> (à contrôler / contrôlée), <code>controle_par</code> (obligatoire), <code>controle_le</code>.</td></tr>
+      <tr><td><code>asso_livraison_affiche</code></td><td><span class="chip neu">Existe</span></td><td>Lien réception ↔ affiche, avec le n° de livraison (1re, 2e) : c'est le lien du complément.</td></tr>
+      <tr><td><code>affiche</code></td><td><span class="chip neu">Existe</span></td><td>Plateforme, support, dossier (un seul, en texte), annonceur, thème, quantité, allée, rayon, rebut, validation admin, à conserver… <b>V2</b> : <code>validationAdmin_par</code>, <code>validationAdmin_le</code>, <code>mode_rattachement</code> (n° du BL, visuel, à la main).</td></tr>
+      <tr><td><code>mouvement</code></td><td><span class="chip neu">Existe</span></td><td>Le stock est la somme des mouvements. <b>V2</b> : un type de mouvement (<code>tr_type_mouvement</code>) : réception, écart de contrôle, production, rebut, sortie et ajout manuels, expédition, fusion, renvoi, destruction ; réception et écart de contrôle comptent dans le reçu. Usage de <code>comptee</code> à vérifier.</td></tr>
+      <tr><td><code>tf_prepa_affiche</code></td><td><span class="chip neu">Existe</span></td><td>Les réceptions attendues (« Terminé » ou « Partiel » ; une affiche au plus, sans quantité ; « à recevoir » est une case, pas une quantité). <b>V2</b> : source (Broadcast / prépa), état (active / annulée), quantités Broadcast et prépa, date de dernière lecture, n° de thème, <b>index unique</b>.</td></tr>
+      <tr><td><code>tf_prepa_Broadcast</code></td><td><span class="chip neu">Existe</span></td><td>La copie de l'état des réservations de Broadcast. <b>V2</b> : garder les identifiants (plateforme, surface, format, prépa, type, reste en place) ; le n° de thème est à demander à Broadcast (Q56).</td></tr>
+      <tr><td><code>asso_livraison_photo</code>, <code>photo</code></td><td><span class="chip neu">Existe</span></td><td>La photo du BL.</td></tr>
+      <tr class="grp"><td colspan="3">Nouveau en V2</td></tr>
+      <tr><td><code>asso_affiche_visuel</code></td><td><span class="chip new">Nouveau</span></td><td>Lien plusieurs-à-plusieurs affiche ↔ dossier et visuel, avec une <b>quantité</b>, une origine (auto / manuel), actif ou retiré, par qui et quand. Le reçu d'un visuel est la somme des quantités actives ; une affiche sans lien actif est orpheline.</td></tr>
+      <tr><td><code>tf_edr_rapprochement</code></td><td><span class="chip new">Nouveau</span></td><td>Les rapprochements à faire : réception inconnue, visuel provisoire, thème corrigé.</td></tr>
+      <tr><td><code>th_edr_evenement</code></td><td><span class="chip new">Nouveau</span></td><td>Le journal : réception, contrôle, rattachement, changement de thème, retrait, modification, impression et réimpression de feuille, étiquette rack.</td></tr>
+      <tr class="grp"><td colspan="3">Sans place aujourd'hui, à décider</td></tr>
+      <tr><td colspan="2">Type de feuille posée · non-conformité · surplus compté en entretien · signalement « introuvable » · paramètres métier (seuils, délais)</td><td>Circé n'a pas de table de paramètres. Voir le classement de chaque statut et tag dans <code>statuts_et_tags_calcul_ou_base.html</code>.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 14. Aujourd'hui / cible ============ -->
+<section id="s14">
+  <h2><span class="num">14</span>Aujourd'hui / cible, point par point</h2>
+  <table>
+    <thead><tr><th style="width:18%">Sujet</th><th style="width:38%">Aujourd'hui (Circé)</th><th>Cible</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Trouver le dossier</td><td class="before">Filtre « Réceptions attendues » ; le panier ne se voit pas sur la page.</td><td class="after">Photo du BL, photo d'une affiche ou n° de dossier, côte à côte ; panier sur la page.</td></tr>
+      <tr><td class="k">Bon de livraison</td><td class="before">Saisi à la main ; n° de BL, dossier et DA saisis mais pas utilisés.</td><td class="after">Pré-rempli par la photo ; le n° de dossier lu sur le BL sert au rattachement.</td></tr>
+      <tr><td class="k">N° d'affiche sur le BL</td><td class="before">Plage de n° recopiée à la main sur le BL, BL scanné à la fin, pochette sur la palette.</td><td class="after">Rien à recopier : photo du BL jointe à la réception, pas d'étiquette de palette.</td></tr>
+      <tr><td class="k">« Déchargé par »</td><td class="before">Champ libre, facultatif.</td><td class="after">Liste des agents de réception.</td></tr>
+      <tr><td class="k">Contrôle</td><td class="before">Recherche du n° noté sur le BL, puis « Modifier une affiche », une affiche à la fois ; la quantité est saisie deux fois.</td><td class="after">Toute la palette dans un écran, depuis le sas ; la quantité du BL proposée, l'écart signalé.</td></tr>
+      <tr><td class="k">Contrôleur</td><td class="before">Aucun champ.</td><td class="after">Obligatoire, choisi dans une liste.</td></tr>
+      <tr><td class="k">Feuilles de stock</td><td class="before">3 clics par feuille.</td><td class="after">En lot, 2 exemplaires, avec les étiquettes rack ; mention définitive ou temporaire.</td></tr>
+      <tr><td class="k">« Affiche reçue »</td><td class="before">Posée par la validation admin (ANO-05).</td><td class="after">Posée par la réception, dès l'arrivée.</td></tr>
+      <tr><td class="k">Validation admin</td><td class="before">À la main, affiche par affiche.</td><td class="after"><s>Par Circé quand tout concorde ; la Coordination pour les doutes.</s> <i>02/11 : proposée par Circé à la réception ; la Coordination confirme en lot (cas sûrs pré-cochés), les doutes un par un.</i></td></tr>
+      <tr><td class="k">Orphelines</td><td class="before">Un filtre dans la Liste des affiches ; pas d'écran d'identification, pas d'alerte.</td><td class="after">Écran « Réceptions inconnues », zone tampon, feuille temporaire, alerte à la Coordination.</td></tr>
+      <tr><td class="k">Mauvais thème</td><td class="before">Le 2e thème n'est plus proposé : fausse orpheline (ANO-08).</td><td class="after">« Changer de thème » dans la fiche ; feuille à refaire.</td></tr>
+      <tr><td class="k">Complément</td><td class="before">Fusion inopérante, deux réceptions (ANO-15).</td><td class="after">Même n° d'affiche, deux réceptions tracées, tag « Complément ».</td></tr>
+      <tr><td class="k">Plusieurs dossiers</td><td class="before">Nombre de dossiers limité dans l'onglet Détail (ANO-12).</td><td class="after">Sans limite, avec une quantité par dossier.</td></tr>
+      <tr><td class="k">Réceptions attendues</td><td class="before">Doublons (ANO-01), jamais purgées (ANO-11).</td><td class="after">Une ligne par clé, rapprochée par les identifiants de Broadcast ; purge automatique à 4 semaines.</td></tr>
+      <tr><td class="k">Information des équipes</td><td class="before">Mail « Réception affiche » aux chefs d'équipe.</td><td class="after">Dashboard et alertes.</td></tr>
+      <tr><td class="k">Recherche</td><td class="before">Lancée par la touche Entrée.</td><td class="after">Lancée à la frappe.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 15. Autres lots ============ -->
+<section id="s15">
+  <h2><span class="num">15</span>Le lien avec les autres lots</h2>
+  <table>
+    <thead><tr><th style="width:24%">Lot</th><th>Ce que la réception lui apporte, ou lui demande</th></tr></thead>
+    <tbody>
+      <tr><td class="k">0 · Socle et données</td><td>Les réceptions attendues fiables (doublons, fin d'année, purge) ; les référentiels imprimeurs, livreurs et agents ; la connexion et les droits par rôle ; le cadre commun des écrans (filtres, export Excel).</td></tr>
+      <tr><td class="k">2 · Pré-production / Coordination</td><td><s>La réception est l'un des deux jalons de la <b>validation admin automatique</b>, faite au dernier des deux (réception ou prépa).</s> <i>02/11 : la réception déclenche la <b>proposition</b> de validation admin, confirmée en lot par la Coordination ; la prépa et l'Instruction OK n'interviennent plus.</i> Conditions (d'un cas sûr, pré-coché) : affiche rattachée à une ligne active ; n° de dossier ou de DA du BL égal à celui de la ligne ; même format ; un seul thème possible ; un seul dossier. Sinon, la Coordination valide, avec le motif. Le rattachement d'une réception inconnue par la Coordination vaut validation. Étiquettes rack en rafale à la validation <s>automatique</s> <i>(02/11 : en lot)</i> : Q62.</td></tr>
+      <tr><td class="k">3 à 5 · Production et expédition</td><td>À la réception, les unités « en attente d'affiches » passent « prêt à produire » (pré-assemblage, critère « reçu »). Stocks : la réception est une entrée, le rebut et la destruction des sorties.</td></tr>
+      <tr><td class="k">6 · Pilotage et suivi (Dashboard)</td><td>Le n° d'affiche est visible dans l'état des réservations vivant dès la réception (✓ validée, • à vérifier) ; le reçu reste au thème, sans répartition par destinataire. Les alertes de réception y sont regroupées ; le dashboard de réception (REC-16) remplace le mail aux chefs d'équipe.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 16. Besoins ============ -->
+<section id="s16">
+  <h2><span class="num">16</span>Les 28 besoins du lot</h2>
+  <p class="sub">Intitulés du référentiel (<code>2. CIRCE CIBLE/maquette/assets/js/besoins.js</code>) ; « Montré » = l'écran de la maquette le montre.</p>
+  <table>
+    <thead><tr><th style="width:9%">N°</th><th>Besoin</th><th style="width:22%">Où dans la maquette</th><th style="width:13%">Maquette</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="4">Réception</td></tr>
+      <tr><td class="id">REC-02</td><td>Impression multiple des feuilles de stock</td><td>Réception, Réceptions inconnues</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-03</td><td>Fusionner Réception et Liste des affiches (allée / rayon, n° de réception cliquable)</td><td>Réception (deux listes reliées)</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-04</td><td>Lien « visuel disponible » dans la réception et dans le suivi par thème (bandeaux)</td><td>Réception, État des réservations, Trains</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-06</td><td>Historique des modifications de thèmes et d'IP après envoi, réimpression de la feuille de stock</td><td>Réception, Réceptions inconnues</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-07</td><td>Colonne imprimeur dans la liste des affiches</td><td>Liste des affiches (colonne masquée par défaut)</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-08</td><td>Faire ressortir la colonne Rebut</td><td>Liste des affiches, Stocks</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-09</td><td>Rattacher des affiches dès que les IP sont connues</td><td>Réception, Réceptions inconnues</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-10</td><td>Recherche du raccrochage lancée par la touche Entrée</td><td>Réceptions inconnues (à la frappe)</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-11</td><td>Étiquette rack affiche en moins de clics</td><td>Réception, Liste des affiches</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-12</td><td>Nom du contrôleur obligatoire à la réception, choisi dans une liste</td><td>Contrôle, Paramétrage</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-13</td><td>Feuilles de stock automatiques pour les dossiers multi-semaines</td><td>Feuille à fond jaune</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-18</td><td>Réception sans IP : proposer à la 2e plateforme l'intitulé saisi par la 1re</td><td>Panier</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-22</td><td>Complément d'affiche : un même n° d'affiche pour deux livraisons, en gardant les deux réceptions</td><td>Panier, Liste des affiches</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-23</td><td>Après une modification de thème, purger les anciens thèmes (raccrochage, réceptions attendues)</td><td>Vérification des thèmes</td><td><span class="chip warn">En partie</span></td></tr>
+      <tr><td class="id">REC-25</td><td>Réception en deux temps, comme aujourd'hui : arrivée de la palette, puis contrôle des affiches</td><td>Réception des affiches</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">REC-27</td><td>Contrôle de toute la palette dans un seul écran : comptage par morceau, rebut et non-conformité, contrôleur, impression en lot</td><td>Contrôle de la palette</td><td><span class="chip good">Montré</span></td></tr>
+      <tr class="grp"><td colspan="4">Anomalies de l'existant à corriger</td></tr>
+      <tr><td class="id">ANO-01</td><td>Doublons d'affiches dans « Liste des affiches »</td><td>Une affiche par réception ; cause à établir dans le code</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">ANO-05</td><td>« Affiche reçue » positionnée par la validation admin et non par la réception</td><td>Réception, État des réservations</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">ANO-08</td><td>Affiche rattachée au mauvais thème : dossier introuvable, orpheline forcée</td><td>Fiche de l'affiche (« Changer de thème »)</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">ANO-12</td><td>Nombre de dossiers limité dans l'onglet Détail d'une affiche</td><td>Fiche de l'affiche, Réceptions inconnues</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">ANO-15</td><td>Fusion des affiches inopérante : un complément d'affiche crée deux réceptions</td><td>Panier (complément)</td><td><span class="chip good">Montré</span></td></tr>
+      <tr class="grp"><td colspan="4">Autres</td></tr>
+      <tr><td class="id">PP-02</td><td>« Affiche reçue » mise à jour par la réception</td><td>Réception, État des réservations</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">PROC-04</td><td>Fiabiliser la réception et l'identification (orphelines, libellés)</td><td>Réception, Réceptions inconnues</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">PROC-07</td><td>Gérer les dossiers multi-semaines et multi-villes</td><td>Réception, Réceptions inconnues</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">CIB-05</td><td>Réceptions attendues / effectuées / orphelines, alertes et conformité</td><td>Réception, Alertes</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">CIB-07</td><td>Lien entre réception et semaine / contrat</td><td>Réception, État des réservations</td><td><span class="chip good">Montré</span></td></tr>
+      <tr><td class="id">QUA-03</td><td>Lien avec les non-conformités (Process Métier)</td><td>Aucun écran (annotation seulement)</td><td><span class="chip ser">Non couvert</span></td></tr>
+      <tr><td class="id">FIX-09</td><td>Cas des « CG » : saisir les quantités d'entretien reçues en plus</td><td>Contrôle (surplus en entretien)</td><td><span class="chip good">Montré</span></td></tr>
+    </tbody>
+  </table>
+  <p class="small muted" style="margin-top:10px">Voisins : REC-05 (purge à 4 semaines) et REC-14 (référentiels) sont au lot 0 ; REC-16 (dashboard de réception) au lot 6 ; REC-17 (identification des orphelines par reconnaissance visuelle) est après le 31/12, la maquette la simule. Refusés : REC-01 (ordre des lignes), REC-15 (mail au commercial), REC-26 (étiquette de palette).</p>
+</section>
+
+<!-- ============ 17. Vérification et questions ============ -->
+<section id="s17">
+  <h2><span class="num">17</span>À vérifier cette semaine, et les questions</h2>
+  <p class="sub">La vérification du lot (S44) : dérouler ces scénarios dans la maquette avec la réception de Nîmes et de Wissous et la Coordination. Les cases se cochent à l'écran.</p>
+  <ul class="check">
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>1 · Palette avec un BL lisible</b><span>Photo du BL → lignes cochées → bon de livraison pré-rempli → Valider la réception.</span><span class="exp">Attendu : réception « à contrôler » dans le sas, n° d'affiche créés, « affiche reçue » = oui, <s>validation admin faite par Circé si tout concorde</s> <i>(02/11 : validation admin proposée par Circé, « à confirmer » dans la liste de la Coordination)</i>.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>2 · BL sans n° de contrat</b><span>Photo du BL → candidats proposés → choix d'un candidat, ou « Aucun : réception inconnue ».</span><span class="exp">Attendu : l'agent trouve le bon dossier en un ou deux choix.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>3 · Recherche par n° de dossier</b><span>Lignes trouvées par la recherche, puis validation sans photo.</span><span class="exp">Attendu : refus « Photographiez le BL avant de valider… » ; une ligne absente du BL est signalée.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>4 · Livraison en deux fois</b><span>Deuxième BL pour un visuel déjà reçu en partie, case « Complément de l'affiche N ».</span><span class="exp">Attendu : même n° d'affiche, deux réceptions, tag « Complément ».</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>5 · Réception sans IP</b><span>Ligne sans IP au panier.</span><span class="exp">Attendu : intitulé de l'autre plateforme proposé ; alerte « Réception sans instructions de pose » à la Coordination.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>6 · Contrôle d'une palette</b><span>Écart de plus de 10 %, quantité sous le seuil de comptage, rebut avec motif, surplus en entretien, contrôleur oublié.</span><span class="exp">Attendu : écart en rouge, refus sans contrôleur, mouvements créés, feuilles définitives et étiquettes rack en lot.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>7 · Palette oubliée dans le sas</b><span>Palette non contrôlée depuis plus de 24 h.</span><span class="exp">Attendu : encadré, compteur « en retard », alerte à la réception et aux chefs d'équipe.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>8 · Réception inconnue, retrouvée</b><span>Création en zone tampon → feuille temporaire → la Coordination identifie par le visuel → Rattacher → contrôle.</span><span class="exp">Attendu : alerte à la Coordination dès la création ; validation admin faite au rattachement <i>(02/11 : par la Coordination, qui confirme en rattachant)</i> ; alerte « Feuille de stock définitive à imprimer » jusqu'à l'impression.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>9 · Réception inconnue, introuvable</b><span>Signaler à la Coordination.</span><span class="exp">Attendu : alerte « Dossier introuvable », sans mail, au bon destinataire selon le site (Q61).</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>10 · Mauvais thème</b><span>Fiche de l'affiche → Changer de thème.</span><span class="exp">Attendu : tag « Feuille à refaire », réimpression en lot depuis la Liste des affiches.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>11 · Une affiche pour plusieurs dossiers</b><span>Rattacher à un autre dossier avec une quantité ; puis retirer tous les dossiers.</span><span class="exp">Attendu : pas de limite ; l'affiche sans dossier retourne dans les réceptions inconnues.</span></div></li>
+    <li><input type="checkbox" aria-label="Fait"><div class="sc"><b>12 · Les deux sites</b><span>Refaire 1, 8 et 9 côté Wissous.</span><span class="exp">Attendu : les différences de la section 2 tiennent (destinataires des alertes, qui saisit quoi).</span></div></li>
+  </ul>
+
+  <h4 class="tt"><svg><use href="#i-alert"/></svg>Les questions ouvertes</h4>
+  <div class="qs">
+    <div>
+      <div class="q key"><h3>Q31 · « Affiche reçue » : à l'arrivée ou après le contrôle ?</h3><p>À l'arrivée de la palette (étape 1, sur la quantité du BL), ou seulement après le contrôle (étape 2) ? La maquette la pose à l'arrivée et le contrôle corrige ; c'est ce qui permet de voir le n° d'affiche dès la réception.</p></div>
+      <div class="q"><h3>Q30 · Seuil du comptage par morceau</h3><p>Quel seuil pour le « si qté &lt; xx » de S20 ? Le même pour tous les formats, alors qu'au 8 m² une affiche fait 4 morceaux ? Maquette : 30, paramétrable.</p></div>
+      <div class="q"><h3>Q32 · 2 ou 3 exemplaires de la feuille de stock ?</h3><p>2 en S20 (palette et Coordination) ; 3 dits le 19/10 : si 3, à qui va le troisième ? Maquette : 2, paramétrable.</p></div>
+      <div class="q"><h3>Q33 · Délai du sas</h3><p>Au bout de combien de temps une palette non contrôlée est-elle signalée en retard ? Maquette : 24 h, paramétrable.</p></div>
+      <div class="q"><h3>Allée de la zone tampon, par site</h3><p>« X » par défaut dans la maquette : quelle allée à Nîmes, quelle allée à Wissous ?</p></div>
+      <div class="q"><h3>Q61 · Qui reçoit les alertes de réception inconnue ?</h3><p>La « Pré-Prod Nîmes » des decks est-elle la Coordination de Nîmes ? À Wissous, l'équipe Coord. Réception de Boulogne : à confirmer avec le terrain.</p></div>
+    </div>
+    <div>
+      <div class="q"><h3>Q36 · Que couvre « Dossier introuvable » ?</h3><p>DA pas activée, IP manquantes, ou affiche « pas pour la plateforme » (renvoi, transfert, destruction) ? Le cas « pas pour nous » n'est pas décrit.</p></div>
+      <div class="q"><h3>Q37 · Après la correction dans Broadcast, qui rattache ?</h3><p>La Coordination au déroulant ; au fixe, rendu main puis renvoi. Le cas de Wissous (R7) est à confirmer.</p></div>
+      <div class="q"><h3>Q62 · Étiquettes rack à la validation <s>automatique</s> <i>(02/11 : en lot)</i></h3><p>La validation admin imprime l'étiquette rack : <s>en automatique, elles partiraient en rafale</s> <i>avec la confirmation en lot, elles partiraient en rafale au clic</i>. Grouper par plateforme, ou garder un bouton « imprimer » ?</p></div>
+      <div class="q"><h3>Q18 · Multi-semaines</h3><p>REC-13 (feuilles automatiques pour les multi-semaines) est-il remplacé par le « scan de BL multiples » ?</p></div>
+      <div class="q"><h3>Grain des données (V2)</h3><p>Quantité par dossier quand un BL sert plusieurs dossiers ; reprise des rattachements actuels, qui n'ont pas de quantité ; imprimeur par réception ou par affiche ; contrôle par BL ou par palette.</p></div>
+      <div class="q done"><h3>Réglées</h3><p>Q34 : pas de mail à la Pré-Prod, une alerte à la Coordination (21/10, puis 27/10) · Q35 : un seul tableau « Réceptions inconnues », avec un statut par ligne (19/10) · Q38 : « Corriger un rattachement » dans la fiche de l'affiche (19/10) · Q41 : pas de reçu par destinataire, le reçu reste au visuel (21/10).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18. Sources ============ -->
+<section id="s18">
+  <h2><span class="num">18</span>Sources</h2>
+  <p class="sub">Documents de <code>docs/analyse-circe/</code>. Les références au code de Circé sont celles relevées dans la synthèse.</p>
+  <table class="src">
+    <thead><tr><th style="width:40%">Sujet</th><th>Où</th></tr></thead>
+    <tbody>
+      <tr><td>Décisions du 14 au 27/10, questions Q12 à Q64, existant et anomalies</td><td><code>00_synthese_powerpoint.md</code> : §4.1-4.2 (process actuel), §15 (questions), §19.11 à §19.14 (réception en deux temps, panier, sas), §19.31 (21/10), §19.34 à §19.37 (réceptions attendues, jalons, option A du 02/11)</td></tr>
+      <tr><td>Les écrans de réception</td><td><code>2. CIRCE CIBLE/maquette/assets/js/screens/reception.js</code> (étapes 1 et 2, feuille de stock, Liste des affiches, fiche) ; <code>screens/identification.js</code> (Réceptions inconnues) ; <code>core.js</code> (menu) ; <code>data.js</code> (alertes, paramètres) ; <code>screens/parametrage.js</code></td></tr>
+      <tr><td>Les besoins</td><td><code>2. CIRCE CIBLE/maquette/assets/js/besoins.js</code></td></tr>
+      <tr><td>Réceptions attendues : doublons, règles RG-AT, fin d'année, 25 cas</td><td><code>2. PRE-PRODUCTION/receptions_attendues_doublons_tables_regles.html</code></td></tr>
+      <tr><td>Validation admin par jalons <i>(remplacée le 02/11 par l'option A : voir l'encadré en tête de ce document)</i></td><td><code>2. PRE-PRODUCTION/process_preprod_avant_apres.html</code></td></tr>
+      <tr><td>Tables et règles de la V2</td><td><code>2. CIRCE CIBLE/4. BASE DE DONNEES/V2/20261021 - V2 Suivi de prod et Liste des affiches.html</code> ; <code>2. CIRCE CIBLE/4. BASE DE DONNEES/dictionnaire/20261021 - MCD et MLD EDR vivant.html</code> ; <code>base_de_donnees_edr_vivant.html</code> ; <code>statuts_et_tags_calcul_ou_base.html</code></td></tr>
+      <tr><td>Code de Circé cité</td><td>Feuille de stock : <code>Reports/EtiquetteRackAffiche.rdlc</code> · Rattachement au texte : <code>LivraisonAfficheRepository.cs:392-413</code> · Complément qui ne retrouve plus sa ligne : <code>Fn_GetPrepaAffiche.sql:188-222</code> · Rattachement manuel : <code>ReceptionListeAfficheBll.cs:497-555</code> · N° de BL, dossier, DA non utilisés : <code>LivraisonAfficheService.cs:406-413</code> · Création des attendues : <code>p_Alimentation_tf_prepa_affiche</code></td></tr>
+      <tr><td>Le schéma du 21/10</td><td><code>1. RECEPTION/process_reception_statuts_actions.html</code> : il fait encore identifier les réceptions inconnues par la Pré-Prod ; depuis le 26/10, c'est la Coordination.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>Refonte Circé · Réception des affiches · lot 1 · 27/10/2026 · document interne Cityz Media</footer>
+
+</div>
+</body>
+</html>

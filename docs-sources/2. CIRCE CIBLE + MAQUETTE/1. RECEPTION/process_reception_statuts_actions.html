@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Réception des affiches : process, statuts, et qui fait quoi</title>
+<style>
+  /* Page 1 : une vue 1600 × 900 (16:9), à l'échelle de la fenêtre. Page 2, en dessous : qui fait quoi, en couloirs (une colonne
+     par acteur, le process se lit de haut en bas), à la largeur de la fenêtre. Impression A3 paysage, une page chacune. */
+  :root {
+    --navy: #1b2a44; --ink: #1f2937; --ink-2: #475467; --ink-3: #667085; --line: #d9dee5; --page: #e9edf2;
+    --rec: #0a6f93; --rec-bg: #e3f1f8;       /* Réception */
+    --pp: #6b2fc9; --pp-bg: #f2eafe;         /* Pré-Prod */
+    --auto: #475467; --auto-bg: #eef1f5;     /* Circé, automatique */
+    --good: #0b7a55; --good-bg: #e6f6ef;
+    --warn: #8a5a00; --warn-bg: #fff3cd;
+    --ser: #b42318; --ser-bg: #fde8e6;
+    --neu: #475467; --neu-bg: #eef1f5;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font: 14px/1.35 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; color: var(--ink); background: var(--page); padding: 20px 0 40px; }
+  /* Chaque page : un cadre à la taille mise à l'échelle (JS), la page dedans à sa taille réelle */
+  .pg { margin: 0 auto 28px; position: relative; }
+  .stage { width: 1600px; transform-origin: top left; background: #fff; border-radius: 8px; box-shadow: 0 6px 24px rgba(16, 24, 40, .16); padding: 18px 28px 10px; display: flex; flex-direction: column; position: absolute; top: 0; left: 0; }
+  #p1 { height: 900px; }
+  .next { text-align: center; font-size: 13px; color: var(--ink-3); margin: -14px 0 18px; }
+  #print { position: fixed; top: 10px; right: 12px; z-index: 2; background: var(--navy); color: #fff; border: 0; border-radius: 6px; padding: 6px 12px; font: inherit; font-size: 12.5px; cursor: pointer; opacity: .85; }
+  #print:hover { opacity: 1; }
+
+  /* En-tête */
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--navy); }
+  .kick { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
+  h1 { margin: 2px 0 0; font-size: 27px; font-weight: 650; color: var(--navy); letter-spacing: -.01em; }
+  .lead { margin: 3px 0 0; font-size: 14px; color: var(--ink-2); }
+  .legend { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; font-size: 12.5px; color: var(--ink-2); }
+  .legend .sep { width: 1px; height: 18px; background: var(--line); margin: 0 4px; }
+
+  /* Qui fait l'action */
+  .who { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .who::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .who.rec { color: var(--rec); background: var(--rec-bg); }
+  .who.pp { color: var(--pp); background: var(--pp-bg); }
+  .who.auto { color: var(--auto); background: var(--auto-bg); }
+
+  /* Statuts (mêmes couleurs que la maquette) */
+  .st { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 650; padding: 2px 9px; border-radius: 6px; white-space: nowrap; }
+  .st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .st.good { color: var(--good); background: var(--good-bg); }
+  .st.warn { color: var(--warn); background: var(--warn-bg); }
+  .st.ser { color: var(--ser); background: var(--ser-bg); }
+  .st.neu { color: var(--neu); background: var(--neu-bg); }
+  .bt { font-weight: 650; color: var(--navy); white-space: nowrap; }
+  .al { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 650; color: var(--ser); }
+  .al svg { width: 14px; height: 14px; flex: none; }
+
+  /* Le schéma : 2 couloirs × 4 étapes, flèches dans des colonnes à part */
+  .flow { display: grid; grid-template-columns: 128px 1fr 34px 1fr 34px 1fr 34px 1fr; grid-template-rows: auto 38px auto; margin-top: 12px; }
+  .lane { border-radius: 10px; padding: 12px 12px; display: flex; flex-direction: column; justify-content: center; gap: 4px; margin-right: 12px; }
+  .lane b { font-size: 16px; line-height: 1.2; }
+  .lane span { font-size: 12px; color: var(--ink-2); }
+  .lane.a { background: #eef6f1; border-left: 6px solid var(--good); }
+  .lane.b { background: #fbf0ee; border-left: 6px solid var(--ser); }
+  .step { position: relative; border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; background: #fff; display: flex; flex-direction: column; gap: 5px; }
+  .step.rec { border-top: 5px solid var(--rec); }
+  .step.pp { border-top: 5px solid var(--pp); }
+  .step.auto { border-top: 5px solid var(--auto); background: #fafbfc; }
+  .step.branch { border-style: dashed; border-top-style: solid; background: #fffafa; }
+  .step .top { display: flex; align-items: center; gap: 8px; }
+  .step .n { width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  .step h3 { margin: 0; font-size: 16px; font-weight: 650; color: var(--navy); line-height: 1.2; }
+  .step ul { margin: 0; padding-left: 16px; font-size: 12.5px; color: var(--ink-2); }
+  .step li { margin: 1px 0; }
+  .step .out { margin-top: auto; padding-top: 6px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--ink-3); }
+  .step .out .row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .arrow { display: flex; align-items: center; justify-content: center; }
+  .arrow svg { width: 30px; height: 18px; color: var(--ink-3); }
+  .arrow.dash svg { color: var(--ser); }
+  .vlink { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; font-weight: 650; }
+  .vlink svg { width: 18px; height: 40px; flex: none; }
+  .vlink.down { color: var(--ser); }
+  .vlink.up { color: var(--good); }
+  .vlink span { background: #fff; padding: 2px 8px; border-radius: 6px; border: 1px solid currentColor; }
+
+  /* Mini feuille de stock */
+  .fs { display: flex; align-items: center; gap: 8px; }
+  .fs i { font-style: normal; display: inline-block; width: 34px; height: 46px; border: 1.5px solid var(--ink-3); border-radius: 2px; position: relative; background: #fff; flex: none; }
+  .fs i::before { content: ""; position: absolute; left: 3px; right: 3px; top: 3px; height: 9px; border-radius: 1px; }
+  .fs i::after { content: ""; position: absolute; left: 5px; right: 5px; top: 17px; height: 22px; background: repeating-linear-gradient(#cfd5dd 0 2px, transparent 2px 6px); }
+  .fs.def i::before { background: var(--good); }
+  .fs.temp i { border: 1.5px dashed var(--ser); }
+  .fs.temp i::before { background: repeating-linear-gradient(45deg, var(--ser) 0 3px, #fff 3px 6px); }
+  .fs b { font-size: 12.5px; letter-spacing: .03em; }
+  .fs.def b { color: var(--good); }
+  .fs.temp b { color: var(--ser); }
+
+  /* Bas de page : statuts et alertes */
+  .ref { display: grid; grid-template-columns: 0.95fr 1fr 1.3fr 1.6fr; gap: 12px; margin-top: 12px; flex: 1; min-height: 0; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; display: flex; flex-direction: column; gap: 6px; }
+  .box h4 { margin: 0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
+  .box .where { font-size: 12px; color: var(--ink-3); margin-top: -4px; }
+  .chain { display: flex; flex-direction: column; gap: 4px; }
+  .chain .li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+  .chain .li .st { justify-self: start; }
+  .alerts { display: flex; flex-direction: column; gap: 4px; }
+  .alerts .li { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; font-size: 12.5px; color: var(--ink-2); padding-bottom: 4px; border-bottom: 1px dotted var(--line); white-space: nowrap; }
+  .alerts .li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .alerts .li b { color: var(--ink); font-weight: 650; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  footer { display: flex; justify-content: space-between; gap: 20px; font-size: 11.5px; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 6px; margin-top: 10px; }
+
+  /* ---------- Page 2 : couloirs par acteur ---------- */
+  #p2 { padding-bottom: 14px; }
+  /* Colonnes : étape (152 px) puis 4 acteurs de 348 px ; fonds des couloirs dessinés sur la grille */
+  .sw { position: relative; display: grid; grid-template-columns: 152px repeat(4, 348px); row-gap: 34px; align-items: start; margin-top: 14px; padding-bottom: 6px;
+    background: linear-gradient(to right, transparent 0 152px, #eef6fa 152px 497px, #fff 497px 500px, #f3f8fb 500px 845px, #fff 845px 848px, #f1f3f6 848px 1193px, #fff 1193px 1196px, #f6f1fd 1196px 1544px); border-radius: 10px; }
+  .sw .actor { position: sticky; top: 0; z-index: 2; margin: 0 3px; padding: 10px 14px; border-radius: 10px 10px 0 0; color: #fff; display: flex; flex-direction: column; gap: 1px; }
+  .sw .actor b { font-size: 16px; }
+  .sw .actor span { font-size: 12px; opacity: .9; }
+  .sw .actor.rec { background: var(--rec); } .sw .actor.ctl { background: #0f5f80; } .sw .actor.auto { background: var(--auto); } .sw .actor.pp { background: var(--pp); }
+  .sw .phase { position: relative; align-self: stretch; padding: 4px 14px 4px 4px; display: flex; flex-direction: column; gap: 3px; }
+  .sw .phase::before { content: ""; position: absolute; left: 0; top: -17px; width: 1544px; border-top: 1.5px dashed #c3cad4; }
+  .sw .phase b { font-size: 15px; color: var(--navy); line-height: 1.2; }
+  .sw .phase span { font-size: 12px; color: var(--ink-3); }
+  .sw .phase.a b { color: var(--good); } .sw .phase.b b { color: var(--ser); }
+  .act { position: relative; z-index: 1; margin: 0 16px; background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--line); border-radius: 9px; padding: 8px 11px 9px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 1px 2px rgba(16, 24, 40, .06); }
+  .act.c1 { border-left-color: var(--rec); } .act.c2 { border-left-color: #0f5f80; } .act.c3 { border-left-color: var(--auto); background: #fbfcfd; } .act.c4 { border-left-color: var(--pp); }
+  .act .t { display: flex; align-items: flex-start; gap: 8px; }
+  .act .t .n { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; flex: none; margin-top: 1px; }
+  .act h3 { margin: 0; font-size: 14.5px; font-weight: 650; color: var(--navy); line-height: 1.25; }
+  .act p { margin: 0; font-size: 12.5px; color: var(--ink-2); }
+  .act .o { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 5px; margin-top: 2px; }
+  .act .o .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .act .goto { align-self: flex-start; font-size: 12px; font-weight: 650; color: var(--good); background: var(--good-bg); border-radius: 6px; padding: 1px 8px; }
+  .act .from { align-self: flex-start; font-size: 12px; font-weight: 650; color: var(--navy); background: #eef1f5; border-radius: 6px; padding: 1px 8px; }
+  .act.q { background: #fff8e1; border: 1.5px solid #e3b341; border-left: 5px solid #e3b341; padding: 7px 11px; }
+  .act.q h3 { display: flex; align-items: center; gap: 8px; }
+  .act.q h3::before { content: ""; width: 13px; height: 13px; background: #e3b341; transform: rotate(45deg); border-radius: 2px; flex: none; }
+  .wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: visible; }
+  .wires path { fill: none; stroke: #8a94a3; stroke-width: 2; }
+  .wires path.dash { stroke: var(--ser); stroke-dasharray: 5 5; }
+  .wires path.ok { stroke: var(--good); }
+  .wires path.ko { stroke: var(--ser); }
+  .wl { position: absolute; z-index: 3; transform: translate(-50%, -50%); font-size: 11.5px; font-weight: 700; background: #fff; border: 1px solid currentColor; border-radius: 6px; padding: 0 6px; white-space: nowrap; color: var(--ink-3); }
+  .wl.ok { color: var(--good); } .wl.ko { color: var(--ser); }
+
+  @media print {
+    @page { size: 420mm 297mm; margin: 8mm; }
+    body { background: #fff; padding: 0; }
+    #print, .next { display: none; }
+    .pg { width: auto !important; height: auto !important; margin: 0; break-after: page; }
+    .pg:last-child { break-after: auto; }
+    .stage { position: static; transform: none !important; box-shadow: none; border-radius: 0; margin: 0 auto; }
+    .sw .actor { position: static; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<button id="print" type="button" onclick="window.print()">Imprimer (A3 paysage)</button>
+<div class="pg" data-fit="screen"><div class="stage" id="p1">
+
+  <header>
+    <div>
+      <div class="kick">Refonte Circé · point équipe · maquette au 21/10/2026</div>
+      <h1>Réception des affiches : le process, qui fait quoi, et les statuts</h1>
+      <p class="lead">Deux circuits, qui se rejoignent au contrôle dans le sas. En gras : les boutons de la maquette.</p>
+    </div>
+    <div class="legend">
+      <span class="who rec">Réception</span><span class="who pp">Pré-Prod</span><span class="who auto">Circé, automatique</span>
+      <span class="sep"></span>
+      <span class="st neu">Statut</span>
+      <span class="al"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>Alerte</span>
+    </div>
+  </header>
+
+  <div class="flow">
+    <!-- Couloir A : dossier connu -->
+    <div class="lane a"><b>Dossier connu</b><span>Le BL ou l'affiche permettent de trouver le dossier</span></div>
+
+    <div class="step rec">
+      <div class="top"><span class="n">1</span><span class="who rec">Réception</span></div>
+      <h3>Arrivée de la palette</h3>
+      <ul>
+        <li>Trouver les dossiers du BL, au choix : <b>Photo du BL</b>, <b>Photo d'une affiche</b> ou <b>Par n° de dossier</b> (ou DA, annonceur)</li>
+        <li>Mettre les lignes <span class="bt">Au panier</span></li>
+      </ul>
+      <div class="out"><div class="row">Ligne attendue : <span class="st neu">Attendue</span><span class="st ser">Partielle</span></div></div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 30 18"><path d="M1 9h24M19 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <div class="step rec">
+      <div class="top"><span class="n">1</span><span class="who rec">Réception</span></div>
+      <h3>Valider la réception</h3>
+      <ul>
+        <li>Cocher les lignes du BL ; la photo du BL pré-remplit le bon de livraison</li>
+        <li>Vérifier, puis <span class="bt">Valider la réception</span></li>
+        <li>Circé crée le n° de réception et les n° d'affiche</li>
+      </ul>
+      <div class="out">
+        <div class="row">Palette : <span class="st warn">À contrôler</span> dans le sas</div>
+        <div class="row">Ligne : <span class="st good">Complète</span><span class="st warn">Surplus</span></div>
+      </div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 30 18"><path d="M1 9h24M19 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <div class="step rec">
+      <div class="top"><span class="n">2</span><span class="who rec">Réception</span></div>
+      <h3>Contrôle des affiches (sas)</h3>
+      <ul>
+        <li>Ouvrir la palette (la plus ancienne en tête), compter, ranger (allée, rayon), rebut, non-conformité, contrôleur</li>
+        <li><span class="bt">Valider le contrôle et imprimer</span></li>
+        <li>Réception inconnue rattachée : corriger quantité, imprimeur, emplacement définitif</li>
+      </ul>
+      <div class="out">
+        <div class="row">Palette : <span class="st good">Contrôlée</span></div>
+        <div class="row"><span class="al"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>Palette à contrôler en retard</span>au-delà de 24 h</div>
+      </div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 30 18"><path d="M1 9h24M19 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <div class="step auto">
+      <div class="top"><span class="n">✓</span><span class="who auto">Circé</span></div>
+      <h3>Feuille de stock définitive</h3>
+      <div class="fs def"><i></i><b>FEUILLE DE STOCK DÉFINITIVE</b></div>
+      <ul>
+        <li>Le modèle actuel de Circé, avec la mention «&nbsp;définitive&nbsp;» en haut</li>
+        <li>En lot, 2 exemplaires (palette et Pré-Prod)</li>
+      </ul>
+      <div class="out"><div class="row">Affiche en stock, à son emplacement</div></div>
+    </div>
+
+    <!-- Liens verticaux entre les couloirs -->
+    <div></div>
+    <div class="vlink down"><svg viewBox="0 0 18 40"><path d="M9 2v32M3 28l6 8 6-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Rien ne correspond ?</span></div>
+    <div></div><div></div><div></div>
+    <div class="vlink up"><svg viewBox="0 0 18 40"><path d="M9 38V6M3 12l6-8 6 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Rattachée : la palette entre dans le sas</span></div>
+    <div></div><div></div>
+
+    <!-- Couloir B : réception inconnue -->
+    <div class="lane b"><b>Réception inconnue</b><span>Ni le BL, ni l'affiche, ni le n° de dossier ne donnent le dossier</span></div>
+
+    <div class="step rec">
+      <div class="top"><span class="n">1</span><span class="who rec">Réception</span></div>
+      <h3>Saisir ce qu'on connaît</h3>
+      <ul>
+        <li>Bouton <span class="bt">Réception inconnue</span></li>
+        <li>Annonceur lu, description du thème, imprimeur, quantité, format</li>
+      </ul>
+      <div class="out"><div class="row">Palette : <span class="st warn">À identifier</span> hors du sas</div></div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 30 18"><path d="M1 9h24M19 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <div class="step rec">
+      <div class="top"><span class="n">1</span><span class="who rec">Réception</span></div>
+      <h3>Ranger en zone tampon</h3>
+      <ul>
+        <li>Allée des réceptions inconnues (X, par site), rayon obligatoire</li>
+        <li><span class="bt">Créer, ranger et imprimer la feuille temporaire</span></li>
+      </ul>
+      <div class="fs temp"><i></i><b>FEUILLE DE STOCK TEMPORAIRE</b></div>
+      <div class="out"><div class="row"><span class="al"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>Réception inconnue à identifier</span><span class="who pp">Pré-Prod</span></div></div>
+    </div>
+    <div class="arrow"><svg viewBox="0 0 30 18"><path d="M1 9h24M19 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <div class="step pp">
+      <div class="top"><span class="n">→</span><span class="who pp">Pré-Prod</span></div>
+      <h3>Identifier · Réceptions inconnues</h3>
+      <ul>
+        <li>D'abord <b>par le visuel</b> (photo comparée aux visuels de Broadcast)</li>
+        <li>Sinon <b>par n° de dossier</b> (ou DA, annonceur)</li>
+        <li>Cocher le ou les dossiers, quantités, <span class="bt">Rattacher</span></li>
+      </ul>
+      <div class="out">
+        <div class="row">Affiche : <span class="st warn">Rattachée, à contrôler</span></div>
+        <div class="row"><span class="al"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>Feuille définitive à imprimer</span><span class="who rec">Réception</span></div>
+      </div>
+    </div>
+    <div class="arrow dash"><svg viewBox="0 0 30 18"><path d="M1 9h24M19 3l7 6-7 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-dasharray="4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+    <div class="step pp branch">
+      <div class="top"><span class="n">?</span><span class="who rec">Réception</span><span class="who pp">Pré-Prod</span></div>
+      <h3>Personne ne retrouve le dossier ?</h3>
+      <ul>
+        <li><span class="bt">Signaler à la Pré-Prod (alerte)</span> : pas de mail</li>
+        <li>La Pré-Prod du site le cherche dans Broadcast (Wissous : Pré-Prod Coordination), puis <span class="bt">Rattacher</span></li>
+      </ul>
+      <div class="out">
+        <div class="row">Affiche : <span class="st ser">Introuvable : alerte à la Pré-Prod</span></div>
+        <div class="row"><span class="al"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>Dossier introuvable</span><span class="who pp">Pré-Prod</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Repères : statuts et alertes -->
+  <div class="ref">
+    <div class="box">
+      <h4>Ligne attendue</h4>
+      <div class="where">Réceptions attendues, étape 1</div>
+      <div class="chain">
+        <div class="li"><span class="st neu">Attendue</span>rien reçu</div>
+        <div class="li"><span class="st ser">Partielle</span>reçu moins qu'attendu</div>
+        <div class="li"><span class="st good">Complète</span>tout reçu</div>
+        <div class="li"><span class="st warn">Surplus</span>plus de 10 % en trop</div>
+      </div>
+    </div>
+    <div class="box">
+      <h4>Palette (réception)</h4>
+      <div class="where">Étape 2, le sas</div>
+      <div class="chain">
+        <div class="li"><span class="st warn">À identifier</span>inconnue, hors du sas</div>
+        <div class="li"><span class="st warn">À contrôler</span>dans le sas</div>
+        <div class="li"><span class="st good">Contrôlée</span>feuilles imprimées</div>
+      </div>
+      <h4 style="margin-top:4px">Tags · Liste des affiches</h4>
+      <div class="tags"><span class="st warn">À contrôler</span><span class="st warn">Orpheline</span><span class="st neu">Complément</span><span class="st warn">Feuille à refaire</span></div>
+    </div>
+    <div class="box">
+      <h4>Réception inconnue (affiche)</h4>
+      <div class="where">Réception › Réceptions inconnues</div>
+      <div class="chain">
+        <div class="li"><span class="st warn">À identifier</span>feuille temporaire, zone tampon</div>
+        <div class="li"><span class="st ser">Introuvable : alerte à la Pré-Prod</span>signalée</div>
+        <div class="li"><span class="st warn">Rattachée, à contrôler</span>palette dans le sas</div>
+        <div class="li"><span class="st warn">Contrôlée, feuille définitive à imprimer</span>impression pas faite</div>
+        <div class="li"><span class="st good">Rattachée, feuille définitive</span>terminé</div>
+      </div>
+    </div>
+    <div class="box">
+      <h4>Alertes du process · pour qui</h4>
+      <div class="where">Pilotage › Alertes ; chaque alerte ouvre l'écran où agir</div>
+      <div class="alerts">
+        <div class="li"><span><b>Réception inconnue à identifier</b> · dès la création</span><span><span class="who pp">Pré-Prod</span> <span class="who rec">Réception</span></span></div>
+        <div class="li"><span><b>Dossier introuvable</b> · après « Signaler »</span><span class="who pp">Pré-Prod</span></div>
+        <div class="li"><span><b>Feuille définitive à imprimer</b> · après « Rattacher »</span><span class="who rec">Réception</span></div>
+        <div class="li"><span><b>Palette à contrôler en retard</b> · 24 h dans le sas</span><span class="who rec">Réception</span></div>
+        <div class="li"><span><b>Feuille de stock à refaire</b> · thème changé</span><span><span class="who rec">Réception</span> <span class="who pp">Pré-Prod</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Maquette Circé : Réception › Réception des affiches (étapes 1 et 2 sur la même page) · Réceptions inconnues · Liste des affiches</span>
+    <span>À valider : place de la mention sur la feuille · allée tampon par site · délai de 24 h (paramétrable)</span>
+  </footer>
+
+</div></div>
+<div class="next">Page 2, en dessous : qui fait quoi, dans l'ordre ↓</div>
+
+<!-- ================= Page 2 : les acteurs en colonnes, le process de haut en bas ================= -->
+<div class="pg" data-fit="width"><div class="stage" id="p2">
+
+  <header>
+    <div>
+      <div class="kick">Refonte Circé · point équipe · page 2</div>
+      <h1>Qui fait quoi, dans l'ordre : de l'arrivée de la palette à la feuille de stock</h1>
+      <p class="lead">Une colonne par acteur ; on lit de haut en bas. Les numéros suivent l'ordre du process. En gras : les boutons de la maquette.</p>
+    </div>
+    <div class="legend">
+      <span class="st neu">Statut</span>
+      <span class="al" data-b>Alerte</span>
+      <span class="act q" style="margin:0;padding:2px 10px;box-shadow:none"><h3 style="font-size:12.5px">Question</h3></span>
+    </div>
+  </header>
+
+  <div class="sw" id="sw">
+    <svg class="wires" id="wires" aria-hidden="true"><defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8a94a3"/></marker>
+      <marker id="ah-ok" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0b7a55"/></marker>
+      <marker id="ah-ko" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b42318"/></marker>
+    </defs></svg>
+
+    <!-- Acteurs -->
+    <div style="grid-row:1;grid-column:1"></div>
+    <div class="actor rec" style="grid-row:1;grid-column:2"><b>Agent de réception</b><span>au quai · étape 1</span></div>
+    <div class="actor ctl" style="grid-row:1;grid-column:3"><b>Contrôleur</b><span>réception · étape 2, le sas</span></div>
+    <div class="actor auto" style="grid-row:1;grid-column:4"><b>Circé</b><span>automatique</span></div>
+    <div class="actor pp" style="grid-row:1;grid-column:5"><b>Pré-Prod</b><span>du site · Wissous : Pré-Prod Coordination</span></div>
+
+    <!-- Phases -->
+    <div class="phase" style="grid-row:2 / span 2;grid-column:1"><b>Arrivée de la palette</b><span>étape 1</span></div>
+    <div class="phase a" style="grid-row:4;grid-column:1"><b>Dossier connu</b><span>le cas courant</span></div>
+    <div class="phase b" style="grid-row:5 / span 4;grid-column:1"><b>Réception inconnue</b><span>rien ne correspond</span></div>
+    <div class="phase" style="grid-row:9 / span 2;grid-column:1"><b>Contrôle</b><span>étape 2, commun aux deux circuits</span></div>
+    <div class="phase" style="grid-row:11;grid-column:1"><b>Après la réception</b><span>si le thème change</span></div>
+
+    <!-- Arrivée -->
+    <div class="act c1" id="n1" style="grid-row:2;grid-column:2">
+      <div class="t"><span class="n">1</span><h3>Trouver les dossiers du BL</h3></div>
+      <p><b>Photo du BL</b>, <b>Photo d'une affiche</b> ou <b>Par n° de dossier</b> (ou DA, annonceur), puis <b>Au panier</b></p>
+    </div>
+    <div class="act c3" id="n2" style="grid-row:2;grid-column:4">
+      <div class="t"><span class="n">2</span><h3>Lit le BL, reconnaît le visuel</h3></div>
+      <p>Propose les lignes des réceptions attendues (issues de Broadcast)</p>
+      <div class="o"><div class="row">Ligne : <span class="st neu">Attendue</span><span class="st ser">Partielle</span></div></div>
+    </div>
+    <div class="act c1 q" id="n3" style="grid-row:3;grid-column:2">
+      <div class="t"><span class="n">3</span><h3>Le dossier est trouvé ?</h3></div>
+    </div>
+
+    <!-- Dossier connu -->
+    <div class="act c1" id="n4" style="grid-row:4;grid-column:2">
+      <div class="t"><span class="n">4</span><h3>Valider la réception</h3></div>
+      <p>Cocher les lignes du BL, photo du BL (pré-remplit le bon de livraison), vérifier, <b>Valider la réception</b></p>
+    </div>
+    <div class="act c3" id="n5" style="grid-row:4;grid-column:4">
+      <div class="t"><span class="n">5</span><h3>Crée la réception</h3></div>
+      <p>N° de réception et n° d'affiche ; « affiche reçue » = oui</p>
+      <div class="o"><div class="row">Palette : <span class="st warn">À contrôler</span> dans le sas</div><div class="row">Ligne : <span class="st good">Complète</span><span class="st warn">Surplus</span></div></div>
+      <span class="goto">↓ suite à l'étape 13 (contrôle)</span>
+    </div>
+
+    <!-- Réception inconnue -->
+    <div class="act c1" id="n6" style="grid-row:5;grid-column:2">
+      <div class="t"><span class="n">6</span><h3>Saisir et ranger en zone tampon</h3></div>
+      <p><b>Réception inconnue</b> : annonceur lu, thème, imprimeur, quantité, format ; allée X et rayon ; <b>Créer, ranger et imprimer la feuille temporaire</b></p>
+    </div>
+    <div class="act c3" id="n7" style="grid-row:5;grid-column:4">
+      <div class="t"><span class="n">7</span><h3>Feuille temporaire et alerte</h3></div>
+      <div class="fs temp"><i></i><b>FEUILLE DE STOCK TEMPORAIRE</b></div>
+      <div class="o"><div class="row">Palette : <span class="st warn">À identifier</span> hors du sas</div><div class="row"><span class="al" data-b>Réception inconnue à identifier</span><span class="who pp">Pré-Prod</span></div></div>
+    </div>
+    <div class="act c4" id="n8" style="grid-row:6;grid-column:5">
+      <div class="t"><span class="n">8</span><h3>Identifier le dossier</h3></div>
+      <p>Réceptions inconnues : d'abord <b>par le visuel</b>, sinon <b>par n° de dossier</b> (ou DA, annonceur)</p>
+    </div>
+    <div class="act c4 q" id="n9" style="grid-row:7;grid-column:5">
+      <div class="t"><span class="n">9</span><h3>Le dossier est trouvé ?</h3></div>
+    </div>
+    <div class="act c3" id="n10" style="grid-row:7;grid-column:4">
+      <div class="t"><span class="n">10</span><h3>Alerte « Dossier introuvable »</h3></div>
+      <p>Après <b>Signaler à la Pré-Prod (alerte)</b>, pas de mail ; la Pré-Prod du site le cherche dans Broadcast</p>
+      <div class="o"><div class="row">Affiche : <span class="st ser">Introuvable : alerte à la Pré-Prod</span></div></div>
+    </div>
+    <div class="act c4" id="n11" style="grid-row:8;grid-column:5">
+      <div class="t"><span class="n">11</span><h3>Rattacher</h3></div>
+      <p>Cocher le ou les dossiers, les quantités, <b>Rattacher</b></p>
+    </div>
+    <div class="act c3" id="n12" style="grid-row:8;grid-column:4">
+      <div class="t"><span class="n">12</span><h3>La palette entre dans le sas</h3></div>
+      <div class="o"><div class="row">Affiche : <span class="st warn">Rattachée, à contrôler</span></div><div class="row"><span class="al" data-b>Feuille définitive à imprimer</span><span class="who rec">Réception</span></div></div>
+    </div>
+
+    <!-- Contrôle -->
+    <div class="act c2" id="n13" style="grid-row:9;grid-column:3">
+      <div class="t"><span class="n">13</span><h3>Contrôler la palette</h3></div>
+      <span class="from">vient de 5 (dossier connu) ou de 12 (inconnue rattachée)</span>
+      <p>Ouvrir la palette dans le sas (la plus ancienne en tête), compter, ranger (allée, rayon, hors zone tampon), rebut, non-conformité ; <b>Valider le contrôle et imprimer</b></p>
+    </div>
+    <div class="act c3" id="n14" style="grid-row:9;grid-column:4">
+      <div class="t"><span class="n">!</span><h3>Surveille le sas</h3></div>
+      <div class="o" style="border-top:0;padding-top:0"><div class="row"><span class="al" data-b>Palette à contrôler en retard</span></div><div class="row">au-delà de 24 h · <span class="who rec">Réception</span></div></div>
+    </div>
+    <div class="act c3" id="n15" style="grid-row:10;grid-column:4">
+      <div class="t"><span class="n">14</span><h3>Imprime la feuille définitive</h3></div>
+      <div class="fs def"><i></i><b>FEUILLE DE STOCK DÉFINITIVE</b></div>
+      <p>Modèle Circé, en lot, 2 exemplaires (palette et Pré-Prod)</p>
+      <div class="o"><div class="row">Palette : <span class="st good">Contrôlée</span></div><div class="row">Inconnue : <span class="st good">Rattachée, feuille définitive</span></div></div>
+    </div>
+    <div class="act c2" id="n16" style="grid-row:10;grid-column:3">
+      <div class="t"><span class="n">15</span><h3>Poser la feuille, ranger</h3></div>
+      <p>La définitive remplace la temporaire ; l'affiche est en stock, à son emplacement</p>
+    </div>
+
+    <!-- Après -->
+    <div class="act c4" id="n17" style="grid-row:11;grid-column:5">
+      <div class="t"><span class="n">16</span><h3>Corriger un thème ou un rattachement</h3></div>
+      <p>Fiche de l'affiche, onglet Préparations</p>
+    </div>
+    <div class="act c3" id="n18" style="grid-row:11;grid-column:4">
+      <div class="t"><span class="n">17</span><h3>Tag « Feuille à refaire »</h3></div>
+      <div class="o"><div class="row"><span class="al" data-b>Feuille de stock à refaire</span></div></div>
+    </div>
+    <div class="act c1" id="n19" style="grid-row:11;grid-column:2">
+      <div class="t"><span class="n">18</span><h3>Réimprimer la feuille</h3></div>
+      <p>Liste des affiches, tag « Feuille à refaire » : réimpression en lot ; ou Réceptions attendues, bouton <b>Feuille de stock</b> sur une ligne <span class="st good">Contrôlée</span></p>
+    </div>
+  </div>
+
+  <footer>
+    <span>Maquette Circé : Réception › Réception des affiches · Réceptions inconnues · Liste des affiches · Pilotage › Alertes</span>
+    <span>Chaque alerte ouvre l'écran où agir</span>
+  </footer>
+
+</div></div>
+
+<script>
+  (function () {
+    // Cloche des alertes
+    const BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg>';
+    document.querySelectorAll('.al[data-b]').forEach(el => el.insertAdjacentHTML('afterbegin', BELL));
+
+    // Flèches de la page 2, en coordonnées de la page (sans l'échelle) :
+    // h = même ligne, côte à côte ; v = même colonne ; coude = descend, traverse, redescend ; gauche = longe le bord gauche.
+    const EDGES = [
+      ['n1', 'n2', 'h'], ['n2', 'n3', 'coude'],
+      ['n3', 'n4', 'v', 'Oui', 'ok'], ['n3', 'n6', 'gauche', 'Non', 'ko'],
+      ['n4', 'n5', 'h'],
+      ['n6', 'n7', 'h'], ['n7', 'n8', 'coude'], ['n8', 'n9', 'v'],
+      ['n9', 'n11', 'v', 'Oui', 'ok'], ['n9', 'n10', 'h', 'Non', 'ko'], ['n10', 'n11', 'coude', 'retrouvé', null, -70],
+      ['n11', 'n12', 'h'], ['n12', 'n13', 'coude'],
+      ['n14', 'n13', 'h', null, 'dash'],
+      ['n13', 'n15', 'coude'], ['n15', 'n16', 'h'],
+      ['n17', 'n18', 'h'], ['n18', 'n19', 'h'],
+    ];
+    function wires() {
+      const sw = document.getElementById('sw'), svg = document.getElementById('wires');
+      svg.querySelectorAll('path:not(marker path)').forEach(p => p.remove());
+      sw.querySelectorAll('.wl').forEach(l => l.remove());
+      svg.setAttribute('viewBox', '0 0 ' + sw.offsetWidth + ' ' + sw.offsetHeight);
+      const box = id => { const e = document.getElementById(id); return { l: e.offsetLeft, t: e.offsetTop, r: e.offsetLeft + e.offsetWidth, b: e.offsetTop + e.offsetHeight, cx: e.offsetLeft + e.offsetWidth / 2 }; };
+      EDGES.forEach(([f, t, kind, label, tone, dx]) => {
+        const A = box(f), B = box(t); let d, lx, ly;
+        if (kind === 'h') {
+          const y = Math.max(A.t, B.t) + 20, rtl = B.l < A.l;
+          const x1 = rtl ? A.l : A.r, x2 = rtl ? B.r : B.l;
+          d = 'M' + x1 + ' ' + y + 'H' + (x2 + (rtl ? 3 : -3)); lx = (x1 + x2) / 2; ly = y;
+        } else if (kind === 'v') {
+          d = 'M' + A.cx + ' ' + A.b + 'V' + (B.t - 3); lx = A.cx + 26; ly = (A.b + B.t) / 2;
+        } else if (kind === 'gauche') {
+          const x = A.l - 9, y1 = A.t + 18, y2 = B.t + 20;
+          d = 'M' + A.l + ' ' + y1 + 'H' + x + 'V' + y2 + 'H' + (B.l - 3); lx = x; ly = (y1 + y2) / 2;
+        } else {
+          const x2 = B.cx + (dx || 0), ym = B.t - 17;
+          d = 'M' + A.cx + ' ' + A.b + 'V' + ym + 'H' + x2 + 'V' + (B.t - 3); lx = (A.cx + x2) / 2; ly = ym;
+        }
+        const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p.setAttribute('d', d); if (tone) p.setAttribute('class', tone);
+        p.setAttribute('marker-end', 'url(#' + (tone === 'ok' ? 'ah-ok' : tone === 'ko' || tone === 'dash' ? 'ah-ko' : 'ah') + ')');
+        svg.appendChild(p);
+        if (label) { const l = document.createElement('span'); l.className = 'wl ' + (tone === 'dash' ? 'ko' : tone || ''); l.textContent = label; l.style.left = lx + 'px'; l.style.top = ly + 'px'; sw.appendChild(l); }
+      });
+    }
+
+    // Mise à l'échelle : page 1 à la taille de l'écran, page 2 à la largeur
+    function fit() {
+      const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+      document.querySelectorAll('.pg').forEach(pg => {
+        const st = pg.querySelector('.stage');
+        const k = pg.dataset.fit === 'screen' ? Math.min(vw / 1640, (vh - 40) / 900) : Math.min(vw / 1640, 1.3);
+        st.style.transform = 'scale(' + k + ')';
+        pg.style.width = (1600 * k) + 'px'; pg.style.height = (st.offsetHeight * k) + 'px';
+      });
+    }
+    // Impression A3 paysage (environ 1525 × 1060 px utiles) : chaque page tient sur sa feuille
+    window.addEventListener('beforeprint', () => document.querySelectorAll('.stage').forEach(st => { st.style.zoom = Math.min(1525 / 1600, 1060 / st.offsetHeight); }));
+    window.addEventListener('afterprint', () => document.querySelectorAll('.stage').forEach(st => { st.style.zoom = ''; }));
+    wires(); fit();
+    window.addEventListener('resize', fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { wires(); fit(); });
+  })();
+</script>
+</body>
+</html>
