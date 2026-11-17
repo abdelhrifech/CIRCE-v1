@@ -67,6 +67,8 @@ export const NcDonneesSchema = z.object({
   region: texte,
   afficheur: texte,
   dossier: texte,
+  semaine: texte,
+  quantite: texte,
   annonceur: texte,
   theme: texte,
   formats: z.array(z.enum(NC_FORMATS)).default([]),
@@ -105,6 +107,15 @@ export const NcDonneesSchema = z.object({
   qteRecue: texte,
   qteManquante: texte,
 })
+export const CasNcSchema = z.object({
+  afficheId: z.number().int(),
+  plateformeId: z.number().int(),
+  plateforme: z.string(),
+  validation: z.boolean(),
+  donnees: NcDonneesSchema,
+})
+export const CasNcListeSchema = z.object({ items: z.array(CasNcSchema) })
+export type CasNc = z.infer<typeof CasNcSchema>
 export type NcDonnees = z.infer<typeof NcDonneesSchema>
 export function porteeNc(types: readonly string[]): boolean | null {
   if (types.some((t) => (NC_BLOQUANTES as readonly string[]).includes(t))) return true
@@ -146,6 +157,18 @@ export const DeclarerNcSchema = z.object({
   fichiers: z.array(NcFichierEnvoiSchema).max(10).default([]),
 })
 export type DeclarerNc = z.infer<typeof DeclarerNcSchema>
+export const ReponseNcSchema = z.object({
+  date: z.string(),
+  auteur: z.string(),
+  traite: z.boolean(),
+  commentaire: z.string(),
+})
+export const RepondreNcSchema = z.object({
+  version: z.number().int().positive(),
+  traite: z.boolean(),
+  commentaire: texte,
+})
+export type RepondreNc = z.infer<typeof RepondreNcSchema>
 export const NcSchema = z.object({
   id: z.number().int(),
   version: z.number().int(),
@@ -163,6 +186,8 @@ export const NcSchema = z.object({
   modifieLe: z.string(),
   auteur: z.string(),
   commentaireDecision: z.string(),
+  reponses: z.array(ReponseNcSchema).default([]),
+  feuilleImprimeeLe: z.string().nullable().default(null),
   fichiers: z.array(
     z.object({
       id: z.number().int(),
@@ -186,8 +211,17 @@ export const DeclarantsSchema = z.object({
 })
 
 export const ConstatNcSchema = z.object({
+  fichiers: z.array(NcFichierEnvoiSchema).max(10).optional(),
   types: z.array(z.enum(NC_TYPES)).min(1).max(20),
   bloquante: z.boolean().nullable().default(null),
   commentaire: z.string().trim().max(4000).default(''),
 })
 export type ConstatNc = z.infer<typeof ConstatNcSchema>
+
+export const ImpressionNcSchema = z.object({
+  ncs: z
+    .array(z.object({ id: z.number().int().positive(), version: z.number().int().positive() }))
+    .min(1)
+    .max(100),
+})
+export const ImpressionNcResultatSchema = z.object({ imprimees: z.number().int(), le: z.string() })

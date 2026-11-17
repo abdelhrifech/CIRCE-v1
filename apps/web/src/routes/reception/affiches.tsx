@@ -1,3 +1,4 @@
+import { ApercuNc } from '../../components/nonconformite/feuille.tsx'
 import { BoutonExportTableau } from '../../components/ui/export-tableau.tsx'
 import { useSelectionGlissee } from '../../lib/selection-glissee.ts'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
@@ -5,6 +6,8 @@ import {
   FicheAfficheSchema,
   ImpressionResultatSchema,
   ListeAffichesSchema,
+  ListeNcSchema,
+  type Nc,
   ReferentielsReceptionSchema,
   TAGS_AFFICHE,
 } from '@circe/shared'
@@ -86,6 +89,12 @@ function versQuery(s: Search): string {
 function ListeDesAffiches() {
   const search = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
+  const [feuilleNc, setFeuilleNc] = useState<Nc[] | null>(null)
+  const { etat: ncs, recharger: rechargerNc } = useApi('nc-affiches', (signal) =>
+    apiRequest('GET', '/api/non-conformites', { schema: ListeNcSchema, signal }),
+  )
+  const ncDe = (id: number) =>
+    ncs.kind === 'ready' ? ncs.data.items.filter((n) => n.afficheIds.includes(id)) : []
   const query = versQuery(search)
   const { etat, recharger } = useApi(`affiches?${query}`, (signal) =>
     apiRequest('GET', `/api/affiches${query ? `?${query}` : ''}`, {
@@ -421,6 +430,10 @@ function ListeDesAffiches() {
                       <Pastille ton={a.validation === 'VALIDEE' ? 'ok' : 'surveiller'}>
                         {VALIDATIONS[a.validation]}
                       </Pastille>
+                      {!a.tags.includes('A_CONTROLER') &&
+                        ncDe(a.id).some((n) => !n.feuilleImprimeeLe) && (
+                          <Pastille ton="surveiller">Feuille NC à imprimer</Pastille>
+                        )}
                       {a.tags.map((t) => (
                         <Pastille key={t} ton={LIBELLE_TAG[t]?.ton ?? 'neutre'}>
                           {t === 'FEUILLE_A_REFAIRE' && a.feuille === 'TEMPORAIRE'
@@ -430,6 +443,17 @@ function ListeDesAffiches() {
                       ))}
                     </td>
                     <td className="px-3 py-2">
+                      {ncDe(a.id).length > 0 && (
+                        <button
+                          type="button"
+                          className="mr-2 underline"
+                          onClick={() => {
+                            setFeuilleNc(ncDe(a.id))
+                          }}
+                        >
+                          Feuille NC
+                        </button>
+                      )}
                       {peutImprimer &&
                         (a.tags.includes('FEUILLE_A_IMPRIMER') ||
                           a.tags.includes('FEUILLE_A_REFAIRE')) && (
@@ -510,6 +534,15 @@ function ListeDesAffiches() {
           onAffiche={(id) => {
             setReception(null)
             changer({ affiche: id, page: search.page })
+          }}
+        />
+      )}
+      {feuilleNc && (
+        <ApercuNc
+          items={feuilleNc}
+          onFermer={() => {
+            setFeuilleNc(null)
+            rechargerNc()
           }}
         />
       )}

@@ -104,7 +104,7 @@ test('D-08 règles d’alerte : modifier le canal et les destinataires, valeur c
   await expect(page.getByRole('heading', { name: 'Alertes et mails' })).toBeVisible()
   const table = page.getByRole('table', { name: 'Règles d’alerte' })
   await expect(table).toBeVisible()
-  await expect(table.getByRole('row')).toHaveCount(20)
+  await expect(table.getByRole('row')).toHaveCount(23)
   const libelle = 'Écart de réception > 10 %'
   const ligne = table.getByRole('row', { name: new RegExp(libelle) })
   await ligne.getByRole('button', { name: `Modifier ${libelle}` }).click()

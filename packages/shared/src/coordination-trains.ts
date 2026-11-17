@@ -89,6 +89,9 @@ export const TrainVersionSchema = z.object({ trainId: z.string(), version: z.str
 export type TrainVersion = z.infer<typeof TrainVersionSchema>
 
 export const LigneTrainSchema = z.object({
+  faceId: n.optional(),
+  adresse: s.optional(),
+  coteCote: n.nullable().optional(),
   /** Clé de ligne = identifiant du premier train de la ligne. */
   cle: z.string(),
   /** Trains identiques regroupés sur la ligne (« Nb trains »), avec leur version (RG-COO-308). */
@@ -125,6 +128,7 @@ export type LigneTrain = z.infer<typeof LigneTrainSchema>
 export const ListeTrainsSchema = z.object({
   semaine: z.object({ annee: n, semaine: n }),
   lignes: z.array(LigneTrainSchema),
+  faces: z.array(LigneTrainSchema).optional(),
   indicateurs: z.object({
     aProduire: n,
     enAttente: n,

@@ -11,7 +11,7 @@ import type { Db } from '../../core/db.ts'
 import { requireIdempotencyKey, sendIdempotent, withIdempotency } from '../../core/idempotency.ts'
 import { requireIdentity } from '../../core/identity.ts'
 import { COO } from '../coordination/permissions.ts'
-import { acquitterAlertes, listerAlertesPilotage } from './service.ts'
+import { restaurerAlertes, acquitterAlertes, listerAlertesPilotage } from './service.ts'
 
 export function alertesRoutes(app: FastifyInstance, db: Db): void {
   const r = app.withTypeProvider<ZodTypeProvider>()
@@ -40,6 +40,29 @@ export function alertesRoutes(app: FastifyInstance, db: Db): void {
         async (tx) => ({
           status: 200,
           body: await acquitterAlertes(tx, identity, request.body.cles),
+        }),
+      )
+      return sendIdempotent(reply, result)
+    },
+  )
+  r.post(
+    '/alertes/restaurations',
+    { schema: { body: AcquitterAlertesSchema, response: { 200: AcquitterAlertesResultatSchema } } },
+    async (request, reply) => {
+      const identity = requireIdentity(request)
+      const result = await withIdempotency(
+        db,
+        {
+          userId: identity.userId,
+          key: requireIdempotencyKey(request),
+          method: 'POST',
+          path: request.url.split('?')[0] ?? request.url,
+          body: request.body,
+          ...COO.idempotence,
+        },
+        async (tx) => ({
+          status: 200,
+          body: await restaurerAlertes(tx, identity, request.body.cles),
         }),
       )
       return sendIdempotent(reply, result)

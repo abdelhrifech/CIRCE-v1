@@ -21,7 +21,9 @@ test('RG-COO-208 / 228 liste filtrée par dossier : train EN_ATTENTE (A reçu, B
   await page.goto('/coordination/trains?dossier=2190101')
   await expect(page.getByRole('heading', { name: 'Déroulant · Liste des trains' })).toBeVisible()
   const attente = table(page).getByRole('row', { name: /E2E-FRAC-/ })
-  await expect(attente).toContainText('En attente d’affiches')
+  await expect(attente).toHaveCount(2)
+  await expect(attente.nth(0)).toContainText('En attente d’affiches')
+  await expect(attente.nth(1)).toContainText('En attente d’affiches')
   await expect(attente.getByRole('button', { name: 'Position A reçu' })).toBeVisible()
   await expect(attente.getByRole('button', { name: 'Position B manquant' })).toBeVisible()
   await expect(table(page).getByRole('row', { name: /E2E-PRET-/ })).toContainText('Prêt à produire')
@@ -33,6 +35,7 @@ test('RG-COO-221 fiche train puis « Fractionner » : le train passe « Prêt »
   await page.goto('/coordination/trains?dossier=2190101')
   await table(page)
     .getByRole('row', { name: /E2E-FRAC-/ })
+    .first()
     .getByText(/E2E-FRAC-/)
     .click()
   const fiche = page.getByRole('dialog', { name: /Train E2E-FRAC-/ })
@@ -45,7 +48,7 @@ test('RG-COO-221 fiche train puis « Fractionner » : le train passe « Prêt »
     '1 train(s) fractionné(s) : ils passent « Prêt », les visuels manquants seront produits à part.',
   )
   const ligne = table(page).getByRole('row', { name: /E2E-FRAC-/ })
-  await expect(ligne).toContainText('Prêt à produire')
+  await expect(ligne.first()).toContainText('Prêt à produire')
   await expect(ligne.getByRole('button', { name: 'Position B fractionné' })).toBeVisible()
 })
 

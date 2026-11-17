@@ -2,6 +2,9 @@ import type { ConstatNc } from '@circe/shared'
 import { z } from 'zod'
 import {
   NC_DECISIONS,
+  NC_FORMATS,
+  ReponseNcSchema,
+  type RepondreNc,
   NC_TYPES,
   NC_TYPES_AGENCE,
   NcDonneesSchema,
@@ -51,9 +54,18 @@ async function publique(
   db: Client,
   row: Prisma.NonConformiteGetPayload<{ include: typeof include }>,
 ): Promise<Nc> {
-  const [plateforme, auteur] = await Promise.all([
+  const [plateforme, auteur, impression] = await Promise.all([
     db.plateforme.findUniqueOrThrow({ where: { id: row.plateformeId } }),
     db.utilisateur.findUniqueOrThrow({ where: { id: row.createdById } }),
+    db.journalAudit.findFirst({
+      where: {
+        typeEntite: 'NON_CONFORMITE',
+        entiteId: String(row.id),
+        action: 'IMPRESSION_FEUILLE',
+      },
+      orderBy: { le: 'desc' },
+      select: { le: true },
+    }),
   ])
   const decisions = decisionsSchema.parse(JSON.parse(row.decisions))
   return {
@@ -73,6 +85,8 @@ async function publique(
     modifieLe: row.updatedAt.toISOString(),
     auteur: auteur.nom ?? auteur.identifiantExterne,
     commentaireDecision: row.commentaireDecision,
+    reponses: z.array(ReponseNcSchema).parse(JSON.parse(row.reponses)),
+    feuilleImprimeeLe: impression?.le.toISOString() ?? null,
     fichiers: row.fichiers,
   }
 }
@@ -272,6 +286,55 @@ export async function deciderNc(tx: Tx, identity: Identity, id: number, input: D
   })
   return publique(tx, await tx.nonConformite.findUniqueOrThrow({ where: { id }, include }))
 }
+// RG-NEW16-NC-001 — nonconformite.js : réponse distincte, datée, répétable jusqu’au traitement.
+export async function repondreNc(tx: Tx, identity: Identity, id: number, input: RepondreNc) {
+  assertPermission(identity, 'nonconformite.traiter')
+  const row = await tx.nonConformite.findUnique({ where: { id }, include })
+  if (!row) throw new NotFoundError('Non-conformité introuvable.')
+  verifierSite(identity, row.plateformeId)
+  const decisions = decisionsSchema.parse(JSON.parse(row.decisions))
+  if (statutNc(row.bloquante, decisions) !== 'En cours plateforme')
+    throw new ConflictError('Une réponse attend une décision en cours plateforme.')
+  const user = await tx.utilisateur.findUniqueOrThrow({ where: { id: identity.userId } })
+  const reponses = z.array(ReponseNcSchema).parse(JSON.parse(row.reponses))
+  reponses.push({
+    date: new Date().toISOString(),
+    auteur: user.nom ?? user.identifiantExterne,
+    traite: input.traite,
+    commentaire: input.commentaire,
+  })
+  if (input.traite) decisions.push('Traité par la plateforme')
+  await updateWithVersion({
+    expectedVersion: input.version,
+    update: (where) =>
+      tx.nonConformite.updateMany({
+        where: { id, ...where },
+        data: {
+          reponses: JSON.stringify(reponses),
+          decisions: JSON.stringify(decisions),
+          updatedById: identity.userId,
+          ...bumpVersion,
+        },
+      }),
+  })
+  await ecrireJournal(tx, {
+    typeEntite: 'NON_CONFORMITE',
+    entiteId: id,
+    action: 'NON_CONFORMITE',
+    parId: identity.userId,
+    nouvelleValeur: JSON.stringify(reponses.at(-1)),
+    complement: 'Réponse de la plateforme',
+  })
+  await ecrireHistoriqueStatut(tx, {
+    typeEntite: 'NON_CONFORMITE',
+    entiteId: id,
+    ancien: 'En cours plateforme',
+    nouveau: statutNc(row.bloquante, decisions),
+    parId: identity.userId,
+    regle: 'RG-NEW16-NC-001',
+  })
+  return publique(tx, await tx.nonConformite.findUniqueOrThrow({ where: { id }, include }))
+}
 // EX-NEW-ADM-001 : référentiel partagé des déclarants, nom retiré non proposé aux nouvelles saisies.
 export async function lireDeclarants(db: Client, identity: Identity) {
   if (!hasPermission(identity, 'nonconformite.declarer'))
@@ -338,24 +401,31 @@ export async function lireJustificatif(db: Client, identity: Identity, id: numbe
 export async function alertesNc(db: Client, identity: Identity) {
   if (!hasPermission(identity, 'nonconformite.consulter')) return []
   const rows = await db.nonConformite.findMany({
-    where: { ...scope(identity), type: 'RECEPTION', bloquante: true },
+    where: { ...scope(identity), OR: [{ bloquante: true }, { bloquante: null }] },
   })
   return rows
-    .filter((r) => decisionsSchema.parse(JSON.parse(r.decisions)).length === 0)
+    .filter((r) => {
+      const statut = statutNc(r.bloquante, decisionsSchema.parse(JSON.parse(r.decisions)))
+      return statut === 'En cours plateforme' || (r.bloquante === true && statut === 'À décider')
+    })
     .map((r) => {
       const d = NcDonneesSchema.parse(JSON.parse(r.donnees))
+      const plateforme =
+        statutNc(r.bloquante, decisionsSchema.parse(JSON.parse(r.decisions))) ===
+        'En cours plateforme'
       return {
         cle: `NC-${r.id}`,
-        type: 'NC_BLOQUANTE' as const,
+        type: plateforme ? ('NC_PLATEFORME' as const) : ('NC_BLOQUANTE' as const),
         regle: 'RG-NEW-NC-002',
         gravite: 'CRITIQUE' as const,
-        titre:
-          r.origine === 'Réception inconnue'
+        titre: plateforme
+          ? 'Non-conformité : action de la plateforme attendue'
+          : r.origine === 'Réception inconnue'
             ? 'Non-conformité bloquante : go de la Préproduction attendu'
             : 'Non-conformité bloquante à la réception',
         message: `NC n° ${r.id} · ${d.annonceur} · ${d.dossier} : ${d.types.join(', ')}${d.commentaireNC ? ` — ${d.commentaireNC}` : ''}`,
         lien: `/non-conformite?tab=suivi&id=${r.id}`,
-        destinataires: ['coord'],
+        destinataires: plateforme ? ['cheq', 'recep'] : ['coord'],
         plateformeId: r.plateformeId,
         depart: null,
         date: r.createdAt.toISOString(),
@@ -408,6 +478,145 @@ export async function declarerConstatReception(
     afficheIds,
     bloquante: constat.bloquante,
     donnees,
-    fichiers: [],
+    fichiers: constat.fichiers ?? [],
   })
+}
+
+// EX-NEW16-NC-002 : un cas par site, dossier et thème effectivement reçu.
+export async function casNc(db: Db, identity: Identity, q: string) {
+  assertPermission(identity, 'nonconformite.declarer')
+  const recherche = q.trim().toLocaleLowerCase('fr')
+  if (recherche.length < 2) return { items: [] }
+  const candidates = await db.receptionAttendue.findMany({
+    where: {
+      ...scope(identity),
+      rattachements: { some: { actif: true, affiche: { receptionId: { not: null } } } },
+    },
+    select: { id: true, contNum: true, idDaChapeau: true, annonceur: true },
+    orderBy: { contNum: 'asc' },
+  })
+  const matches = candidates.filter((l) =>
+    [l.contNum, l.idDaChapeau, l.annonceur].some(
+      (v) => v !== null && String(v).toLocaleLowerCase('fr').includes(recherche),
+    ),
+  )
+  const dossiers = [...new Set(matches.map((l) => l.contNum))].slice(0, 8)
+  const ids = candidates.filter((l) => dossiers.includes(l.contNum)).map((l) => l.id)
+  if (!ids.length) return { items: [] }
+  const rows = await db.affiche.findMany({
+    where: {
+      ...scope(identity),
+      receptionId: { not: null },
+      rattachements: { some: { actif: true, ligneAttendueId: { in: ids } } },
+    },
+    include: {
+      plateforme: true,
+      support: true,
+      reception: { include: { livraison: { include: { imprimeur: true, livreur: true } } } },
+      rattachements: {
+        where: { actif: true, ligneAttendueId: { in: ids } },
+        include: { ligneAttendue: true },
+      },
+    },
+    orderBy: { dateEntree: 'desc' },
+  })
+  const groupes = new Map<
+    string,
+    {
+      affiche: (typeof rows)[number]
+      dossier: number | null
+      theme: string
+      annonceur: string
+      quantite: number
+      semaines: Set<string>
+      formats: Set<(typeof NC_FORMATS)[number]>
+      validation: boolean
+    }
+  >()
+  for (const a of rows)
+    for (const r of a.rattachements) {
+      const l = r.ligneAttendue
+      const theme = l.theme ?? a.theme ?? ''
+      const cle = JSON.stringify([a.plateformeId, l.contNum, theme])
+      let g = groupes.get(cle)
+      if (!g) {
+        g = {
+          affiche: a,
+          dossier: l.contNum,
+          theme,
+          annonceur: l.annonceur ?? a.contAnnonc ?? '',
+          quantite: 0,
+          semaines: new Set(),
+          formats: new Set(),
+          validation: true,
+        }
+        groupes.set(cle, g)
+      }
+      g.quantite += r.quantite
+      g.validation &&= a.validationAdmin
+      g.semaines.add(`${l.semAnnee}-W${String(l.semNum).padStart(2, '0')}`)
+      const brut = l.format || a.support.nom
+      const n = brut.match(/^(\d+)\s*m[²2]/i)?.[1] ?? ''
+      const format = /bus/i.test(brut)
+        ? 'BUS'
+        : /scroll|déroul/i.test(brut)
+          ? `${n} m² déroulant`
+          : /coll/i.test(brut)
+            ? `${n} m² Colle`
+            : /fixe/i.test(brut)
+              ? `${n} m² fixe`
+              : brut
+      g.formats.add(
+        NC_FORMATS.find((f) => f.toLocaleLowerCase('fr') === format.toLocaleLowerCase('fr')) ??
+          'Autre format',
+      )
+    }
+  return {
+    items: [...groupes.values()]
+      .filter((g) => g.quantite > 0)
+      .map((g) => ({
+        afficheId: g.affiche.id,
+        plateformeId: g.affiche.plateformeId,
+        plateforme: g.affiche.plateforme.nom,
+        validation: g.validation,
+        donnees: NcDonneesSchema.parse({
+          dossier: g.dossier === null ? '' : String(g.dossier),
+          semaine: [...g.semaines].sort().join(' / '),
+          quantite: String(g.quantite),
+          annonceur: g.annonceur,
+          theme: g.theme,
+          imprimeur: g.affiche.reception?.livraison?.imprimeur?.libelle ?? '',
+          transporteur: g.affiche.reception?.livraison?.livreur?.libelle ?? '',
+          formats: [...g.formats],
+        }),
+      })),
+  }
+}
+
+// EX-NEW16-REC-001 : journaliser l'impression, sans modifier statut, décision, stock ni version de la NC.
+export async function imprimerNc(
+  tx: Tx,
+  identity: Identity,
+  ncs: { id: number; version: number }[],
+) {
+  assertPermission(identity, 'nonconformite.consulter')
+  const selection = [...new Map(ncs.map((n) => [n.id, n])).values()]
+  for (const n of selection) {
+    const row = await tx.nonConformite.findUnique({ where: { id: n.id } })
+    if (!row) throw new NotFoundError('Non-conformité introuvable')
+    verifierSite(identity, row.plateformeId)
+    if (row.version !== n.version)
+      throw new ConflictError(
+        'La non-conformité a changé : rechargez la feuille avant de l’imprimer.',
+      )
+  }
+  for (const n of selection)
+    await ecrireJournal(tx, {
+      typeEntite: 'NON_CONFORMITE',
+      entiteId: n.id,
+      action: 'IMPRESSION_FEUILLE',
+      parId: identity.userId,
+      complement: 'Feuille de non-conformité — impression navigateur',
+    })
+  return { imprimees: selection.length, le: new Date().toISOString() }
 }

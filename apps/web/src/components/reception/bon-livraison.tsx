@@ -247,6 +247,17 @@ export function BonLivraison({
             }}
           >
             Reprendre la photo
+          </button>{' '}
+          ·{' '}
+          <button
+            type="button"
+            className="underline"
+            onClick={() => {
+              setPhoto(null)
+              setNumeroBl('')
+            }}
+          >
+            Retirer cette photo
           </button>
         </div>
       ) : (

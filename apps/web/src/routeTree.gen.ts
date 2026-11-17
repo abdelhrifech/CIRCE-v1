@@ -17,6 +17,7 @@ import { Route as NonConformiteRouteImport } from './routes/non-conformite'
 import { Route as AdminAlertesRouteImport } from './routes/admin/alertes'
 import { Route as AdminBusRouteImport } from './routes/admin/bus'
 import { Route as AdminDeclarantsRouteImport } from './routes/admin/declarants'
+import { Route as AdminDupliquerTrainRouteImport } from './routes/admin/dupliquer-train'
 import { Route as AdminParametresRouteImport } from './routes/admin/parametres'
 import { Route as AdminPlateformesRouteImport } from './routes/admin/plateformes'
 import { Route as AdminReferentielsRouteImport } from './routes/admin/referentiels'
@@ -38,13 +39,17 @@ import { Route as ExpeditionIndexRouteImport } from './routes/expedition/index'
 import { Route as ExpeditionColisRouteImport } from './routes/expedition/colis'
 import { Route as ExpeditionDepartsRouteImport } from './routes/expedition/departs'
 import { Route as PilotageAlertesRouteImport } from './routes/pilotage/alertes'
+import { Route as PilotageAnalyseRouteImport } from './routes/pilotage/analyse'
 import { Route as PilotageReservationsRouteImport } from './routes/pilotage/reservations'
+import { Route as PilotageSuiviRouteImport } from './routes/pilotage/suivi'
 import { Route as PilotageTableauRouteImport } from './routes/pilotage/tableau'
 import { Route as ReceptionIndexRouteImport } from './routes/reception/index'
 import { Route as ReceptionAffichesRouteImport } from './routes/reception/affiches'
 import { Route as ReceptionAlertesRouteImport } from './routes/reception/alertes'
+import { Route as ReceptionFusionRouteImport } from './routes/reception/fusion'
 import { Route as ReceptionInconnuesRouteImport } from './routes/reception/inconnues'
 import { Route as ReceptionJ3RouteImport } from './routes/reception/j3'
+import { Route as ReceptionPickingRouteImport } from './routes/reception/picking'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -84,6 +89,11 @@ const AdminBusRoute = AdminBusRouteImport.update({
 const AdminDeclarantsRoute = AdminDeclarantsRouteImport.update({
   id: '/admin/declarants',
   path: '/admin/declarants',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDupliquerTrainRoute = AdminDupliquerTrainRouteImport.update({
+  id: '/admin/dupliquer-train',
+  path: '/admin/dupliquer-train',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminParametresRoute = AdminParametresRouteImport.update({
@@ -192,9 +202,19 @@ const PilotageAlertesRoute = PilotageAlertesRouteImport.update({
   path: '/pilotage/alertes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PilotageAnalyseRoute = PilotageAnalyseRouteImport.update({
+  id: '/pilotage/analyse',
+  path: '/pilotage/analyse',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PilotageReservationsRoute = PilotageReservationsRouteImport.update({
   id: '/pilotage/reservations',
   path: '/pilotage/reservations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PilotageSuiviRoute = PilotageSuiviRouteImport.update({
+  id: '/pilotage/suivi',
+  path: '/pilotage/suivi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PilotageTableauRoute = PilotageTableauRouteImport.update({
@@ -217,6 +237,11 @@ const ReceptionAlertesRoute = ReceptionAlertesRouteImport.update({
   path: '/reception/alertes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReceptionFusionRoute = ReceptionFusionRouteImport.update({
+  id: '/reception/fusion',
+  path: '/reception/fusion',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReceptionInconnuesRoute = ReceptionInconnuesRouteImport.update({
   id: '/reception/inconnues',
   path: '/reception/inconnues',
@@ -225,6 +250,11 @@ const ReceptionInconnuesRoute = ReceptionInconnuesRouteImport.update({
 const ReceptionJ3Route = ReceptionJ3RouteImport.update({
   id: '/reception/j3',
   path: '/reception/j3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReceptionPickingRoute = ReceptionPickingRouteImport.update({
+  id: '/reception/picking',
+  path: '/reception/picking',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -237,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/admin/alertes': typeof AdminAlertesRoute
   '/admin/bus': typeof AdminBusRoute
   '/admin/declarants': typeof AdminDeclarantsRoute
+  '/admin/dupliquer-train': typeof AdminDupliquerTrainRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/plateformes': typeof AdminPlateformesRoute
   '/admin/referentiels': typeof AdminReferentielsRoute
@@ -256,12 +287,16 @@ export interface FileRoutesByFullPath {
   '/expedition/colis': typeof ExpeditionColisRoute
   '/expedition/departs': typeof ExpeditionDepartsRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
+  '/pilotage/analyse': typeof PilotageAnalyseRoute
   '/pilotage/reservations': typeof PilotageReservationsRoute
+  '/pilotage/suivi': typeof PilotageSuiviRoute
   '/pilotage/tableau': typeof PilotageTableauRoute
   '/reception/affiches': typeof ReceptionAffichesRoute
   '/reception/alertes': typeof ReceptionAlertesRoute
+  '/reception/fusion': typeof ReceptionFusionRoute
   '/reception/inconnues': typeof ReceptionInconnuesRoute
   '/reception/j3': typeof ReceptionJ3Route
+  '/reception/picking': typeof ReceptionPickingRoute
   '/coordination/': typeof CoordinationIndexRoute
   '/expedition/': typeof ExpeditionIndexRoute
   '/reception/': typeof ReceptionIndexRoute
@@ -275,6 +310,7 @@ export interface FileRoutesByTo {
   '/admin/alertes': typeof AdminAlertesRoute
   '/admin/bus': typeof AdminBusRoute
   '/admin/declarants': typeof AdminDeclarantsRoute
+  '/admin/dupliquer-train': typeof AdminDupliquerTrainRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/plateformes': typeof AdminPlateformesRoute
   '/admin/referentiels': typeof AdminReferentielsRoute
@@ -294,12 +330,16 @@ export interface FileRoutesByTo {
   '/expedition/colis': typeof ExpeditionColisRoute
   '/expedition/departs': typeof ExpeditionDepartsRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
+  '/pilotage/analyse': typeof PilotageAnalyseRoute
   '/pilotage/reservations': typeof PilotageReservationsRoute
+  '/pilotage/suivi': typeof PilotageSuiviRoute
   '/pilotage/tableau': typeof PilotageTableauRoute
   '/reception/affiches': typeof ReceptionAffichesRoute
   '/reception/alertes': typeof ReceptionAlertesRoute
+  '/reception/fusion': typeof ReceptionFusionRoute
   '/reception/inconnues': typeof ReceptionInconnuesRoute
   '/reception/j3': typeof ReceptionJ3Route
+  '/reception/picking': typeof ReceptionPickingRoute
   '/coordination': typeof CoordinationIndexRoute
   '/expedition': typeof ExpeditionIndexRoute
   '/reception': typeof ReceptionIndexRoute
@@ -314,6 +354,7 @@ export interface FileRoutesById {
   '/admin/alertes': typeof AdminAlertesRoute
   '/admin/bus': typeof AdminBusRoute
   '/admin/declarants': typeof AdminDeclarantsRoute
+  '/admin/dupliquer-train': typeof AdminDupliquerTrainRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/plateformes': typeof AdminPlateformesRoute
   '/admin/referentiels': typeof AdminReferentielsRoute
@@ -333,12 +374,16 @@ export interface FileRoutesById {
   '/expedition/colis': typeof ExpeditionColisRoute
   '/expedition/departs': typeof ExpeditionDepartsRoute
   '/pilotage/alertes': typeof PilotageAlertesRoute
+  '/pilotage/analyse': typeof PilotageAnalyseRoute
   '/pilotage/reservations': typeof PilotageReservationsRoute
+  '/pilotage/suivi': typeof PilotageSuiviRoute
   '/pilotage/tableau': typeof PilotageTableauRoute
   '/reception/affiches': typeof ReceptionAffichesRoute
   '/reception/alertes': typeof ReceptionAlertesRoute
+  '/reception/fusion': typeof ReceptionFusionRoute
   '/reception/inconnues': typeof ReceptionInconnuesRoute
   '/reception/j3': typeof ReceptionJ3Route
+  '/reception/picking': typeof ReceptionPickingRoute
   '/coordination/': typeof CoordinationIndexRoute
   '/expedition/': typeof ExpeditionIndexRoute
   '/reception/': typeof ReceptionIndexRoute
@@ -354,6 +399,7 @@ export interface FileRouteTypes {
     | '/admin/alertes'
     | '/admin/bus'
     | '/admin/declarants'
+    | '/admin/dupliquer-train'
     | '/admin/parametres'
     | '/admin/plateformes'
     | '/admin/referentiels'
@@ -373,12 +419,16 @@ export interface FileRouteTypes {
     | '/expedition/colis'
     | '/expedition/departs'
     | '/pilotage/alertes'
+    | '/pilotage/analyse'
     | '/pilotage/reservations'
+    | '/pilotage/suivi'
     | '/pilotage/tableau'
     | '/reception/affiches'
     | '/reception/alertes'
+    | '/reception/fusion'
     | '/reception/inconnues'
     | '/reception/j3'
+    | '/reception/picking'
     | '/coordination/'
     | '/expedition/'
     | '/reception/'
@@ -392,6 +442,7 @@ export interface FileRouteTypes {
     | '/admin/alertes'
     | '/admin/bus'
     | '/admin/declarants'
+    | '/admin/dupliquer-train'
     | '/admin/parametres'
     | '/admin/plateformes'
     | '/admin/referentiels'
@@ -411,12 +462,16 @@ export interface FileRouteTypes {
     | '/expedition/colis'
     | '/expedition/departs'
     | '/pilotage/alertes'
+    | '/pilotage/analyse'
     | '/pilotage/reservations'
+    | '/pilotage/suivi'
     | '/pilotage/tableau'
     | '/reception/affiches'
     | '/reception/alertes'
+    | '/reception/fusion'
     | '/reception/inconnues'
     | '/reception/j3'
+    | '/reception/picking'
     | '/coordination'
     | '/expedition'
     | '/reception'
@@ -430,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/alertes'
     | '/admin/bus'
     | '/admin/declarants'
+    | '/admin/dupliquer-train'
     | '/admin/parametres'
     | '/admin/plateformes'
     | '/admin/referentiels'
@@ -449,12 +505,16 @@ export interface FileRouteTypes {
     | '/expedition/colis'
     | '/expedition/departs'
     | '/pilotage/alertes'
+    | '/pilotage/analyse'
     | '/pilotage/reservations'
+    | '/pilotage/suivi'
     | '/pilotage/tableau'
     | '/reception/affiches'
     | '/reception/alertes'
+    | '/reception/fusion'
     | '/reception/inconnues'
     | '/reception/j3'
+    | '/reception/picking'
     | '/coordination/'
     | '/expedition/'
     | '/reception/'
@@ -469,6 +529,7 @@ export interface RootRouteChildren {
   AdminAlertesRoute: typeof AdminAlertesRoute
   AdminBusRoute: typeof AdminBusRoute
   AdminDeclarantsRoute: typeof AdminDeclarantsRoute
+  AdminDupliquerTrainRoute: typeof AdminDupliquerTrainRoute
   AdminParametresRoute: typeof AdminParametresRoute
   AdminPlateformesRoute: typeof AdminPlateformesRoute
   AdminReferentielsRoute: typeof AdminReferentielsRoute
@@ -488,12 +549,16 @@ export interface RootRouteChildren {
   ExpeditionColisRoute: typeof ExpeditionColisRoute
   ExpeditionDepartsRoute: typeof ExpeditionDepartsRoute
   PilotageAlertesRoute: typeof PilotageAlertesRoute
+  PilotageAnalyseRoute: typeof PilotageAnalyseRoute
   PilotageReservationsRoute: typeof PilotageReservationsRoute
+  PilotageSuiviRoute: typeof PilotageSuiviRoute
   PilotageTableauRoute: typeof PilotageTableauRoute
   ReceptionAffichesRoute: typeof ReceptionAffichesRoute
   ReceptionAlertesRoute: typeof ReceptionAlertesRoute
+  ReceptionFusionRoute: typeof ReceptionFusionRoute
   ReceptionInconnuesRoute: typeof ReceptionInconnuesRoute
   ReceptionJ3Route: typeof ReceptionJ3Route
+  ReceptionPickingRoute: typeof ReceptionPickingRoute
   CoordinationIndexRoute: typeof CoordinationIndexRoute
   ExpeditionIndexRoute: typeof ExpeditionIndexRoute
   ReceptionIndexRoute: typeof ReceptionIndexRoute
@@ -555,6 +620,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/declarants'
       fullPath: '/admin/declarants'
       preLoaderRoute: typeof AdminDeclarantsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dupliquer-train': {
+      id: '/admin/dupliquer-train'
+      path: '/admin/dupliquer-train'
+      fullPath: '/admin/dupliquer-train'
+      preLoaderRoute: typeof AdminDupliquerTrainRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/parametres': {
@@ -704,11 +776,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PilotageAlertesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pilotage/analyse': {
+      id: '/pilotage/analyse'
+      path: '/pilotage/analyse'
+      fullPath: '/pilotage/analyse'
+      preLoaderRoute: typeof PilotageAnalyseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pilotage/reservations': {
       id: '/pilotage/reservations'
       path: '/pilotage/reservations'
       fullPath: '/pilotage/reservations'
       preLoaderRoute: typeof PilotageReservationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pilotage/suivi': {
+      id: '/pilotage/suivi'
+      path: '/pilotage/suivi'
+      fullPath: '/pilotage/suivi'
+      preLoaderRoute: typeof PilotageSuiviRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pilotage/tableau': {
@@ -739,6 +825,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReceptionAlertesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reception/fusion': {
+      id: '/reception/fusion'
+      path: '/reception/fusion'
+      fullPath: '/reception/fusion'
+      preLoaderRoute: typeof ReceptionFusionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reception/inconnues': {
       id: '/reception/inconnues'
       path: '/reception/inconnues'
@@ -753,6 +846,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReceptionJ3RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reception/picking': {
+      id: '/reception/picking'
+      path: '/reception/picking'
+      fullPath: '/reception/picking'
+      preLoaderRoute: typeof ReceptionPickingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -765,6 +865,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAlertesRoute: AdminAlertesRoute,
   AdminBusRoute: AdminBusRoute,
   AdminDeclarantsRoute: AdminDeclarantsRoute,
+  AdminDupliquerTrainRoute: AdminDupliquerTrainRoute,
   AdminParametresRoute: AdminParametresRoute,
   AdminPlateformesRoute: AdminPlateformesRoute,
   AdminReferentielsRoute: AdminReferentielsRoute,
@@ -784,12 +885,16 @@ const rootRouteChildren: RootRouteChildren = {
   ExpeditionColisRoute: ExpeditionColisRoute,
   ExpeditionDepartsRoute: ExpeditionDepartsRoute,
   PilotageAlertesRoute: PilotageAlertesRoute,
+  PilotageAnalyseRoute: PilotageAnalyseRoute,
   PilotageReservationsRoute: PilotageReservationsRoute,
+  PilotageSuiviRoute: PilotageSuiviRoute,
   PilotageTableauRoute: PilotageTableauRoute,
   ReceptionAffichesRoute: ReceptionAffichesRoute,
   ReceptionAlertesRoute: ReceptionAlertesRoute,
+  ReceptionFusionRoute: ReceptionFusionRoute,
   ReceptionInconnuesRoute: ReceptionInconnuesRoute,
   ReceptionJ3Route: ReceptionJ3Route,
+  ReceptionPickingRoute: ReceptionPickingRoute,
   CoordinationIndexRoute: CoordinationIndexRoute,
   ExpeditionIndexRoute: ExpeditionIndexRoute,
   ReceptionIndexRoute: ReceptionIndexRoute,

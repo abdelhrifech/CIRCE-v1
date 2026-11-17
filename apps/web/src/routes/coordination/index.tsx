@@ -1,3 +1,4 @@
+import { TableMetier } from '../../components/ui/table-metier.tsx'
 import { BoutonExportTableau } from '../../components/ui/export-tableau.tsx'
 import { useSelectionGlissee } from '../../lib/selection-glissee.ts'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
@@ -380,49 +381,171 @@ function ValidationAdminEtInstructionOk() {
         )}
         {etat.kind === 'ready' && etat.data.items.length > 0 && (
           <>
-            <BoutonExportTableau nom="coordination-index" tableau="Dossiers" />
-            <table {...glissement} className="w-full text-sm" aria-label="Dossiers">
-              <thead className="bg-slate-50 text-slate-600">
-                <tr>
-                  <th scope="col" className="px-3 py-2">
-                    <span className="sr-only">Sélection</span>
-                  </th>
-                  {[
-                    'Dossier',
-                    'Annonceur',
-                    'Atelier',
-                    'Départ',
-                    'Validation admin',
-                    'Préparation',
-                    ...((search.pour ?? 'deroulant') === 'deroulant' ? ['Instruction OK'] : []),
-                    'Écart BC / Circé',
-                    ...(colVisuels ? ['Visuels'] : []),
-                  ].map((h) => (
-                    <th key={h} scope="col" className="px-3 py-2 text-left font-medium">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {etat.data.items.map((d) => (
-                  <LigneDossier
-                    key={d.id}
-                    d={d}
-                    selectionnee={selection.includes(d.id)}
-                    onSelection={(oui) => {
-                      setSelection(oui ? [...selection, d.id] : selection.filter((x) => x !== d.id))
-                    }}
-                    onFiche={() => {
-                      changer({ fiche: d.id, page: search.page })
-                    }}
-                    onDemande={setDemande}
-                    avecVisuels={colVisuels}
-                    avecInstructionOk={(search.pour ?? 'deroulant') === 'deroulant'}
-                  />
-                ))}
-              </tbody>
-            </table>
+            {(search.pour === 'fixe' || search.pour === 'pliage') &&
+            etat.data.items.some((d) => (d.lignesPreparation?.length ?? 0) > 0) ? (
+              <>
+                <TableMetier
+                  nom="Dossiers"
+                  lignes={etat.data.items.flatMap((d) =>
+                    (d.lignesPreparation ?? []).map((l) => ({ d, l })),
+                  )}
+                  cle={(r) => r.l.id}
+                  colonnes={[
+                    { id: 'type', titre: 'Type', valeur: (r) => r.l.type },
+                    { id: 'repart', titre: 'Répart', valeur: (r) => r.l.repartition ?? r.l.id },
+                    { id: 'dossier', titre: 'Dossier', valeur: (r) => r.d.dossier },
+                    { id: 'annonceur', titre: 'Annonceur', valeur: (r) => r.d.annonceur },
+                    { id: 'qte', titre: 'Quantité', valeur: (r) => r.l.quantite },
+                    { id: 'theme', titre: 'Visuel', valeur: (r) => r.l.theme },
+                    { id: 'repiquage', titre: 'Repiquage', valeur: (r) => r.l.repiquage },
+                    { id: 'format', titre: 'Format', valeur: (r) => r.l.format },
+                    { id: 'dest', titre: 'Destinataire', valeur: (r) => r.l.destinataire },
+                    { id: 'depart', titre: 'Départ', valeur: (r) => r.l.depart },
+                    { id: 'atelier', titre: 'Atelier', valeur: (r) => r.l.atelier },
+                    {
+                      id: 'validation',
+                      titre: 'Validation admin',
+                      valeur: (r) => r.d.validationAdmin.etat,
+                      ajout: true,
+                    },
+                    {
+                      id: 'prepa',
+                      titre: 'Préparation',
+                      valeur: (r) => r.d.preparation,
+                      ajout: true,
+                    },
+                    {
+                      id: 'ecart',
+                      titre: 'Écart BC / Circé',
+                      valeur: (r) => r.d.ecart,
+                      ajout: true,
+                    },
+                  ]}
+                  onOuvrir={(r) => {
+                    changer({ fiche: r.d.id, page: search.page })
+                  }}
+                  actions={(r) => (
+                    <div>
+                      <button
+                        type="button"
+                        className="underline"
+                        onClick={() => {
+                          changer({ fiche: r.d.id, page: search.page })
+                        }}
+                      >
+                        Ouvrir le dossier {r.d.dossier}
+                      </button>
+                      <label>
+                        <input
+                          type="checkbox"
+                          aria-label={`Sélectionner dossier ${r.d.dossier} ligne ${r.l.id}`}
+                          checked={selection.includes(r.d.id)}
+                          onChange={(e) => {
+                            setSelection(
+                              e.target.checked
+                                ? [...new Set([...selection, r.d.id])]
+                                : selection.filter((id) => id !== r.d.id),
+                            )
+                          }}
+                        />{' '}
+                        Dossier
+                      </label>
+                    </div>
+                  )}
+                />
+                {etat.data.items.some((d) => !d.lignesPreparation?.length) && (
+                  <section className="mt-4">
+                    <h2 className="font-semibold">Dossiers sans répartition reçue</h2>
+                    <table className="w-full text-sm" aria-label="Dossiers sans répartition">
+                      <thead>
+                        <tr>
+                          <th>Sélection</th>
+                          <th>Dossier</th>
+                          <th>Annonceur</th>
+                          <th>Atelier</th>
+                          <th>Départ</th>
+                          <th>Validation admin</th>
+                          <th>Préparation</th>
+                          <th>Écart BC / Circé</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {etat.data.items
+                          .filter((d) => !d.lignesPreparation?.length)
+                          .map((d) => (
+                            <LigneDossier
+                              key={d.id}
+                              d={d}
+                              selectionnee={selection.includes(d.id)}
+                              onSelection={(oui) => {
+                                setSelection(
+                                  oui
+                                    ? [...new Set([...selection, d.id])]
+                                    : selection.filter((id) => id !== d.id),
+                                )
+                              }}
+                              onFiche={() => {
+                                changer({ fiche: d.id, page: search.page })
+                              }}
+                              onDemande={setDemande}
+                              avecVisuels={false}
+                              avecInstructionOk={false}
+                            />
+                          ))}
+                      </tbody>
+                    </table>
+                  </section>
+                )}
+              </>
+            ) : (
+              <>
+                <BoutonExportTableau nom="coordination-index" tableau="Dossiers" />
+                <table {...glissement} className="w-full text-sm" aria-label="Dossiers">
+                  <thead className="bg-slate-50 text-slate-600">
+                    <tr>
+                      <th scope="col" className="px-3 py-2">
+                        <span className="sr-only">Sélection</span>
+                      </th>
+                      {[
+                        'Dossier',
+                        'Annonceur',
+                        'Atelier',
+                        'Départ',
+                        'Validation admin',
+                        'Préparation',
+                        ...((search.pour ?? 'deroulant') === 'deroulant' ? ['Instruction OK'] : []),
+                        'Écart BC / Circé',
+                        ...(colVisuels ? ['Visuels'] : []),
+                      ].map((h) => (
+                        <th key={h} scope="col" className="px-3 py-2 text-left font-medium">
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {etat.data.items.map((d) => (
+                      <LigneDossier
+                        key={d.id}
+                        d={d}
+                        selectionnee={selection.includes(d.id)}
+                        onSelection={(oui) => {
+                          setSelection(
+                            oui ? [...selection, d.id] : selection.filter((x) => x !== d.id),
+                          )
+                        }}
+                        onFiche={() => {
+                          changer({ fiche: d.id, page: search.page })
+                        }}
+                        onDemande={setDemande}
+                        avecVisuels={colVisuels}
+                        avecInstructionOk={(search.pour ?? 'deroulant') === 'deroulant'}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
           </>
         )}
         {etat.kind === 'ready' && etat.data.total > etat.data.pageSize && (

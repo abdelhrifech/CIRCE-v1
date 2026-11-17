@@ -12,7 +12,7 @@ test('RG-COO-211 / 213 « Exporter les trains… » : simulation sans statut, ex
   page,
 }) => {
   await page.goto('/coordination/trains?dossier=2190201')
-  await expect(table(page).getByRole('row', { name: /E2E-EXP-/ })).toBeVisible()
+  await expect(table(page).getByRole('row', { name: /E2E-EXP-/ })).toHaveCount(2)
   await page.getByRole('button', { name: 'Exporter les trains…' }).click()
   const modale = page.getByRole('dialog', { name: /Exporter les trains · départ/ })
   await expect(modale).toContainText('en Instruction OK : leurs faces passent « A imprimer »')

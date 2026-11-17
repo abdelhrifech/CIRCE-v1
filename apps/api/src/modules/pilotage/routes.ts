@@ -1,7 +1,13 @@
+import { analyserProduction } from './analyse.ts'
+import { suiviAtelier } from './suivis.ts'
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import {
+  AnalyseProductionQuerySchema,
+  AnalyseProductionSchema,
+  SuiviAtelierSchema,
+  SuiviAtelierQuerySchema,
   DispositionTableauSchema,
   DonneesTableauSchema,
   J3AjoutSchema,
@@ -18,6 +24,21 @@ import { donneesTableau, lireDisposition, sauverDisposition } from './tableau.ts
 const Id = z.object({ id: z.coerce.number().int().positive() })
 export function nouveauPilotageRoutes(app: FastifyInstance, db: Db) {
   const r = app.withTypeProvider<ZodTypeProvider>()
+  r.get(
+    '/pilotage/analyse',
+    {
+      schema: {
+        querystring: AnalyseProductionQuerySchema,
+        response: { 200: AnalyseProductionSchema },
+      },
+    },
+    (req) => analyserProduction(db, requireIdentity(req), req.query),
+  )
+  r.get(
+    '/pilotage/suivi',
+    { schema: { querystring: SuiviAtelierQuerySchema, response: { 200: SuiviAtelierSchema } } },
+    (req) => suiviAtelier(db, requireIdentity(req), req.query),
+  )
   r.get('/j3', { schema: { querystring: J3ContexteSchema, response: { 200: J3Schema } } }, (req) =>
     lireJ3(db, requireIdentity(req), req.query.semaine),
   )

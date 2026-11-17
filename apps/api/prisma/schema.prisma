@@ -1519,6 +1519,7 @@ model AlerteAcquittement {
   id        Int      @id @default(autoincrement())
   cle       String   @unique
   signature String
+  snapshot String @default("")
   parId     Int      @map("par_id")
   le        DateTime @default(now())
 
@@ -1881,6 +1882,7 @@ model NonConformite {
   donnees String
   decisions String @default("[]")
   commentaireDecision String @default("")
+  reponses String @default("[]")
   version Int @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

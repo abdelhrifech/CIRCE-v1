@@ -51,7 +51,7 @@ test('EX-NEW-NC-001 les quatre entrées NC et les champs des formulaires sont di
   page,
 }) => {
   await page.goto('/non-conformite?tab=reception')
-  await expect(page.getByRole('heading', { name: 'Nouvelle réception', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Nouvelle demande', exact: true })).toBeVisible()
   await expect(page.getByRole('combobox', { name: /^Déclarant/ })).toBeVisible()
   await page.goto('/non-conformite?tab=declaration')
   await expect(page.getByRole('heading', { name: 'Nouvelle demande', exact: true })).toBeVisible()

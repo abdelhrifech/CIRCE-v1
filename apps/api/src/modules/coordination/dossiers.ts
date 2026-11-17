@@ -336,7 +336,42 @@ export async function listerDossiers(db: Db, identity: Identity, q: ListeDossier
   }
   const page = items.slice((q.page - 1) * q.pageSize, q.page * q.pageSize)
   return {
-    items: page,
+    items: await Promise.all(
+      page.map(async (d) => {
+        if (!typesUnitaire) return d
+        const reps = await db.repartition.findMany({
+          where: { contNum: d.dossier, retire: false },
+          include: { atelier: true, destinataire: true, support: true, typePreparation: true },
+          orderBy: { id: 'asc' },
+        })
+        return {
+          ...d,
+          lignesPreparation: reps
+            .filter(
+              (r) =>
+                peutVoirAtelier(identity, r.atelier) &&
+                (!q.atelierId || r.atelierId === q.atelierId) &&
+                typeDe(r, typesUnitaire) === (q.pour === 'PLIAGE' ? 'pliage' : 'fixe'),
+            )
+            .map((r) => ({
+              id: r.id,
+              type: r.typePreparation?.libelle ?? null,
+              repartition: r.repartition?.toString() ?? null,
+              theme: r.theme,
+              repiquage: r.repiquage,
+              format: r.support?.nom ?? null,
+              quantite: r.qte,
+              destinataire: r.destinataire?.nom ?? null,
+              depart:
+                r.semAnnee && r.semNum
+                  ? formatSemaineIso({ annee: r.semAnnee, semaine: r.semNum })
+                  : null,
+              atelier: r.atelier?.libelle ?? null,
+              dateAffichage: r.dateAffichage?.toISOString() ?? null,
+            })),
+        }
+      }),
+    ),
     total: items.length,
     // RG-COO-011 : « n » = dossiers cas sûrs sous le filtre courant (toutes pages).
     casSurs: items.filter((i) => i.validationAdmin.casSur).length,

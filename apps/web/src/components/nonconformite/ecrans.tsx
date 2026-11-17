@@ -1,6 +1,9 @@
+import { ApercuNc } from './feuille.tsx'
 import { exporterExcel, lireExcel } from '../../lib/excel.ts'
 import { useState } from 'react'
 import {
+  CasNcListeSchema,
+  type CasNc,
   NC_A_PRECISER,
   NC_BLOQUANTES,
   NC_CONTROLES,
@@ -137,6 +140,7 @@ export function FormulaireNc({
 }) {
   const [donnees, setDonnees] = useState<NcDonnees>(() => NcDonneesSchema.parse({}))
   const [site, setSite] = useState('')
+  const [prefill, setPrefill] = useState(false)
   const [fichiers, setFichiers] = useState<File[]>([])
   const [erreur, setErreur] = useState<unknown>(null)
   const [envoi, setEnvoi] = useState(false)
@@ -157,8 +161,16 @@ export function FormulaireNc({
     <label className="block text-sm font-medium">
       {titre}
       {requis && ' *'}
+      {requis && prefill && !String(d[k]).trim() && (
+        <strong className="ml-2 text-amber-800">à compléter</strong>
+      )}
       <input
-        className={champ}
+        className={
+          champ +
+          (requis && prefill && !String(d[k]).trim()
+            ? ' border-2 border-amber-700 bg-amber-50'
+            : '')
+        }
         type={inputType}
         required={requis}
         value={String(d[k])}
@@ -172,6 +184,9 @@ export function FormulaireNc({
     <label className="block text-sm font-medium">
       {titre}
       {requis && ' *'}
+      {requis && prefill && !String(d[k]).trim() && (
+        <strong className="ml-2 text-amber-800">à compléter</strong>
+      )}
       <select
         className={champ}
         required={requis}
@@ -213,11 +228,12 @@ export function FormulaireNc({
   return (
     <form
       onSubmit={(e) => void envoyer(e)}
-      className="max-w-4xl rounded-lg border border-slate-200 bg-white"
+      className="max-w-4xl rounded-lg border-2 bg-white"
+      style={{ borderColor: type === 'AGENCE' ? '#c2410c' : '#6f42c1' }}
     >
       <div className="border-b p-5">
         <h2 className="text-xl font-semibold">
-          {type === 'AGENCE' ? 'Usage réservé aux Agences' : 'Déclaration d’une non conformité'}
+          {type === 'AGENCE' ? 'Usage réservé aux Agences' : 'Usage réservé aux plateformes'}
         </h2>
         {type === 'AGENCE' && (
           <p className="mt-1 text-sm text-red-700">
@@ -227,6 +243,40 @@ export function FormulaireNc({
         )}
       </div>
       <div className="space-y-4 p-5">
+        {type === 'RECEPTION' && (
+          <PreRemplirNc
+            onChoix={(c) => {
+              setSite(String(c.plateformeId))
+              setPrefill(true)
+              setDonnees((d) => {
+                const next = { ...d, ...c.donnees, declarant: d.declarant }
+                if (refs.kind === 'ready') {
+                  if (
+                    next.imprimeur &&
+                    !refs.data.imprimeurs.some((i) => i.libelle === next.imprimeur)
+                  ) {
+                    next.imprimeurAutre = next.imprimeur
+                    next.imprimeur = 'AUTRE'
+                  }
+                  if (
+                    next.transporteur &&
+                    !refs.data.livreurs.some((i) => i.libelle === next.transporteur)
+                  ) {
+                    next.transporteurAutre = next.transporteur
+                    next.transporteur = 'AUTRE'
+                  }
+                }
+                return next
+              })
+            }}
+          />
+        )}
+        {prefill && (
+          <p className="rounded border border-amber-500 p-3">
+            Demande pré-remplie depuis une réception. Vérifiez les informations et complétez les
+            champs obligatoires signalés « à compléter ». Tous les champs restent modifiables.
+          </p>
+        )}
         {refs.kind === 'loading' && <p>Chargement des référentiels…</p>}
         {refs.kind === 'error' && <ErrorMessage error={refs.error} onRetry={recharger} />}
         <label className="block text-sm font-medium">
@@ -265,6 +315,13 @@ export function FormulaireNc({
             {texte('afficheur', 'Nom de l’afficheur', true)}
             {texte('dossier', 'N° de dossier BC', true)}
           </>
+        )}
+        {type === 'RECEPTION' && (
+          <div className="grid gap-3 sm:grid-cols-3">
+            {texte('dossier', 'N° de dossier BC')}
+            {texte('semaine', 'Semaine(s)')}
+            {texte('quantite', 'Quantité concernée')}
+          </div>
         )}
         {texte('annonceur', 'Annonceur', true)}
         {type === 'RECEPTION' && (
@@ -385,7 +442,76 @@ export function FormulaireNc({
   )
 }
 
+function PreRemplirNc({ onChoix }: { onChoix: (c: CasNc) => void }) {
+  const [q, setQ] = useState(''),
+    [recherche, setRecherche] = useState('')
+  const { etat } = useApi(`nc-cas-${recherche}`, (signal) =>
+    recherche.length >= 2
+      ? apiRequest('GET', `/api/non-conformites/cas?q=${encodeURIComponent(recherche)}`, {
+          schema: CasNcListeSchema,
+          signal,
+        })
+      : Promise.resolve({ items: [] }),
+  )
+  return (
+    <section className="rounded border p-4">
+      <h3 className="mb-2 text-lg font-semibold">Pré-remplir depuis un dossier reçu</h3>
+      <label>
+        Dossier ou annonceur
+        <input
+          className={champ}
+          value={q}
+          onChange={(e) => {
+            setQ(e.target.value)
+          }}
+        />
+      </label>
+      <button
+        type="button"
+        className="my-2 rounded border p-2"
+        disabled={q.trim().length < 2}
+        onClick={() => {
+          setRecherche(q.trim())
+        }}
+      >
+        Rechercher les réceptions
+      </button>
+      {etat.kind === 'loading' && <p>Recherche…</p>}
+      {etat.kind === 'error' && <ErrorMessage error={etat.error} />}
+      {etat.kind === 'ready' && (
+        <>
+          <ul>
+            {etat.data.items.map((c) => (
+              <li key={`${c.plateformeId}-${c.donnees.dossier}-${c.donnees.theme}`}>
+                <button
+                  type="button"
+                  className="my-1 w-full rounded border p-3 text-left"
+                  onClick={() => {
+                    onChoix(c)
+                  }}
+                >
+                  {c.plateforme} · {c.donnees.dossier} · {c.donnees.annonceur} · {c.donnees.theme} ·{' '}
+                  {c.donnees.semaine} · Qté {c.donnees.quantite} —{' '}
+                  {c.validation ? 'Rattachement confirmé' : 'Rattachement à confirmer'}
+                </button>
+              </li>
+            ))}
+          </ul>
+          {recherche && !etat.data.items.length && (
+            <p>
+              Aucune affiche reçue et rattachée pour cette recherche. La saisie libre reste
+              disponible.
+            </p>
+          )}
+        </>
+      )}
+    </section>
+  )
+}
+
 const LIBELLES: Partial<Record<keyof NcDonnees, string>> = {
+  semaine: 'Semaine(s)',
+  quantite: 'Quantité concernée',
   annonceur: 'Annonceur',
   dossier: 'N° de dossier BC',
   theme: 'Thème',
@@ -439,56 +565,48 @@ const texteCellule = (v: unknown): string =>
 export function SuiviNc({
   type,
   ouvrir,
+  dossier,
   onNouvelle,
 }: {
-  type: 'RECEPTION' | 'AGENCE'
+  type?: 'RECEPTION' | 'AGENCE'
+  dossier?: string
   ouvrir?: number
   onNouvelle: () => void
 }) {
   const { etat, recharger } = useApi(`nc-${type}`, (signal) =>
-    apiRequest('GET', `/api/non-conformites?type=${type}`, { schema: ListeNcSchema, signal }),
+    apiRequest('GET', '/api/non-conformites', { schema: ListeNcSchema, signal }),
   )
   const { etat: moi } = useApi('nc-moi', () => getMe())
-  const [filtre, setFiltre] = useState(''),
+  const [demande, setDemande] = useState(type ?? ''),
+    [filtre, setFiltre] = useState(''),
     [site, setSite] = useState(''),
     [statut, setStatut] = useState(''),
     [portee, setPortee] = useState(''),
     [origine, setOrigine] = useState(''),
     [decisionFiltre, setDecisionFiltre] = useState('')
+  const [impression, setImpression] = useState<Nc | null>(null)
   const [fiche, setFiche] = useState<Nc | null>(null),
     [decision, setDecision] = useState<Nc | null>(null)
   const [fermee, setFermee] = useState<number | undefined>(undefined)
-  const [colonnes, setColonnes] = useState<(keyof NcDonnees)[]>(
-    type === 'RECEPTION'
-      ? [
-          'annonceur',
-          'dossier',
-          'types',
-          'controle',
-          'gestionnaire',
-          'theme',
-          'commentaireNC',
-          'formats',
-          'declarant',
-        ]
-      : [
-          'region',
-          'declarant',
-          'afficheur',
-          'dossier',
-          'annonceur',
-          'theme',
-          'formats',
-          'lieu',
-          'dateAff',
-          'types',
-          'commentaire',
-        ],
-  )
+  const [colonnes, setColonnes] = useState<(keyof NcDonnees)[]>([
+    'annonceur',
+    'dossier',
+    'semaine',
+    'quantite',
+    'types',
+    'controle',
+    'gestionnaire',
+    'theme',
+    'commentaireNC',
+    'formats',
+    'declarant',
+  ])
   const items = etat.kind === 'ready' ? etat.data.items : []
   const rows = items.filter(
     (n) =>
+      (!dossier || (n.donnees.dossier.match(/\d+/g) ?? []).some((v) => v === dossier)) &&
       (!filtre || JSON.stringify(n).toLocaleLowerCase().includes(filtre.toLocaleLowerCase())) &&
+      (!demande || n.type === demande) &&
       (!site || n.plateforme === site) &&
       (!statut || n.statut === statut) &&
       (!portee || String(n.bloquante) === portee) &&
@@ -500,26 +618,35 @@ export function SuiviNc({
   )
   const active = fiche ?? (ouvrir !== fermee ? (items.find((n) => n.id === ouvrir) ?? null) : null)
   function exporter() {
+    const champs = Object.keys(NcDonneesSchema.parse({})) as (keyof NcDonnees)[]
     exporterExcel(
-      `suivi-nc-${type.toLowerCase()}`,
+      'suivi-nc',
       [
         'N°',
+        'Demande',
         'Plateforme',
         'Origine',
         'Bloquante',
         'Statut',
         'Décision',
-        ...colonnes.map((k) => LIBELLES[k] ?? k),
+        ...champs.map((k) => LIBELLES[k] ?? k),
+        'Réponses plateforme',
+        'Pièces jointes',
         'Créée le',
       ],
       rows.map((n) => [
         n.id,
+        n.type === 'AGENCE' ? 'Agence' : 'Plateformes',
         n.plateforme,
         n.origine,
         n.bloquante,
         n.statut,
         n.decisions.join(' · '),
-        ...colonnes.map((k) => texteCellule(n.donnees[k])),
+        ...champs.map((k) => texteCellule(n.donnees[k])),
+        n.reponses
+          .map((r) => `${r.date} · ${r.auteur} · ${r.traite ? 'Oui' : 'Non'} · ${r.commentaire}`)
+          .join('\n'),
+        n.fichiers.map((f) => f.nom).join('\n'),
         new Date(n.creeLe),
       ]),
     )
@@ -529,14 +656,27 @@ export function SuiviNc({
   return (
     <>
       <div className="mb-4 flex flex-wrap justify-between gap-3">
-        <h1 className="text-2xl font-semibold">
-          {type === 'RECEPTION' ? 'Suivi NC réception' : 'Suivi NC Agence'}
-        </h1>
+        <h1 className="text-2xl font-semibold">Suivi des NC</h1>
         <Button type="button" onClick={onNouvelle}>
-          {type === 'RECEPTION' ? 'Nouvelle réception' : 'Nouvelle demande'}
+          Nouvelle demande
         </Button>
       </div>
       <div className="mb-4 flex flex-wrap gap-3">
+        <label>
+          Demande
+          <select
+            aria-label="Demande"
+            className={champ}
+            value={demande}
+            onChange={(e) => {
+              setDemande(e.target.value)
+            }}
+          >
+            <option value="">Toutes</option>
+            <option value="RECEPTION">Plateformes</option>
+            <option value="AGENCE">Agence</option>
+          </select>
+        </label>
         <input
           className={champ + ' max-w-xs'}
           aria-label="Rechercher une non-conformité"
@@ -677,6 +817,7 @@ export function SuiviNc({
               <tr>
                 {[
                   'N°',
+                  'Demande',
                   'Plateforme',
                   'Origine',
                   'Bloquante',
@@ -703,6 +844,11 @@ export function SuiviNc({
                   }}
                 >
                   <td className="p-3">{n.id}</td>
+                  <td
+                    className={`p-3 font-semibold ${n.type === 'AGENCE' ? 'bg-orange-100 text-orange-900' : 'bg-purple-100 text-purple-900'}`}
+                  >
+                    {n.type === 'AGENCE' ? 'Agence' : 'Plateformes'}
+                  </td>
                   <td className="p-3">{n.plateforme}</td>
                   <td className="p-3">{n.origine}</td>
                   <td className="p-3">
@@ -732,7 +878,7 @@ export function SuiviNc({
                             setDecision(n)
                           }}
                         >
-                          {n.statut === 'En cours plateforme' ? 'Traité ?' : 'Décision'}
+                          {n.statut === 'En cours plateforme' ? 'Réponse' : 'Décision'}
                         </button>
                       )}
                   </td>
@@ -757,6 +903,17 @@ export function SuiviNc({
             }
           }}
         >
+          <button
+            type="button"
+            className="mb-3 rounded border p-2"
+            onClick={() => {
+              setImpression(active)
+              setFiche(null)
+              setFermee(ouvrir)
+            }}
+          >
+            Feuille de non-conformité
+          </button>
           <dl className="grid grid-cols-2 gap-3 text-sm">
             <dt>Statut</dt>
             <dd>{active.statut}</dd>
@@ -792,11 +949,21 @@ export function SuiviNc({
           </ul>
         </Modale>
       )}
+      {impression && (
+        <ApercuNc
+          items={[impression]}
+          onFermer={() => {
+            setImpression(null)
+            recharger()
+          }}
+        />
+      )}
       {decision && (
         <DecisionNc
           key={decision.id}
           nc={decision}
           preproduction={peutDecider}
+          plateforme={peutTraiter}
           onFermer={() => {
             setDecision(null)
           }}
@@ -813,15 +980,19 @@ export function SuiviNc({
 function DecisionNc({
   nc,
   preproduction,
+  plateforme,
   onFermer,
   onValidee,
 }: {
   nc: Nc
   preproduction: boolean
+  plateforme: boolean
   onFermer: () => void
   onValidee: () => void
 }) {
-  const [decisions, setDecisions] = useState<string[]>(nc.decisions),
+  const [decisions, setDecisions] = useState<string[]>(
+      nc.decisions.filter((d) => d !== 'Traité par la plateforme'),
+    ),
     [commentaire, setCommentaire] = useState(nc.commentaireDecision),
     [erreur, setErreur] = useState<unknown>(null),
     [envoi, setEnvoi] = useState(false)
@@ -852,28 +1023,15 @@ function DecisionNc({
       <p className="mb-4">
         NC n° {nc.id} · {nc.donnees.annonceur} · {nc.statut}
       </p>
-      {preproduction ? (
-        <ChoixMultiples
-          label="Décision (une ou plusieurs)"
-          options={NC_DECISIONS}
-          value={decisions}
-          onChange={setDecisions}
-        />
-      ) : (
+      {preproduction && (
         <>
-          <p>La Préproduction a demandé une action à la plateforme.</p>
-          <label className="my-4 block">
-            <input
-              type="checkbox"
-              checked={decisions.includes('Traité par la plateforme')}
-              onChange={(e) => {
-                setDecisions(
-                  e.target.checked ? [...nc.decisions, 'Traité par la plateforme'] : nc.decisions,
-                )
-              }}
-            />{' '}
-            Traité par la plateforme
-          </label>
+          <h3 className="my-3 font-semibold">1. Décision de la Pré-Prod</h3>
+          <ChoixMultiples
+            label="Décision (une ou plusieurs)"
+            options={NC_DECISIONS.filter((d) => d !== 'Traité par la plateforme')}
+            value={decisions}
+            onChange={setDecisions}
+          />
         </>
       )}
       <p className="my-3 text-sm">
@@ -895,11 +1053,83 @@ function DecisionNc({
         <button type="button" onClick={onFermer}>
           Annuler
         </button>
-        <Button type="button" disabled={envoi || !decisions.length} onClick={() => void valider()}>
+        <Button
+          type="button"
+          disabled={!preproduction || envoi || !decisions.length}
+          onClick={() => void valider()}
+        >
           Valider la décision
         </Button>
       </div>
+      <h3 className="my-3 font-semibold">2. Réponse de la plateforme</h3>
+      <ul>
+        {nc.reponses.map((r, i) => (
+          <li key={i} className="my-2 text-sm">
+            {date(r.date)} · {r.auteur} · {r.traite ? 'Oui, traité' : 'Non, toujours en cours'} —{' '}
+            {r.commentaire}
+          </li>
+        ))}
+      </ul>
+      {plateforme && nc.statut === 'En cours plateforme' && (
+        <ReponsePlateforme nc={nc} onValidee={onValidee} />
+      )}
     </Modale>
+  )
+}
+
+function ReponsePlateforme({ nc, onValidee }: { nc: Nc; onValidee: () => void }) {
+  const [choix, setChoix] = useState<boolean | null>(null),
+    [commentaire, setCommentaire] = useState(''),
+    [erreur, setErreur] = useState<unknown>(null),
+    [envoi, setEnvoi] = useState(false)
+  async function envoyer() {
+    setEnvoi(true)
+    setErreur(null)
+    try {
+      await apiPost(`/api/non-conformites/${nc.id}/reponse`, {
+        schema: NcSchema,
+        body: { version: nc.version, traite: choix, commentaire },
+      })
+      onValidee()
+    } catch (e) {
+      setErreur(e)
+    } finally {
+      setEnvoi(false)
+    }
+  }
+  return (
+    <section className="space-y-3 rounded border p-4">
+      <div className="flex gap-3">
+        {[true, false].map((v) => (
+          <button
+            type="button"
+            key={String(v)}
+            aria-pressed={choix === v}
+            className="rounded border p-2"
+            onClick={() => {
+              setChoix(v)
+            }}
+          >
+            {choix === v ? '✓ ' : ''}
+            {v ? 'Oui, traité' : 'Non, toujours en cours'}
+          </button>
+        ))}
+      </div>
+      <label>
+        Commentaire de la réponse
+        <textarea
+          className={champ}
+          value={commentaire}
+          onChange={(e) => {
+            setCommentaire(e.target.value)
+          }}
+        />
+      </label>
+      {erreur !== null && <ErrorMessage error={erreur} />}
+      <Button type="button" disabled={choix === null || envoi} onClick={() => void envoyer()}>
+        Valider la réponse
+      </Button>
+    </section>
   )
 }
 

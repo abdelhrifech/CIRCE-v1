@@ -820,5 +820,107 @@ export async function alertesCoordination(
       })
     }
   }
+  // RG-NEW16-COO-002 — app.js/alerteApresExport : notification uniquement, trains inchangés.
+  const exportsRecents = await db.exportTrains.findMany({
+    where: { nature: 'EXPORT_TRAINS', simulation: false, le: { gte: depuis } },
+    include: { lignes: true },
+    orderBy: { le: 'asc' },
+  })
+  const ateliersExport = await db.atelier.findMany({ where: surPlateformes })
+  const visiblesAteliers = new Map(
+    ateliersExport
+      .filter((a) => identity.siteId === null || a.plateformeId === identity.siteId)
+      .filter(
+        (a) =>
+          identity.perimetre.toutesPlateformes ||
+          identity.perimetre.lignes.some(
+            (p) =>
+              p.plateformeId === a.plateformeId && (p.atelierId === null || p.atelierId === a.id),
+          ),
+      )
+      .map((a) => [a.id, a]),
+  )
+  const traces = await db.journalAudit.findMany({
+    where: {
+      typeEntite: 'INSTRUCTION',
+      action: { in: ['INTEGRATION_INSTRUCTION', 'RENVOI_BROADCAST_IGNORE'] },
+      le: { gte: depuis },
+    },
+    orderBy: { le: 'desc' },
+  })
+  const instructionsApres = await parPaquets([...new Set(traces.map((t) => t.entiteId))], (ids) =>
+    db.instruction.findMany({
+      where: { code: { in: ids } },
+      select: {
+        code: true,
+        atelierId: true,
+        contNum: true,
+        contAnbas: true,
+        contSembas: true,
+        annonceur: true,
+      },
+    }),
+  )
+  const traceDe = new Map<string, (typeof traces)[number]>()
+  for (const t of traces) if (!traceDe.has(t.entiteId)) traceDe.set(t.entiteId, t)
+  const dejaApres = new Set<string>()
+  for (const e of exportsRecents) {
+    const sites = [
+      ...new Set(
+        e.lignes.flatMap((l) => {
+          const at = l.atelierId === null ? undefined : visiblesAteliers.get(l.atelierId)
+          return at ? [at.plateformeId] : []
+        }),
+      ),
+    ]
+    const depart = formatSemaineIso({ annee: e.depAnnee, semaine: e.depSemaine })
+    for (const site of sites) {
+      out.push({
+        cle: `EXPORT-${e.id}-${site}`,
+        type: 'EXPORT_TRAINS',
+        regle: 'RG-NEW16-COO-002',
+        gravite: 'INFORMATION',
+        titre: 'Trains exportés : go de la plateforme',
+        message: `Export n° ${e.id}, départ ${depart}. Les trains exportés sont disponibles pour la préparation.`,
+        lien: `/coordination/trains?depart=${depart}`,
+        destinataires: ['cheq', 'recep'],
+        plateformeId: site,
+        depart,
+        date: e.le.toISOString(),
+        dossiers: [],
+      })
+      for (const i of instructionsApres) {
+        const atelier = i.atelierId === null ? null : visiblesAteliers.get(i.atelierId),
+          trace = traceDe.get(i.code)
+        if (
+          !atelier ||
+          atelier.plateformeId !== site ||
+          i.contAnbas !== e.depAnnee ||
+          i.contSembas !== e.depSemaine ||
+          !trace ||
+          trace.le <= e.le ||
+          !i.contNum
+        )
+          continue
+        const cle = `APEXP-${i.code}-${trace.id}`
+        if (dejaApres.has(cle)) continue
+        dejaApres.add(cle)
+        out.push({
+          cle,
+          type: 'APRES_EXPORT',
+          regle: 'RG-NEW16-COO-002',
+          gravite: 'IMPORTANT',
+          titre: 'Dossier arrivé après l’export des trains',
+          message: `Dossier ${i.contNum} (${i.annonceur ?? '—'}) : préparation reçue le ${formatEcheance(trace.le)}, après l’export ${e.id} du ${formatEcheance(e.le)}. Les trains exportés restent inchangés.`,
+          lien: lienDossier(i.contNum),
+          destinataires: ['cheq', 'recep', 'coord'],
+          plateformeId: site,
+          depart,
+          date: trace.le.toISOString(),
+          dossiers: [i.contNum],
+        })
+      }
+    }
+  }
   return out
 }

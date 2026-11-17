@@ -12,3 +12,7 @@ apps/api/src/generated
 playwright-report
 test-results
 .DS_Store
+
+# SQLite runtime sidecars must never be committed.
+apps/api/prisma/*.db-wal
+apps/api/prisma/*.db-shm

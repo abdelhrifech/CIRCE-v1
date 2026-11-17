@@ -88,6 +88,23 @@ export const ValidationDossierSchema = z.object({
 })
 
 export const DossierCoordinationSchema = z.object({
+  lignesPreparation: z
+    .array(
+      z.object({
+        id: n,
+        type: z.string().nullable(),
+        repartition: z.string().nullable(),
+        theme: z.string().nullable(),
+        repiquage: z.string().nullable(),
+        format: z.string().nullable(),
+        quantite: n.nullable(),
+        destinataire: z.string().nullable(),
+        depart: z.string().nullable(),
+        atelier: z.string().nullable(),
+        dateAffichage: z.string().nullable(),
+      }),
+    )
+    .optional(),
   id: n,
   version: n,
   dossier: n,

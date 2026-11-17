@@ -53,7 +53,7 @@ test('ECR-TRA-01 / RG-COO-068 alerte « Thème modifié dans Broadcast », ouver
     'Broadcast indique « Thème Broadcast E2E », Circé a « Thème Circé E2E »',
   )
   // Q-220 : l'acquittement n'est ouvert à aucun rôle tant que « qui acquitte » n'est pas décidé.
-  await expect(ligne.getByRole('button', { name: 'Acquitter' })).toBeDisabled()
+  await expect(ligne.getByRole('button', { name: 'Archiver' })).toBeDisabled()
   await ligne.getByRole('link', { name: 'Ouvrir' }).click()
   await expect(page.getByRole('heading', { name: 'Thèmes modifiés dans Broadcast' })).toBeVisible()
   const table = page.getByRole('table', { name: 'Thèmes modifiés dans Broadcast' })
