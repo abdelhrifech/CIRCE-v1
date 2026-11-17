@@ -246,6 +246,24 @@ export const CATALOGUE_ALERTES: Record<TypeAlerte, CatalogueRegleAlerte> = {
     regles: ['RG-REC-188'],
     calculee: true,
   },
+  EXPORT_TRAINS: {
+    declencheur: 'Export effectif des trains de la plateforme et de la semaine',
+    seuil: null,
+    regles: ['RG-NEW16-COO-002'],
+    calculee: true,
+  },
+  APRES_EXPORT: {
+    declencheur: 'Préparation reçue après export des trains de la semaine',
+    seuil: null,
+    regles: ['RG-NEW16-COO-002'],
+    calculee: true,
+  },
+  NC_PLATEFORME: {
+    declencheur: 'Décision de la Préproduction en attente de réponse de la plateforme',
+    seuil: null,
+    regles: ['RG-NEW16-NC-001'],
+    calculee: true,
+  },
   NC_BLOQUANTE: {
     declencheur: 'Non-conformité bloquante sans décision de la Préproduction',
     seuil: null,

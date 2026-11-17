@@ -18,25 +18,19 @@ test('RG-COO-238 / 239 liste de la préparation 2 m² fixe : entretien à l’af
   const l = ligne(page, /Thème unitaire E2E/)
   await expect(l).toContainText('Destinataire UNI A')
   // 20 affiches : entretien 8 % arrondi au supérieur = 2, total 22.
-  await expect(l.getByRole('cell').nth(5)).toHaveText('20')
-  await expect(l.getByRole('cell').nth(6)).toHaveText('2')
-  await expect(l.getByRole('cell').nth(7)).toHaveText('22')
+  await expect(l.locator('[data-colonne="qte"]')).toHaveText('20')
+  await expect(l.locator('[data-colonne="entretien"]')).toHaveText('2')
+  await expect(l.locator('[data-colonne="total"]')).toHaveText('22')
   await expect(page.getByTestId('liberation')).toContainText('pas encore libérée')
   await l.getByRole('button', { name: 'Quantité' }).click()
   const modale = page.getByRole('dialog', { name: 'Modifier la quantité à produire' })
   await modale.getByLabel('Quantité').fill('30')
   await modale.getByRole('button', { name: 'Enregistrer' }).click()
   await expect(page.getByRole('status')).toContainText('Quantité à produire mise à jour : 20 → 30.')
-  await expect(
-    ligne(page, /Thème unitaire E2E/)
-      .getByRole('cell')
-      .nth(6),
-  ).toHaveText('3')
-  await expect(
-    ligne(page, /Thème unitaire E2E/)
-      .getByRole('cell')
-      .nth(7),
-  ).toHaveText('33')
+  await expect(ligne(page, /Thème unitaire E2E/).locator('[data-colonne="entretien"]')).toHaveText(
+    '3',
+  )
+  await expect(ligne(page, /Thème unitaire E2E/).locator('[data-colonne="total"]')).toHaveText('33')
 })
 
 test('RG-COO-244 corriger l’intitulé : champs vides refusés, puis correction (Pré-Prod prévenue, feuille à refaire)', async ({

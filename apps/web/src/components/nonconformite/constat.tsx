@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { lireBase64 } from '../reception/bon-livraison.tsx'
+import { useState, useRef, useEffect } from 'react'
 import { NcSchema, type ConstatNc } from '@circe/shared'
 import { ChoixPortee } from './ecrans.tsx'
 import { apiPost } from '../../lib/api-client.ts'
@@ -12,6 +13,11 @@ export function SaisieConstat({
   value: ConstatNc
   onChange: (v: ConstatNc) => void
 }) {
+  const dernier = useRef(value)
+  useEffect(() => {
+    dernier.current = value
+  }, [value])
+  const [erreur, setErreur] = useState<unknown>(null)
   return (
     <div className="space-y-4">
       <ChoixPortee
@@ -35,6 +41,52 @@ export function SaisieConstat({
           }}
         />
       </label>
+      <label className="block">
+        Prendre ou joindre une photo de preuve (facultatif)
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment"
+          multiple
+          onChange={(e) => {
+            const fs = Array.from(e.target.files ?? [])
+            e.target.value = ''
+            setErreur(null)
+            void Promise.all(
+              fs.map(async (f) => {
+                if (f.size > 10 * 1024 * 1024) throw new Error('Photo supérieure à 10 Mo.')
+                return { nom: f.name, mimeType: f.type, contenuBase64: await lireBase64(f) }
+              }),
+            )
+              .then((fs) => {
+                if ((dernier.current.fichiers?.length ?? 0) + fs.length > 10)
+                  throw new Error('Maximum 10 photos.')
+                onChange({
+                  ...dernier.current,
+                  fichiers: [...(dernier.current.fichiers ?? []), ...fs],
+                })
+              })
+              .catch(setErreur)
+          }}
+        />
+      </label>
+      <ul>
+        {value.fichiers?.map((f, i) => (
+          <li key={i}>
+            {f.nom}{' '}
+            <button
+              type="button"
+              className="underline"
+              onClick={() => {
+                onChange({ ...value, fichiers: value.fichiers?.filter((_, j) => j !== i) })
+              }}
+            >
+              Retirer
+            </button>
+          </li>
+        ))}
+      </ul>
+      {erreur !== null && <ErrorMessage error={erreur} />}
     </div>
   )
 }
@@ -68,6 +120,7 @@ export function DeclarerConstat({
       const n = await apiPost('/api/non-conformites', {
         schema: NcSchema,
         body: {
+          fichiers: constat.fichiers ?? [],
           type: 'RECEPTION',
           plateformeId,
           receptionId,

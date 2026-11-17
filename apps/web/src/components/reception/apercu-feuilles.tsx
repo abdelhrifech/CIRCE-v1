@@ -1,3 +1,5 @@
+import { FeuilleNc } from '../nonconformite/feuille.tsx'
+import type { Nc } from '@circe/shared'
 import { FeuillesSchema, ImpressionResultatSchema, type Feuille } from '@circe/shared'
 import { useState } from 'react'
 import { apiPost, apiRequest } from '../../lib/api-client.ts'
@@ -123,6 +125,7 @@ function FeuilleA4({ f }: { f: Feuille }) {
 }
 
 interface ApercuProps {
+  nonConformites?: Nc[]
   afficheIds: number[]
   avecEtiquettes?: boolean
   /** RG-REC-090 : « Étiquettes rack » seules (une étiquette rack = la feuille de stock, RG-REC-076). */
@@ -136,6 +139,7 @@ interface ApercuProps {
  */
 export function ApercuFeuilles({
   afficheIds,
+  nonConformites = [],
   avecEtiquettes = false,
   etiquettesSeules = false,
   onFermer,
@@ -167,6 +171,7 @@ export function ApercuFeuilles({
         schema: ImpressionResultatSchema,
         body: {
           afficheIds,
+          nonConformites: nonConformites.map((nc) => ({ id: nc.id, version: nc.version })),
           contenu: etiquettesSeules
             ? 'ETIQUETTE_RACK'
             : etiquettes
@@ -213,6 +218,7 @@ export function ApercuFeuilles({
                 </div>
               )),
             )}
+            {nonConformites.length > 0 && <FeuilleNc items={nonConformites} />}
           </div>
           {envoi.kind === 'erreur' && (
             <div className="mt-2">

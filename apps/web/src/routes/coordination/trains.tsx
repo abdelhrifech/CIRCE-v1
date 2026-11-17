@@ -60,7 +60,7 @@ const SearchSchema = z.object({
   afficheur: z.string().optional(),
   trainsDe: z.coerce.number().int().min(1).max(9).optional(),
   /** Vue : Liste des trains (défaut), Suivi par thème (besoin), Préparation ou Suivi 8 m² (ECR-COO-05 / 06 / 07 / 08). */
-  tab: z.enum(['trains', 'besoin', 'prepa', 'd8']).optional(),
+  tab: z.enum(['trains', 'besoin', 'prepa', 'd8', 'positions', 'export']).optional(),
 })
 type Recherche = z.infer<typeof SearchSchema>
 
@@ -141,7 +141,7 @@ function ListeDesTrains() {
   const peut = (code: Parameters<typeof can>[1]) => moi.kind === 'ready' && can(moi.data, code)
   const qs = qsDe(search)
   const tab = search.tab ?? 'trains'
-  const prepa = tab === 'prepa'
+  const prepa = tab === 'prepa' || tab === 'export'
   const { etat, recharger } = useApi(`trains-${qs}`, (signal) =>
     apiRequest('GET', `/api/coordination/trains?${qs}`, { schema: ListeTrainsSchema, signal }),
   )
@@ -171,13 +171,16 @@ function ListeDesTrains() {
   })
   const [filtres, setFiltres] = useState<Recherche>(search)
 
-  const lignes = etat.kind === 'ready' ? etat.data.lignes : []
+  const lignes =
+    etat.kind === 'ready' ? (prepa ? etat.data.lignes : (etat.data.faces ?? etat.data.lignes)) : []
   const glissement = useSelectionGlissee(
-    lignes.map((l) => l.cle),
+    [...new Set(lignes.map((l) => l.cle))],
     selection,
     setSelection,
   )
-  const choisis = lignes.filter((l) => selection.includes(l.cle))
+  const choisis = [
+    ...new Map(lignes.filter((l) => selection.includes(l.cle)).map((l) => [l.cle, l])).values(),
+  ]
   const trainsChoisis = choisis.flatMap((l) => l.trains)
 
   function appliquer(e: SyntheticEvent) {
@@ -259,7 +262,19 @@ function ListeDesTrains() {
       <p className="text-sm text-slate-500">Déroulant</p>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold">Déroulant · Liste des trains</h1>
+          <h1 className="text-2xl font-semibold">
+            {tab === 'positions'
+              ? 'Position Train'
+              : tab === 'export'
+                ? 'Export préparation'
+                : tab === 'prepa'
+                  ? 'Préparation des trains'
+                  : tab === 'besoin'
+                    ? 'Suivi par thème'
+                    : tab === 'd8'
+                      ? 'Suivi 8 m²'
+                      : 'Déroulant · Liste des trains'}
+          </h1>
           <p className="text-sm text-slate-600">
             Un train attend ses affiches tant qu’un visuel manque ; il devient « Prêt à produire »
             quand tous ses visuels sont reçus ou fractionnés. En production, il ne se modifie plus.
@@ -541,7 +556,10 @@ function ListeDesTrains() {
                 <Button
                   type="button"
                   onClick={() => {
-                    const r = selectionnerPremiers(lignes, Math.max(1, Number(n) || 0))
+                    const r = selectionnerPremiers(
+                      [...new Map(lignes.map((l) => [l.cle, l])).values()],
+                      Math.max(1, Number(n) || 0),
+                    )
                     setSelection(r.cles)
                     setMessage(r.message)
                   }}
@@ -767,11 +785,28 @@ function ListeDesTrains() {
                       <tr className="border-b text-left text-slate-500">
                         <th className="w-8" />
                         <th>Train</th>
+                        {!prepa && (
+                          <>
+                            <th>Face</th>
+                            <th>Annonceur</th>
+                            <th>Dossier</th>
+                            <th>Visuel</th>
+                            <th>Repiquage</th>
+                            <th>Adresse</th>
+                            {tab === 'positions' && <th>Côte à côte</th>}
+                          </>
+                        )}
                         {(!prepa || colonnes.atelier) && <th>Atelier</th>}
                         {(!prepa || colonnes.atelier) && <th>Machine</th>}
                         <th>Destinataire</th>
                         {prepa && <th>Statut</th>}
                         <th>Positions</th>
+                        {prepa &&
+                          Array.from({ length: 6 }, (_, i) => (
+                            <th key={i}>
+                              Position {i + 1} · Annonceur / Dossier / Visuel / Repiquage
+                            </th>
+                          ))}
                         <th className="text-right">Nb trains</th>
                         {prepa && <th>Pré-assemblage</th>}
                         {prepa && <th>Rouleur</th>}
@@ -782,13 +817,14 @@ function ListeDesTrains() {
                         {colonnes.bague && <th>Bague</th>}
                         {colonnes.modifications && <th>Modifications</th>}
                         {colonnes.panneau && peut('suivi_8m2.saisir') && <th>N° panneau BC</th>}
+                        {prepa && <th>Actions</th>}
                       </tr>
                     </thead>
                     <tbody>
                       {lignes.map((l) => (
                         <tr
                           data-selection-id={l.cle}
-                          key={l.cle}
+                          key={`${l.cle}-${l.faceId ?? 'train'}`}
                           className={`cursor-pointer border-b ${l.statut === 'EN_ATTENTE' ? 'bg-orange-50' : l.statut === 'PRET' && (!prepa || l.rouleur === null) ? 'bg-sky-50' : ''}`}
                           onClick={() => {
                             setFiche(l.cle)
@@ -806,7 +842,7 @@ function ListeDesTrains() {
                               onChange={(e) => {
                                 setSelection(
                                   e.target.checked
-                                    ? [...selection, l.cle]
+                                    ? [...new Set([...selection, l.cle])]
                                     : selection.filter((x) => x !== l.cle),
                                 )
                               }}
@@ -820,6 +856,17 @@ function ListeDesTrains() {
                             )}
                             {l.fractionne && <Pastille ton="neutre">Fractionné</Pastille>}
                           </td>
+                          {!prepa && (
+                            <>
+                              <td>{l.panneauxBc?.join(', ') || l.faceId || '—'}</td>
+                              <td>{l.positions.map((p) => p.annonceur).join(', ')}</td>
+                              <td>{l.positions.map((p) => p.contNum).join(', ')}</td>
+                              <td>{l.positions.map((p) => p.theme).join(', ')}</td>
+                              <td>{l.positions.map((p) => p.repiquage).join(', ')}</td>
+                              <td>{l.adresse ?? '—'}</td>
+                              {tab === 'positions' && <td>{l.coteCote ?? '—'}</td>}
+                            </>
+                          )}
                           {(!prepa || colonnes.atelier) && (
                             <td>
                               {l.atelier ? `${l.atelier.libelle} · ${l.atelier.plateforme}` : '—'}
@@ -844,6 +891,26 @@ function ListeDesTrains() {
                               }}
                             />
                           </td>
+                          {prepa &&
+                            Array.from({ length: 6 }, (_, i) => {
+                              const p = l.positions[i]
+                              return (
+                                <td key={i}>
+                                  {p ? (
+                                    <>
+                                      <p>
+                                        {p.annonceur ?? '—'} · {p.contNum ?? '—'}
+                                      </p>
+                                      <p>
+                                        {p.theme ?? '—'} · {p.repiquage ?? '—'}
+                                      </p>
+                                    </>
+                                  ) : (
+                                    '—'
+                                  )}
+                                </td>
+                              )
+                            })}
                           <td className="text-right">{l.nb}</td>
                           {prepa && <td>{l.preAssemble ? 'Fait' : '—'}</td>}
                           {prepa && <td>{l.rouleur ?? '—'}</td>}
@@ -867,6 +934,34 @@ function ListeDesTrains() {
                           {colonnes.modifications && <td>{l.modifications}</td>}
                           {colonnes.panneau && peut('suivi_8m2.saisir') && (
                             <td>{l.panneauxBc?.join(', ') ?? '—'}</td>
+                          )}
+                          {prepa && (
+                            <td>
+                              <button
+                                type="button"
+                                className="underline mr-2"
+                                onClick={() => {
+                                  setFiche(l.cle)
+                                }}
+                              >
+                                Modifier
+                              </button>
+                              <button
+                                type="button"
+                                className="underline"
+                                disabled={!peut('roulage.preparer') || !l.atelier}
+                                onClick={() => {
+                                  if (l.atelier)
+                                    setRouleurPour({
+                                      trains: l.trains,
+                                      atelierId: l.atelier.id,
+                                      action: 'affecter',
+                                    })
+                                }}
+                              >
+                                Rouleur…
+                              </button>
+                            </td>
                           )}
                         </tr>
                       ))}

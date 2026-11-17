@@ -2729,6 +2729,34 @@
                   "nonConformite": {
                     "type": "object",
                     "properties": {
+                      "fichiers": {
+                        "maxItems": 10,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "nom": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 250
+                            },
+                            "mimeType": {
+                              "type": "string",
+                              "maxLength": 150
+                            },
+                            "contenuBase64": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 14000000
+                            }
+                          },
+                          "required": [
+                            "nom",
+                            "mimeType",
+                            "contenuBase64"
+                          ]
+                        }
+                      },
                       "types": {
                         "minItems": 1,
                         "maxItems": 20,
@@ -4090,6 +4118,29 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "nonConformites": {
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "version": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "version"
+                      ]
+                    }
+                  },
                   "afficheIds": {
                     "minItems": 1,
                     "maxItems": 500,
@@ -4506,6 +4557,34 @@
                   "nonConformite": {
                     "type": "object",
                     "properties": {
+                      "fichiers": {
+                        "maxItems": 10,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "nom": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 250
+                            },
+                            "mimeType": {
+                              "type": "string",
+                              "maxLength": 150
+                            },
+                            "contenuBase64": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 14000000
+                            }
+                          },
+                          "required": [
+                            "nom",
+                            "mimeType",
+                            "contenuBase64"
+                          ]
+                        }
+                      },
                       "types": {
                         "minItems": 1,
                         "maxItems": 20,
@@ -5612,6 +5691,18 @@
             "schema": {
               "type": "string",
               "enum": [
+                "oui",
+                "non"
+              ]
+            },
+            "in": "query",
+            "name": "picking",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
                 "RECEPTION_INCONNUE",
                 "VALIDEE",
                 "A_CONFIRMER_PROPOSE",
@@ -5740,6 +5831,17 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "version": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "zonePicking": {
+                            "type": "boolean"
+                          },
+                          "fusionneeHeritee": {
+                            "type": "boolean"
+                          },
                           "id": {
                             "type": "integer",
                             "minimum": -9007199254740991,
@@ -6012,6 +6114,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "zonePicking": {
+                      "type": "boolean"
+                    },
+                    "fusionneeHeritee": {
+                      "type": "boolean"
+                    },
                     "id": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -6240,9 +6353,6 @@
                         "null"
                       ]
                     },
-                    "zonePicking": {
-                      "type": "boolean"
-                    },
                     "dossierSaisi": {
                       "anyOf": [
                         {
@@ -6254,11 +6364,6 @@
                           "type": "null"
                         }
                       ]
-                    },
-                    "version": {
-                      "type": "integer",
-                      "minimum": -9007199254740991,
-                      "maximum": 9007199254740991
                     },
                     "commentaire": {
                       "type": [
@@ -6318,9 +6423,6 @@
                           "type": "null"
                         }
                       ]
-                    },
-                    "fusionneeHeritee": {
-                      "type": "boolean"
                     },
                     "receptions": {
                       "type": "array",
@@ -6526,6 +6628,8 @@
                     }
                   },
                   "required": [
+                    "version",
+                    "fusionneeHeritee",
                     "id",
                     "validation",
                     "recueLe",
@@ -6547,7 +6651,6 @@
                     "controleur",
                     "feuille",
                     "aTraiter",
-                    "version",
                     "commentaire",
                     "allee",
                     "rayon",
@@ -6557,7 +6660,6 @@
                     "dernierDepartDepasse",
                     "surplusEntretien",
                     "imprimeurId",
-                    "fusionneeHeritee",
                     "receptions",
                     "mouvements",
                     "preparations",
@@ -8526,6 +8628,99 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "lignesPreparation": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "type": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "repartition": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "theme": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "repiquage": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "format": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "quantite": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "destinataire": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "depart": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "atelier": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "dateAffichage": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type",
+                                "repartition",
+                                "theme",
+                                "repiquage",
+                                "format",
+                                "quantite",
+                                "destinataire",
+                                "depart",
+                                "atelier",
+                                "dateAffichage"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
                           "id": {
                             "type": "integer",
                             "minimum": -9007199254740991,
@@ -8936,6 +9131,99 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "lignesPreparation": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "type": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "repartition": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "theme": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "repiquage": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "format": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "quantite": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "destinataire": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "depart": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "atelier": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "dateAffichage": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "type",
+                          "repartition",
+                          "theme",
+                          "repiquage",
+                          "format",
+                          "quantite",
+                          "destinataire",
+                          "depart",
+                          "atelier",
+                          "dateAffichage"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "id": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -14697,6 +14985,321 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "faceId": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "adresse": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "coteCote": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "cle": {
+                            "type": "string"
+                          },
+                          "trains": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "trainId": {
+                                  "type": "string"
+                                },
+                                "version": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "trainId",
+                                "version"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "origine": {
+                            "type": "string",
+                            "enum": [
+                              "CALCULE",
+                              "ENTRETIEN",
+                              "PRE_TEST",
+                              "ENTRETIEN_AJOUTE"
+                            ]
+                          },
+                          "atelier": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "integer",
+                                    "minimum": -9007199254740991,
+                                    "maximum": 9007199254740991
+                                  },
+                                  "libelle": {
+                                    "type": "string"
+                                  },
+                                  "plateforme": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "libelle",
+                                  "plateforme"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "machine": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "destinataire": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "afficheur": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "positions": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "lettre": {
+                                  "type": "string"
+                                },
+                                "faceId": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "contNum": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer",
+                                      "minimum": -9007199254740991,
+                                      "maximum": 9007199254740991
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "annonceur": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "theme": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "repiquage": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "etat": {
+                                  "type": "string",
+                                  "enum": [
+                                    "OK",
+                                    "MANQUANT",
+                                    "FRACTIONNE"
+                                  ]
+                                },
+                                "ftType": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "lettre",
+                                "faceId",
+                                "contNum",
+                                "annonceur",
+                                "theme",
+                                "repiquage",
+                                "etat",
+                                "ftType"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "nb": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "depart": {
+                            "type": "string"
+                          },
+                          "semaineDepart": {
+                            "type": "object",
+                            "properties": {
+                              "annee": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              "semaine": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "annee",
+                              "semaine"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "statut": {
+                            "type": "string",
+                            "enum": [
+                              "EN_ATTENTE",
+                              "PRET",
+                              "EN_PROD",
+                              "PRODUIT",
+                              "COLISE",
+                              "EXPEDIE",
+                              "LIVRE"
+                            ]
+                          },
+                          "fractionne": {
+                            "type": "boolean"
+                          },
+                          "panneauxBc": {
+                            "anyOf": [
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "preAssemble": {
+                            "type": "boolean"
+                          },
+                          "rouleur": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "fichier": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "modifications": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "bagues": {
+                            "type": "array",
+                            "items": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            }
+                          },
+                          "reimpressions": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "required": [
+                          "cle",
+                          "trains",
+                          "origine",
+                          "atelier",
+                          "machine",
+                          "destinataire",
+                          "afficheur",
+                          "positions",
+                          "nb",
+                          "depart",
+                          "semaineDepart",
+                          "statut",
+                          "fractionne",
+                          "panneauxBc",
+                          "preAssemble",
+                          "rouleur",
+                          "fichier",
+                          "modifications",
+                          "bagues",
+                          "reimpressions"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "faces": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "faceId": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "adresse": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "coteCote": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
                           "cle": {
                             "type": "string"
                           },
@@ -23186,6 +23789,60 @@
                                 "type": "null"
                               }
                             ]
+                          },
+                          "detailsUm": {
+                            "type": "object",
+                            "properties": {
+                              "commentaires": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "preparations": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "colis": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "repartitions": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "affiches": {
+                                "type": "array",
+                                "items": {
+                                  "type": "number"
+                                }
+                              },
+                              "quantitePreparee": {
+                                "type": "number"
+                              },
+                              "creation": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "commentaires",
+                              "preparations",
+                              "colis",
+                              "repartitions",
+                              "affiches",
+                              "quantitePreparee",
+                              "creation"
+                            ],
+                            "additionalProperties": false
                           },
                           "type": {
                             "type": "string",
@@ -33950,6 +34607,9 @@
                             "type": "string",
                             "enum": [
                               "NC_BLOQUANTE",
+                              "NC_PLATEFORME",
+                              "EXPORT_TRAINS",
+                              "APRES_EXPORT",
                               "MANQUANT",
                               "ECART",
                               "SANS_IP",
@@ -34140,6 +34800,9 @@
               "type": "string",
               "enum": [
                 "NC_BLOQUANTE",
+                "NC_PLATEFORME",
+                "EXPORT_TRAINS",
+                "APRES_EXPORT",
                 "MANQUANT",
                 "ECART",
                 "SANS_IP",
@@ -34193,6 +34856,9 @@
                       "type": "string",
                       "enum": [
                         "NC_BLOQUANTE",
+                        "NC_PLATEFORME",
+                        "EXPORT_TRAINS",
+                        "APRES_EXPORT",
                         "MANQUANT",
                         "ECART",
                         "SANS_IP",
@@ -37100,6 +37766,383 @@
         }
       }
     },
+    "/v1/pilotage/analyse": {
+      "get": {
+        "operationId": "get__v1_pilotage_analyse",
+        "tags": [
+          "pilotage"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "du",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "au",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "atelier",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ateliers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "libelle": {
+                            "type": "string"
+                          },
+                          "plateforme": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "libelle",
+                          "plateforme"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "trains": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "rouleur": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "machine": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "atelier": {
+                            "type": "string"
+                          },
+                          "site": {
+                            "type": "string"
+                          },
+                          "depart": {
+                            "type": "string"
+                          },
+                          "statut": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "rouleur",
+                          "machine",
+                          "atelier",
+                          "site",
+                          "depart",
+                          "statut"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "ateliers",
+                    "trains"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pilotage/suivi": {
+      "get": {
+        "operationId": "get__v1_pilotage_suivi",
+        "tags": [
+          "pilotage"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fixe",
+                "pliage",
+                "deroulant"
+              ]
+            },
+            "in": "query",
+            "name": "pour",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "dossier",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-W\\d{2}$"
+            },
+            "in": "query",
+            "name": "depart",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "dossier": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "annonceur": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "theme": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "format": {
+                            "type": "string"
+                          },
+                          "site": {
+                            "type": "string"
+                          },
+                          "atelier": {
+                            "type": "string"
+                          },
+                          "depart": {
+                            "type": "string"
+                          },
+                          "preparation": {
+                            "type": "string"
+                          },
+                          "reception": {
+                            "type": "string"
+                          },
+                          "production": {
+                            "type": "string"
+                          },
+                          "expedition": {
+                            "type": "string"
+                          },
+                          "nc": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "attendu": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "recu": {
+                            "type": "number"
+                          },
+                          "validees": {
+                            "type": "number"
+                          },
+                          "affiches": {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "dossier",
+                          "annonceur",
+                          "theme",
+                          "format",
+                          "site",
+                          "atelier",
+                          "depart",
+                          "preparation",
+                          "reception",
+                          "production",
+                          "expedition",
+                          "nc",
+                          "attendu",
+                          "recu",
+                          "validees",
+                          "affiches"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/j3": {
       "get": {
         "operationId": "get__v1_j3",
@@ -38815,6 +39858,135 @@
         }
       }
     },
+    "/v1/non-conformites/impressions": {
+      "post": {
+        "operationId": "post__v1_non_conformites_impressions",
+        "tags": [
+          "non-conformites"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ncs": {
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "version": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "version"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "ncs"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imprimees": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "le": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "imprimees",
+                    "le"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/non-conformites": {
       "get": {
         "operationId": "get__v1_non_conformites",
@@ -38937,6 +40109,16 @@
                                 "maxLength": 4000
                               },
                               "dossier": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "semaine": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "quantite": {
                                 "default": "",
                                 "type": "string",
                                 "maxLength": 4000
@@ -39185,6 +40367,8 @@
                               "region",
                               "afficheur",
                               "dossier",
+                              "semaine",
+                              "quantite",
                               "annonceur",
                               "theme",
                               "formats",
@@ -39263,6 +40447,41 @@
                           "commentaireDecision": {
                             "type": "string"
                           },
+                          "reponses": {
+                            "default": [],
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "date": {
+                                  "type": "string"
+                                },
+                                "auteur": {
+                                  "type": "string"
+                                },
+                                "traite": {
+                                  "type": "boolean"
+                                },
+                                "commentaire": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "date",
+                                "auteur",
+                                "traite",
+                                "commentaire"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "feuilleImprimeeLe": {
+                            "default": null,
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
                           "fichiers": {
                             "type": "array",
                             "items": {
@@ -39312,6 +40531,8 @@
                           "modifieLe",
                           "auteur",
                           "commentaireDecision",
+                          "reponses",
+                          "feuilleImprimeeLe",
                           "fichiers"
                         ],
                         "additionalProperties": false
@@ -39420,6 +40641,16 @@
                         "maxLength": 4000
                       },
                       "dossier": {
+                        "default": "",
+                        "type": "string",
+                        "maxLength": 4000
+                      },
+                      "semaine": {
+                        "default": "",
+                        "type": "string",
+                        "maxLength": 4000
+                      },
+                      "quantite": {
                         "default": "",
                         "type": "string",
                         "maxLength": 4000
@@ -39816,6 +41047,16 @@
                           "type": "string",
                           "maxLength": 4000
                         },
+                        "semaine": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "quantite": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
                         "annonceur": {
                           "default": "",
                           "type": "string",
@@ -40060,6 +41301,8 @@
                         "region",
                         "afficheur",
                         "dossier",
+                        "semaine",
+                        "quantite",
                         "annonceur",
                         "theme",
                         "formats",
@@ -40138,6 +41381,41 @@
                     "commentaireDecision": {
                       "type": "string"
                     },
+                    "reponses": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string"
+                          },
+                          "auteur": {
+                            "type": "string"
+                          },
+                          "traite": {
+                            "type": "boolean"
+                          },
+                          "commentaire": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "date",
+                          "auteur",
+                          "traite",
+                          "commentaire"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "feuilleImprimeeLe": {
+                      "default": null,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "fichiers": {
                       "type": "array",
                       "items": {
@@ -40187,7 +41465,441 @@
                     "modifieLe",
                     "auteur",
                     "commentaireDecision",
+                    "reponses",
+                    "feuilleImprimeeLe",
                     "fichiers"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/non-conformites/cas": {
+      "get": {
+        "operationId": "get__v1_non_conformites_cas",
+        "tags": [
+          "non-conformites"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "q",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "afficheId": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "plateformeId": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "plateforme": {
+                            "type": "string"
+                          },
+                          "validation": {
+                            "type": "boolean"
+                          },
+                          "donnees": {
+                            "type": "object",
+                            "properties": {
+                              "declarant": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "region": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "afficheur": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "dossier": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "semaine": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "quantite": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "annonceur": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "theme": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "formats": {
+                                "default": [],
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "12 m² Colle",
+                                    "2 m² déroulant",
+                                    "2 m² fixe",
+                                    "4 m² Colle",
+                                    "4 m² déroulant",
+                                    "8 m² Colle",
+                                    "8 m² déroulant",
+                                    "BUS",
+                                    "Autre format"
+                                  ]
+                                }
+                              },
+                              "lieu": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "dateAff": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "types": {
+                                "default": [],
+                                "maxItems": 50,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 250
+                                }
+                              },
+                              "imprimeur": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "imprimeurAutre": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "transporteur": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "transporteurAutre": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "avarie": {
+                                "default": "",
+                                "type": "string",
+                                "enum": [
+                                  "",
+                                  "OUI",
+                                  "NON"
+                                ]
+                              },
+                              "controlePossible": {
+                                "default": "Oui",
+                                "type": "string",
+                                "enum": [
+                                  "Oui",
+                                  "Non"
+                                ]
+                              },
+                              "controle": {
+                                "default": [],
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Contrôle du visuel",
+                                    "Format NC",
+                                    "Etat des affiches",
+                                    "Encre pas sèche"
+                                  ]
+                                }
+                              },
+                              "detailVisuel": {
+                                "default": [],
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "enum": [
+                                    "Thèmes",
+                                    "Qualité impression"
+                                  ]
+                                }
+                              },
+                              "statutEtat": {
+                                "default": "",
+                                "type": "string",
+                                "enum": [
+                                  "",
+                                  "Non utilisable",
+                                  "Partiellement utilisables"
+                                ]
+                              },
+                              "commentaire": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "commentaireNC": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "numeroAffichesManquantes": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "gestionnaire": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "admin": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "actionPreprod": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "actionPlateforme": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "decisionPlateforme": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "commentaireDecisionPlateforme": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "reception": {
+                                "default": [],
+                                "maxItems": 50,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 250
+                                }
+                              },
+                              "ncCond": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "ncBL": {
+                                "default": [],
+                                "maxItems": 50,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 250
+                                }
+                              },
+                              "reserve": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "numerosManquants": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "nbAffichesManquantes": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "mesureCm2": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "commentaireAgence": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "ncQtesBT": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "nbColis": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "nbPalettes": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "qteRecue": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              },
+                              "qteManquante": {
+                                "default": "",
+                                "type": "string",
+                                "maxLength": 4000
+                              }
+                            },
+                            "required": [
+                              "declarant",
+                              "region",
+                              "afficheur",
+                              "dossier",
+                              "semaine",
+                              "quantite",
+                              "annonceur",
+                              "theme",
+                              "formats",
+                              "lieu",
+                              "dateAff",
+                              "types",
+                              "imprimeur",
+                              "imprimeurAutre",
+                              "transporteur",
+                              "transporteurAutre",
+                              "avarie",
+                              "controlePossible",
+                              "controle",
+                              "detailVisuel",
+                              "statutEtat",
+                              "commentaire",
+                              "commentaireNC",
+                              "numeroAffichesManquantes",
+                              "gestionnaire",
+                              "admin",
+                              "actionPreprod",
+                              "actionPlateforme",
+                              "decisionPlateforme",
+                              "commentaireDecisionPlateforme",
+                              "reception",
+                              "ncCond",
+                              "ncBL",
+                              "reserve",
+                              "numerosManquants",
+                              "nbAffichesManquantes",
+                              "mesureCm2",
+                              "commentaireAgence",
+                              "ncQtesBT",
+                              "nbColis",
+                              "nbPalettes",
+                              "qteRecue",
+                              "qteManquante"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "afficheId",
+                          "plateformeId",
+                          "plateforme",
+                          "validation",
+                          "donnees"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
                   ],
                   "additionalProperties": false
                 }
@@ -40398,6 +42110,16 @@
                           "type": "string",
                           "maxLength": 4000
                         },
+                        "semaine": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "quantite": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
                         "annonceur": {
                           "default": "",
                           "type": "string",
@@ -40642,6 +42364,8 @@
                         "region",
                         "afficheur",
                         "dossier",
+                        "semaine",
+                        "quantite",
                         "annonceur",
                         "theme",
                         "formats",
@@ -40720,6 +42444,41 @@
                     "commentaireDecision": {
                       "type": "string"
                     },
+                    "reponses": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string"
+                          },
+                          "auteur": {
+                            "type": "string"
+                          },
+                          "traite": {
+                            "type": "boolean"
+                          },
+                          "commentaire": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "date",
+                          "auteur",
+                          "traite",
+                          "commentaire"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "feuilleImprimeeLe": {
+                      "default": null,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "fichiers": {
                       "type": "array",
                       "items": {
@@ -40769,6 +42528,623 @@
                     "modifieLe",
                     "auteur",
                     "commentaireDecision",
+                    "reponses",
+                    "feuilleImprimeeLe",
+                    "fichiers"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/non-conformites/{id}/reponse": {
+      "post": {
+        "operationId": "post__v1_non_conformites_id_reponse",
+        "tags": [
+          "non-conformites"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "traite": {
+                    "type": "boolean"
+                  },
+                  "commentaire": {
+                    "default": "",
+                    "type": "string",
+                    "maxLength": 4000
+                  }
+                },
+                "required": [
+                  "version",
+                  "traite"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "version": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "plateformeId": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "plateforme": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "RECEPTION",
+                        "AGENCE"
+                      ]
+                    },
+                    "origine": {
+                      "type": "string"
+                    },
+                    "receptionId": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "afficheIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "bloquante": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "donnees": {
+                      "type": "object",
+                      "properties": {
+                        "declarant": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "region": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "afficheur": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "dossier": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "semaine": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "quantite": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "annonceur": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "theme": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "formats": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "12 m² Colle",
+                              "2 m² déroulant",
+                              "2 m² fixe",
+                              "4 m² Colle",
+                              "4 m² déroulant",
+                              "8 m² Colle",
+                              "8 m² déroulant",
+                              "BUS",
+                              "Autre format"
+                            ]
+                          }
+                        },
+                        "lieu": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "dateAff": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "types": {
+                          "default": [],
+                          "maxItems": 50,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 250
+                          }
+                        },
+                        "imprimeur": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "imprimeurAutre": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "transporteur": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "transporteurAutre": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "avarie": {
+                          "default": "",
+                          "type": "string",
+                          "enum": [
+                            "",
+                            "OUI",
+                            "NON"
+                          ]
+                        },
+                        "controlePossible": {
+                          "default": "Oui",
+                          "type": "string",
+                          "enum": [
+                            "Oui",
+                            "Non"
+                          ]
+                        },
+                        "controle": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "Contrôle du visuel",
+                              "Format NC",
+                              "Etat des affiches",
+                              "Encre pas sèche"
+                            ]
+                          }
+                        },
+                        "detailVisuel": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "Thèmes",
+                              "Qualité impression"
+                            ]
+                          }
+                        },
+                        "statutEtat": {
+                          "default": "",
+                          "type": "string",
+                          "enum": [
+                            "",
+                            "Non utilisable",
+                            "Partiellement utilisables"
+                          ]
+                        },
+                        "commentaire": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "commentaireNC": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "numeroAffichesManquantes": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "gestionnaire": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "admin": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "actionPreprod": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "actionPlateforme": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "decisionPlateforme": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "commentaireDecisionPlateforme": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "reception": {
+                          "default": [],
+                          "maxItems": 50,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 250
+                          }
+                        },
+                        "ncCond": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "ncBL": {
+                          "default": [],
+                          "maxItems": 50,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 250
+                          }
+                        },
+                        "reserve": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "numerosManquants": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "nbAffichesManquantes": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "mesureCm2": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "commentaireAgence": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "ncQtesBT": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "nbColis": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "nbPalettes": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "qteRecue": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        },
+                        "qteManquante": {
+                          "default": "",
+                          "type": "string",
+                          "maxLength": 4000
+                        }
+                      },
+                      "required": [
+                        "declarant",
+                        "region",
+                        "afficheur",
+                        "dossier",
+                        "semaine",
+                        "quantite",
+                        "annonceur",
+                        "theme",
+                        "formats",
+                        "lieu",
+                        "dateAff",
+                        "types",
+                        "imprimeur",
+                        "imprimeurAutre",
+                        "transporteur",
+                        "transporteurAutre",
+                        "avarie",
+                        "controlePossible",
+                        "controle",
+                        "detailVisuel",
+                        "statutEtat",
+                        "commentaire",
+                        "commentaireNC",
+                        "numeroAffichesManquantes",
+                        "gestionnaire",
+                        "admin",
+                        "actionPreprod",
+                        "actionPlateforme",
+                        "decisionPlateforme",
+                        "commentaireDecisionPlateforme",
+                        "reception",
+                        "ncCond",
+                        "ncBL",
+                        "reserve",
+                        "numerosManquants",
+                        "nbAffichesManquantes",
+                        "mesureCm2",
+                        "commentaireAgence",
+                        "ncQtesBT",
+                        "nbColis",
+                        "nbPalettes",
+                        "qteRecue",
+                        "qteManquante"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "decisions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Décision Commerce",
+                          "OK préparation en l’état",
+                          "Nouvelle impression/Livraison",
+                          "Nouvelle préparation",
+                          "NON JUSTIFIE",
+                          "Pas de stock d’affiche",
+                          "RAF",
+                          "À traiter par la plateforme",
+                          "Traité par la plateforme"
+                        ]
+                      }
+                    },
+                    "statut": {
+                      "type": "string",
+                      "enum": [
+                        "Pour statistique",
+                        "À décider",
+                        "En cours plateforme",
+                        "Traitée"
+                      ]
+                    },
+                    "creeLe": {
+                      "type": "string"
+                    },
+                    "modifieLe": {
+                      "type": "string"
+                    },
+                    "auteur": {
+                      "type": "string"
+                    },
+                    "commentaireDecision": {
+                      "type": "string"
+                    },
+                    "reponses": {
+                      "default": [],
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string"
+                          },
+                          "auteur": {
+                            "type": "string"
+                          },
+                          "traite": {
+                            "type": "boolean"
+                          },
+                          "commentaire": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "date",
+                          "auteur",
+                          "traite",
+                          "commentaire"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "feuilleImprimeeLe": {
+                      "default": null,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "fichiers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "nom": {
+                            "type": "string"
+                          },
+                          "taille": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "mimeType": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "nom",
+                          "taille",
+                          "mimeType"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "version",
+                    "plateformeId",
+                    "plateforme",
+                    "type",
+                    "origine",
+                    "receptionId",
+                    "afficheIds",
+                    "bloquante",
+                    "donnees",
+                    "decisions",
+                    "statut",
+                    "creeLe",
+                    "modifieLe",
+                    "auteur",
+                    "commentaireDecision",
+                    "reponses",
+                    "feuilleImprimeeLe",
                     "fichiers"
                   ],
                   "additionalProperties": false
@@ -41193,6 +43569,9 @@
                             "type": "string",
                             "enum": [
                               "NC_BLOQUANTE",
+                              "NC_PLATEFORME",
+                              "EXPORT_TRAINS",
+                              "APRES_EXPORT",
                               "MANQUANT",
                               "ECART",
                               "SANS_IP",
@@ -41353,6 +43732,9 @@
                         "type": "string",
                         "enum": [
                           "NC_BLOQUANTE",
+                          "NC_PLATEFORME",
+                          "EXPORT_TRAINS",
+                          "APRES_EXPORT",
                           "MANQUANT",
                           "ECART",
                           "SANS_IP",
@@ -41380,6 +43762,9 @@
                       },
                       "required": [
                         "NC_BLOQUANTE",
+                        "NC_PLATEFORME",
+                        "EXPORT_TRAINS",
+                        "APRES_EXPORT",
                         "MANQUANT",
                         "ECART",
                         "SANS_IP",
@@ -41455,6 +43840,121 @@
     "/v1/alertes/acquittements": {
       "post": {
         "operationId": "post__v1_alertes_acquittements",
+        "tags": [
+          "alertes"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cles": {
+                    "minItems": 1,
+                    "maxItems": 500,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    }
+                  }
+                },
+                "required": [
+                  "cles"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "acquittees": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "acquittees",
+                    "message"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/alertes/restaurations": {
+      "post": {
+        "operationId": "post__v1_alertes_restaurations",
         "tags": [
           "alertes"
         ],

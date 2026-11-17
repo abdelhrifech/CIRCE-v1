@@ -464,7 +464,7 @@ function EntreeMenu({
   const autorise = me !== null && can(me, entree.permission)
   const contenu = (
     <>
-      <span>{entree.libelle}</span>
+      <span className={entree.fort ? 'font-bold' : undefined}>{entree.libelle}</span>
       {autorise && compteur && <Pastille n={compteur.n} chaud={compteur.chaud} />}
     </>
   )
@@ -487,7 +487,7 @@ function EntreeMenu({
       search={entree.search}
       aria-current={courante ? 'page' : undefined}
       onClick={onChoisi}
-      className={`flex items-center px-4 py-2 text-sm hover:bg-slate-50 focus-visible:bg-slate-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-sky-600 ${
+      className={`${entree.separe ? 'mb-2 border-b-2 pb-3' : ''} flex items-center px-4 py-2 text-sm hover:bg-slate-50 focus-visible:bg-slate-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-sky-600 ${
         courante ? 'bg-sky-50 font-medium text-sky-900' : 'text-slate-800'
       }`}
     >

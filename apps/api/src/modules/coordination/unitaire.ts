@@ -101,7 +101,7 @@ const enProduction = (statut: StatutProduction) => STATUTS_EN_PRODUCTION.include
 // ───────────────────────────── Lecture : lignes de l'unitaire ─────────────────────────────
 
 export const INCLUDE_REPARTITION = {
-  unite: { select: { id: true, statut: true, version: true } },
+  unite: { include: { colis: { include: { colis: { select: { codeColis: true } } } } } },
   destinataire: { select: { nom: true, nomOrigine: true } },
   support: { select: { nom: true } },
   typePreparation: { select: { libelle: true } },
@@ -194,6 +194,15 @@ async function construireLignes(
     client.liberationSemaine.findMany({ where: { atelierId: { in: paquet } } }),
   ))
     liberations.set(cleLiberation(l.atelierId, l.semAnnee, l.semNum), l.libereeLe)
+  const liensAffiches = await parPaquets(contNums, (paquet) =>
+    client.afficheAttendue.findMany({
+      where: { actif: true, ligneAttendue: { contNum: { in: paquet } } },
+      select: {
+        afficheId: true,
+        ligneAttendue: { select: { plateformeId: true, contNum: true, theme: true } },
+      },
+    }),
+  )
   const groupes = new Map<string, RepartitionLue[]>()
   for (const r of reps) {
     const cle = [
@@ -211,6 +220,7 @@ async function construireLignes(
   for (const [cle, membres] of groupes) {
     const premiere = membres[0]
     if (!premiere?.atelier) continue
+    const plateformeId = premiere.atelier.plateformeId
     const type = typeDe(premiere, types)
     const qte = membres.reduce((x, r) => x + (r.qte ?? 0), 0)
     const pourcentage = pct(premiere.contNum)
@@ -228,7 +238,41 @@ async function construireLignes(
     const nom = premiere.destinataire
       ? (premiere.destinataire.nom ?? premiere.destinataire.nomOrigine)
       : null
+    const ums = [
+      ...new Map(
+        membres.flatMap((r) => (r.unite ? [[r.unite.id, r.unite] as const] : [])),
+      ).values(),
+    ]
+    const unique = (values: (string | null)[]) => [
+      ...new Set(values.filter((v): v is string => v !== null && v !== '')),
+    ]
     lignes.push({
+      // EX-NEW16-COO-001 : métadonnées réelles, sans changer le regroupement ni les quantités métier.
+      detailsUm: {
+        commentaires: unique(ums.map((u) => u.commentaire)),
+        preparations: unique(ums.map((u) => u.codeSynthese)),
+        colis: unique(ums.flatMap((u) => u.colis.map((c) => c.colis.codeColis))),
+        repartitions: unique(membres.map((r) => r.repartition?.toString() ?? null)),
+        affiches: [
+          ...new Set(
+            liensAffiches
+              .filter(
+                (l) =>
+                  cleVisuel(
+                    l.ligneAttendue.plateformeId,
+                    l.ligneAttendue.contNum,
+                    l.ligneAttendue.theme,
+                  ) === cleVisuel(plateformeId, premiere.contNum, premiere.theme),
+              )
+              .map((l) => l.afficheId),
+          ),
+        ],
+        quantitePreparee: ums.reduce(
+          (total, u) => total + u.colis.reduce((s, c) => s + c.quantite, 0),
+          0,
+        ),
+        creation: ums.map((u) => u.createdAt.toISOString()).sort()[0] ?? null,
+      },
       cle,
       refs: membres.map((r) => ({ id: r.id, version: r.version })),
       unite: um ? { id: um.id, code: codeUnite(type, um.id), statut: um.statut } : null,

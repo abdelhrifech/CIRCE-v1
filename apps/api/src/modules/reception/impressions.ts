@@ -1,3 +1,4 @@
+import { imprimerNc } from '../nonconformite/service.ts'
 // REC-P06 — Feuille de stock (= étiquette rack), impressions et rangement (ECR-REC-09, ECR-REC-10).
 // Q-002 (HYPOTHÈSE) : le PDF est rendu par le navigateur ; l'API fournit les données et enregistre
 // l'impression (type de feuille posé, tag levé, journal). Aucun envoi à l'agent local d'impression.
@@ -103,9 +104,12 @@ export async function enregistrerImpression(
     afficheIds: number[]
     contenu: 'FEUILLE' | 'ETIQUETTE_RACK' | 'FEUILLE_ET_ETIQUETTE'
     exemplaires: number
+    nonConformites?: { id: number; version: number }[]
   },
 ) {
   assertDroitReception(identity, 'reception.imprimer')
+  // EX-NEW16-REC-001 : stock et feuille NC journalisés dans la même transaction.
+  if (input.nonConformites?.length) await imprimerNc(tx, identity, input.nonConformites)
   // RG-REC-086 : 1 à 5 exemplaires.
   if (input.exemplaires < 1 || input.exemplaires > 5) {
     throw new ValidationError('Entre 1 et 5 exemplaires.', {

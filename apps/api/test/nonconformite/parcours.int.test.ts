@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import {
+  CasNcListeSchema,
   DeclarantsSchema,
   ListeAlertesSchema,
   ListeNcSchema,
@@ -39,6 +40,192 @@ async function contexte() {
   return { ...s, coord, admin }
 }
 describe('EX-NEW-NC-001 / RG-NEW-NC-002 non-conformités partagées', () => {
+  it('EX-NEW16-NC-002 regroupe les affiches reçues par dossier et thème, recherche DA et protège les sites', async () => {
+    const c = await contexte()
+    const donnees = {
+      contNum: 987654,
+      idDaChapeau: 876543,
+      theme: 'Été',
+      annonceur: 'Annonceur préremplissage',
+      format: '2 m² fixe',
+    }
+    await receptionValidee(ctx, c.headers, c.plateforme.id, 10, donnees)
+    await receptionValidee(ctx, c.headers, c.plateforme.id, 7, donnees)
+    await receptionValidee(ctx, c.headers, c.plateforme.id, 3, { ...donnees, theme: 'Hiver' })
+    const liste = CasNcListeSchema.parse(
+      (await get(ctx, '/api/non-conformites/cas?q=876543', c.headers)).json(),
+    ).items
+    expect(liste).toHaveLength(2)
+    const ete = liste.find((l) => l.donnees.theme === 'Été')
+    expect(ete?.donnees.quantite).toBe('17')
+    expect(ete?.donnees.formats).toEqual(['2 m² fixe'])
+    expect(ete?.donnees.dossier).toBe('987654')
+    expect(
+      CasNcListeSchema.parse((await get(ctx, '/api/non-conformites/cas?q=9876', c.headers)).json())
+        .items,
+    ).toHaveLength(2)
+    const ailleurs = await contexte()
+    expect(
+      CasNcListeSchema.parse(
+        (await get(ctx, '/api/non-conformites/cas?q=876543', ailleurs.headers)).json(),
+      ).items,
+    ).toHaveLength(0)
+  })
+  it('EX-NEW16-REC-001 mémorise l’impression NC sans changer son statut ni sa version, refuse version périmée et autre site', async () => {
+    const c = await contexte()
+    const nc = NcSchema.parse(
+      (await post(ctx, '/api/non-conformites', c.headers, payload(c.plateforme.id))).json(),
+    )
+    expect(nc.feuilleImprimeeLe).toBeNull()
+    const corps = { ncs: [{ id: nc.id, version: nc.version }] }
+    expect(
+      (
+        await post(ctx, '/api/non-conformites/impressions', c.headers, {
+          ncs: [{ id: nc.id, version: nc.version + 1 }],
+        })
+      ).statusCode,
+    ).toBe(409)
+    const ailleurs = await contexte()
+    expect(
+      (await post(ctx, '/api/non-conformites/impressions', ailleurs.headers, corps)).statusCode,
+    ).toBe(403)
+    expect((await post(ctx, '/api/non-conformites/impressions', c.headers, corps)).statusCode).toBe(
+      200,
+    )
+    const apres = ListeNcSchema.parse(
+      (await get(ctx, '/api/non-conformites', c.headers)).json(),
+    ).items.find((n) => n.id === nc.id)
+    expect(apres?.feuilleImprimeeLe).toBeTruthy()
+    expect(apres?.version).toBe(nc.version)
+    expect(apres?.statut).toBe(nc.statut)
+  })
+  it('RG-NEW16-NC-001 historise les réponses oui/non, contrôle version, décision et périmètre', async () => {
+    const c = await contexte()
+    let nc = NcSchema.parse(
+      (await post(ctx, '/api/non-conformites', c.headers, payload(c.plateforme.id))).json(),
+    )
+    const url = `/api/non-conformites/${nc.id}/reponse`
+    expect(
+      (await post(ctx, url, c.admin.headers, { version: nc.version, traite: false })).statusCode,
+    ).toBe(409)
+    nc = NcSchema.parse(
+      (
+        await post(ctx, `/api/non-conformites/${nc.id}/decision`, c.coord.headers, {
+          version: nc.version,
+          decisions: ['À traiter par la plateforme'],
+        })
+      ).json(),
+    )
+    const version = nc.version
+    nc = NcSchema.parse(
+      (
+        await post(ctx, url, c.admin.headers, {
+          version,
+          traite: false,
+          commentaire: 'Toujours en attente',
+        })
+      ).json(),
+    )
+    expect(nc.statut).toBe('En cours plateforme')
+    expect(nc.reponses).toHaveLength(1)
+    expect((await post(ctx, url, c.admin.headers, { version, traite: true })).statusCode).toBe(409)
+    const ailleurs = await contexte()
+    expect(
+      (await post(ctx, url, ailleurs.headers, { version: nc.version, traite: true })).statusCode,
+    ).toBe(403)
+    const alertes = ListeAlertesSchema.parse(
+      (await get(ctx, '/api/alertes', c.admin.headers)).json(),
+    )
+    expect(alertes.alertes.some((a) => a.cle === `NC-${nc.id}` && a.type === 'NC_PLATEFORME')).toBe(
+      true,
+    )
+    nc = NcSchema.parse(
+      (
+        await post(ctx, url, c.admin.headers, {
+          version: nc.version,
+          traite: true,
+          commentaire: 'Fait',
+        })
+      ).json(),
+    )
+    expect(nc.statut).toBe('Traitée')
+    expect(nc.reponses).toHaveLength(2)
+    expect(
+      (await post(ctx, url, c.admin.headers, { version: nc.version, traite: true })).statusCode,
+    ).toBe(409)
+    nc = NcSchema.parse(
+      (
+        await post(ctx, `/api/non-conformites/${nc.id}/decision`, c.coord.headers, {
+          version: nc.version,
+          decisions: ['Nouvelle préparation'],
+        })
+      ).json(),
+    )
+    expect(nc.statut).toBe('En cours plateforme')
+    expect(nc.reponses).toHaveLength(2)
+  })
+  it('RG-NEW16-PIL-001 les archives résolues gardent les droits de la source', async () => {
+    const c = await contexte()
+    const nc = NcSchema.parse(
+      (
+        await post(ctx, '/api/non-conformites', c.headers, {
+          ...payload(c.plateforme.id),
+          bloquante: true,
+        })
+      ).json(),
+    )
+    const origine = ListeAlertesSchema.parse(
+      (await get(ctx, '/api/alertes', c.admin.headers)).json(),
+    ).alertes.find((a) => a.cle === `NC-${nc.id}`)
+    expect(origine).toBeDefined()
+    const cle = `INT-ECHEC-archive-test-${nc.id}`
+    await ctx.db.alerteAcquittement.create({
+      data: {
+        cle,
+        signature: 'archive',
+        parId: c.admin.user.id,
+        snapshot: JSON.stringify({ ...origine, cle, type: 'INTEGRATION', plateformeId: null }),
+      },
+    })
+    expect(
+      ListeAlertesSchema.parse(
+        (await get(ctx, '/api/alertes?etat=ACQUITTEES', c.headers)).json(),
+      ).alertes.some((a) => a.cle === cle),
+    ).toBe(false)
+    expect(
+      ListeAlertesSchema.parse(
+        (await get(ctx, '/api/alertes?etat=ACQUITTEES', c.admin.headers)).json(),
+      ).alertes.some((a) => a.cle === cle),
+    ).toBe(true)
+  })
+  it('RG-NEW16-PIL-001 archive et restaure une alerte sans changer la NC, droits conservés', async () => {
+    const c = await contexte()
+    const nc = NcSchema.parse(
+      (
+        await post(ctx, '/api/non-conformites', c.headers, {
+          ...payload(c.plateforme.id),
+          bloquante: true,
+        })
+      ).json(),
+    )
+    const cles = [`NC-${nc.id}`]
+    expect(
+      (await post(ctx, '/api/alertes/acquittements', c.admin.headers, { cles })).statusCode,
+    ).toBe(200)
+    let liste = ListeAlertesSchema.parse(
+      (await get(ctx, '/api/alertes?etat=ACQUITTEES', c.admin.headers)).json(),
+    )
+    expect(liste.alertes.some((a) => a.cle === cles[0] && a.acquittee !== null)).toBe(true)
+    expect(
+      (await post(ctx, '/api/alertes/restaurations', c.admin.headers, { cles })).statusCode,
+    ).toBe(200)
+    liste = ListeAlertesSchema.parse((await get(ctx, '/api/alertes', c.admin.headers)).json())
+    expect(liste.alertes.some((a) => a.cle === cles[0] && a.acquittee === null)).toBe(true)
+    const apres = ListeNcSchema.parse(
+      (await get(ctx, '/api/non-conformites', c.admin.headers)).json(),
+    ).items.find((n) => n.id === nc.id)
+    expect(apres?.version).toBe(nc.version)
+  })
   it('EX-NEW-NC-001 crée un formulaire complet, conserve le justificatif et partage la liste avec la coordination', async () => {
     const c = await contexte()
     const r = await post(ctx, '/api/non-conformites', c.headers, {

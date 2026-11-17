@@ -11,6 +11,8 @@ export interface EntreeNav {
   search?: Record<string, string>
   permission: PermissionCode
   groupe?: string
+  fort?: boolean
+  separe?: boolean
   badge?: CleBadge
 }
 
@@ -25,6 +27,18 @@ export const NAV: OngletNav[] = [
     id: 'pilotage',
     titre: 'Pilotage',
     entrees: [
+      {
+        id: 'analyse',
+        libelle: 'Analyse Production',
+        to: '/pilotage/analyse',
+        permission: 'train.consulter',
+      },
+      {
+        id: 'suivi-prod',
+        libelle: 'Suivi de prod',
+        to: '/pilotage/suivi',
+        permission: 'instruction.consulter',
+      },
       {
         id: 'tableau',
         libelle: 'Tableau de bord préproduction',
@@ -83,6 +97,18 @@ export const NAV: OngletNav[] = [
         to: '/reception/affiches',
         permission: 'affiche.consulter',
       },
+      {
+        id: 'picking',
+        libelle: 'Zone picking',
+        to: '/reception/picking',
+        permission: 'affiche.consulter',
+      },
+      {
+        id: 'fusion',
+        libelle: 'Fusion des affiches',
+        to: '/reception/fusion',
+        permission: 'affiche.consulter',
+      },
       { id: 'j3', libelle: 'J−3', to: '/reception/j3', permission: 'j3.gerer' },
     ],
   },
@@ -92,31 +118,18 @@ export const NAV: OngletNav[] = [
     entrees: [
       {
         id: 'nc-nouvelle',
-        libelle: 'Réception contrôlée · Nouvelle réception',
+        libelle: 'Nouvelle demande',
         to: '/non-conformite',
         permission: 'nonconformite.declarer',
-        search: { tab: 'reception' },
+        search: { tab: 'demande' },
       },
       {
         id: 'nc-suivi',
-        libelle: 'Réception contrôlée · Suivi des NC',
+        fort: true,
+        libelle: 'Suivi des NC',
         to: '/non-conformite',
         permission: 'nonconformite.consulter',
         search: { tab: 'suivi' },
-      },
-      {
-        id: 'nc-agence',
-        libelle: 'Réclamation agence · Nouvelle demande',
-        to: '/non-conformite',
-        permission: 'nonconformite.declarer',
-        search: { tab: 'declaration' },
-      },
-      {
-        id: 'nc-agence-suivi',
-        libelle: 'Réclamation agence · Suivi des NC',
-        to: '/non-conformite',
-        permission: 'nonconformite.consulter',
-        search: { tab: 'reclamation' },
       },
     ],
   },
@@ -124,6 +137,15 @@ export const NAV: OngletNav[] = [
     id: 'fixe',
     titre: '2 m² fixe',
     entrees: [
+      {
+        id: 'suivi-fixe',
+        libelle: 'Suivi 2 m² fixe',
+        to: '/pilotage/suivi',
+        search: { pour: 'fixe' },
+        permission: 'instruction.consulter',
+        fort: true,
+        separe: true,
+      },
       {
         id: 'fixe-traiter',
         libelle: 'À traiter',
@@ -152,6 +174,15 @@ export const NAV: OngletNav[] = [
     titre: 'Pliage',
     entrees: [
       {
+        id: 'suivi-pliage',
+        libelle: 'Suivi pliage',
+        to: '/pilotage/suivi',
+        search: { pour: 'pliage' },
+        permission: 'instruction.consulter',
+        fort: true,
+        separe: true,
+      },
+      {
         id: 'pliage-traiter',
         libelle: 'À traiter',
         to: '/coordination',
@@ -179,6 +210,15 @@ export const NAV: OngletNav[] = [
     titre: 'Déroulant',
     entrees: [
       {
+        id: 'suivi-deroulant',
+        libelle: 'Suivi déroulant',
+        to: '/pilotage/suivi',
+        search: { pour: 'deroulant' },
+        permission: 'instruction.consulter',
+        fort: true,
+        separe: true,
+      },
+      {
         id: 'instructions',
         libelle: 'Liste des instructions',
         to: '/coordination',
@@ -191,14 +231,29 @@ export const NAV: OngletNav[] = [
         to: '/coordination/trains',
         permission: 'train.consulter',
       },
-      ...(['besoin', 'prepa', 'd8'] as const).map((tab) => ({
+      ...(['besoin', 'prepa', 'd8', 'positions', 'export'] as const).map((tab) => ({
         id: `deroulant-${tab}`,
         libelle:
-          tab === 'besoin' ? 'Suivi par thème' : tab === 'prepa' ? 'Préparation' : 'Suivi 8 m²',
+          tab === 'besoin'
+            ? 'Suivi par thème'
+            : tab === 'prepa'
+              ? 'Préparation'
+              : tab === 'positions'
+                ? 'Position Train'
+                : tab === 'export'
+                  ? 'Export préparation'
+                  : 'Suivi 8 m²',
         to: '/coordination/trains',
         search: { tab },
         permission: 'train.consulter' as const,
       })),
+      {
+        id: 'deroulant-colis',
+        libelle: 'Liste des colis',
+        to: '/expedition/colis',
+        search: { type: 'deroulant' },
+        permission: 'colis.gerer',
+      },
       {
         id: 'generateur',
         libelle: 'Fichiers Vendôme',
@@ -226,7 +281,9 @@ export const NAV: OngletNav[] = [
     entrees: [
       {
         id: 'bus-suivi',
-        libelle: 'Suivi de prod',
+        libelle: 'Suivi bus',
+        fort: true,
+        separe: true,
         to: '/bus',
         permission: 'bus.consulter',
         search: { tab: 'suivi' },
@@ -280,6 +337,31 @@ export const NAV: OngletNav[] = [
     titre: 'Administration',
     entrees: [
       {
+        id: 'admin-deblocage',
+        libelle: 'Déblocage préparations',
+        to: '/coordination/deblocage',
+        permission: 'deblocage.consulter',
+      },
+      {
+        id: 'admin-debloquees',
+        libelle: 'Préparations débloquées',
+        to: '/coordination/deblocage',
+        permission: 'deblocage.consulter',
+      },
+      {
+        id: 'admin-rafraichir',
+        libelle: 'Rafraîchir un dossier',
+        to: '/coordination/integration',
+        permission: 'alimentation.manuelle',
+      },
+      {
+        id: 'admin-dupliquer',
+        libelle: 'Dupliquer train',
+        to: '/admin/dupliquer-train',
+        permission: 'train.dupliquer',
+      },
+
+      {
         id: 'declarants',
         libelle: 'Déclarants NC',
         to: '/admin/declarants',
@@ -311,7 +393,7 @@ export const NAV: OngletNav[] = [
       },
       {
         id: 'utilisateurs',
-        libelle: 'Utilisateurs',
+        libelle: 'Utilisateurs et menus',
         to: '/admin/utilisateurs',
         permission: 'utilisateur.gerer',
       },

@@ -1,6 +1,7 @@
 import { DeclarerConstat } from '../nonconformite/constat.tsx'
 import type { NON_CONFORMITES } from '@circe/shared'
 import {
+  ListeNcSchema,
   ControleSchema,
   ControleValideSchema,
   ReferentielsReceptionSchema,
@@ -240,6 +241,12 @@ function FormulaireControle({
   })
   const [apercu, setApercu] = useState<number[] | null>(null)
   const [voirBl, setVoirBl] = useState(false)
+  const [imprimerNc, setImprimerNc] = useState(false)
+  const { etat: ncEtat, recharger: rechargerNc } = useApi(`nc-palette-${c.receptionId}`, (signal) =>
+    apiRequest('GET', '/api/non-conformites?type=RECEPTION', { schema: ListeNcSchema, signal }),
+  )
+  const ncs =
+    ncEtat.kind === 'ready' ? ncEtat.data.items.filter((n) => n.receptionId === c.receptionId) : []
   const lecture = c.lectureSeule || !peutControler
   const agents =
     refs.kind === 'ready' ? refs.data.agents.filter((a) => a.plateformeIds.includes(c.site.id)) : []
@@ -319,6 +326,7 @@ function FormulaireControle({
       {!lecture && (
         <div className="mt-3">
           <DeclarerConstat
+            onDeclaree={rechargerNc}
             receptionId={c.receptionId}
             plateformeId={c.site.id}
             affiches={c.lignes.map((l) => ({
@@ -459,6 +467,7 @@ function FormulaireControle({
                 <td className="px-2 py-2">
                   {!lecture && (
                     <DeclarerConstat
+                      onDeclaree={rechargerNc}
                       receptionId={c.receptionId}
                       plateformeId={c.site.id}
                       affiches={[
@@ -565,17 +574,36 @@ function FormulaireControle({
             <Button
               type="button"
               disabled={envoi.kind === 'en-cours'}
-              onClick={() => void valider(true)}
+              onClick={() => {
+                setImprimerNc(false)
+                void valider(true)
+              }}
             >
               Valider et imprimer
             </Button>
+            <Button
+              type="button"
+              className="disabled:bg-slate-300 disabled:text-slate-600 disabled:opacity-100"
+              disabled={envoi.kind === 'en-cours' || !ncs.length}
+              onClick={() => {
+                setImprimerNc(true)
+                void valider(true)
+              }}
+            >
+              Valider et imprimer la non-conformité
+            </Button>
+            {!ncs.length && (
+              <p className="text-sm text-slate-500">
+                Aucune non-conformité déclarée sur cette palette.
+              </p>
+            )}
           </>
         )}
       </div>
       {apercu && (
         <ApercuFeuilles
           afficheIds={apercu}
-          avecEtiquettes
+          nonConformites={imprimerNc ? ncs : []}
           onFermer={() => {
             setApercu(null)
             onValide()

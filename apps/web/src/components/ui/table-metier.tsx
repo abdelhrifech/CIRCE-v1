@@ -1,4 +1,6 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useHauteurTableau } from '../../lib/hauteur-tableau.ts'
+import { filtreTableau, OPERATEURS, type Operateur } from '../../lib/filtres-tableau.ts'
+import { useMemo, useState, type HTMLAttributes, type ReactNode } from 'react'
 import { exporterExcel, type CelluleExcel } from '../../lib/excel.ts'
 export interface ColonneMetier<T> {
   id: string
@@ -7,6 +9,7 @@ export interface ColonneMetier<T> {
   rendu?: (r: T) => ReactNode
   cachee?: boolean
   somme?: boolean
+  ajout?: boolean
 }
 export function TableMetier<T>({
   lignes,
@@ -16,6 +19,7 @@ export function TableMetier<T>({
   onOuvrir,
   actions,
   vide = 'Aucune ligne avec ces filtres.',
+  tableProps,
 }: {
   lignes: T[]
   colonnes: ColonneMetier<T>[]
@@ -23,6 +27,7 @@ export function TableMetier<T>({
   nom: string
   onOuvrir?: (r: T) => void
   actions?: (r: T) => ReactNode
+  tableProps?: HTMLAttributes<HTMLTableElement>
   vide?: string
 }) {
   const [visibles, setVisibles] = useState(() =>
@@ -30,7 +35,9 @@ export function TableMetier<T>({
     ),
     [recherche, setRecherche] = useState(''),
     [tri, setTri] = useState<{ id: string; asc: boolean } | null>(null),
-    [filtres, setFiltres] = useState<Record<string, string>>({})
+    [filtres, setFiltres] = useState<Record<string, string>>({}),
+    [operateurs, setOperateurs] = useState<Record<string, Operateur>>({})
+  const [hauteur, setHauteur] = useHauteurTableau(nom)
   const cols = visibles.flatMap((id) => colonnes.filter((c) => c.id === id))
   function deplacer(id: string, sens: number) {
     setVisibles((anciens) => {
@@ -48,28 +55,12 @@ export function TableMetier<T>({
   }
   const rows = useMemo(() => {
     const lire = (r: T, id: string) => colonnes.find((c) => c.id === id)?.valeur(r)
-    const match = (v: CelluleExcel, f: string) => {
-      const nombre = /^(>=|<=|>|<|=)\s*(-?\d+(?:[.,]\d+)?)$/.exec(f)
-      if (nombre && typeof v === 'number') {
-        const n = Number(nombre[2]?.replace(',', '.'))
-        return nombre[1] === '>'
-          ? v > n
-          : nombre[1] === '<'
-            ? v < n
-            : nombre[1] === '>='
-              ? v >= n
-              : nombre[1] === '<='
-                ? v <= n
-                : v === n
-      }
-      return String(v ?? '')
-        .toLocaleLowerCase()
-        .includes(f.toLocaleLowerCase())
-    }
     const rs = lignes.filter(
       (r) =>
-        (!recherche || cols.some((c) => match(c.valeur(r), recherche))) &&
-        Object.entries(filtres).every(([id, f]) => !f || match(lire(r, id), f)),
+        (!recherche || cols.some((c) => filtreTableau(c.valeur(r), recherche))) &&
+        colonnes.every((c) =>
+          filtreTableau(lire(r, c.id), filtres[c.id] ?? '', operateurs[c.id] ?? 'contient'),
+        ),
     )
     if (tri)
       rs.sort((a, b) => {
@@ -83,7 +74,7 @@ export function TableMetier<T>({
         )
       })
     return rs
-  }, [lignes, colonnes, cols, recherche, filtres, tri])
+  }, [lignes, colonnes, cols, recherche, filtres, operateurs, tri])
   return (
     <div className="rounded-lg border border-slate-200 bg-white">
       <div className="flex flex-wrap items-center gap-4 border-b p-3 text-sm">
@@ -155,8 +146,8 @@ export function TableMetier<T>({
         </button>
         <span className="ml-auto text-xs text-slate-500">{rows.length} ligne(s)</span>
       </div>
-      <div className="max-h-[600px] overflow-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-auto" style={{ maxHeight: hauteur }}>
+        <table {...tableProps} aria-label={nom} className="w-full text-sm">
           <thead className="sticky top-0 bg-slate-50">
             <tr>
               {cols.map((c) => (
@@ -167,10 +158,27 @@ export function TableMetier<T>({
                       setTri((t) => ({ id: c.id, asc: t?.id === c.id ? !t.asc : true }))
                     }}
                   >
-                    {c.titre}
+                    <span className={c.ajout ? 'font-bold text-red-700' : undefined}>
+                      {c.titre}
+                    </span>
                     {tri?.id === c.id ? (tri.asc ? ' ↑' : ' ↓') : ''}
                   </button>
+                  <select
+                    aria-label={`Opérateur ${c.titre}`}
+                    className="mt-2 max-w-44 rounded border text-xs"
+                    value={operateurs[c.id] ?? 'contient'}
+                    onChange={(e) => {
+                      setOperateurs((v) => ({ ...v, [c.id]: e.target.value as Operateur }))
+                    }}
+                  >
+                    {Object.entries(OPERATEURS).map(([k, v]) => (
+                      <option key={k} value={k}>
+                        {v}
+                      </option>
+                    ))}
+                  </select>
                   <input
+                    disabled={['vide', 'nonvide'].includes(operateurs[c.id] ?? '')}
                     aria-label={`Filtrer ${c.titre}`}
                     className="mt-2 w-full min-w-20 rounded border bg-white px-2 py-1 font-normal"
                     value={filtres[c.id] ?? ''}
@@ -186,12 +194,13 @@ export function TableMetier<T>({
           <tbody>
             {rows.map((r) => (
               <tr
+                data-selection-id={cle(r)}
                 key={cle(r)}
                 className={`border-t border-slate-100 ${onOuvrir ? 'cursor-pointer hover:bg-slate-50' : ''}`}
                 onClick={() => onOuvrir?.(r)}
               >
                 {cols.map((c) => (
-                  <td key={c.id} className="max-w-md whitespace-pre-wrap p-3">
+                  <td data-colonne={c.id} key={c.id} className="max-w-md whitespace-pre-wrap p-3">
                     {c.rendu ? c.rendu(r) : String(c.valeur(r) ?? '')}
                   </td>
                 ))}
@@ -212,7 +221,7 @@ export function TableMetier<T>({
             <tfoot className="border-t bg-slate-50 font-semibold">
               <tr>
                 {cols.map((c, i) => (
-                  <td key={c.id} className="p-3">
+                  <td data-colonne={c.id} key={c.id} className="p-3">
                     {c.somme
                       ? rows.reduce((s, r) => s + Number(c.valeur(r) ?? 0), 0)
                       : i === 0
@@ -225,6 +234,45 @@ export function TableMetier<T>({
           )}
         </table>
         {!rows.length && <p className="p-6 text-slate-600">{vide}</p>}
+      </div>
+      <div
+        role="separator"
+        aria-label="Hauteur du tableau"
+        aria-orientation="horizontal"
+        aria-valuenow={hauteur}
+        aria-valuemin={160}
+        tabIndex={0}
+        className="cursor-ns-resize bg-slate-100 p-1 text-center text-xs text-slate-600"
+        style={{ touchAction: 'none' }}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault()
+            setHauteur((v) => Math.max(160, v + (e.key === 'ArrowDown' ? 60 : -60)))
+          }
+        }}
+        onDoubleClick={() => {
+          setHauteur(600)
+        }}
+        onPointerDown={(e) => {
+          e.currentTarget.setPointerCapture(e.pointerId)
+          e.currentTarget.dataset.y = String(e.clientY)
+          e.currentTarget.dataset.h = String(hauteur)
+        }}
+        onPointerMove={(e) => {
+          if (e.currentTarget.hasPointerCapture(e.pointerId))
+            setHauteur(
+              Math.max(
+                160,
+                Number(e.currentTarget.dataset.h) + e.clientY - Number(e.currentTarget.dataset.y),
+              ),
+            )
+        }}
+        onPointerUp={(e) => {
+          if (e.currentTarget.hasPointerCapture(e.pointerId))
+            e.currentTarget.releasePointerCapture(e.pointerId)
+        }}
+      >
+        ⇕ Glisser pour agrandir ou réduire le tableau
       </div>
     </div>
   )

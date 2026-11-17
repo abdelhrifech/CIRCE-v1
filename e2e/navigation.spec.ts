@@ -86,7 +86,7 @@ test('ECR-NAV-01 les entrées de la maquette sans écran sont absentes', async (
   await expect(nav.getByRole('button', { name: /Stocks/ })).toHaveCount(0)
   await page.getByTestId('onglet-pilotage').click()
   const menu = page.getByTestId('menu-pilotage')
-  await expect(menu.getByText('Suivi de prod')).toHaveCount(0)
+  await expect(menu.getByText('Suivi de prod', { exact: true })).toBeVisible()
   await page.keyboard.press('Escape')
   await page.getByTestId('onglet-fixe').click()
   await expect(page.getByTestId('menu-fixe').getByText('Fichiers multi-rouleuse')).toHaveCount(0)

@@ -11,6 +11,9 @@ const n = z.number().int()
  * type dans la maquette : HYPOTHÈSE Q-190 (6)). */
 export const TYPES_ALERTE = [
   'NC_BLOQUANTE',
+  'NC_PLATEFORME',
+  'EXPORT_TRAINS',
+  'APRES_EXPORT',
   'MANQUANT',
   'ECART',
   'SANS_IP',
@@ -36,6 +39,9 @@ export type TypeAlerte = z.infer<typeof TypeAlerteSchema>
 /** Libellés des types (maquette `TYPES`, mot pour mot). */
 export const LIBELLES_TYPES_ALERTE: Record<TypeAlerte, string> = {
   NC_BLOQUANTE: 'Non-conformité bloquante à la réception',
+  NC_PLATEFORME: 'Non-conformité : action de la plateforme attendue',
+  EXPORT_TRAINS: 'Trains exportés : go de la plateforme',
+  APRES_EXPORT: 'Dossier arrivé après l’export des trains',
   MANQUANT: 'Visuel manquant ou partiel',
   ECART: 'Écart de réception > 10 %',
   SANS_IP: 'Réception sans IP',

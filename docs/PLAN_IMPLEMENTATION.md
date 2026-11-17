@@ -621,3 +621,9 @@ Généré par script depuis les sections 2 et 3 : parcours principal en premier,
 | RG-X-087 | — | 7 |
 | RG-X-088 | — | 7 |
 | 2026-11-04 | /cloture-session (étape 1b) | Matrice régénérée par script (858 lignes : 333 EX, 473 RG, 52 ECR ; tous À FAIRE ; parcours renseignés depuis §6). Q-100/Q-382 : contradiction signalée ; Q-138 (orpheline) ajoutée ; Q-397 ajoutée (EX-EXI). ECARTS §5 mis à jour. Pas de projet technique : typecheck/lint/test non lancés. Dossier non versionné (pas de dépôt git) : pas de commit. | Validation équipe des 10 BLOQUANTES (Q-001, 002, 004, 005, 204, 265, 300, 306, 307, 319), de Q-003 (profils) et des dépendances §4 ; dédoublonnage des questions ; relecture humaine des règles. | Revue humaine, puis /etape-02-architecture (Q-300/306/307/004/319 à trancher avant /etape-03-modele-donnees) |
+
+### Journal — 17 novembre 2026 : point de sauvegarde maquette du 16/11
+
+Adaptation en cours : réponses NC historisées, préremplissage et impression NC, archives d’alertes sécurisées, vues par face/répartition, colonnes UM, suivis et navigation. Règles ambiguës conservées conformément à la réponse explicite de l’utilisateur. Détail des réalisations, limites et tests : `EVOLUTIONS_MAQUETTE_2026_11_16.md`. Ce point ne clôt pas la conformité complète à la nouvelle maquette. Commit et push demandés par l’utilisateur ; poursuivre ensuite les lignes partielles de la matrice et la recette visuelle. Prochain contrôle : `pnpm typecheck && pnpm lint && pnpm test`, puis les parcours E2E concernés.
+
+Contrôles finaux du point de sauvegarde : TypeScript, lint, tests unitaires et build réussis ; 14 tests API ciblés et 108 E2E réussis. Passage complet d’intégration précédent : 3 732 réussis, 1 échec attendu et 8 à faire.

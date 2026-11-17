@@ -96,11 +96,15 @@ function Alertes() {
     setErreur(null)
     setMessage(null)
     try {
-      const r = await apiRequest('POST', '/api/alertes/acquittements', {
-        schema: AcquitterAlertesResultatSchema,
-        body: { cles },
-        idempotencyKey: true,
-      })
+      const r = await apiRequest(
+        'POST',
+        search.etat === 'ACQUITTEES' ? '/api/alertes/restaurations' : '/api/alertes/acquittements',
+        {
+          schema: AcquitterAlertesResultatSchema,
+          body: { cles },
+          idempotencyKey: true,
+        },
+      )
       setMessage(r.message)
       setSelection([])
       recharger()
@@ -182,19 +186,22 @@ function Alertes() {
             <option value="TOUTES">Toutes les semaines</option>
           </select>
         </label>
-        <label>
-          État
-          <select
-            className={champ}
-            value={search.etat ?? 'OUVERTES'}
-            onChange={(e) => {
-              changer({ etat: e.target.value === 'OUVERTES' ? undefined : 'ACQUITTEES' })
-            }}
-          >
-            <option value="OUVERTES">Ouvertes</option>
-            <option value="ACQUITTEES">Acquittées</option>
-          </select>
-        </label>
+        <div role="tablist" aria-label="Alertes ouvertes ou archivées" className="flex gap-3">
+          {(['OUVERTES', 'ACQUITTEES'] as const).map((v) => (
+            <button
+              type="button"
+              key={v}
+              role="tab"
+              aria-selected={(search.etat ?? 'OUVERTES') === v}
+              className="rounded border px-4 py-2 aria-selected:bg-slate-800 aria-selected:text-white"
+              onClick={() => {
+                changer({ etat: v })
+              }}
+            >
+              {v === 'OUVERTES' ? 'Ouvertes' : 'Archivées'}
+            </button>
+          ))}
+        </div>
         <label>
           Site
           <select
@@ -264,7 +271,8 @@ function Alertes() {
           className="rounded-md border border-slate-300 px-3 py-1.5 disabled:opacity-40"
           onClick={() => void acquitter(selection)}
         >
-          Acquitter{selection.length ? ` (${String(selection.length)})` : ''}
+          {search.etat === 'ACQUITTEES' ? 'Restaurer' : 'Archiver'}
+          {selection.length ? ` (${String(selection.length)})` : ''}
         </button>
       </div>
 
@@ -294,7 +302,11 @@ function Alertes() {
             </thead>
             <tbody>
               {[...data.alertes]
-                .sort((a, b) => (a.date ?? '').localeCompare(b.date ?? ''))
+                .sort((a, b) =>
+                  search.etat === 'ACQUITTEES'
+                    ? (b.acquittee?.le ?? '').localeCompare(a.acquittee?.le ?? '')
+                    : (a.date ?? '').localeCompare(b.date ?? ''),
+                )
                 .map((a) => (
                   <LigneAlerte
                     key={a.cle}
@@ -337,7 +349,7 @@ function LigneAlerte({
   return (
     <tr className="border-t border-slate-100 align-top">
       <td className="px-3 py-2">
-        {a.acquittee === null && (
+        {
           <input
             type="checkbox"
             aria-label={`Sélectionner l’alerte ${a.titre}`}
@@ -346,7 +358,7 @@ function LigneAlerte({
               onSelection(e.target.checked)
             }}
           />
-        )}
+        }
       </td>
       <td className="px-3 py-2">{LIBELLES_TYPES_ALERTE[a.type]}</td>
       <td className="max-w-xl px-3 py-2">
@@ -364,21 +376,21 @@ function LigneAlerte({
         <a className="underline" href={a.lien}>
           Ouvrir
         </a>
-        {a.acquittee ? (
-          <span className="ml-2 text-xs text-slate-500">
-            acquittée{a.acquittee.par ? ` par ${a.acquittee.par}` : ''}
+        {a.acquittee && (
+          <span className="mr-3 text-xs">
+            Archivée le {dateCourte(a.acquittee.le)}
+            {a.acquittee.par ? ` par ${a.acquittee.par}` : ''}
           </span>
-        ) : (
-          <button
-            type="button"
-            className="ml-2 text-xs underline disabled:opacity-40"
-            disabled={!peutAcquitter || envoi}
-            title={motif}
-            onClick={onAcquitter}
-          >
-            Acquitter
-          </button>
         )}
+        <button
+          type="button"
+          className="rounded border px-3 py-1"
+          disabled={!peutAcquitter || envoi}
+          title={motif}
+          onClick={onAcquitter}
+        >
+          {a.acquittee ? 'Restaurer' : 'Archiver'}
+        </button>
       </td>
     </tr>
   )

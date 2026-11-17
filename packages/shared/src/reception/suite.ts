@@ -153,6 +153,10 @@ export const FeuillesSchema = z.object({
 })
 
 export const ImpressionSchema = z.object({
+  nonConformites: z
+    .array(z.object({ id: z.number().int().positive(), version: z.number().int().positive() }))
+    .max(100)
+    .optional(),
   afficheIds: z.array(n).min(1).max(500),
   /** FEUILLE, ETIQUETTE_RACK ou les deux (RG-REC-086). */
   contenu: z.enum(['FEUILLE', 'ETIQUETTE_RACK', 'FEUILLE_ET_ETIQUETTE']),
@@ -260,6 +264,9 @@ export const TAGS_AFFICHE = [
 export const TagAfficheSchema = z.enum(TAGS_AFFICHE)
 
 export const AfficheListeSchema = z.object({
+  version: n.optional(),
+  zonePicking: z.boolean().optional(),
+  fusionneeHeritee: z.boolean().optional(),
   id: n,
   validation: z.enum(['RECEPTION_INCONNUE', 'VALIDEE', 'A_CONFIRMER_PROPOSE', 'A_CONFIRMER_DOUTE']),
   recueLe: iso,
@@ -292,6 +299,7 @@ export const ListeAffichesSchema = z.object({
 
 // RG-REC-122 : filtres de la liste ; une affiche sans semaine reste visible au filtre Départ.
 export const ListeAffichesQuerySchema = z.object({
+  picking: z.enum(['oui', 'non']).optional(),
   validation: z
     .enum(['RECEPTION_INCONNUE', 'VALIDEE', 'A_CONFIRMER_PROPOSE', 'A_CONFIRMER_DOUTE'])
     .optional(),

@@ -58,15 +58,15 @@ test('REC-P04 / REC-P05 / REC-P06 valider la réception, contrôler la palette, 
   // RG-REC-067 : sans contrôleur → refus de l'API, message de la maquette.
   await controle.getByLabel(/^Allée, affiche/).fill('b')
   await controle.getByLabel(/^Rayon, affiche/).fill('7')
-  await controle.getByRole('button', { name: 'Valider et imprimer' }).click()
+  await controle.getByRole('button', { name: 'Valider et imprimer', exact: true }).click()
   await expect(controle.getByTestId('error-message')).toContainText(
     'Le nom du contrôleur est obligatoire (REC-12).',
   )
 
   await controle.getByLabel('Contrôleur (obligatoire)').selectOption({ label: 'Agent E2E' })
-  await controle.getByRole('button', { name: 'Valider et imprimer' }).click()
+  await controle.getByRole('button', { name: 'Valider et imprimer', exact: true }).click()
 
-  // ECR-REC-09 : aperçu des feuilles de stock (définitive), impression avec étiquettes rack.
+  // ECR-REC-09 : aperçu des feuilles de stock (définitive), impression des feuilles de stock (maquette du 16/11, sans étiquettes rack).
   const apercu = page.getByRole('dialog', { name: 'Aperçu avant impression' })
   await expect(apercu.getByTestId('resume-feuilles')).toHaveText(
     '1 feuille(s) : 1 définitive(s), 0 temporaire(s).',
@@ -78,9 +78,7 @@ test('REC-P04 / REC-P05 / REC-P06 valider la réception, contrôler la palette, 
   // RG-REC-086 : 2 exemplaires rendus (le second n'apparaît qu'à l'impression).
   await expect(apercu.getByTestId('feuille-stock')).toHaveCount(2)
   await expect(apercu.getByRole('img', { name: /^Code-barres A-\d{13}$/ }).first()).toBeVisible()
-  await apercu
-    .getByRole('button', { name: 'Imprimer (2 exemplaires) et les étiquettes rack' })
-    .click()
+  await apercu.getByRole('button', { name: 'Imprimer (2 exemplaires)', exact: true }).click()
   await expect(apercu).toHaveCount(0)
   await expect(controle).toHaveCount(0)
 })

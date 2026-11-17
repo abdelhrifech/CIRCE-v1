@@ -55,6 +55,17 @@ export const LigneUnitaireSchema = z.object({
   refs: z.array(RefRepartitionSchema),
   /** Code d'unité : `UM-nnnn` (fixe), `PL-nnnn` (pliage), `BU-nnnn` (bus) ; null tant qu'aucune UM n'existe. */
   unite: z.object({ id: n, code: z.string(), statut: z.string() }).nullable(),
+  detailsUm: z
+    .object({
+      commentaires: z.array(z.string()),
+      preparations: z.array(z.string()),
+      colis: z.array(z.string()),
+      repartitions: z.array(z.string()),
+      affiches: z.array(z.number()),
+      quantitePreparee: z.number(),
+      creation: z.string().nullable(),
+    })
+    .optional(),
   type: TypeUnitaireSchema,
   typePreparation: s,
   atelier: z.object({ id: n, libelle: z.string(), plateforme: z.string(), plateformeId: n }),

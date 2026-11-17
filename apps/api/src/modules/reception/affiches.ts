@@ -94,6 +94,9 @@ async function ligneListe(client: Client, a: AfficheListee) {
   const receptions = receptionsDe(a)
   return {
     id: a.id,
+    version: a.version,
+    zonePicking: a.zonePicking,
+    fusionneeHeritee: a.estFusionne,
     validation: (await etatValidationAffiche(client, a.id)).etat,
     recueLe: a.dateEntree.toISOString(),
     annonceur: a.contAnnonc,
@@ -134,6 +137,7 @@ export async function listerAffiches(db: Db, identity: Identity, q: ListeAffiche
   const plateformes = plateformesVisibles(identity)
   const where: Prisma.AfficheWhereInput = {
     ...(plateformes === 'toutes' ? {} : { plateformeId: { in: plateformes } }),
+    ...(q.picking ? { zonePicking: q.picking === 'oui' } : {}),
     ...(q.supportId ? { supportId: q.supportId } : {}),
     ...(q.imprimeurId ? { imprimeurId: q.imprimeurId } : {}),
     ...(q.dossier

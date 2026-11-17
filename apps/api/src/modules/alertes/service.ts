@@ -4,6 +4,7 @@
 // d'acquitter reste refusé tant que Q-220 n'a pas désigné qui acquitte (catalogue : `alerte.acquitter`).
 import {
   GRAVITES_ALERTE,
+  AlertePilotageSchema,
   TYPES_ALERTE,
   formatSemaineIso,
   lundiSemaineIso,
@@ -15,10 +16,15 @@ import {
 } from '@circe/shared'
 import type { Db } from '../../core/db.ts'
 import type { Identity } from '../../core/identity.ts'
-import { assertPermission, hasPermission } from '../../core/permissions/permissions.ts'
+import {
+  assertPermission,
+  hasPermission,
+  canAccessPlateforme,
+} from '../../core/permissions/permissions.ts'
 import { ecrireJournal } from '../../core/tracabilite.ts'
 import type { Tx } from '../../core/transaction.ts'
 import { alertesCoordination, type AlerteCalculee } from '../coordination/alertes-coordination.ts'
+import { peutVoirAtelier } from '../coordination/permissions.ts'
 import { semainePlus } from '../coordination/production.ts'
 import { listerAlertes } from '../reception/alertes.ts'
 import { alertesNc } from '../nonconformite/service.ts'
@@ -49,6 +55,55 @@ const RANG: Record<GraviteAlerte, number> = {
 /** Signature d'une alerte acquittée : si sa gravité ou son message change, elle redevient ouverte. */
 export const signature = (a: Pick<AlerteCalculee, 'gravite' | 'message'>) =>
   `${a.gravite}|${a.message}`
+
+// RG-NEW16-PIL-001 : une archive conserve les contrôles de sa source, y compris après résolution.
+async function archiveVisible(db: Db | Tx, identity: Identity, a: AlertePilotage) {
+  const plateformes =
+    identity.siteId !== null
+      ? [identity.siteId]
+      : identity.perimetre.toutesPlateformes
+        ? null
+        : identity.perimetre.plateformeIds
+  if (a.plateformeId !== null && plateformes && !plateformes.includes(a.plateformeId)) return false
+  if (a.type === 'NC_BLOQUANTE' || a.type === 'NC_PLATEFORME') {
+    if (!hasPermission(identity, 'nonconformite.consulter')) return false
+  }
+  if (a.type === 'INTEGRATION') {
+    if (!hasPermission(identity, 'alimentation.manuelle')) return false
+    if (
+      plateformes &&
+      a.cle.startsWith('PRNI-') &&
+      !(await db.receptionAttendue.count({
+        where: { contNum: { in: a.dossiers }, plateformeId: { in: plateformes } },
+      }))
+    )
+      return false
+    if (plateformes && a.cle.startsWith('DEB-BC-') && a.plateformeId === null) return false
+  }
+  if (a.type === 'EXPORT_TRAINS') {
+    const id = Number(/^EXPORT-(\d+)-/.exec(a.cle)?.[1])
+    if (!Number.isSafeInteger(id)) return false
+    const exp = await db.exportTrains.findUnique({ where: { id }, include: { lignes: true } })
+    if (!exp) return false
+    const ateliers = await db.atelier.findMany({
+      where: {
+        id: { in: exp.lignes.flatMap((l) => (l.atelierId === null ? [] : [l.atelierId])) },
+        ...(a.plateformeId === null ? {} : { plateformeId: a.plateformeId }),
+      },
+    })
+    if (!ateliers.some((at) => peutVoirAtelier(identity, at))) return false
+  }
+  if (a.type === 'APRES_EXPORT') {
+    const code = /^APEXP-(.*)-\d+$/.exec(a.cle)?.[1]
+    if (!code) return false
+    const instruction = await db.instruction.findUnique({
+      where: { code },
+      include: { atelier: true },
+    })
+    if (!instruction?.atelier || !peutVoirAtelier(identity, instruction.atelier)) return false
+  }
+  return true
+}
 
 /** Toutes les alertes visibles de l'utilisateur (périmètre appliqué par chaque source). */
 async function toutesLesAlertes(db: Db | Tx, identity: Identity, maintenant: Date) {
@@ -108,7 +163,7 @@ export async function listerAlertesPilotage(
   )
   const parCle = new Map(acquittements.map((x) => [x.cle, x]))
   const sites = new Map(plateformes.map((p) => [p.id, p.nom]))
-  const alertes: AlertePilotage[] = brutes.map((a) => {
+  let alertes: AlertePilotage[] = brutes.map((a) => {
     const acq = parCle.get(a.cle)
     return {
       ...a,
@@ -119,6 +174,20 @@ export async function listerAlertesPilotage(
           : null,
     }
   })
+  // RG-NEW16-PIL-001 : les archives restent consultables après disparition de leur cause.
+  for (const acq of acquittements) {
+    if (!acq.snapshot || alertes.some((a) => a.cle === acq.cle)) continue
+    const saved = AlertePilotageSchema.safeParse(JSON.parse(acq.snapshot))
+    if (!saved.success) continue
+    const a = saved.data
+    if (!(await archiveVisible(db, identity, a))) continue
+    alertes.push({
+      ...a,
+      site: a.plateformeId === null ? null : (sites.get(a.plateformeId) ?? null),
+      acquittee: { par: noms.get(acq.parId) ?? null, le: acq.le.toISOString() },
+    })
+  }
+  alertes = await appliquerReglesAlerte(db, alertes)
   const garde = (a: AlertePilotage, sauf?: 'gravite' | 'type') =>
     (q.dossier === undefined || a.dossiers.includes(q.dossier)) &&
     (q.depart === undefined ||
@@ -180,8 +249,19 @@ export async function acquitterAlertes(
     if (deja?.signature === sig) continue
     await tx.alerteAcquittement.upsert({
       where: { cle },
-      create: { cle, signature: sig, parId: identity.userId, le: maintenant },
-      update: { signature: sig, parId: identity.userId, le: maintenant },
+      create: {
+        cle,
+        signature: sig,
+        parId: identity.userId,
+        le: maintenant,
+        snapshot: JSON.stringify({ ...a, site: null, acquittee: null }),
+      },
+      update: {
+        signature: sig,
+        parId: identity.userId,
+        le: maintenant,
+        snapshot: JSON.stringify({ ...a, site: null, acquittee: null }),
+      },
     })
     await ecrireJournal(tx, {
       typeEntite: 'ALERTE',
@@ -194,4 +274,43 @@ export async function acquitterAlertes(
     n++
   }
   return { acquittees: n, message: `${String(n)} alerte(s) acquittée(s).` }
+}
+
+// RG-NEW16-PIL-001 — restauration explicite, mêmes droits/périmètres que l’archivage.
+export async function restaurerAlertes(tx: Tx, identity: Identity, cles: string[]) {
+  assertPermission(identity, 'alerte.acquitter', { regle: 'RG-COO-075' })
+  const visibles = new Map(
+    (await toutesLesAlertes(tx, identity, new Date())).map((a) => [a.cle, a]),
+  )
+  let n = 0
+  for (const cle of new Set(cles)) {
+    const archive = await tx.alerteAcquittement.findUnique({ where: { cle } })
+    if (!archive) continue
+    const saved = archive.snapshot
+      ? AlertePilotageSchema.safeParse(JSON.parse(archive.snapshot))
+      : null
+    const a =
+      visibles.get(cle) ??
+      (saved?.success && (await archiveVisible(tx, identity, saved.data)) ? saved.data : null)
+    if (
+      !a ||
+      (a.plateformeId !== null &&
+        (!canAccessPlateforme(identity, a.plateformeId) ||
+          (identity.siteId !== null && identity.siteId !== a.plateformeId)))
+    )
+      continue
+    await tx.alerteAcquittement.delete({ where: { cle } })
+    await ecrireJournal(tx, {
+      typeEntite: 'ALERTE',
+      entiteId: cle,
+      action: 'ACQUITTEMENT_ALERTE',
+      parId: identity.userId,
+      complement: 'Restauration de l’alerte',
+    })
+    n++
+  }
+  return {
+    acquittees: n,
+    message: `${n} alerte(s) restaurée(s). Une cause résolue ne recrée pas d’alerte.`,
+  }
 }

@@ -552,6 +552,24 @@ export async function listerTrains(
   return {
     semaine,
     lignes: [...lignes.values()],
+    // EX-NEW16-COO-001 : une ligne par face réelle, regroupement historique conservé pour les actions.
+    faces: filtres.flatMap((t) => {
+      const base = [...lignes.values()].find((l) => l.trains.some((v) => v.trainId === t.trainId))
+      if (!base) return []
+      return t.faces.map((f) => ({
+        ...base,
+        cle: t.trainId,
+        trains: [{ trainId: t.trainId, version: t.version }],
+        nb: 1,
+        faceId: f.id,
+        adresse: f.emplAdresse1,
+        coteCote: f.coteCote,
+        positions: t.positions.filter((p) => p.faceId === f.id).map(positionPublique),
+        panneauxBc: panneaux(identity, [f]),
+        bagues: [baguesDe.get(t.trainId)].flatMap((b) => (b ? [b.id] : [])),
+        reimpressions: baguesDe.get(t.trainId)?.reimpressions ?? 0,
+      }))
+    }),
     indicateurs: {
       aProduire: compter(['EN_ATTENTE', 'PRET']),
       enAttente: compter(['EN_ATTENTE']),
