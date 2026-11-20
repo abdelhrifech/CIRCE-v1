@@ -214,9 +214,11 @@
                           "reception.inconnue.rattacher",
                           "reception.inconnue.signaler",
                           "validation_admin.valider",
+                          "stock.consulter",
                           "stock.rebut",
                           "stock.mouvement_manuel",
                           "stock.fin_campagne.consulter",
+                          "stock.fin_campagne.agir",
                           "alerte.consulter",
                           "alerte.acquitter",
                           "historique.consulter",
@@ -34983,6 +34985,2304 @@
         }
       }
     },
+    "/v1/admin/distributions": {
+      "get": {
+        "operationId": "get__v1_admin_distributions",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "version": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "nom": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          },
+                          "plateformeId": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "roles": {
+                            "minItems": 1,
+                            "maxItems": 6,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "coord",
+                                "cheq",
+                                "recep",
+                                "expe",
+                                "admin",
+                                "com"
+                              ]
+                            }
+                          },
+                          "usage": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1000
+                          },
+                          "id": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "site": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "nom",
+                          "plateformeId",
+                          "roles",
+                          "usage",
+                          "id",
+                          "site"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "sites": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "nom": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "nom"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "sites"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "post__v1_admin_distributions",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "plateformeId": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "roles": {
+                    "minItems": 1,
+                    "maxItems": 6,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "coord",
+                        "cheq",
+                        "recep",
+                        "expe",
+                        "admin",
+                        "com"
+                      ]
+                    }
+                  },
+                  "usage": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "version",
+                  "nom",
+                  "plateformeId",
+                  "roles",
+                  "usage"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "nom": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "plateformeId": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "roles": {
+                      "minItems": 1,
+                      "maxItems": 6,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "coord",
+                          "cheq",
+                          "recep",
+                          "expe",
+                          "admin",
+                          "com"
+                        ]
+                      }
+                    },
+                    "usage": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1000
+                    },
+                    "id": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "site": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "nom",
+                    "plateformeId",
+                    "roles",
+                    "usage",
+                    "id",
+                    "site"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/distributions/{id}": {
+      "post": {
+        "operationId": "post__v1_admin_distributions_id",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "plateformeId": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "roles": {
+                    "minItems": 1,
+                    "maxItems": 6,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "coord",
+                        "cheq",
+                        "recep",
+                        "expe",
+                        "admin",
+                        "com"
+                      ]
+                    }
+                  },
+                  "usage": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "version",
+                  "nom",
+                  "plateformeId",
+                  "roles",
+                  "usage"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "nom": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "plateformeId": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "roles": {
+                      "minItems": 1,
+                      "maxItems": 6,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "coord",
+                          "cheq",
+                          "recep",
+                          "expe",
+                          "admin",
+                          "com"
+                        ]
+                      }
+                    },
+                    "usage": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1000
+                    },
+                    "id": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "site": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "nom",
+                    "plateformeId",
+                    "roles",
+                    "usage",
+                    "id",
+                    "site"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/machines": {
+      "post": {
+        "operationId": "post__v1_admin_machines",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "type": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "fichier": {
+                    "type": "boolean"
+                  },
+                  "tiroirsMax": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "sortie": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 200
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "repertoire": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 1000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "bagues": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 200
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "version",
+                  "nom",
+                  "type",
+                  "fichier",
+                  "tiroirsMax",
+                  "sortie",
+                  "repertoire",
+                  "bagues"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "nom": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "type": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "fichier": {
+                      "type": "boolean"
+                    },
+                    "tiroirsMax": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1000
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "sortie": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 200
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "repertoire": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1000
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "bagues": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 200
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "id": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "nom",
+                    "type",
+                    "fichier",
+                    "tiroirsMax",
+                    "sortie",
+                    "repertoire",
+                    "bagues",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get__v1_admin_machines",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "machines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "version": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "nom": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100
+                          },
+                          "type": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100
+                          },
+                          "fichier": {
+                            "type": "boolean"
+                          },
+                          "tiroirsMax": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 1000
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "sortie": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 200
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "repertoire": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 1000
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "bagues": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "maxLength": 200
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "id": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "nom",
+                          "type",
+                          "fichier",
+                          "tiroirsMax",
+                          "sortie",
+                          "repertoire",
+                          "bagues",
+                          "id"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "parametres": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "cle": {
+                            "type": "string"
+                          },
+                          "valeur": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "cle",
+                          "valeur"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "machines",
+                    "parametres"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/machines/{id}": {
+      "post": {
+        "operationId": "post__v1_admin_machines_id",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "type": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "fichier": {
+                    "type": "boolean"
+                  },
+                  "tiroirsMax": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "sortie": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 200
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "repertoire": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 1000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "bagues": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 200
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "version",
+                  "nom",
+                  "type",
+                  "fichier",
+                  "tiroirsMax",
+                  "sortie",
+                  "repertoire",
+                  "bagues"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "nom": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "type": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "fichier": {
+                      "type": "boolean"
+                    },
+                    "tiroirsMax": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1000
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "sortie": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 200
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "repertoire": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1000
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "bagues": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 200
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "id": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "nom",
+                    "type",
+                    "fichier",
+                    "tiroirsMax",
+                    "sortie",
+                    "repertoire",
+                    "bagues",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/transport/boucles": {
+      "get": {
+        "operationId": "get__v1_admin_transport_boucles",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "version": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "plateformeId": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "nom": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100
+                          },
+                          "canal": {
+                            "type": "string",
+                            "enum": [
+                              "MILK_RUN",
+                              "MESSAGERIE"
+                            ]
+                          },
+                          "jour": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 7
+                          },
+                          "heure": {
+                            "type": "string",
+                            "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                          },
+                          "destinataires": {
+                            "maxItems": 500,
+                            "type": "array",
+                            "items": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "maximum": 9007199254740991
+                            }
+                          },
+                          "id": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "site": {
+                            "type": "string"
+                          },
+                          "destinations": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "plateformeId",
+                          "nom",
+                          "canal",
+                          "jour",
+                          "heure",
+                          "destinataires",
+                          "id",
+                          "site",
+                          "destinations"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "sites": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "nom": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "nom"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "destinataires": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "nom": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "nom"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "sites",
+                    "destinataires"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "post__v1_admin_transport_boucles",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "plateformeId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "canal": {
+                    "type": "string",
+                    "enum": [
+                      "MILK_RUN",
+                      "MESSAGERIE"
+                    ]
+                  },
+                  "jour": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 7
+                  },
+                  "heure": {
+                    "type": "string",
+                    "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                  },
+                  "destinataires": {
+                    "maxItems": 500,
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  }
+                },
+                "required": [
+                  "version",
+                  "plateformeId",
+                  "nom",
+                  "canal",
+                  "jour",
+                  "heure",
+                  "destinataires"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "plateformeId": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "nom": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "canal": {
+                      "type": "string",
+                      "enum": [
+                        "MILK_RUN",
+                        "MESSAGERIE"
+                      ]
+                    },
+                    "jour": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 7
+                    },
+                    "heure": {
+                      "type": "string",
+                      "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "destinataires": {
+                      "maxItems": 500,
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "id": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "site": {
+                      "type": "string"
+                    },
+                    "destinations": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "plateformeId",
+                    "nom",
+                    "canal",
+                    "jour",
+                    "heure",
+                    "destinataires",
+                    "id",
+                    "site",
+                    "destinations"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/transport/boucles/{id}": {
+      "post": {
+        "operationId": "post__v1_admin_transport_boucles_id",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "plateformeId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "canal": {
+                    "type": "string",
+                    "enum": [
+                      "MILK_RUN",
+                      "MESSAGERIE"
+                    ]
+                  },
+                  "jour": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 7
+                  },
+                  "heure": {
+                    "type": "string",
+                    "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                  },
+                  "destinataires": {
+                    "maxItems": 500,
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  }
+                },
+                "required": [
+                  "version",
+                  "plateformeId",
+                  "nom",
+                  "canal",
+                  "jour",
+                  "heure",
+                  "destinataires"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "plateformeId": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "nom": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "canal": {
+                      "type": "string",
+                      "enum": [
+                        "MILK_RUN",
+                        "MESSAGERIE"
+                      ]
+                    },
+                    "jour": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 7
+                    },
+                    "heure": {
+                      "type": "string",
+                      "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "destinataires": {
+                      "maxItems": 500,
+                      "type": "array",
+                      "items": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "id": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "site": {
+                      "type": "string"
+                    },
+                    "destinations": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "plateformeId",
+                    "nom",
+                    "canal",
+                    "jour",
+                    "heure",
+                    "destinataires",
+                    "id",
+                    "site",
+                    "destinations"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/journal": {
+      "get": {
+        "operationId": "get__v1_admin_journal",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "q",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "in": "query",
+            "name": "action",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            },
+            "in": "query",
+            "name": "objet",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "du",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "au",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 100,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            },
+            "in": "query",
+            "name": "pageSize",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "date": {
+                            "type": "string"
+                          },
+                          "par": {
+                            "type": "string"
+                          },
+                          "objet": {
+                            "type": "string"
+                          },
+                          "identifiant": {
+                            "type": "string"
+                          },
+                          "action": {
+                            "type": "string"
+                          },
+                          "detail": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "date",
+                          "par",
+                          "objet",
+                          "identifiant",
+                          "action",
+                          "detail"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "pageSize": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "total",
+                    "page",
+                    "pageSize"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/statuts": {
+      "get": {
+        "operationId": "get__v1_admin_statuts",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "cle": {
+                            "type": "string"
+                          },
+                          "domaine": {
+                            "type": "string"
+                          },
+                          "libelle": {
+                            "type": "string"
+                          },
+                          "origine": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "ecran": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "cle",
+                          "domaine",
+                          "libelle",
+                          "origine",
+                          "description",
+                          "ecran"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/transport": {
+      "get": {
+        "operationId": "get__v1_admin_transport",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 100,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            },
+            "in": "query",
+            "name": "pageSize",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "site": {
+                            "type": "string"
+                          },
+                          "atelier": {
+                            "type": "string"
+                          },
+                          "destinataire": {
+                            "type": "string"
+                          },
+                          "transporteur": {
+                            "type": "number"
+                          },
+                          "tarif": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "site",
+                          "atelier",
+                          "destinataire",
+                          "transporteur",
+                          "tarif"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "total",
+                    "page",
+                    "pageSize",
+                    "items"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/admin/file-envoi": {
       "get": {
         "operationId": "get__v1_admin_file_envoi",
@@ -36066,6 +38366,1845 @@
                     "fin",
                     "message",
                     "resultat"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stocks/rebut": {
+      "post": {
+        "operationId": "post__v1_stocks_rebut",
+        "tags": [
+          "stocks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "affiches": {
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "version": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "version"
+                      ]
+                    }
+                  },
+                  "quantite": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "motif": {
+                    "type": "string",
+                    "enum": [
+                      "AFFICHE_DECHIREE",
+                      "MAUVAIS_VISUEL",
+                      "ERREUR_QUANTITE",
+                      "AUTRE"
+                    ]
+                  }
+                },
+                "required": [
+                  "affiches",
+                  "quantite",
+                  "motif"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "quantite": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "quantite"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stocks/conserver": {
+      "post": {
+        "operationId": "post__v1_stocks_conserver",
+        "tags": [
+          "stocks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "affiches": {
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "version": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "version"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "affiches"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "quantite": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "quantite"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/fin-campagne": {
+      "get": {
+        "operationId": "get__v1_admin_fin_campagne",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "delais": {
+                      "type": "object",
+                      "properties": {
+                        "2m2": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 52
+                        },
+                        "8m2": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 52
+                        },
+                        "autres": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 52
+                        }
+                      },
+                      "required": [
+                        "2m2",
+                        "8m2",
+                        "autres"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "attention": {
+                      "maxItems": 2,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "BDX",
+                          "MUI"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "delais",
+                    "attention"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "post__v1_admin_fin_campagne",
+        "tags": [
+          "admin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "delais": {
+                    "type": "object",
+                    "properties": {
+                      "2m2": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 52
+                      },
+                      "8m2": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 52
+                      },
+                      "autres": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 52
+                      }
+                    },
+                    "required": [
+                      "2m2",
+                      "8m2",
+                      "autres"
+                    ]
+                  },
+                  "attention": {
+                    "maxItems": 2,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "BDX",
+                        "MUI"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "version",
+                  "delais",
+                  "attention"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "delais": {
+                      "type": "object",
+                      "properties": {
+                        "2m2": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 52
+                        },
+                        "8m2": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 52
+                        },
+                        "autres": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 52
+                        }
+                      },
+                      "required": [
+                        "2m2",
+                        "8m2",
+                        "autres"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "attention": {
+                      "maxItems": 2,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "BDX",
+                          "MUI"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "delais",
+                    "attention"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stocks": {
+      "get": {
+        "operationId": "get__v1_stocks",
+        "tags": [
+          "stocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "q",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "dossier",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "depart",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "format",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "stock",
+                "epuise",
+                "conserver",
+                "rebut"
+              ]
+            },
+            "in": "query",
+            "name": "etat",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "allee",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "version": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "plateformeId": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "site": {
+                            "type": "string"
+                          },
+                          "annonceur": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "theme": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "dossiers": {
+                            "type": "array",
+                            "items": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            }
+                          },
+                          "semaines": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "emplacement": {
+                            "type": "string"
+                          },
+                          "allee": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "format": {
+                            "type": "string"
+                          },
+                          "recu": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "sorties": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "rebut": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "disponible": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "conserver": {
+                            "type": "boolean"
+                          },
+                          "derniereSortie": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "fusionnee": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "version",
+                          "plateformeId",
+                          "site",
+                          "annonceur",
+                          "theme",
+                          "dossiers",
+                          "semaines",
+                          "emplacement",
+                          "allee",
+                          "format",
+                          "recu",
+                          "sorties",
+                          "rebut",
+                          "disponible",
+                          "conserver",
+                          "derniereSortie",
+                          "fusionnee"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "indicateurs": {
+                      "type": "object",
+                      "properties": {
+                        "disponible": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "reliquats": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "visuelsConserves": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "rebut": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "sortiesAujourdhui": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "disponible",
+                        "reliquats",
+                        "visuelsConserves",
+                        "rebut",
+                        "sortiesAujourdhui"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "indicateurs"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stocks/mouvements": {
+      "get": {
+        "operationId": "get__v1_stocks_mouvements",
+        "tags": [
+          "stocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "q",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "dossier",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "type",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "oui",
+                "non"
+              ]
+            },
+            "in": "query",
+            "name": "auto",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "par",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "du",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "au",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 1,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "in": "query",
+            "name": "page",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 100,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            },
+            "in": "query",
+            "name": "pageSize",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "date": {
+                            "type": "string"
+                          },
+                          "afficheId": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "site": {
+                            "type": "string"
+                          },
+                          "dossiers": {
+                            "type": "array",
+                            "items": {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            }
+                          },
+                          "type": {
+                            "type": "string"
+                          },
+                          "quantite": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "par": {
+                            "type": "string"
+                          },
+                          "automatique": {
+                            "type": "boolean"
+                          },
+                          "motif": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "date",
+                          "afficheId",
+                          "site",
+                          "dossiers",
+                          "type",
+                          "quantite",
+                          "par",
+                          "automatique",
+                          "motif"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "total",
+                    "page",
+                    "pageSize"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stocks/fin-campagne": {
+      "get": {
+        "operationId": "get__v1_stocks_fin_campagne",
+        "tags": [
+          "stocks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "q",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "dossier",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "A_DECIDER",
+                "CONSERVER",
+                "ENVOYER",
+                "DETRUIRE",
+                "ENVOYE",
+                "DETRUIT",
+                "FAIT"
+              ]
+            },
+            "in": "query",
+            "name": "decision",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "BDX",
+                "MUI",
+                "garde",
+                "aucun"
+              ]
+            },
+            "in": "query",
+            "name": "attention",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "cle": {
+                            "type": "string"
+                          },
+                          "plateformeId": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "site": {
+                            "type": "string"
+                          },
+                          "dossier": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "annonceur": {
+                            "type": "string"
+                          },
+                          "atelier": {
+                            "type": "string"
+                          },
+                          "formats": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "dernierDepart": {
+                            "type": "string"
+                          },
+                          "echeance": {
+                            "type": "string"
+                          },
+                          "delai": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "stock": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "attention": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "gardes": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "affiches": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "version": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "plateformeId": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "site": {
+                                  "type": "string"
+                                },
+                                "annonceur": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "theme": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "dossiers": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer",
+                                    "minimum": -9007199254740991,
+                                    "maximum": 9007199254740991
+                                  }
+                                },
+                                "semaines": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "emplacement": {
+                                  "type": "string"
+                                },
+                                "allee": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "format": {
+                                  "type": "string"
+                                },
+                                "recu": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "sorties": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "rebut": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "disponible": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "conserver": {
+                                  "type": "boolean"
+                                },
+                                "derniereSortie": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "fusionnee": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "version",
+                                "plateformeId",
+                                "site",
+                                "annonceur",
+                                "theme",
+                                "dossiers",
+                                "semaines",
+                                "emplacement",
+                                "allee",
+                                "format",
+                                "recu",
+                                "sorties",
+                                "rebut",
+                                "disponible",
+                                "conserver",
+                                "derniereSortie",
+                                "fusionnee"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "decision": {
+                            "type": "string",
+                            "enum": [
+                              "A_DECIDER",
+                              "CONSERVER",
+                              "ENVOYER",
+                              "DETRUIRE",
+                              "ENVOYE",
+                              "DETRUIT"
+                            ]
+                          },
+                          "version": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "empreinte": {
+                            "type": "string"
+                          },
+                          "jusqua": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "motif": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "destinataire": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "quantiteRetour": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "quantiteEnvoyee": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "quantiteDetruite": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "modifieLe": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "par": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "cle",
+                          "plateformeId",
+                          "site",
+                          "dossier",
+                          "annonceur",
+                          "atelier",
+                          "formats",
+                          "dernierDepart",
+                          "echeance",
+                          "delai",
+                          "stock",
+                          "attention",
+                          "gardes",
+                          "affiches",
+                          "decision",
+                          "version",
+                          "empreinte",
+                          "jusqua",
+                          "motif",
+                          "destinataire",
+                          "quantiteRetour",
+                          "quantiteEnvoyee",
+                          "quantiteDetruite",
+                          "modifieLe",
+                          "par"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "indicateurs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "enum": [
+                          "A_DECIDER",
+                          "CONSERVER",
+                          "ENVOYER",
+                          "DETRUIRE",
+                          "ENVOYE",
+                          "DETRUIT"
+                        ]
+                      },
+                      "additionalProperties": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "required": [
+                        "A_DECIDER",
+                        "CONSERVER",
+                        "ENVOYER",
+                        "DETRUIRE",
+                        "ENVOYE",
+                        "DETRUIT"
+                      ]
+                    },
+                    "peutAgir": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "indicateurs",
+                    "peutAgir"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stocks/fin-campagne/decision": {
+      "post": {
+        "operationId": "post__v1_stocks_fin_campagne_decision",
+        "tags": [
+          "stocks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plateformeId": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "dossier": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "version": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "empreinte": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "decision": {
+                    "type": "string",
+                    "enum": [
+                      "A_DECIDER",
+                      "CONSERVER",
+                      "ENVOYER",
+                      "DETRUIRE"
+                    ]
+                  },
+                  "jusqua": {
+                    "type": "string"
+                  },
+                  "motif": {
+                    "type": "string",
+                    "maxLength": 1000
+                  },
+                  "destinataire": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "quantiteRetour": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "plateformeId",
+                  "dossier",
+                  "version",
+                  "empreinte",
+                  "decision"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "quantite": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "quantite"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Erreur applicative structurée (validation, authentification, permission, conflit ou erreur interne).",
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "regle": {
+                      "type": "string"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/stocks/fin-campagne/executer": {
+      "post": {
+        "operationId": "post__v1_stocks_fin_campagne_executer",
+        "tags": [
+          "stocks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cibles": {
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "plateformeId": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "dossier": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "version": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        "empreinte": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        }
+                      },
+                      "required": [
+                        "plateformeId",
+                        "dossier",
+                        "version",
+                        "empreinte"
+                      ]
+                    }
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "PROPOSER_DESTRUCTION",
+                      "RENVOI",
+                      "DESTRUCTION"
+                    ]
+                  },
+                  "confirmation": {
+                    "default": false,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "cibles",
+                  "action"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "in": "header",
+            "name": "x-site-id",
+            "required": false,
+            "description": "Filtre de centre facultatif ; périmètre revérifié côté serveur."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true,
+            "description": "Clé unique de l’opération ; réutiliser pour rejouer la même requête."
+          }
+        ],
+        "security": [
+          {
+            "DevIdentity": []
+          }
+        ],
+        "x-api-category": "business",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "quantite": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "quantite"
                   ],
                   "additionalProperties": false
                 }
@@ -37828,6 +41967,11 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "nombreRouleurs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
                     "ateliers": {
                       "type": "array",
                       "items": {
@@ -37898,6 +42042,7 @@
                     }
                   },
                   "required": [
+                    "nombreRouleurs",
                     "ateliers",
                     "trains"
                   ],

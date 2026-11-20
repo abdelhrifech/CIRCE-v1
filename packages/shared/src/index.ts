@@ -28,3 +28,8 @@ export * from './nonconformite.ts'
 export * from './pilotage-nouveau.ts'
 export * from './bus.ts'
 export * from './evolutions16.ts'
+
+export * from './stocks.ts'
+
+export * from './admin-maquette.ts'
+export * from './catalogue-maquette-reference.ts'

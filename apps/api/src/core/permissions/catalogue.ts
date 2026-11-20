@@ -132,6 +132,11 @@ export const CATALOGUE_PERMISSIONS: Record<PermissionCode, PermissionDefinition>
     roles: ['coord', 'admin'],
     source: 'RG-REC-003 ; RG-COO-009, 014 ; Q-201',
   },
+  'stock.consulter': {
+    libelle: 'Consulter les vues Stocks et Mouvements',
+    roles: ['coord', 'cheq', 'recep', 'expe', 'com'],
+    source: 'REC §2 ; ECR-STK-01/02 ; stock.js (accès Expédition au rebut)',
+  },
   'stock.rebut': {
     libelle: 'Mettre au rebut',
     roles: ['cheq', 'recep', 'expe'],
@@ -141,6 +146,12 @@ export const CATALOGUE_PERMISSIONS: Record<PermissionCode, PermissionDefinition>
     libelle: 'Ajout / sortie manuels de stock',
     roles: [],
     source: 'REC §2 : « ? » pour tous (Q-117) → refusé',
+  },
+  'stock.fin_campagne.agir': {
+    libelle: 'Décider et exécuter la fin de campagne',
+    roles: ['recep', 'cheq'],
+    source:
+      'RG-STK-NEW-002 ; décision utilisateur du 19/11/2026 : Réception, chefs d’équipe, admin ; Coordination consulte',
   },
   'stock.fin_campagne.consulter': {
     libelle: 'Consulter Stocks › Fin de campagne',

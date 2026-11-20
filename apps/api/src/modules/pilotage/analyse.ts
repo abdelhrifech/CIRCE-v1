@@ -39,6 +39,7 @@ export async function analyserProduction(
     ).map((r) => [r.id, r.nom]),
   )
   return {
+    nombreRouleurs: rouleurs.size,
     ateliers: ateliers.map((a) => ({ id: a.id, libelle: a.libelle, plateforme: a.plateforme })),
     trains: trains.map((t) => ({
       id: t.trainId,

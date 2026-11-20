@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { SitesAdminSchema } from '@circe/shared'
+import { GAMMES_REFERENCE, SitesAdminSchema } from '@circe/shared'
 import { ErrorMessage } from '../../components/error-message.tsx'
 import { Pastille } from '../../components/ui/pastille.tsx'
 import { Button } from '../../components/button.tsx'
@@ -111,6 +111,26 @@ function Sites() {
               </table>
             </>
           ))}
+      </section>
+      <section className="mt-6 rounded border bg-white p-5">
+        <h2 className="mb-4 text-lg font-semibold">Gammes de fabrication par mode</h2>
+        <p className="mb-4 text-sm text-slate-600">
+          Référence cible de la maquette, présentée sans modifier les traitements existants.
+        </p>
+        <div className="space-y-5">
+          {GAMMES_REFERENCE.map((g) => (
+            <div key={g.mode}>
+              <h3 className="mb-2 font-semibold">{g.mode}</h3>
+              <ol className="flex flex-wrap gap-2">
+                {g.etapes.map((e, i) => (
+                  <li key={e} className="rounded border bg-sky-50 px-3 py-2 text-sm">
+                    {i + 1}. {e}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
       </section>
     </main>
   )

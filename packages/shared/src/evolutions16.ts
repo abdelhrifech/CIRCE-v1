@@ -40,6 +40,7 @@ export const AnalyseProductionQuerySchema = z
   })
   .refine((q) => !q.du || !q.au || q.du <= q.au, 'La date de fin doit suivre la date de début.')
 export const AnalyseProductionSchema = z.object({
+  nombreRouleurs: z.number().int().nonnegative(),
   ateliers: z.array(z.object({ id: z.number(), libelle: z.string(), plateforme: z.string() })),
   trains: z.array(
     z.object({

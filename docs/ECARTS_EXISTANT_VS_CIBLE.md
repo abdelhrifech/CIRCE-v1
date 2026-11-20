@@ -326,3 +326,18 @@ Colonne « Justification » : `spec explicite` = phrase d'une spec citée ; `HYP
 ## Point de sauvegarde du 17 novembre 2026 — nouvelle maquette du 16/11
 
 La matrice détaillée `EVOLUTIONS_MAQUETTE_2026_11_16.md` fait foi pour cette livraison encore partielle : grilles Réception à harmoniser, Export préparation et suivi par thème à compléter, macro-suivi à consolider, recette A4 à finir. Le douchage d’activité, les critères de fusion et le flux des colis extérieurs ne sont pas remplacés par les simulations de la maquette. Les règles existantes de duplication, sortie de stock et suppression restent conservées conformément à la réponse utilisateur. L’audit de conformité final reste ouvert.
+
+## Mise à jour du 20 novembre 2026 — maquette-new, hors périmètre gelé
+
+État détaillé et preuves : `IMPLEMENTATION_MAQUETTE_NEW_2026_11_19.md`. Cette mise à jour complète les constats historiques, sans les effacer.
+
+| Référence | État réel |
+|---|---|
+| ECART-116 : onglet Stocks et pages Admin manquants | Ajoutés : Stock par affiche, Mouvements, Fin de campagne, Journal, Statuts, Machines/fichiers, Transport, Mails et règles de fin de campagne. Les entrées des modules gelés restent inchangées. |
+| EX-ADM-NEW-001 : machines/transport/distributions | Registres persistés et éditables, versions et audit. Raccordement automatique aux moteurs gelés et aux règles SMTP non réalisé. Association machines/ateliers et critères d’ordonnancement de la maquette restent à compléter ; les paramètres existants restent séparés. |
+| EX-PIL-NEW-001 : analyse et suivi global | Synthèse des trains par rouleur ajoutée, détail préservé. Activité/équipe indisponible sans le douchage Réception. Le suivi global reste sans les indicateurs et graphiques complets de la maquette par atelier, départ camion et annonceur. |
+| EX-EXP-NEW-001 : liste extérieure | Vue des colis avec référence externe existante ajoutée. Le canal Messagerie de la maquette n’est pas identifié par le contrat existant : présence du récépissé et canal ne sont pas équivalents. Le véritable import transporteur, la boucle, le poids/tarif du fichier et la preuve de livraison ne sont pas raccordés. |
+| Départs camions | Écran existant conservé ; horaires/canaux/boucles du nouveau registre ne sont pas encore reliés au calcul des départs. |
+| Réception / Coordination | 152 fichiers gelés vérifiés par empreinte. Les anciens écarts qui les concernent ne sont pas corrigés dans cette demande, conformément au gel utilisateur. |
+| Aide de la maquette | Les écrans démo « Parcours/Besoins », fondés sur des données simulées, restent hors flux opérationnel comme ECART-118. |
+| Volume et exploitation | Pagination SQL complète du stock et de certains calculs à compléter. Recette native Windows et raccordement effectif des intégrations externes à réaliser. |

@@ -34,6 +34,7 @@ const LECTURES = new Set([
   'reception.attendues.consulter',
   'reception.sas.consulter',
   'affiche.consulter',
+  'stock.consulter',
   'alerte.consulter',
   'historique.consulter',
   'export.tableau',
@@ -53,6 +54,14 @@ describe('catalogue des permissions (RG-REC-002, RG-COO-165)', () => {
   it('RG-COO-168 le rôle Commerce n’a que des permissions de lecture', () => {
     const ecritures = permissionsOf(['com']).filter((code) => !LECTURES.has(code))
     expect(ecritures).toEqual([])
+  })
+
+  it('RG-STK-NEW-001 Expédition peut consulter Stocks sans les droits de consultation Réception', () => {
+    const droits = permissionsOf(['expe'])
+    expect(droits).toContain('stock.consulter')
+    expect(droits).toContain('stock.rebut')
+    expect(droits).not.toContain('affiche.consulter')
+    expect(droits).not.toContain('stock.fin_campagne.agir')
   })
 
   it('RG-COO-169 aucune permission n’est donnée hors des 6 rôles provisoires (Q-003)', () => {

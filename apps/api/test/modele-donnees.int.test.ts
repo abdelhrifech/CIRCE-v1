@@ -295,7 +295,7 @@ describe('seed:ref (Q-004, Q-319)', () => {
       instructionPlus: 5,
       typesPreparation: 5,
       parametres: 48,
-      permissions: 64,
+      permissions: 66,
     })
     expect(
       await db.role.count({

@@ -1,3 +1,5 @@
+import { adminMaquetteRoutes } from './modules/admin/routes-maquette.ts'
+import { stocksRoutes } from './modules/stocks/routes.ts'
 import Fastify, { type FastifyInstance, type FastifyPluginCallback } from 'fastify'
 import { registerOpenApi } from './core/openapi.ts'
 import { logContext, severity } from './core/observability/telemetry.ts'
@@ -111,7 +113,9 @@ export function buildApp(deps: AppDeps): FastifyInstance {
     colisRoutes(api, db)
     destinatairesRoutes(api, db)
     adminRoutes(api, db)
+    adminMaquetteRoutes(api, db)
     adminLot4Routes(api, db, mail, config.ORDONNANCEUR_ACTIF === 'true')
+    stocksRoutes(api, db)
     busRoutes(api, db)
     nouveauPilotageRoutes(api, db)
     nonConformiteRoutes(api, db)

@@ -83,7 +83,7 @@ test('ECR-NAV-01 une entrée ouvre sa page et porte aria-current', async ({ page
 test('ECR-NAV-01 les entrées de la maquette sans écran sont absentes', async ({ page }) => {
   await ouvrir(page, '/moi')
   const nav = page.getByRole('navigation', { name: 'Navigation principale' })
-  await expect(nav.getByRole('button', { name: /Stocks/ })).toHaveCount(0)
+  await expect(nav.getByRole('button', { name: /Stocks/ })).toBeVisible()
   await page.getByTestId('onglet-pilotage').click()
   const menu = page.getByTestId('menu-pilotage')
   await expect(menu.getByText('Suivi de prod', { exact: true })).toBeVisible()
