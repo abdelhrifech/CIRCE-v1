@@ -323,3 +323,9 @@ Numérotation par blocs : Q-001…Q-099 audit 1a ; Q-100… Réception ; Q-200�
 ## Décision utilisateur — livraison OneDrive du 16/11/2026
 
 Pour les comportements laissés « à décider » dans les nouvelles maquettes (douchage et sortie de stock, fusion, suppression à l’export, duplication), l’utilisateur a répondu **« Oui, conserver les règles existantes (recommandé) »**. Réutiliser les services existants ; laisser indisponible une action exigeant d’inventer une règle. Cette réponse autorise la poursuite de l’implémentation sans nouvelle demande d’approbation sur ces points. Les absences de modèle/flux et les écarts d’écran sont détaillés dans `EVOLUTIONS_MAQUETTE_2026_11_16.md`.
+
+## Décisions utilisateur — maquette-new et gel du 19/11/2026
+
+- Réception et Coordination sont explicitement gelées : aucune modification de leurs écrans, services, contrats ou composants UI partagés. Une fonctionnalité nouvelle hors gel peut réutiliser leurs services sans les modifier.
+- Fin de campagne : réponse explicite **« Activer comme la maquette pour Réception, chefs d’équipe et admin ; Coordination consulte »**. Les décisions sont saisies dans Stocks, les sorties physiques sont confirmées et auditées. La conservation des règles de rebut, de validation et des autres comportements existants reste exigée.
+- Dépendances non résolues, sans automatisme inventé : raccordement des nouveaux registres machines/transport/distribution aux moteurs existants ; source du canal transporteur et du fichier extérieur ; activité douchée par équipe. Leur état réel figure dans `IMPLEMENTATION_MAQUETTE_NEW_2026_11_19.md`. Aucun droit de Réception n’a été étendu à Expédition : une permission distincte permet la consultation Stocks conformément à ECR-STK-01/02.

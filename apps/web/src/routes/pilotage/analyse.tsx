@@ -6,6 +6,7 @@ import { apiRequest } from '../../lib/api-client.ts'
 import { useApi } from '../../lib/use-api.ts'
 import { TableMetier } from '../../components/ui/table-metier.tsx'
 import { ErrorMessage } from '../../components/error-message.tsx'
+import { regrouperTrainsProduits } from '../../lib/analyse-production.ts'
 export const Route = createFileRoute('/pilotage/analyse')({
   beforeLoad: requirePermission('train.consulter'),
   component: Page,
@@ -73,10 +74,23 @@ function Page() {
       {etat.kind === 'ready' && (
         <>
           <p className="my-4 font-semibold">
-            {etat.data.trains.length} train(s) ·{' '}
-            {new Set(etat.data.trains.flatMap((t) => (t.rouleur ? [t.rouleur] : []))).size}{' '}
-            rouleur(s)
+            {etat.data.trains.length} train(s) · {etat.data.nombreRouleurs} rouleur(s)
           </p>
+          <TableMetier
+            nom="Trains produits par rouleur"
+            lignes={regrouperTrainsProduits(etat.data.trains)}
+            cle={(t) => t.id}
+            colonnes={[
+              { id: 'rouleur', titre: 'Rouleur', valeur: (t) => t.rouleur ?? 'Non renseigné' },
+              { id: 'machine', titre: 'Machine', valeur: (t) => t.machine },
+              { id: 'atelier', titre: 'Atelier', valeur: (t) => t.atelier },
+              { id: 'site', titre: 'Site', valeur: (t) => t.site },
+              { id: 'depart', titre: 'Départ', valeur: (t) => t.depart },
+              { id: 'lignes', titre: 'Lignes de trains', valeur: (t) => t.lignes },
+              { id: 'trains', titre: 'Trains', valeur: (t) => t.trains },
+            ]}
+          />
+          <h2 className="mb-3 mt-6 text-lg font-semibold">Détail des trains</h2>
           <TableMetier
             nom="Analyse des trains"
             lignes={etat.data.trains}

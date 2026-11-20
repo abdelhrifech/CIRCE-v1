@@ -322,6 +322,12 @@ export const NAV: OngletNav[] = [
     id: 'expedition',
     titre: 'Expédition',
     entrees: [
+      {
+        id: 'colis-exterieur',
+        libelle: 'Liste des colis (extérieur)',
+        to: '/expedition/exterieur',
+        permission: 'colis.gerer',
+      },
       { id: 'colisage', libelle: 'Scan et colisage', to: '/expedition', permission: 'colis.gerer' },
       { id: 'colis', libelle: 'Colis', to: '/expedition/colis', permission: 'colis.gerer' },
       {
@@ -333,9 +339,65 @@ export const NAV: OngletNav[] = [
     ],
   },
   {
+    id: 'stocks',
+    titre: 'Stocks',
+    entrees: [
+      {
+        id: 'stock-affiches',
+        libelle: 'Stock par affiche',
+        to: '/stocks',
+        permission: 'stock.consulter',
+      },
+      {
+        id: 'stock-mouvements',
+        libelle: 'Mouvements',
+        to: '/stocks/mouvements',
+        permission: 'stock.consulter',
+      },
+      {
+        id: 'fin-campagne',
+        libelle: 'Fin de campagne',
+        to: '/stocks/fin-campagne',
+        permission: 'stock.fin_campagne.consulter',
+      },
+    ],
+  },
+  {
     id: 'admin',
     titre: 'Administration',
     entrees: [
+      {
+        id: 'admin-fin-campagne',
+        libelle: 'Règles de fin de campagne',
+        to: '/admin/fin-campagne',
+        permission: 'parametrage.gerer',
+      },
+      { id: 'admin-mails', libelle: 'Mails', to: '/admin/mails', permission: 'parametrage.gerer' },
+      {
+        id: 'admin-machines',
+        libelle: 'Machines et fichiers',
+        to: '/admin/machines',
+        permission: 'parametrage.gerer',
+      },
+      {
+        id: 'admin-statuts',
+        libelle: 'Statuts',
+        to: '/admin/statuts',
+        permission: 'parametrage.gerer',
+      },
+      {
+        id: 'admin-transport',
+        libelle: 'Transport',
+        to: '/admin/transport',
+        permission: 'parametrage.gerer',
+      },
+      {
+        id: 'admin-journal',
+        libelle: 'Journal',
+        to: '/admin/journal',
+        permission: 'parametrage.gerer',
+      },
+
       {
         id: 'admin-deblocage',
         libelle: 'Déblocage préparations',

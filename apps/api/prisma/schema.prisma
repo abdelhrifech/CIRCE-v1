@@ -113,6 +113,7 @@ enum TypeAtelier {
 }
 
 enum TypeEntite {
+  FIN_CAMPAGNE
   NON_CONFORMITE
   SUIVI_J3
   TABLEAU_PERSONNEL
@@ -147,6 +148,8 @@ enum TypeEntite {
 
 /// Actions du journal d'audit (Q-308) : 16 actions legacy + actions V2 (extensible par migration).
 enum ActionAudit {
+  DECISION_FIN_CAMPAGNE
+  EXECUTION_FIN_CAMPAGNE
   CREATION_AFFICHE
   MODIFICATION_DOSSIER
   MODIFICATION_SEMAINE
@@ -1994,4 +1997,61 @@ model BusControleReception {
   createdById Int
   createdAt DateTime @default(now())
   @@map("bus_controle_reception")
+}
+
+/// RG-STK-NEW-002 — décision distincte par site et dossier, sans changer les entités Réception/Coordination.
+model FinCampagne {
+  id Int @id @default(autoincrement())
+  plateformeId Int
+  dossier Int
+  decision String
+  jusqua String?
+  motif String?
+  destinataire String?
+  quantiteRetour Int?
+  quantiteEnvoyee Int @default(0)
+  quantiteDetruite Int @default(0)
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+  parId Int
+  @@unique([plateformeId,dossier])
+  @@map("fin_campagne")
+}
+
+/// Référentiel administratif indépendant, sans changement des moteurs de Coordination gelés.
+model MachineConfiguration {
+  id Int @id @default(autoincrement())
+  nom String @unique
+  type String
+  fichier Boolean @default(false)
+  tiroirsMax Int?
+  sortie String?
+  repertoire String?
+  bagues String?
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+  @@map("machine_configuration")
+}
+model BoucleTransportConfiguration {
+  id Int @id @default(autoincrement())
+  plateformeId Int
+  nom String
+  canal String
+  jour Int
+  heure String
+  destinataires String @default("[]")
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+  @@unique([plateformeId,nom])
+  @@map("boucle_transport_configuration")
+}
+model ListeDistributionConfiguration {
+  id Int @id @default(autoincrement())
+  nom String @unique
+  plateformeId Int?
+  roles String
+  usage String
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+  @@map("liste_distribution_configuration")
 }

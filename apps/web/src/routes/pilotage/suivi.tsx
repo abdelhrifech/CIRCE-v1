@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
 import { SuiviAtelierSchema, SuiviAtelierQuerySchema } from '@circe/shared'
 import { requirePermission } from '../../lib/session.ts'
 import { useApi } from '../../lib/use-api.ts'
@@ -11,8 +12,17 @@ export const Route = createFileRoute('/pilotage/suivi')({
   component: Page,
 })
 function Page() {
-  const q = Route.useSearch(),
-    params = new URLSearchParams(Object.entries(q).map(([k, v]) => [k, String(v)]))
+  const q = Route.useSearch()
+  const [filtres, setFiltres] = useState({
+    dossiers: q.dossier ? String(q.dossier) : '',
+    depart: q.depart ?? '',
+    atelier: '',
+    format: '',
+    annonceur: '',
+  })
+  const params = new URLSearchParams(q.pour ? { pour: q.pour } : {})
+  if (/^\d+$/.test(filtres.dossiers.trim())) params.set('dossier', filtres.dossiers.trim())
+  if (filtres.depart) params.set('depart', filtres.depart)
   const { etat, recharger } = useApi(`suivi-${params}`, (signal) =>
     apiRequest('GET', `/api/pilotage/suivi?${params}`, { schema: SuiviAtelierSchema, signal }),
   )
@@ -35,15 +45,108 @@ function Page() {
     ) : (
       valeur
     )
+  const toutes = etat.kind === 'ready' ? etat.data.items : []
+  const dossiers = filtres.dossiers.split(/[,;\s]+/).filter(Boolean)
+  // EX-PIL-NEW-001 — filtres cumulés de suivi.js ; aucune étape ni quantité recalculée.
+  const lignes = toutes.filter(
+    (r) =>
+      (!dossiers.length || dossiers.includes(String(r.dossier))) &&
+      (!filtres.depart || r.depart === filtres.depart) &&
+      (!filtres.atelier || `${r.site} · ${r.atelier}` === filtres.atelier) &&
+      (!filtres.format || r.format === filtres.format) &&
+      (!filtres.annonceur ||
+        (r.annonceur ?? '')
+          .toLocaleLowerCase('fr')
+          .includes(filtres.annonceur.toLocaleLowerCase('fr'))),
+  )
   return (
     <main className="p-6">
       <h1 className="mb-5 text-2xl font-semibold">{lib}</h1>
+      <div
+        className="mb-5 flex flex-wrap items-end gap-3"
+        role="group"
+        aria-label="Filtres du suivi"
+      >
+        <label>
+          Dossier(s)
+          <input
+            className="ml-2 rounded border p-2"
+            value={filtres.dossiers}
+            placeholder="Séparer par virgule"
+            onChange={(e) => {
+              setFiltres({ ...filtres, dossiers: e.target.value })
+            }}
+          />
+        </label>
+        <label>
+          Départ
+          <input
+            className="ml-2 rounded border p-2"
+            type="week"
+            value={filtres.depart}
+            onChange={(e) => {
+              setFiltres({ ...filtres, depart: e.target.value })
+            }}
+          />
+        </label>
+        <label>
+          Atelier
+          <select
+            className="ml-2 rounded border p-2"
+            aria-label="Atelier"
+            value={filtres.atelier}
+            onChange={(e) => {
+              setFiltres({ ...filtres, atelier: e.target.value })
+            }}
+          >
+            <option value="">Tous</option>
+            {[...new Set(toutes.map((r) => `${r.site} · ${r.atelier}`))].sort().map((a) => (
+              <option key={a}>{a}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Format
+          <select
+            className="ml-2 rounded border p-2"
+            aria-label="Format"
+            value={filtres.format}
+            onChange={(e) => {
+              setFiltres({ ...filtres, format: e.target.value })
+            }}
+          >
+            <option value="">Tous</option>
+            {[...new Set(toutes.map((r) => r.format))].sort().map((f) => (
+              <option key={f}>{f}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Annonceur
+          <input
+            className="ml-2 rounded border p-2"
+            value={filtres.annonceur}
+            onChange={(e) => {
+              setFiltres({ ...filtres, annonceur: e.target.value })
+            }}
+          />
+        </label>
+        <button
+          className="rounded border px-3 py-2"
+          type="button"
+          onClick={() => {
+            setFiltres({ dossiers: '', depart: '', atelier: '', format: '', annonceur: '' })
+          }}
+        >
+          Réinitialiser
+        </button>
+      </div>
       {etat.kind === 'loading' && <p>Chargement du suivi…</p>}
       {etat.kind === 'error' && <ErrorMessage error={etat.error} onRetry={recharger} />}
       {etat.kind === 'ready' && (
         <TableMetier
           nom={lib}
-          lignes={etat.data.items}
+          lignes={lignes}
           cle={(r) => r.id}
           colonnes={[
             { id: 'dossier', titre: 'Dossier', valeur: (r) => r.dossier },

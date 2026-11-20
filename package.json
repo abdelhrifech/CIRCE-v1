@@ -8,6 +8,7 @@
     "node": ">=24"
   },
   "scripts": {
+    "start": "node scripts/start.mjs",
     "dev": "pnpm --parallel --filter @circe/api --filter @circe/web dev",
     "start:all": "node scripts/start.mjs",
     "build": "pnpm -r build",

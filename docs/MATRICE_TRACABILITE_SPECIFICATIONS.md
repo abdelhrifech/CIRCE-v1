@@ -926,3 +926,18 @@ Ce complément trace les évolutions de la nouvelle maquette et de la note Bus. 
 Règles effectivement implémentées : [mémoire fonctionnelle et technique](REGLES_METIER_NOUVELLES_SPECS_2026_11_12.md). Sources, décision utilisateur et vérifications : [registre des évolutions](EVOLUTIONS_NOUVELLES_SPECS_2026_11_12.md).
 
 Preuves principales : `apps/api/test/bus/parcours.int.test.ts`, `apps/api/test/nonconformite/parcours.int.test.ts`, `apps/api/test/pilotage/nouveautes.int.test.ts`, tests de réception et de permissions, `e2e/admin-nouvelles-specs.spec.ts` et parcours de réception existants adaptés.
+
+## Complément de traçabilité — maquette-new, 20 novembre 2026
+
+Ces identifiants décrivent l’incrément hors Réception/Coordination ; ils ne requalifient pas les anciennes RG gelées.
+
+| ID | Source | Implémentation | Validation | Statut |
+|---|---|---|---|---|
+| EX-STK-NEW-001 | stock.js:24–90 | API modules/stocks/lecture.ts ; web routes/stocks | stocks/fin-campagne.int.test.ts ; admin-maquette-new.spec.ts | IMPLÉMENTÉ, limites de volume tracées |
+| RG-STK-NEW-001 | stock.js:8–18,80–90 ; REC §2 | modules/stocks/actions.ts ; permission stock.consulter dédiée | rollback lot, refus quantité, accès Expédition sans droit Réception ; E2E conservation | IMPLÉMENTÉ |
+| RG-STK-NEW-002 | fincampagne.js:35–119 ; data.js:1269–1301 ; décision utilisateur | modules/stocks/fin-campagne.ts et configuration.ts ; migration additive ; 2 pages web | futur propre/partagé, Bordeaux/MUI, rôles, versions, confirmation, renvoi/destruction ; paramètres bornés | IMPLÉMENTÉ, recette complète à poursuivre |
+| EX-ADM-NEW-001 | parametrage.js:217–374 | modules/admin/maquette.ts, configuration-atelier.ts ; pages Admin hors gel | maquette-new.int.test.ts ; E2E chargement rubriques | PARTIEL : raccordement moteurs, machines/ateliers et ordonnancement |
+| EX-PIL-NEW-001 | reprises.js:217–260 ; suivi.js:85–100 | analyse par rouleur et détail ; tableaux existants conservés | analyse-production.test.ts ; contrôle visuel et régression | PARTIEL : activité/équipe et graphiques globaux |
+| EX-EXP-NEW-001 | reprises.js:267–291 | routes/expedition/exterieur.tsx sur API existante | E2E page ; données réelles uniquement | PARTIEL : canal et flux transporteur absents du contrat actuel |
+
+Rapport complet : `IMPLEMENTATION_MAQUETTE_NEW_2026_11_19.md`. Contrôle du gel : `node scripts/verifier-gel.mjs`.

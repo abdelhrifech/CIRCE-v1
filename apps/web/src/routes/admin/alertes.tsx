@@ -1,3 +1,4 @@
+import { ListesDistribution } from '../../components/admin/distributions.tsx'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   CANAUX_ALERTE,
@@ -127,6 +128,7 @@ function Alertes() {
           }}
         />
       )}
+      <ListesDistribution />
     </main>
   )
 }

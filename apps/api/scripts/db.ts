@@ -1,3 +1,4 @@
+import { commandePnpm } from '../../../scripts/pnpm-process.mjs'
 // db:up / db:test:up : prépare le fichier SQLite et applique les migrations (aucun serveur, Q-343).
 import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync } from 'node:fs'
@@ -27,9 +28,11 @@ if (!hasMigrations) {
   )
   process.exit(0)
 }
-const result = spawnSync('pnpm', ['exec', 'prisma', 'migrate', 'deploy'], {
+const cmd = commandePnpm(['exec', 'prisma', 'migrate', 'deploy'])
+const result = spawnSync(cmd.command, cmd.args, {
   stdio: 'inherit',
   cwd: resolve(import.meta.dirname, '..'),
   env: process.env,
 })
+if (result.error) console.error(result.error.message)
 process.exit(result.status ?? 1)
